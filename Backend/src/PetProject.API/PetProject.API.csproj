@@ -1,0 +1,28 @@
+<Project Sdk="Microsoft.NET.Sdk.Web">
+
+    <PropertyGroup>
+        <TargetFramework>net8.0</TargetFramework>
+        <Nullable>enable</Nullable>
+        <ImplicitUsings>enable</ImplicitUsings>
+        <UserSecretsId>aspnet-PetProject.API-E4A1BF09-6B0D-465F-A8D4-2AA8902F00E0</UserSecretsId>
+    </PropertyGroup>
+
+    <ItemGroup>
+        <PackageReference Include="Microsoft.AspNetCore.Authentication.JwtBearer" Version="8.0.4" NoWarn="NU1605"/>
+        <PackageReference Include="Microsoft.AspNetCore.Authentication.OpenIdConnect" Version="8.0.4" NoWarn="NU1605"/>
+        <PackageReference Include="Microsoft.Identity.Web" Version="2.15.2"/>
+        <PackageReference Include="Microsoft.Identity.Web.DownstreamApi" Version="2.15.2"/>
+        <PackageReference Include="Swashbuckle.AspNetCore" Version="6.4.0"/>
+    </ItemGroup>
+
+    <ItemGroup>
+      <Folder Include="Controllers\" />
+    </ItemGroup>
+
+    <ItemGroup>
+      <ProjectReference Include="..\PetProject.Application\PetProject.Application.csproj" />
+      <ProjectReference Include="..\PetProject.Domain\PetProject.Domain.csproj" />
+      <ProjectReference Include="..\PetProject.Infrasturcure\PetProject.Infrasturcure.csproj" />
+    </ItemGroup>
+
+</Project>
