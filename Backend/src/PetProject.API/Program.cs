@@ -1,8 +1,12 @@
+using PetProject.Infrastructure.Postgres;
+
 var builder = WebApplication.CreateBuilder(args);
  
 builder.Services.AddControllers();
 builder.Services.AddEndpointsApiExplorer();
 builder.Services.AddSwaggerGen();
+
+builder.Services.AddPostgresDbContext(builder.Configuration);   
 
 var app = builder.Build();
 

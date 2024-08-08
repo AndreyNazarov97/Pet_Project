@@ -9,7 +9,12 @@ Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "PetProject.Domain", "src\Pe
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "PetProject.Application", "src\PetProject.Application\PetProject.Application.csproj", "{D85FC581-E013-4353-B4EE-BA0E44BFC328}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "PetProject.Infrasturcure", "src\PetProject.Infrasturcure\PetProject.Infrasturcure.csproj", "{40137719-73FC-446C-B5AB-BED6D0AE652A}"
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "PetProject.Infrastructure.Postgres", "src\PetProject.Infrastructure.Postgres\PetProject.Infrastructure.Postgres.csproj", "{40137719-73FC-446C-B5AB-BED6D0AE652A}"
+EndProject
+Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "Solution-items", "Solution-items", "{F78BD72A-D634-44AA-8F11-E88B132BD247}"
+	ProjectSection(SolutionItems) = preProject
+		docker-compose.yml = docker-compose.yml
+	EndProjectSection
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution

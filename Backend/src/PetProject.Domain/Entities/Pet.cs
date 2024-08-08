@@ -41,4 +41,9 @@ public class Pet
     public List<PetPhoto> Photos { get; } =[];
     
     public DateTimeOffset CreatedAt { get; }
+
+    private Pet()
+    {
+        
+    }
 }

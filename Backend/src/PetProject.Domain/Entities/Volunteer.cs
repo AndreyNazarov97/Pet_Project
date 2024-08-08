@@ -21,5 +21,9 @@ public class Volunteer
     public List<SocialNetwork> SocialNetworks { get; }
     
     public List<Requisite> Requisites { get; }
-    
+
+    private Volunteer()
+    {
+        
+    }
 }
