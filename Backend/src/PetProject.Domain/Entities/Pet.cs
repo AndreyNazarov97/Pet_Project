@@ -38,5 +38,7 @@ public class Pet
     
     public List<Requisite> Requisites { get; } = new(); 
     
+    public List<PetPhoto> Photos { get; } = new();
+    
     public DateTimeOffset CreatedAt { get; }
 }
