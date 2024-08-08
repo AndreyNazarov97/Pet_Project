@@ -2,25 +2,25 @@
 
 public class Volunteer
 {
-    public Guid Id { get; }
+    public Guid Id { get; private set; }
     
-    public string FullName { get; }
+    public string FullName { get; private set; }
     
-    public string Description { get; }
+    public string Description { get; private set; }
     
-    public int Experience { get; }
+    public int Experience { get; private set; }
     
-    public int PetsAdopted { get; }
+    public int PetsAdopted { get; private set; }
     
-    public int PetsFoundHomeQuantity { get; }
+    public int PetsFoundHomeQuantity { get; private set; }
     
-    public int PetsInTreatment { get; }
+    public int PetsInTreatment { get; private set; }
     
-    public string PhoneNumber { get; }
+    public string PhoneNumber { get; private set; }
     
-    public List<SocialNetwork> SocialNetworks { get; }
+    public List<SocialNetwork> SocialNetworks { get; private set; }
     
-    public List<Requisite> Requisites { get; }
+    public List<Requisite> Requisites { get; private set; }
 
     private Volunteer()
     {

@@ -2,9 +2,9 @@
 
 public class SocialNetwork
 {
-    public Guid Id { get; }
-    public string Title { get; }
-    public string Link { get; }
+    public Guid Id { get; private set; }
+    public string Title { get; private set; }
+    public string Link { get; private set; }
     private SocialNetwork()
     {
         
