@@ -12,13 +12,13 @@ public class Volunteer
     
     public int PetsAdopted { get; }
     
-    public int PetsLookingForHome { get; }
+    public int PetsFoundHomeQuantity { get; }
     
     public int PetsInTreatment { get; }
     
     public string PhoneNumber { get; }
     
-    public List<string> SocialNetworks { get; }
+    public List<SocialNetwork> SocialNetworks { get; }
     
     public List<Requisite> Requisites { get; }
     
