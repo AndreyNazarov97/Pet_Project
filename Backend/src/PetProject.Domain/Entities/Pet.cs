@@ -3,11 +3,8 @@ using PetProject.Domain.Enums;
 
 namespace PetProject.Domain.Entities;
 
-public class Pet
+public class Pet : Entity
 {
-    
-    public Guid Id { get; }
-    
     public string Name { get; }
     
     public string Type { get; }
