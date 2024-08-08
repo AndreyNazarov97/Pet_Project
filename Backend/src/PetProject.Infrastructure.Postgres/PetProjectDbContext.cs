@@ -1,5 +1,6 @@
 ﻿using System.Reflection;
 using Microsoft.EntityFrameworkCore;
+using Microsoft.Extensions.Logging;
 
 namespace PetProject.Infrastructure.Postgres;
 
@@ -16,4 +17,5 @@ public class PetProjectDbContext : DbContext
         
         base.OnModelCreating(modelBuilder);
     }
+    
 }
