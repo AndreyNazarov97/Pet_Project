@@ -1,6 +1,8 @@
-﻿using Microsoft.EntityFrameworkCore;
+﻿using System.Text.Json;
+using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Metadata.Builders;
 using PetProject.Domain.Entities;
+using PetProject.Domain.Entities.ValueObjects;
 
 namespace PetProject.Infrastructure.Postgres.Configurations;
 
@@ -17,15 +19,21 @@ public class VolunteerConfiguration : IEntityTypeConfiguration<Volunteer>
         builder.Property(x => x.PetsAdopted).IsRequired();
         builder.Property(x => x.PetsFoundHomeQuantity).IsRequired();
         builder.Property(x => x.PetsInTreatment).IsRequired();
-        builder.Property(x => x.PhoneNumber).IsRequired();
+
         
-        builder
-            .HasMany(x => x.Requisites)
-            .WithOne()
-            .OnDelete(DeleteBehavior.Cascade);
-        builder
-            .HasMany(x => x.SocialNetworks)
-            .WithOne()
-            .OnDelete(DeleteBehavior.Cascade);
+        builder.Property(v => v.PhoneNumber)
+            .HasConversion(
+                v => JsonSerializer.Serialize(v, JsonSerializerOptions.Default),
+                v => JsonSerializer.Deserialize<PhoneNumber>(v, JsonSerializerOptions.Default));
+        builder.Property(v => v.Requisites)
+            .HasConversion(
+                v => JsonSerializer.Serialize(v, JsonSerializerOptions.Default),
+                v => JsonSerializer.Deserialize<List<Requisite>>(v, JsonSerializerOptions.Default))
+            .HasColumnType("jsonb");
+        builder.Property(v => v.SocialNetworks)
+            .HasConversion(
+                v => JsonSerializer.Serialize(v, JsonSerializerOptions.Default),
+                v => JsonSerializer.Deserialize<List<SocialNetwork>>(v, JsonSerializerOptions.Default))
+            .HasColumnType("jsonb");
     }
 }
