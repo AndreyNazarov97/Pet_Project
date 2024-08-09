@@ -13,7 +13,8 @@ public class PetProjectDbContext : DbContext
     }
     
     public DbSet<Volunteer> Volunteers { get; set; }
-    
+    public DbSet<Pet> Pets { get; set; }
+    public DbSet<PetPhoto> PetPhotos { get; set; }
     
     protected override void OnModelCreating(ModelBuilder modelBuilder)
     {
