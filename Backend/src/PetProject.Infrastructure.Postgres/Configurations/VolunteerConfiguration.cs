@@ -10,6 +10,7 @@ public class VolunteerConfiguration : IEntityTypeConfiguration<Volunteer>
 {
     public void Configure(EntityTypeBuilder<Volunteer> builder)
     {
+        builder.ToTable("volunteers");
         builder.HasKey(x => x.Id);
         
         builder.Property(x => x.Id).IsRequired();

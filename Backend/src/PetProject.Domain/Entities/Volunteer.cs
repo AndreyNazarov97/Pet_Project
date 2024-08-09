@@ -24,7 +24,27 @@ public class Volunteer : Entity
 
     private Volunteer()
     {
-        
     }
     
+    public Volunteer(
+        FullName fullName, 
+        string description, 
+        int experience, 
+        int petsAdopted, 
+        int petsFoundHomeQuantity, 
+        int petsInTreatment, 
+        PhoneNumber phoneNumber, 
+        List<SocialNetwork> socialNetworks, 
+        List<Requisite> requisites) 
+    {
+        FullName = fullName;
+        Description = description;
+        Experience = experience;
+        PetsAdopted = petsAdopted;
+        PetsFoundHomeQuantity = petsFoundHomeQuantity;
+        PetsInTreatment = petsInTreatment;
+        PhoneNumber = phoneNumber;
+        SocialNetworks = socialNetworks;
+        Requisites = requisites;
+    }
 }
