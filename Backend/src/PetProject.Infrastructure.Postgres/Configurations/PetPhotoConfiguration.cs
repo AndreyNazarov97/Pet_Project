@@ -11,7 +11,5 @@ public class PetPhotoConfiguration : IEntityTypeConfiguration<PetPhoto>
         builder.Property(x => x.Id).IsRequired();
         builder.Property(x => x.Path).IsRequired();
         builder.Property(x => x.IsMain).IsRequired();
-        
-
     }
 }

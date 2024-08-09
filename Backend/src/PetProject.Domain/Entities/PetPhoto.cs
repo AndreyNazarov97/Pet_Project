@@ -1,6 +1,6 @@
 ﻿namespace PetProject.Domain.Entities;
 
-public class PetPhoto
+public class PetPhoto : Entity
 {
     public string Path { get; private set; }
     

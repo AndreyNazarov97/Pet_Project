@@ -1,4 +1,5 @@
 ﻿using System.ComponentModel.DataAnnotations;
+using PetProject.Domain.Entities.ValueObjects;
 using PetProject.Domain.Enums;
 
 namespace PetProject.Domain.Entities;
@@ -19,13 +20,13 @@ public class Pet : Entity
     
     public string HealthInfo { get; private set; }
     
-    public string Address { get; private set; }
+    public Adress Address { get; private set; }
     
-    public int Weight { get; private set; }
+    public double Weight { get; private set; }
     
-    public int Height { get; private set; }
+    public double Height { get; private set; }
     
-    public string OwnerPhoneNumber { get; private set; }
+    public PhoneNumber OwnerPhoneNumber { get; private set; }
     
     public bool IsCastrated { get; private set; }
     
