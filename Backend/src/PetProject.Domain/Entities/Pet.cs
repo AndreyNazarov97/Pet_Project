@@ -22,9 +22,9 @@ public class Pet : Entity
     
     public Adress Address { get; private set; }
     
-    public int Weight { get; private set; }
+    public double Weight { get; private set; }
     
-    public int Height { get; private set; }
+    public double Height { get; private set; }
     
     public PhoneNumber OwnerPhoneNumber { get; private set; }
     

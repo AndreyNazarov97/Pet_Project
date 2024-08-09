@@ -26,22 +26,14 @@ public class PetConfiguration : IEntityTypeConfiguration<Pet>
         builder.Property(p => p.HelpStatus).IsRequired();
         builder.Property(p => p.CreatedAt).IsRequired();
         
-        
-        builder.Property(v => v.Address)
-            .HasConversion(
-                v => JsonSerializer.Serialize(v, JsonSerializerOptions.Default),
-                v => JsonSerializer.Deserialize<Adress>(v, JsonSerializerOptions.Default))
-            .HasColumnType("jsonb");
-        builder.Property(v => v.OwnerPhoneNumber)
-            .HasConversion(
-                v => JsonSerializer.Serialize(v, JsonSerializerOptions.Default),
-                v => JsonSerializer.Deserialize<PhoneNumber>(v, JsonSerializerOptions.Default));
-        builder.Property(v => v.Requisites)
-            .HasConversion(
-                v => JsonSerializer.Serialize(v, JsonSerializerOptions.Default),
-                v => JsonSerializer.Deserialize<List<Requisite>>(v, JsonSerializerOptions.Default))
-            .HasColumnType("jsonb");
+        builder.ComplexProperty(p => p.Address);
+        builder.ComplexProperty(v => v.OwnerPhoneNumber);
 
+        builder.OwnsMany(x => x.Requisites, r =>
+        {
+            r.ToJson();
+        });
+            
         builder
             .HasMany(x => x.Photos)
             .WithOne()

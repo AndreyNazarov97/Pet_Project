@@ -13,27 +13,22 @@ public class VolunteerConfiguration : IEntityTypeConfiguration<Volunteer>
         builder.HasKey(x => x.Id);
         
         builder.Property(x => x.Id).IsRequired();
-        builder.Property(x => x.FullName).IsRequired();
         builder.Property(x => x.Description).IsRequired();
         builder.Property(x => x.Experience).IsRequired();
         builder.Property(x => x.PetsAdopted).IsRequired();
         builder.Property(x => x.PetsFoundHomeQuantity).IsRequired();
         builder.Property(x => x.PetsInTreatment).IsRequired();
-
         
-        builder.Property(v => v.PhoneNumber)
-            .HasConversion(
-                v => JsonSerializer.Serialize(v, JsonSerializerOptions.Default),
-                v => JsonSerializer.Deserialize<PhoneNumber>(v, JsonSerializerOptions.Default));
-        builder.Property(v => v.Requisites)
-            .HasConversion(
-                v => JsonSerializer.Serialize(v, JsonSerializerOptions.Default),
-                v => JsonSerializer.Deserialize<List<Requisite>>(v, JsonSerializerOptions.Default))
-            .HasColumnType("jsonb");
-        builder.Property(v => v.SocialNetworks)
-            .HasConversion(
-                v => JsonSerializer.Serialize(v, JsonSerializerOptions.Default),
-                v => JsonSerializer.Deserialize<List<SocialNetwork>>(v, JsonSerializerOptions.Default))
-            .HasColumnType("jsonb");
+        builder.ComplexProperty(x => x.PhoneNumber);
+        builder.ComplexProperty(x => x.FullName);
+        
+        builder.OwnsMany(v => v.Requisites, r =>
+        {
+            r.ToJson();
+        });
+        builder.OwnsMany(v => v.SocialNetworks, r =>
+        {
+            r.ToJson();
+        });
     }
 }

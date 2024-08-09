@@ -4,7 +4,7 @@ namespace PetProject.Domain.Entities;
 
 public class Volunteer : Entity
 {
-    public string FullName { get; private set; }
+    public FullName FullName { get; private set; }
     
     public string Description { get; private set; }
     
