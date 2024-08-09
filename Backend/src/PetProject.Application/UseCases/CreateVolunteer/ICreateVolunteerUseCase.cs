@@ -1,8 +1,9 @@
 ﻿using PetProject.Application.Models;
+using PetProject.Domain.Result;
 
 namespace PetProject.Application.UseCases.CreateVolunteer;
 
 public interface ICreateVolunteerUseCase
 {
-    Task<Guid> Create(CreateVolunteerRequest request, CancellationToken cancellationToken);
+    Task<Result<Guid>> Create(CreateVolunteerRequest request, CancellationToken cancellationToken);
 }

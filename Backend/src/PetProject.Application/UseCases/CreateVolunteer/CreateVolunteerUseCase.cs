@@ -1,6 +1,7 @@
 ﻿using PetProject.Application.Models;
 using PetProject.Domain.Entities;
 using PetProject.Domain.Entities.ValueObjects;
+using PetProject.Domain.Result;
 
 namespace PetProject.Application.UseCases.CreateVolunteer;
 
@@ -13,7 +14,7 @@ public class CreateVolunteerUseCase : ICreateVolunteerUseCase
     {
         _storage = storage;
     }
-    public async Task<Guid> Create(CreateVolunteerRequest request, CancellationToken cancellationToken)
+    public async Task<Result<Guid>> Create(CreateVolunteerRequest request, CancellationToken cancellationToken)
     {
         var socialNetworks = request.SocialNetworks.Select(s =>
             new SocialNetwork(s.Title, s.Link)).ToList();
