@@ -19,8 +19,6 @@ public class CreateVolunteerStorage : ICreateVolunteerStorage
         await _dbContext.Set<Volunteer>().AddAsync(volunteer, cancellationToken);
         await _dbContext.SaveChangesAsync(cancellationToken);
 
-        return await _dbContext.Volunteers
-            .Select(v => v.Id)
-            .FirstOrDefaultAsync(cancellationToken);
+        return volunteer.Id;
     }
 }
