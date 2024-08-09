@@ -1,9 +1,7 @@
 ﻿namespace PetProject.Domain.Entities;
 
-public class Volunteer
+public class Volunteer : Entity
 {
-    public Guid Id { get; private set; }
-    
     public string FullName { get; private set; }
     
     public string Description { get; private set; }
