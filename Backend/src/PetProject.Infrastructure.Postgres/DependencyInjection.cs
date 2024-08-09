@@ -13,7 +13,6 @@ public static class DependencyInjection
     public static void AddPostgresInfrastructure(this IServiceCollection services, IConfiguration configuration)
     {
         services
-            .AddScoped<IGuidFactory, GuidFactory>()
             .AddScoped<IMomentProvider, MomentProvider>()
             .AddScoped<ICreateVolunteerStorage, CreateVolunteerStorage>();
         

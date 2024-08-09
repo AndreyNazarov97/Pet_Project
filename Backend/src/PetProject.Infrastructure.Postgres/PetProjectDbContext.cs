@@ -1,6 +1,7 @@
 ﻿using System.Reflection;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.Logging;
+using PetProject.Domain.Entities;
 
 namespace PetProject.Infrastructure.Postgres;
 
@@ -11,7 +12,8 @@ public class PetProjectDbContext : DbContext
         
     }
     
-     
+    public DbSet<Volunteer> Volunteers { get; set; }
+    
     
     protected override void OnModelCreating(ModelBuilder modelBuilder)
     {

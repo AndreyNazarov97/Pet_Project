@@ -27,7 +27,6 @@ public class Volunteer : Entity
     }
     
     public Volunteer(
-        Guid id, 
         FullName fullName, 
         string description, 
         int experience, 
@@ -37,7 +36,6 @@ public class Volunteer : Entity
         PhoneNumber phoneNumber, 
         List<SocialNetwork> socialNetworks, 
         List<Requisite> requisites) 
-        : base(id)
     {
         FullName = fullName;
         Description = description;
