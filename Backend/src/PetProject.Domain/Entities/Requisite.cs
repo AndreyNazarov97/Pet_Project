@@ -2,6 +2,12 @@
 
 public class Requisite
 {
-    public string Title { get; }
-    public string Description { get; }
+    public Guid Id { get; private set; }
+    public string Title { get; private set; }
+    public string Description { get; private set; }
+
+    private Requisite()
+    {
+        
+    }
 }

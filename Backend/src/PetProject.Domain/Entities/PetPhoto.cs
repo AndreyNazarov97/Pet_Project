@@ -2,7 +2,11 @@
 
 public class PetPhoto
 {
-    public string Path { get; }
+    public string Path { get; private set; }
     
-    public bool IsMain { get; }
+    public bool IsMain { get; private set; }
+
+    private PetPhoto()
+    {
+    }
 }
