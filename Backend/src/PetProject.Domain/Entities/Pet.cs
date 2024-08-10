@@ -1,5 +1,4 @@
-﻿using System.ComponentModel.DataAnnotations;
-using PetProject.Domain.Entities.ValueObjects;
+﻿using PetProject.Domain.Entities.ValueObjects;
 using PetProject.Domain.Enums;
 
 namespace PetProject.Domain.Entities;
@@ -8,13 +7,14 @@ public class Pet : Entity
 {
        
     public string Name { get; private set; }
-
     
     public string Type { get; private set; }
     
     public string Description { get; private set; }
     
-    public string Breed { get; private set; }
+    public Guid SpeciesId { get; private set; }
+    
+    public string BreedName { get; private set; }
     
     public string Color { get; private set; }
     

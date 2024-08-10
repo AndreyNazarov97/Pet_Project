@@ -3,6 +3,7 @@ using System;
 using System.Collections.Generic;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Infrastructure;
+using Microsoft.EntityFrameworkCore.Migrations;
 using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 using Npgsql.EntityFrameworkCore.PostgreSQL.Metadata;
 using PetProject.Infrastructure.Postgres;
@@ -12,9 +13,11 @@ using PetProject.Infrastructure.Postgres;
 namespace PetProject.Infrastructure.Postgres.Migrations
 {
     [DbContext(typeof(PetProjectDbContext))]
-    partial class PetProjectDbContextModelSnapshot : ModelSnapshot
+    [Migration("20240809192634_AddSpeciesAndBreed")]
+    partial class AddSpeciesAndBreed
     {
-        protected override void BuildModel(ModelBuilder modelBuilder)
+        /// <inheritdoc />
+        protected override void BuildTargetModel(ModelBuilder modelBuilder)
         {
 #pragma warning disable 612, 618
             modelBuilder
@@ -158,13 +161,12 @@ namespace PetProject.Infrastructure.Postgres.Migrations
                         });
 
                     b.HasKey("Id")
-                        .HasName("pk_pets");
+                        .HasName("pk_pet");
 
                     b.HasIndex("SpeciesId")
                         .HasDatabaseName("ix_pet_species_id");
 
                     b.ToTable("pet", (string)null);
-
                 });
 
             modelBuilder.Entity("PetProject.Domain.Entities.PetPhoto", b =>
@@ -188,12 +190,12 @@ namespace PetProject.Infrastructure.Postgres.Migrations
                         .HasColumnName("pet_id");
 
                     b.HasKey("Id")
-                        .HasName("pk_pet_photos");
+                        .HasName("pk_pet_photo");
 
                     b.HasIndex("PetId")
-                        .HasDatabaseName("ix_pet_photos_pet_id");
+                        .HasDatabaseName("ix_pet_photo_pet_id");
 
-                    b.ToTable("pet_photos", (string)null);
+                    b.ToTable("pet_photo", (string)null);
                 });
 
             modelBuilder.Entity("PetProject.Domain.Entities.Species", b =>
@@ -272,9 +274,9 @@ namespace PetProject.Infrastructure.Postgres.Migrations
                         });
 
                     b.HasKey("Id")
-                        .HasName("pk_volunteers");
+                        .HasName("pk_volunteer");
 
-                    b.ToTable("volunteers", (string)null);
+                    b.ToTable("volunteer", (string)null);
                 });
 
             modelBuilder.Entity("PetProject.Domain.Entities.Breed", b =>
@@ -314,15 +316,15 @@ namespace PetProject.Infrastructure.Postgres.Migrations
                                 .HasColumnType("text");
 
                             b1.HasKey("PetId", "Id")
-                                .HasName("pk_pets");
+                                .HasName("pk_pet");
 
-                            b1.ToTable("pets");
+                            b1.ToTable("pet");
 
                             b1.ToJson("requisites");
 
                             b1.WithOwner()
                                 .HasForeignKey("PetId")
-                                .HasConstraintName("fk_pets_pets_pet_id");
+                                .HasConstraintName("fk_pet_pet_pet_id");
                         });
 
                     b.Navigation("Requisites");
@@ -334,7 +336,7 @@ namespace PetProject.Infrastructure.Postgres.Migrations
                         .WithMany("Photos")
                         .HasForeignKey("PetId")
                         .OnDelete(DeleteBehavior.Cascade)
-                        .HasConstraintName("fk_pet_photos_pets_pet_id");
+                        .HasConstraintName("fk_pet_photo_pet_pet_id");
                 });
 
             modelBuilder.Entity("PetProject.Domain.Entities.Volunteer", b =>
@@ -358,13 +360,13 @@ namespace PetProject.Infrastructure.Postgres.Migrations
 
                             b1.HasKey("VolunteerId", "Id");
 
-                            b1.ToTable("volunteers");
+                            b1.ToTable("volunteer");
 
                             b1.ToJson("social_networks");
 
                             b1.WithOwner()
                                 .HasForeignKey("VolunteerId")
-                                .HasConstraintName("fk_volunteers_volunteers_volunteer_id");
+                                .HasConstraintName("fk_volunteer_volunteer_volunteer_id");
                         });
 
                     b.OwnsMany("PetProject.Domain.Entities.ValueObjects.Requisite", "Requisites", b1 =>
@@ -386,13 +388,13 @@ namespace PetProject.Infrastructure.Postgres.Migrations
 
                             b1.HasKey("VolunteerId", "Id");
 
-                            b1.ToTable("volunteers");
+                            b1.ToTable("volunteer");
 
                             b1.ToJson("requisites");
 
                             b1.WithOwner()
                                 .HasForeignKey("VolunteerId")
-                                .HasConstraintName("fk_volunteers_volunteers_volunteer_id");
+                                .HasConstraintName("fk_volunteer_volunteer_volunteer_id");
                         });
 
                     b.Navigation("Requisites");

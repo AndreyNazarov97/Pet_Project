@@ -17,7 +17,7 @@ public class PetConfiguration : IEntityTypeConfiguration<Pet>
         builder.Property(x => x.Name).IsRequired();
         builder.Property(p => p.Type).IsRequired();
         builder.Property(p => p.Description).IsRequired();
-        builder.Property(p => p.Breed).IsRequired();
+        builder.Property(p => p.BreedName).IsRequired();
         builder.Property(p => p.Color).IsRequired();
         builder.Property(p => p.HealthInfo).IsRequired();
         builder.Property(p => p.Weight).IsRequired();
@@ -40,5 +40,6 @@ public class PetConfiguration : IEntityTypeConfiguration<Pet>
             .HasMany(x => x.Photos)
             .WithOne()
             .OnDelete(DeleteBehavior.Cascade);
+            
     }
 }
