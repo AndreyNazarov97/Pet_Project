@@ -15,12 +15,6 @@ public class CreateVolunteerRequest
     
     public int Experience { get; set; }
     
-    public int PetsAdopted { get; set; }
-    
-    public int PetsFoundHomeQuantity { get; set; }
-    
-    public int PetsInTreatment { get; set; }
-    
     public PhoneNumber PhoneNumber { get; set; }
     
     public List<SocialNetworkDto> SocialNetworks { get; set; }

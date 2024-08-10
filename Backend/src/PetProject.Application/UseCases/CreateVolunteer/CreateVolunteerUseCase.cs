@@ -38,9 +38,9 @@ public class CreateVolunteerUseCase : ICreateVolunteerUseCase
             new FullName(request.FirstName, request.LastName, request.Patronymic),
             request.Description,
             request.Experience,
-            request.PetsAdopted,
-            request.PetsFoundHomeQuantity,
-            request.PetsInTreatment,
+            0, // TODO логика подсчета животных
+            0,
+            0,
             request.PhoneNumber,
             socialNetworks,
             requisites);
