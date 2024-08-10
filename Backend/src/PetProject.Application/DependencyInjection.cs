@@ -1,8 +1,7 @@
 ﻿using FluentValidation;
 using Microsoft.Extensions.DependencyInjection;
-using PetProject.Application.Models;
 using PetProject.Application.UseCases.CreateVolunteer;
-using PetProject.Application.Validators;
+using PetProject.Domain.Entities;
 
 namespace PetProject.Application;
 
@@ -13,13 +12,7 @@ public static class DependencyInjection
         services.AddScoped<ICreateVolunteerUseCase, CreateVolunteerUseCase>();
         
         
-        
-        AddValidators(services);
-    }
-    
-    private static void AddValidators(this IServiceCollection services)
-    {
-        services.AddScoped<IValidator<CreateVolunteerRequest>, CreateVolunteerRequestValidator>();
-            
+       
+        services.AddValidatorsFromAssemblyContaining<Volunteer>();
     }
 }

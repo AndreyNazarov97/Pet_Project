@@ -1,5 +1,4 @@
-﻿using PetProject.Application.Models;
-using PetProject.Domain.Result;
+﻿using PetProject.Domain.Result;
 
 namespace PetProject.Application.UseCases.CreateVolunteer;
 

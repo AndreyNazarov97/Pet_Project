@@ -1,7 +1,7 @@
 ﻿using PetProject.Domain.Dto;
 using PetProject.Domain.Entities.ValueObjects;
 
-namespace PetProject.Application.Models;
+namespace PetProject.Application.UseCases.CreateVolunteer;
 
 public class CreateVolunteerRequest
 {
