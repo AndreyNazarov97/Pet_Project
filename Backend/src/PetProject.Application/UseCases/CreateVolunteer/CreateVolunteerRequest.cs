@@ -1,7 +1,7 @@
 ﻿using PetProject.Domain.Dto;
 using PetProject.Domain.Entities.ValueObjects;
 
-namespace PetProject.Application.Models;
+namespace PetProject.Application.UseCases.CreateVolunteer;
 
 public class CreateVolunteerRequest
 {
@@ -14,12 +14,6 @@ public class CreateVolunteerRequest
     public string Description { get; set; }
     
     public int Experience { get; set; }
-    
-    public int PetsAdopted { get; set; }
-    
-    public int PetsFoundHomeQuantity { get; set; }
-    
-    public int PetsInTreatment { get; set; }
     
     public PhoneNumber PhoneNumber { get; set; }
     

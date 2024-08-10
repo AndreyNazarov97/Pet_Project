@@ -1,5 +1,4 @@
 ﻿using Microsoft.AspNetCore.Mvc;
-using PetProject.Application.Models;
 using PetProject.Application.UseCases.CreateVolunteer;
 
 namespace PetProject.API.Controllers;
