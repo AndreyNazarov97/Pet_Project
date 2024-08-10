@@ -3,6 +3,7 @@ using System;
 using System.Collections.Generic;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Infrastructure;
+using Microsoft.EntityFrameworkCore.Migrations;
 using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 using Npgsql.EntityFrameworkCore.PostgreSQL.Metadata;
 using PetProject.Infrastructure.Postgres;
@@ -12,9 +13,11 @@ using PetProject.Infrastructure.Postgres;
 namespace PetProject.Infrastructure.Postgres.Migrations
 {
     [DbContext(typeof(PetProjectDbContext))]
-    partial class PetProjectDbContextModelSnapshot : ModelSnapshot
+    [Migration("20240809184317_AddDbSets")]
+    partial class AddDbSets
     {
-        protected override void BuildModel(ModelBuilder modelBuilder)
+        /// <inheritdoc />
+        protected override void BuildTargetModel(ModelBuilder modelBuilder)
         {
 #pragma warning disable 612, 618
             modelBuilder
@@ -22,31 +25,6 @@ namespace PetProject.Infrastructure.Postgres.Migrations
                 .HasAnnotation("Relational:MaxIdentifierLength", 63);
 
             NpgsqlModelBuilderExtensions.UseIdentityByDefaultColumns(modelBuilder);
-
-            modelBuilder.Entity("PetProject.Domain.Entities.Breed", b =>
-                {
-                    b.Property<Guid>("Id")
-                        .ValueGeneratedOnAdd()
-                        .HasColumnType("uuid")
-                        .HasColumnName("id");
-
-                    b.Property<string>("Name")
-                        .IsRequired()
-                        .HasColumnType("text")
-                        .HasColumnName("name");
-
-                    b.Property<Guid>("SpeciesId")
-                        .HasColumnType("uuid")
-                        .HasColumnName("species_id");
-
-                    b.HasKey("Id")
-                        .HasName("pk_breeds");
-
-                    b.HasIndex("SpeciesId")
-                        .HasDatabaseName("ix_breeds_species_id");
-
-                    b.ToTable("breeds", (string)null);
-                });
 
             modelBuilder.Entity("PetProject.Domain.Entities.Pet", b =>
                 {
@@ -59,10 +37,10 @@ namespace PetProject.Infrastructure.Postgres.Migrations
                         .HasColumnType("timestamp with time zone")
                         .HasColumnName("birth_date");
 
-                    b.Property<string>("BreedName")
+                    b.Property<string>("Breed")
                         .IsRequired()
                         .HasColumnType("text")
-                        .HasColumnName("breed_name");
+                        .HasColumnName("breed");
 
                     b.Property<string>("Color")
                         .IsRequired()
@@ -103,10 +81,6 @@ namespace PetProject.Infrastructure.Postgres.Migrations
                         .IsRequired()
                         .HasColumnType("text")
                         .HasColumnName("name");
-
-                    b.Property<Guid>("SpeciesId")
-                        .HasColumnType("uuid")
-                        .HasColumnName("species_id");
 
                     b.Property<string>("Type")
                         .IsRequired()
@@ -160,11 +134,7 @@ namespace PetProject.Infrastructure.Postgres.Migrations
                     b.HasKey("Id")
                         .HasName("pk_pets");
 
-                    b.HasIndex("SpeciesId")
-                        .HasDatabaseName("ix_pet_species_id");
-
-                    b.ToTable("pet", (string)null);
-
+                    b.ToTable("pets", (string)null);
                 });
 
             modelBuilder.Entity("PetProject.Domain.Entities.PetPhoto", b =>
@@ -194,24 +164,6 @@ namespace PetProject.Infrastructure.Postgres.Migrations
                         .HasDatabaseName("ix_pet_photos_pet_id");
 
                     b.ToTable("pet_photos", (string)null);
-                });
-
-            modelBuilder.Entity("PetProject.Domain.Entities.Species", b =>
-                {
-                    b.Property<Guid>("Id")
-                        .ValueGeneratedOnAdd()
-                        .HasColumnType("uuid")
-                        .HasColumnName("id");
-
-                    b.Property<string>("Name")
-                        .IsRequired()
-                        .HasColumnType("text")
-                        .HasColumnName("name");
-
-                    b.HasKey("Id")
-                        .HasName("pk_species");
-
-                    b.ToTable("species", (string)null);
                 });
 
             modelBuilder.Entity("PetProject.Domain.Entities.Volunteer", b =>
@@ -277,25 +229,8 @@ namespace PetProject.Infrastructure.Postgres.Migrations
                     b.ToTable("volunteers", (string)null);
                 });
 
-            modelBuilder.Entity("PetProject.Domain.Entities.Breed", b =>
-                {
-                    b.HasOne("PetProject.Domain.Entities.Species", null)
-                        .WithMany("Breeds")
-                        .HasForeignKey("SpeciesId")
-                        .OnDelete(DeleteBehavior.Cascade)
-                        .IsRequired()
-                        .HasConstraintName("fk_breeds_species_species_id");
-                });
-
             modelBuilder.Entity("PetProject.Domain.Entities.Pet", b =>
                 {
-                    b.HasOne("PetProject.Domain.Entities.Species", null)
-                        .WithMany()
-                        .HasForeignKey("SpeciesId")
-                        .OnDelete(DeleteBehavior.Cascade)
-                        .IsRequired()
-                        .HasConstraintName("fk_pet_species_species_id");
-
                     b.OwnsMany("PetProject.Domain.Entities.ValueObjects.Requisite", "Requisites", b1 =>
                         {
                             b1.Property<Guid>("PetId")
@@ -403,11 +338,6 @@ namespace PetProject.Infrastructure.Postgres.Migrations
             modelBuilder.Entity("PetProject.Domain.Entities.Pet", b =>
                 {
                     b.Navigation("Photos");
-                });
-
-            modelBuilder.Entity("PetProject.Domain.Entities.Species", b =>
-                {
-                    b.Navigation("Breeds");
                 });
 #pragma warning restore 612, 618
         }

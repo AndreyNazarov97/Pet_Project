@@ -2,13 +2,21 @@
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Logging;
+using PetProject.Application.UseCases.CreateVolunteer;
+using PetProject.Infrastructure.Postgres.Abstractions;
+using PetProject.Infrastructure.Postgres.Storages;
 
 namespace PetProject.Infrastructure.Postgres;
 
 public static class DependencyInjection
 {
-    public static void AddPostgresDbContext(this IServiceCollection services, IConfiguration configuration)
+    public static void AddPostgresInfrastructure(this IServiceCollection services, IConfiguration configuration)
     {
+        services
+            .AddScoped<IMomentProvider, MomentProvider>()
+            .AddScoped<ICreateVolunteerStorage, CreateVolunteerStorage>();
+        
+        
         var connectionString = configuration.GetConnectionString("Postgres");
 
         services.AddDbContext<PetProjectDbContext>(options =>
