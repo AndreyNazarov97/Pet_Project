@@ -1,4 +1,5 @@
-﻿using PetProject.Application.Models;
+﻿using FluentValidation;
+using PetProject.Application.Models;
 using PetProject.Domain.Entities;
 using PetProject.Domain.Entities.ValueObjects;
 
@@ -7,14 +8,19 @@ namespace PetProject.Application.UseCases.CreateVolunteer;
 public class CreateVolunteerUseCase : ICreateVolunteerUseCase
 {
     private readonly ICreateVolunteerStorage _storage;
+    private readonly IValidator<CreateVolunteerRequest> _createVolunteerRequestValidator;
 
     public CreateVolunteerUseCase(
-        ICreateVolunteerStorage storage)
+        ICreateVolunteerStorage storage,
+        IValidator<CreateVolunteerRequest> createVolunteerRequestValidator)
     {
         _storage = storage;
+        _createVolunteerRequestValidator = createVolunteerRequestValidator;
     }
     public async Task<Guid> Create(CreateVolunteerRequest request, CancellationToken cancellationToken)
     {
+        await _createVolunteerRequestValidator.ValidateAndThrowAsync(request, cancellationToken);
+        
         var socialNetworks = request.SocialNetworks.Select(s =>
             new SocialNetwork(s.Title, s.Link)).ToList();
         var requisites = request.Requisites.Select(r =>
