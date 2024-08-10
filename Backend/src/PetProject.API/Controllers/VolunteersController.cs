@@ -14,6 +14,11 @@ public class VolunteersController : ControllerBase
         CancellationToken cancellationToken)
     {
         var volunteer = await useCase.Create(request, cancellationToken);
+        
+        if (volunteer.IsFailure)
+        {
+            return BadRequest(volunteer.Error);
+        }
         return Ok(volunteer);
     }
 }
