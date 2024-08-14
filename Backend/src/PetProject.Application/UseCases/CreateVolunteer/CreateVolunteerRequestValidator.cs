@@ -14,6 +14,6 @@ public class CreateVolunteerRequestValidator : AbstractValidator<CreateVolunteer
         RuleFor(x => x.SocialNetworks).NotEmpty();
         RuleFor(x => x.Requisites).NotEmpty();
         
-        RuleFor(x => x.PhoneNumber.Number).NotEmpty().Matches(@"^7\d{10}$");
+        RuleFor(x => x.PhoneNumber).NotEmpty().Matches(@"^7\d{10}$");
     }
 }

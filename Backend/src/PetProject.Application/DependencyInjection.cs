@@ -13,6 +13,6 @@ public static class DependencyInjection
         
         
        
-        services.AddValidatorsFromAssemblyContaining<Volunteer>();
+        services.AddValidatorsFromAssemblyContaining<CreateVolunteerUseCase>();
     }
 }

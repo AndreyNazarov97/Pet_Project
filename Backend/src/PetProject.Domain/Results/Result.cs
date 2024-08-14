@@ -1,4 +1,4 @@
-﻿namespace PetProject.Domain.Result;
+﻿namespace PetProject.Domain.Results;
 
 public class Result
 {

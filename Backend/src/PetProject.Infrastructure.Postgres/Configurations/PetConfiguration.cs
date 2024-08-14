@@ -30,7 +30,7 @@ public class PetConfiguration : IEntityTypeConfiguration<Pet>
         
         builder.ComplexProperty(p => p.Address);
         builder.ComplexProperty(v => v.OwnerPhoneNumber);
-
+        
         builder.OwnsMany(x => x.Requisites, r =>
         {
             r.ToJson();
@@ -40,6 +40,5 @@ public class PetConfiguration : IEntityTypeConfiguration<Pet>
             .HasMany(x => x.Photos)
             .WithOne()
             .OnDelete(DeleteBehavior.Cascade);
-            
     }
 }

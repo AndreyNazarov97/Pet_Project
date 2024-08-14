@@ -161,10 +161,9 @@ namespace PetProject.Infrastructure.Postgres.Migrations
                         .HasName("pk_pets");
 
                     b.HasIndex("SpeciesId")
-                        .HasDatabaseName("ix_pet_species_id");
+                        .HasDatabaseName("ix_pets_species_id");
 
-                    b.ToTable("pet", (string)null);
-
+                    b.ToTable("pets", (string)null);
                 });
 
             modelBuilder.Entity("PetProject.Domain.Entities.PetPhoto", b =>
@@ -294,7 +293,7 @@ namespace PetProject.Infrastructure.Postgres.Migrations
                         .HasForeignKey("SpeciesId")
                         .OnDelete(DeleteBehavior.Cascade)
                         .IsRequired()
-                        .HasConstraintName("fk_pet_species_species_id");
+                        .HasConstraintName("fk_pets_species_species_id");
 
                     b.OwnsMany("PetProject.Domain.Entities.ValueObjects.Requisite", "Requisites", b1 =>
                         {
