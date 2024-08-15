@@ -71,5 +71,10 @@ public class VolunteerConfiguration : IEntityTypeConfiguration<Volunteer>
                     .HasMaxLength(Constants.MAX_LONG_TEXT_LENGTH);
             });
         });
+
+        builder
+            .HasMany(x => x.Pets)
+            .WithOne()
+            .OnDelete(DeleteBehavior.ClientSetNull);
     }
 }

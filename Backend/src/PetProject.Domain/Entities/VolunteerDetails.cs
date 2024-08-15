@@ -20,20 +20,7 @@ public class VolunteerDetails : Entity<Guid>
     public IReadOnlyCollection<SocialNetwork> SocialNetworks => _socialNetworks;
     public IReadOnlyCollection<Requisite> Requisites => _requisites;
     
-    public int Experience( ){
-        throw new NotImplementedException(); 
-    }
-    public int PetsAdopted( ){
-        throw new NotImplementedException();
-    }
-    public int PetsInTreatment( )
-    {
-        throw new NotImplementedException();
-    }
-    public int PetsFoundHomeQuantity()
-    {
-        throw new NotImplementedException();
-    }
+    
     public void AddSocialNetworks(List<SocialNetwork> socialNetworks) => _socialNetworks.AddRange(socialNetworks);
     public void AddRequisites(List<Requisite> requisites) => _requisites.AddRange(requisites);
 

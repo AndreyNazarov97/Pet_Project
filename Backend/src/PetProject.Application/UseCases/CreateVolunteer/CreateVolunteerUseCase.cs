@@ -59,8 +59,10 @@ public class CreateVolunteerUseCase : ICreateVolunteerUseCase
             VolunteerId.NewVolunteerId(),
             fullName.Value,
             request.Description,
+            request.Experience,
             phoneNumber.Value,
-            details.Value);
+            details.Value,
+            null);
 
         if (volunteerEntity.IsFailure)
         {
