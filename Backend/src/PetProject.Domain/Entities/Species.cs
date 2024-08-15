@@ -1,9 +1,11 @@
-﻿namespace PetProject.Domain.Entities;
+﻿using PetProject.Domain.Shared;
+
+namespace PetProject.Domain.Entities;
 
 /// <summary>
 /// Вид Животного
 /// </summary>
-public class Species : Entity
+public class Species : Entity<SpeciesId>
 {
     public string Name { get; private set; }
 

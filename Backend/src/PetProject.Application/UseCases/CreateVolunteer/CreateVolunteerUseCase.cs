@@ -1,7 +1,7 @@
 ﻿using FluentValidation;
 using PetProject.Domain.Entities;
 using PetProject.Domain.Entities.ValueObjects;
-using PetProject.Domain.Result;
+using PetProject.Domain.Shared;
 
 namespace PetProject.Application.UseCases.CreateVolunteer;
 
@@ -17,7 +17,7 @@ public class CreateVolunteerUseCase : ICreateVolunteerUseCase
         _storage = storage;
         _createVolunteerRequestValidator = createVolunteerRequestValidator;
     }
-    public async Task<Result<Guid>> Create(CreateVolunteerRequest request, CancellationToken cancellationToken)
+    public async Task<Result<VolunteerId>> Create(CreateVolunteerRequest request, CancellationToken cancellationToken)
     {
         var validation = await _createVolunteerRequestValidator.ValidateAsync(request, cancellationToken);
         if (!validation.IsValid)
@@ -26,7 +26,7 @@ public class CreateVolunteerUseCase : ICreateVolunteerUseCase
                 string.Join(", ", validation.Errors.Select(x => x.ErrorCode)), 
                 string.Join(", ", validation.Errors.Select(x => x.ErrorMessage)));
 
-            return Result<Guid>.Failure(error);
+            return Result<VolunteerId>.Failure(error);
         }
         
         var socialNetworks = request.SocialNetworks.Select(s =>

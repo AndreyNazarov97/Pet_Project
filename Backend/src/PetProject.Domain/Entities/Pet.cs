@@ -1,9 +1,10 @@
 ﻿using PetProject.Domain.Entities.ValueObjects;
 using PetProject.Domain.Enums;
+using PetProject.Domain.Shared;
 
 namespace PetProject.Domain.Entities;
 
-public class Pet : Entity
+public class Pet : Entity<PetId>
 {
        
     public string Name { get; private set; }

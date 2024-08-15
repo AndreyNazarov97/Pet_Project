@@ -1,6 +1,8 @@
-﻿namespace PetProject.Domain.Entities;
+﻿using PetProject.Domain.Shared;
 
-public class PetPhoto : Entity
+namespace PetProject.Domain.Entities;
+
+public class PetPhoto : Entity<PetPhotoId>
 {
     public string Path { get; private set; }
     
