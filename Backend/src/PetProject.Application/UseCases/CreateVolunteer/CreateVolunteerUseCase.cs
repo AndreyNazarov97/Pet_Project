@@ -53,8 +53,8 @@ public class CreateVolunteerUseCase : ICreateVolunteerUseCase
             fullName.Value,
             request.Description,
             phoneNumber.Value,
+            request.Experience, 
             0, // TODO логика подсчета животных
-            0,
             0,
             0,
             socialNetworks,
