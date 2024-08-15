@@ -1,10 +1,14 @@
-﻿using PetProject.Domain.Shared;
+﻿namespace PetProject.Domain.Entities;
 
-namespace PetProject.Domain.Entities;
-
-public class SpeciesId : BaseId<SpeciesId>
+public class SpeciesId 
 {
-    protected SpeciesId(Guid id) : base(id)
+    private SpeciesId(Guid id)
     {
+        Id = id;
     }
+    
+    public Guid Id { get; }
+
+    public static SpeciesId NewSpeciesId() => new(Guid.NewGuid());
+    public static SpeciesId Empty() => new(Guid.Empty);
 }

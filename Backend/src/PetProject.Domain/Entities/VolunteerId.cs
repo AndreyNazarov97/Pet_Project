@@ -1,10 +1,14 @@
-﻿using PetProject.Domain.Shared;
+﻿namespace PetProject.Domain.Entities;
 
-namespace PetProject.Domain.Entities;
-
-public class VolunteerId : BaseId<VolunteerId>
+public class VolunteerId 
 {
-    protected VolunteerId(Guid id) : base(id)
+    private VolunteerId(Guid id)
     {
+        Id = id;
     }
+    
+    public Guid Id { get; }
+
+    public static VolunteerId NewVolunteerId() => new(Guid.NewGuid());
+    public static VolunteerId Empty() => new(Guid.Empty);
 }

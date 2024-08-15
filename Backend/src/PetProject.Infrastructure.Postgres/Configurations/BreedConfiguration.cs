@@ -15,7 +15,7 @@ public class BreedConfiguration : IEntityTypeConfiguration<Breed>
         builder.Property(x => x.Id)
             .HasConversion(
                 id => id.Id,
-                id => BreedId.Create(id));
+                id => BreedId.NewBreedId());
 
         builder.Property(x => x.Name)
             .IsRequired()

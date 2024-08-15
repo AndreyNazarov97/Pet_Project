@@ -15,7 +15,7 @@ public class SpeciesConfiguration : IEntityTypeConfiguration<Species>
         builder.Property(x => x.Id)
             .HasConversion(
                 id => id.Id,
-                id => SpeciesId.Create(id));
+                id => SpeciesId.NewSpeciesId());
         
         builder.Property(x => x.Name)
             .IsRequired()
