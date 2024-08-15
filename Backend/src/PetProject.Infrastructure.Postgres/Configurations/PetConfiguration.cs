@@ -1,8 +1,6 @@
-﻿using System.Text.Json;
-using Microsoft.EntityFrameworkCore;
+﻿using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Metadata.Builders;
 using PetProject.Domain.Entities;
-using PetProject.Domain.Entities.ValueObjects;
 using PetProject.Domain.Shared;
 
 namespace PetProject.Infrastructure.Postgres.Configurations;
@@ -26,10 +24,6 @@ public class PetConfiguration : IEntityTypeConfiguration<Pet>
                 id => PetId.NewPetId());
         
         builder.Property(x => x.Name)
-            .IsRequired()
-            .HasMaxLength(Constants.MAX_SHORT_TEXT_LENGTH);
-        
-        builder.Property(p => p.Type)
             .IsRequired()
             .HasMaxLength(Constants.MAX_SHORT_TEXT_LENGTH);
         
@@ -69,7 +63,21 @@ public class PetConfiguration : IEntityTypeConfiguration<Pet>
         
         builder.Property(p => p.CreatedAt)
             .IsRequired();
-        
+
+        builder.ComplexProperty(p => p.AnimalType, at =>
+        {
+            at.IsRequired();
+            at.Property(a => a.SpeciesId)
+                .HasConversion(
+                    id => id.Id,
+                    id => SpeciesId.NewSpeciesId())
+                .HasColumnName("species_id");
+            at.Property(a => a.BreedId)
+                .HasConversion(
+                    id => id.Id,
+                    id => BreedId.NewBreedId())
+                .HasColumnName("breed_id");
+        });
         builder.ComplexProperty(p => p.Address, a =>
         {
             a.IsRequired();
@@ -106,6 +114,5 @@ public class PetConfiguration : IEntityTypeConfiguration<Pet>
             .HasMany(x => x.Photos)
             .WithOne()
             .OnDelete(DeleteBehavior.Cascade);
-            
     }
 }

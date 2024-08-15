@@ -15,7 +15,7 @@ public class CreateVolunteerRequest
     
     public int Experience { get; set; }
     
-    public PhoneNumber PhoneNumber { get; set; }
+    public string PhoneNumber { get; set; }
     
     public List<SocialNetworkDto> SocialNetworks { get; set; }
     

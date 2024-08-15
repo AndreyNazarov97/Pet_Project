@@ -17,34 +17,54 @@ public class CreateVolunteerUseCase : ICreateVolunteerUseCase
         _storage = storage;
         _createVolunteerRequestValidator = createVolunteerRequestValidator;
     }
+
     public async Task<Result<VolunteerId>> Create(CreateVolunteerRequest request, CancellationToken cancellationToken)
     {
         var validation = await _createVolunteerRequestValidator.ValidateAsync(request, cancellationToken);
         if (!validation.IsValid)
         {
             var error = new Error(
-                string.Join(", ", validation.Errors.Select(x => x.ErrorCode)), 
+                string.Join(", ", validation.Errors.Select(x => x.ErrorCode)),
                 string.Join(", ", validation.Errors.Select(x => x.ErrorMessage)));
 
             return Result<VolunteerId>.Failure(error);
         }
-        
-        var socialNetworks = request.SocialNetworks.Select(s =>
-            new SocialNetwork(s.Title, s.Link)).ToList();
-        var requisites = request.Requisites.Select(r =>
-            new Requisite(r.Title, r.Description)).ToList();
 
-        var volunteer = new Volunteer(
-            new FullName(request.FirstName, request.LastName, request.Patronymic),
+        var socialNetworks = request.SocialNetworks.Select(s =>
+            SocialNetwork.Create(s.Title, s.Link).Value).ToList();
+        var requisites = request.Requisites.Select(r =>
+            Requisite.Create(r.Title, r.Description).Value).ToList();
+        
+        var phoneNumber = PhoneNumber.Create(request.PhoneNumber);
+        if (phoneNumber.IsFailure)
+        {
+            return Result<VolunteerId>.Failure(phoneNumber.Error!);
+        }
+        
+        var fullName = FullName.Create(request.FirstName, request.LastName, request.Patronymic);
+        if (fullName.IsFailure)
+        {
+            return Result<VolunteerId>.Failure(fullName.Error!);
+        }
+        
+
+        var volunteerEntity = Volunteer.Create(
+            VolunteerId.NewVolunteerId(),
+            fullName.Value,
             request.Description,
-            request.Experience,
+            phoneNumber.Value,
+            request.Experience, 
             0, // TODO логика подсчета животных
             0,
             0,
-            request.PhoneNumber,
             socialNetworks,
             requisites);
-        
-        return await _storage.CreateVolunteer(volunteer, cancellationToken);
+
+        if (volunteerEntity.IsFailure)
+        {
+            return Result<VolunteerId>.Failure(volunteerEntity.Error!);
+        }
+
+        return await _storage.CreateVolunteer(volunteerEntity.Value, cancellationToken);
     }
 }
