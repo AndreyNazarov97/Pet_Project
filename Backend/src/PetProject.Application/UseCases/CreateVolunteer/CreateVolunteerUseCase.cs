@@ -35,10 +35,6 @@ public class CreateVolunteerUseCase : ICreateVolunteerUseCase
         var requisites = request.Requisites.Select(r =>
             Requisite.Create(r.Title, r.Description).Value).ToList();
         var details = VolunteerDetails.Create(
-            request.Experience,
-            0, // добавить логику
-            0,
-            0,
             requisites, 
             socialNetworks);
         if(details.IsFailure)

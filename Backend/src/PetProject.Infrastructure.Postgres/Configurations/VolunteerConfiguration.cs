@@ -70,19 +70,6 @@ public class VolunteerConfiguration : IEntityTypeConfiguration<Volunteer>
                 r.Property(r => r.Description)
                     .HasMaxLength(Constants.MAX_LONG_TEXT_LENGTH);
             });
-            
-            d.Property(x => x.Experience)
-                .IsRequired();
-        
-            d.Property(x => x.PetsAdopted)
-                .IsRequired();
-        
-            d.Property(x => x.PetsFoundHomeQuantity)
-                .IsRequired();
-        
-            d.Property(x => x.PetsInTreatment)
-                .IsRequired();
-
         });
     }
 }
