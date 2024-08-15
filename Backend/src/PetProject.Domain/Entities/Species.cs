@@ -1,16 +1,32 @@
-﻿namespace PetProject.Domain.Entities;
+﻿using PetProject.Domain.Shared;
+
+namespace PetProject.Domain.Entities;
 
 /// <summary>
 /// Вид Животного
 /// </summary>
 public class Species : Entity<SpeciesId>
 {
-    public string Name { get; private set; }
-
-    public List<Breed> Breeds { get; private set; } = [];
-
-    private Species()
+    private readonly List<Breed> _breeds = [];
+    
+    private Species(){}
+    private Species(SpeciesId id, string name)
+    : base(id)
     {
-        
+        Name = name;
     }
+    
+    public string Name { get; private set; }
+    public IReadOnlyCollection<Breed> Breeds => _breeds;
+
+    public void AddBreeds(List<Breed> breeds) => _breeds.AddRange(breeds);
+
+    public static Result<Species> Create(SpeciesId id, string name)
+    {
+        if (string.IsNullOrWhiteSpace(name) || name.Length > Constants.MAX_SHORT_TEXT_LENGTH)
+            return Result<Species>.Failure(new("Invalid name", $"{nameof(name)} cannot be null or empty or longer than {Constants.MAX_SHORT_TEXT_LENGTH} characters."));
+        
+        return new Species(id, name);
+    }
+
 }

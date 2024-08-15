@@ -1,4 +1,4 @@
-﻿namespace PetProject.Domain.Entities;
+﻿namespace PetProject.Domain.Shared;
 
 public abstract class Entity<TId> 
     where TId : notnull
