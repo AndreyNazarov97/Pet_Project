@@ -34,6 +34,17 @@ public class CreateVolunteerUseCase : ICreateVolunteerUseCase
             SocialNetwork.Create(s.Title, s.Link).Value).ToList();
         var requisites = request.Requisites.Select(r =>
             Requisite.Create(r.Title, r.Description).Value).ToList();
+        var details = VolunteerDetails.Create(
+            request.Experience,
+            0, // добавить логику
+            0,
+            0,
+            requisites, 
+            socialNetworks);
+        if(details.IsFailure)
+        {
+            return Result<VolunteerId>.Failure(details.Error!);
+        }
         
         var phoneNumber = PhoneNumber.Create(request.PhoneNumber);
         if (phoneNumber.IsFailure)
@@ -53,12 +64,7 @@ public class CreateVolunteerUseCase : ICreateVolunteerUseCase
             fullName.Value,
             request.Description,
             phoneNumber.Value,
-            request.Experience, 
-            0, // TODO логика подсчета животных
-            0,
-            0,
-            socialNetworks,
-            requisites);
+            details.Value);
 
         if (volunteerEntity.IsFailure)
         {
