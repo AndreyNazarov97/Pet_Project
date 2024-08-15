@@ -70,12 +70,12 @@ public class PetConfiguration : IEntityTypeConfiguration<Pet>
             at.Property(a => a.SpeciesId)
                 .HasConversion(
                     id => id.Id,
-                    id => SpeciesId.Create(id))
+                    id => SpeciesId.NewSpeciesId())
                 .HasColumnName("species_id");
             at.Property(a => a.BreedId)
                 .HasConversion(
                     id => id.Id,
-                    id => BreedId.Create(id))
+                    id => BreedId.NewBreedId())
                 .HasColumnName("breed_id");
         });
         builder.ComplexProperty(p => p.Address, a =>

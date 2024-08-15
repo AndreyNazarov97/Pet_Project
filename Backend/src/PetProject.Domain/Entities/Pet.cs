@@ -110,19 +110,14 @@ public class Pet : Entity<PetId>
         PetId id,
         string name,
         string description,
-        SpeciesId speciesId,
-        BreedId breedId,
+        AnimalType animalType,
         string breedName,
         string color,
         string healthInfo,
-        string country,
-        string city,
-        string street,
-        string house,
-        string flat,
+        Adress address,
         double weight,
         double height,
-        string ownerPhoneNumber,
+        PhoneNumber ownerPhoneNumber,
         bool isCastrated,
         bool isVaccinated,
         DateTimeOffset birthDate,
@@ -154,31 +149,19 @@ public class Pet : Entity<PetId>
         if(birthDate > DateTimeOffset.UtcNow)
             return Result<Pet>.Failure(new("Invalid birthDate", $"{nameof(birthDate)} cannot be greater than {DateTimeOffset.UtcNow}."));
         
-        var address = Adress.Create(country, city, street, house, flat);
-        var phoneNumber = PhoneNumber.Create(ownerPhoneNumber);
-        var animalType = AnimalType.Create(speciesId, breedId);
-
-        if(address.IsFailure)
-            return Result<Pet>.Failure(address.Error!);
-        if(phoneNumber.IsFailure)
-            return Result<Pet>.Failure(phoneNumber.Error!);
-        if(animalType.IsFailure)
-            return Result<Pet>.Failure(animalType.Error!);
         
-        
-
         var pet = new Pet(
             id,
             name,
             description,
-            animalType.Value,
+            animalType,
             breedName,
             color,
             healthInfo,
-            address.Value,
+            address,
             weight,
             height,
-            phoneNumber.Value,
+            ownerPhoneNumber,
             isCastrated,
             isVaccinated,
             birthDate,

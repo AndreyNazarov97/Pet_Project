@@ -55,11 +55,9 @@ public class Volunteer : Entity<VolunteerId>
 
     public static Result<Volunteer> Create(
         VolunteerId volunteerId,
-        string firstName,
-        string lastName,
-        string? patronymic,
-        string phoneNumber,
+        FullName fullName,
         string description,
+        PhoneNumber phoneNumber,
         int experience,
         int petsAdopted,
         int petsFoundHomeQuantity,
@@ -88,23 +86,16 @@ public class Volunteer : Entity<VolunteerId>
             return Result<Volunteer>.Failure(new("Invalid petsInTreatment",
                 $"{nameof(petsInTreatment)} cannot be less than {Constants.MIN_VALUE}"));
         
-        var fullName = FullName.Create(firstName, lastName, patronymic);
-        if(fullName.IsFailure)
-            return Result<Volunteer>.Failure(fullName.Error!);
-
-        var phoneNumberValue = PhoneNumber.Create(phoneNumber);
-        if (phoneNumberValue.IsFailure)
-            return Result<Volunteer>.Failure(phoneNumberValue.Error!);
         
         var volunteer = new Volunteer(
             volunteerId,
-            fullName.Value,
+            fullName,
             description,
             experience,
             petsAdopted,
             petsFoundHomeQuantity,
             petsInTreatment,
-            phoneNumberValue.Value,
+            phoneNumber,
             socialNetworks ?? [],
             requisites ?? []
         );
