@@ -2,7 +2,7 @@
 
 namespace PetProject.Domain.Entities;
 
-public class Volunteer : Entity
+public class Volunteer : Entity<VolunteerId>
 {
     public FullName FullName { get; private set; }
     

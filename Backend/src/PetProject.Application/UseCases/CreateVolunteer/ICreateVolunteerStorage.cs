@@ -4,5 +4,5 @@ namespace PetProject.Application.UseCases.CreateVolunteer;
 
 public interface ICreateVolunteerStorage
 {
-    Task<Guid> CreateVolunteer(Volunteer volunteer, CancellationToken cancellationToken);
+    Task<VolunteerId> CreateVolunteer(Volunteer volunteer, CancellationToken cancellationToken);
 }

@@ -13,8 +13,8 @@ using PetProject.Infrastructure.Postgres;
 namespace PetProject.Infrastructure.Postgres.Migrations
 {
     [DbContext(typeof(PetProjectDbContext))]
-    [Migration("20240809184317_AddDbSets")]
-    partial class AddDbSets
+    [Migration("20240815100539_Initial")]
+    partial class Initial
     {
         /// <inheritdoc />
         protected override void BuildTargetModel(ModelBuilder modelBuilder)
@@ -26,10 +26,34 @@ namespace PetProject.Infrastructure.Postgres.Migrations
 
             NpgsqlModelBuilderExtensions.UseIdentityByDefaultColumns(modelBuilder);
 
+            modelBuilder.Entity("PetProject.Domain.Entities.Breed", b =>
+                {
+                    b.Property<Guid>("Id")
+                        .HasColumnType("uuid")
+                        .HasColumnName("id");
+
+                    b.Property<string>("Name")
+                        .IsRequired()
+                        .HasMaxLength(100)
+                        .HasColumnType("character varying(100)")
+                        .HasColumnName("name");
+
+                    b.Property<Guid?>("SpeciesId")
+                        .HasColumnType("uuid")
+                        .HasColumnName("species_id");
+
+                    b.HasKey("Id")
+                        .HasName("pk_breeds");
+
+                    b.HasIndex("SpeciesId")
+                        .HasDatabaseName("ix_breeds_species_id");
+
+                    b.ToTable("breeds", (string)null);
+                });
+
             modelBuilder.Entity("PetProject.Domain.Entities.Pet", b =>
                 {
                     b.Property<Guid>("Id")
-                        .ValueGeneratedOnAdd()
                         .HasColumnType("uuid")
                         .HasColumnName("id");
 
@@ -37,14 +61,16 @@ namespace PetProject.Infrastructure.Postgres.Migrations
                         .HasColumnType("timestamp with time zone")
                         .HasColumnName("birth_date");
 
-                    b.Property<string>("Breed")
+                    b.Property<string>("BreedName")
                         .IsRequired()
-                        .HasColumnType("text")
-                        .HasColumnName("breed");
+                        .HasMaxLength(100)
+                        .HasColumnType("character varying(100)")
+                        .HasColumnName("breed_name");
 
                     b.Property<string>("Color")
                         .IsRequired()
-                        .HasColumnType("text")
+                        .HasMaxLength(100)
+                        .HasColumnType("character varying(100)")
                         .HasColumnName("color");
 
                     b.Property<DateTimeOffset>("CreatedAt")
@@ -53,12 +79,14 @@ namespace PetProject.Infrastructure.Postgres.Migrations
 
                     b.Property<string>("Description")
                         .IsRequired()
-                        .HasColumnType("text")
+                        .HasMaxLength(300)
+                        .HasColumnType("character varying(300)")
                         .HasColumnName("description");
 
                     b.Property<string>("HealthInfo")
                         .IsRequired()
-                        .HasColumnType("text")
+                        .HasMaxLength(300)
+                        .HasColumnType("character varying(300)")
                         .HasColumnName("health_info");
 
                     b.Property<double>("Height")
@@ -79,12 +107,18 @@ namespace PetProject.Infrastructure.Postgres.Migrations
 
                     b.Property<string>("Name")
                         .IsRequired()
-                        .HasColumnType("text")
+                        .HasMaxLength(100)
+                        .HasColumnType("character varying(100)")
                         .HasColumnName("name");
+
+                    b.Property<Guid>("SpeciesId")
+                        .HasColumnType("uuid")
+                        .HasColumnName("species_id");
 
                     b.Property<string>("Type")
                         .IsRequired()
-                        .HasColumnType("text")
+                        .HasMaxLength(100)
+                        .HasColumnType("character varying(100)")
                         .HasColumnName("type");
 
                     b.Property<double>("Weight")
@@ -97,28 +131,33 @@ namespace PetProject.Infrastructure.Postgres.Migrations
 
                             b1.Property<string>("City")
                                 .IsRequired()
-                                .HasColumnType("text")
-                                .HasColumnName("address_city");
+                                .HasMaxLength(100)
+                                .HasColumnType("character varying(100)")
+                                .HasColumnName("city");
 
                             b1.Property<string>("Country")
                                 .IsRequired()
-                                .HasColumnType("text")
-                                .HasColumnName("address_country");
+                                .HasMaxLength(100)
+                                .HasColumnType("character varying(100)")
+                                .HasColumnName("country");
 
                             b1.Property<string>("Flat")
                                 .IsRequired()
-                                .HasColumnType("text")
-                                .HasColumnName("address_flat");
+                                .HasMaxLength(100)
+                                .HasColumnType("character varying(100)")
+                                .HasColumnName("flat");
 
                             b1.Property<string>("House")
                                 .IsRequired()
-                                .HasColumnType("text")
-                                .HasColumnName("address_house");
+                                .HasMaxLength(100)
+                                .HasColumnType("character varying(100)")
+                                .HasColumnName("house");
 
                             b1.Property<string>("Street")
                                 .IsRequired()
-                                .HasColumnType("text")
-                                .HasColumnName("address_street");
+                                .HasMaxLength(100)
+                                .HasColumnType("character varying(100)")
+                                .HasColumnName("street");
                         });
 
                     b.ComplexProperty<Dictionary<string, object>>("OwnerPhoneNumber", "PetProject.Domain.Entities.Pet.OwnerPhoneNumber#PhoneNumber", b1 =>
@@ -127,20 +166,25 @@ namespace PetProject.Infrastructure.Postgres.Migrations
 
                             b1.Property<string>("Number")
                                 .IsRequired()
-                                .HasColumnType("text")
-                                .HasColumnName("owner_phone_number_number");
+                                .HasMaxLength(11)
+                                .HasColumnType("character varying(11)")
+                                .HasColumnName("phone_number");
                         });
 
                     b.HasKey("Id")
                         .HasName("pk_pets");
 
-                    b.ToTable("pets", (string)null);
+                    b.ToTable("pets", null, t =>
+                        {
+                            t.HasCheckConstraint("ck_pet_height", "\"height\" > 0");
+
+                            t.HasCheckConstraint("ck_pet_weight", "\"weight\" > 0");
+                        });
                 });
 
             modelBuilder.Entity("PetProject.Domain.Entities.PetPhoto", b =>
                 {
                     b.Property<Guid>("Id")
-                        .ValueGeneratedOnAdd()
                         .HasColumnType("uuid")
                         .HasColumnName("id");
 
@@ -150,7 +194,8 @@ namespace PetProject.Infrastructure.Postgres.Migrations
 
                     b.Property<string>("Path")
                         .IsRequired()
-                        .HasColumnType("text")
+                        .HasMaxLength(255)
+                        .HasColumnType("character varying(255)")
                         .HasColumnName("path");
 
                     b.Property<Guid?>("PetId")
@@ -166,16 +211,34 @@ namespace PetProject.Infrastructure.Postgres.Migrations
                     b.ToTable("pet_photos", (string)null);
                 });
 
+            modelBuilder.Entity("PetProject.Domain.Entities.Species", b =>
+                {
+                    b.Property<Guid>("Id")
+                        .HasColumnType("uuid")
+                        .HasColumnName("id");
+
+                    b.Property<string>("Name")
+                        .IsRequired()
+                        .HasMaxLength(100)
+                        .HasColumnType("character varying(100)")
+                        .HasColumnName("name");
+
+                    b.HasKey("Id")
+                        .HasName("pk_species");
+
+                    b.ToTable("species", (string)null);
+                });
+
             modelBuilder.Entity("PetProject.Domain.Entities.Volunteer", b =>
                 {
                     b.Property<Guid>("Id")
-                        .ValueGeneratedOnAdd()
                         .HasColumnType("uuid")
                         .HasColumnName("id");
 
                     b.Property<string>("Description")
                         .IsRequired()
-                        .HasColumnType("text")
+                        .HasMaxLength(300)
+                        .HasColumnType("character varying(300)")
                         .HasColumnName("description");
 
                     b.Property<int>("Experience")
@@ -200,17 +263,20 @@ namespace PetProject.Infrastructure.Postgres.Migrations
 
                             b1.Property<string>("FirstName")
                                 .IsRequired()
-                                .HasColumnType("text")
-                                .HasColumnName("full_name_first_name");
+                                .HasMaxLength(100)
+                                .HasColumnType("character varying(100)")
+                                .HasColumnName("first_name");
 
                             b1.Property<string>("LastName")
                                 .IsRequired()
-                                .HasColumnType("text")
-                                .HasColumnName("full_name_last_name");
+                                .HasMaxLength(100)
+                                .HasColumnType("character varying(100)")
+                                .HasColumnName("last_name");
 
                             b1.Property<string>("Patronymic")
-                                .HasColumnType("text")
-                                .HasColumnName("full_name_patronymic");
+                                .HasMaxLength(100)
+                                .HasColumnType("character varying(100)")
+                                .HasColumnName("patronymic");
                         });
 
                     b.ComplexProperty<Dictionary<string, object>>("PhoneNumber", "PetProject.Domain.Entities.Volunteer.PhoneNumber#PhoneNumber", b1 =>
@@ -219,14 +285,33 @@ namespace PetProject.Infrastructure.Postgres.Migrations
 
                             b1.Property<string>("Number")
                                 .IsRequired()
-                                .HasColumnType("text")
-                                .HasColumnName("phone_number_number");
+                                .HasMaxLength(11)
+                                .HasColumnType("character varying(11)")
+                                .HasColumnName("phone_number");
                         });
 
                     b.HasKey("Id")
                         .HasName("pk_volunteers");
 
-                    b.ToTable("volunteers", (string)null);
+                    b.ToTable("volunteers", null, t =>
+                        {
+                            t.HasCheckConstraint("ck_volunteer_experience", "\"experience\" >= 0");
+
+                            t.HasCheckConstraint("ck_volunteer_pets_adopted", "\"pets_adopted\" >= 0");
+
+                            t.HasCheckConstraint("ck_volunteer_pets_found_home_quantity", "\"pets_found_home_quantity\" >= 0");
+
+                            t.HasCheckConstraint("ck_volunteer_pets_in_treatment", "\"pets_in_treatment\" >= 0");
+                        });
+                });
+
+            modelBuilder.Entity("PetProject.Domain.Entities.Breed", b =>
+                {
+                    b.HasOne("PetProject.Domain.Entities.Species", null)
+                        .WithMany("Breeds")
+                        .HasForeignKey("SpeciesId")
+                        .OnDelete(DeleteBehavior.Cascade)
+                        .HasConstraintName("fk_breeds_species_species_id");
                 });
 
             modelBuilder.Entity("PetProject.Domain.Entities.Pet", b =>
@@ -338,6 +423,11 @@ namespace PetProject.Infrastructure.Postgres.Migrations
             modelBuilder.Entity("PetProject.Domain.Entities.Pet", b =>
                 {
                     b.Navigation("Photos");
+                });
+
+            modelBuilder.Entity("PetProject.Domain.Entities.Species", b =>
+                {
+                    b.Navigation("Breeds");
                 });
 #pragma warning restore 612, 618
         }

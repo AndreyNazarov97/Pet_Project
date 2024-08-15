@@ -3,7 +3,7 @@ using PetProject.Domain.Enums;
 
 namespace PetProject.Domain.Entities;
 
-public class Pet : Entity
+public class Pet : Entity<PetId>
 {
        
     public string Name { get; private set; }

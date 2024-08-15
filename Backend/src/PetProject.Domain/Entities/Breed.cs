@@ -2,12 +2,10 @@
 /// <summary>
 /// Порода 
 /// </summary>
-public class Breed : Entity
+public class Breed : Entity<BreedId>
 {
     public string Name { get; private set; }
     
-    public Guid SpeciesId { get; private set; }
-
     private Breed()
     {
         
