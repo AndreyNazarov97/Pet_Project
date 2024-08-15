@@ -1,4 +1,4 @@
-﻿namespace PetProject.Domain.Result;
+﻿namespace PetProject.Domain.Shared;
 
 public sealed class Error
 {

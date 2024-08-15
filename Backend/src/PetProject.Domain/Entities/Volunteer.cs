@@ -1,4 +1,5 @@
 ﻿using PetProject.Domain.Entities.ValueObjects;
+using PetProject.Domain.Shared;
 
 namespace PetProject.Domain.Entities;
 

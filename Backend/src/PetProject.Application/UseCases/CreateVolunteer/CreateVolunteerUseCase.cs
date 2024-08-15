@@ -1,7 +1,7 @@
 ﻿using FluentValidation;
 using PetProject.Domain.Entities;
 using PetProject.Domain.Entities.ValueObjects;
-using PetProject.Domain.Result;
+using PetProject.Domain.Shared;
 
 namespace PetProject.Application.UseCases.CreateVolunteer;
 

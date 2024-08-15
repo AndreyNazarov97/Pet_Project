@@ -23,7 +23,7 @@ public class PetConfiguration : IEntityTypeConfiguration<Pet>
         builder.Property(x => x.Id)
             .HasConversion(
                 id => id.Id,
-                id => PetId.Create(id));
+                id => PetId.NewPetId());
         
         builder.Property(x => x.Name)
             .IsRequired()

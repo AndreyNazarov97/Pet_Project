@@ -1,5 +1,5 @@
 ﻿using PetProject.Domain.Entities;
-using PetProject.Domain.Result;
+using PetProject.Domain.Shared;
 
 namespace PetProject.Application.UseCases.CreateVolunteer;
 
