@@ -11,4 +11,6 @@ public class SpeciesId
 
     public static SpeciesId NewSpeciesId() => new(Guid.NewGuid());
     public static SpeciesId Empty() => new(Guid.Empty);
+    
+    public override string ToString() => Id.ToString();
 }

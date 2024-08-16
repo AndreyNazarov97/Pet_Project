@@ -11,4 +11,6 @@ public class PetId
 
     public static PetId NewPetId() => new(Guid.NewGuid());
     public static PetId Empty() => new(Guid.Empty);
+    
+    public override string ToString() => Id.ToString();
 }

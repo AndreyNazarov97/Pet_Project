@@ -2,6 +2,7 @@
 using PetProject.Domain.Entities;
 using PetProject.Domain.Entities.ValueObjects;
 using PetProject.Domain.Shared;
+using Serilog;
 
 namespace PetProject.Application.UseCases.CreateVolunteer;
 
@@ -9,13 +10,16 @@ public class CreateVolunteerUseCase : ICreateVolunteerUseCase
 {
     private readonly ICreateVolunteerStorage _storage;
     private readonly IValidator<CreateVolunteerRequest> _createVolunteerRequestValidator;
+    private readonly ILogger _logger;
 
     public CreateVolunteerUseCase(
         ICreateVolunteerStorage storage,
-        IValidator<CreateVolunteerRequest> createVolunteerRequestValidator)
+        IValidator<CreateVolunteerRequest> createVolunteerRequestValidator,
+        ILogger logger)
     {
         _storage = storage;
         _createVolunteerRequestValidator = createVolunteerRequestValidator;
+        _logger = logger;
     }
 
     public async Task<Result<VolunteerId>> Create(CreateVolunteerRequest request, CancellationToken cancellationToken)
@@ -63,6 +67,8 @@ public class CreateVolunteerUseCase : ICreateVolunteerUseCase
             phoneNumber.Value,
             details.Value,
             null);
+
+        _logger.Information("Create volunteer: {Volunteer}", volunteerEntity.Value);
 
         if (volunteerEntity.IsFailure)
         {
