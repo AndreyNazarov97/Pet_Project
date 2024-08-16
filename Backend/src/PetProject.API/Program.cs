@@ -1,3 +1,4 @@
+using PetProject.API.Middlewares;
 using PetProject.Application;
 using PetProject.Infrastructure.Postgres;
 
@@ -13,6 +14,8 @@ builder.Services.AddPostgresInfrastructure(builder.Configuration);
 
 
 var app = builder.Build();
+
+app.UseMiddleware<ExceptionHandlingMiddleware>();
 
 // Configure the HTTP request pipeline.
 if (app.Environment.IsDevelopment())
