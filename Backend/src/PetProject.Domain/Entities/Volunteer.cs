@@ -1,12 +1,12 @@
 ﻿using PetProject.Domain.Entities.ValueObjects;
+using PetProject.Domain.Enums;
 using PetProject.Domain.Shared;
 
 namespace PetProject.Domain.Entities;
 
 public class Volunteer : Entity<VolunteerId>
 {
-    private readonly List<Requisite> _requisites = [];
-    private readonly List<SocialNetwork> _socialNetworks = [];
+    private readonly List<Pet> _pets = [];
 
     private Volunteer()
     {
@@ -17,53 +17,45 @@ public class Volunteer : Entity<VolunteerId>
         FullName fullName,
         string description,
         int experience,
-        int petsAdopted,
-        int petsFoundHomeQuantity,
-        int petsInTreatment,
         PhoneNumber phoneNumber,
-        List<SocialNetwork> socialNetworks,
-        List<Requisite> requisites)
+        VolunteerDetails details,
+        List<Pet> pets)
         : base(id)
     {
         FullName = fullName;
         Description = description;
-        Experience = experience;
-        PetsAdopted = petsAdopted;
-        PetsFoundHomeQuantity = petsFoundHomeQuantity;
-        PetsInTreatment = petsInTreatment;
         PhoneNumber = phoneNumber;
+        Details = details;
+        Experience = experience;
 
-        AddRequisites(requisites);
-        AddSocialNetworks(socialNetworks);
+        AddPets(pets);
     }
 
     public FullName FullName { get; private set; }
     public string Description { get; private set; }
+
     public int Experience { get; private set; }
-    public int PetsAdopted { get; private set; }
-    public int PetsFoundHomeQuantity { get; private set; }
-    public int PetsInTreatment { get; private set; }
     public PhoneNumber PhoneNumber { get; private set; }
+    public VolunteerDetails Details { get; private set; }
+    public IReadOnlyCollection<Pet> Pets => _pets;
 
-    public IReadOnlyCollection<SocialNetwork> SocialNetworks => _socialNetworks;
-    public IReadOnlyCollection<Requisite> Requisites => _requisites;
 
-    public void AddSocialNetworks(List<SocialNetwork> socialNetworks) => _socialNetworks.AddRange(socialNetworks);
-    public void AddRequisites(List<Requisite> requisites) => _requisites.AddRange(requisites);
-
-    //TODO добавить логику подсчета животных
+    public void AddPets(List<Pet> pets) => _pets.AddRange(pets);
+    public void UpdateDetails(VolunteerDetails details) => Details = details;
+    public void AddSocialNetworks(List<SocialNetwork> socialNetworks) => Details.AddSocialNetworks(socialNetworks);
+    public void AddRequisites(List<Requisite> requisites) => Details.AddRequisites(requisites);
+    public int PetsLookingForHome() => _pets.Count(p => p.HelpStatus == HelpStatus.LookingForHome);
+    public int PetsNeedsHelp() => _pets.Count(p => p.HelpStatus == HelpStatus.NeedsHelp);
+    public int PetsFoundHome() => _pets.Count(p => p.HelpStatus == HelpStatus.FoundHome);
 
     public static Result<Volunteer> Create(
         VolunteerId volunteerId,
         FullName fullName,
         string description,
-        PhoneNumber phoneNumber,
         int experience,
-        int petsAdopted,
-        int petsFoundHomeQuantity,
-        int petsInTreatment,
-        List<SocialNetwork>? socialNetworks,
-        List<Requisite>? requisites
+        PhoneNumber phoneNumber,
+        VolunteerDetails details,
+        List<Pet>? pets
     )
     {
         if (string.IsNullOrWhiteSpace(description) || description.Length > Constants.MAX_LONG_TEXT_LENGTH)
@@ -72,34 +64,18 @@ public class Volunteer : Entity<VolunteerId>
 
         if (experience < Constants.MIN_VALUE)
             return Result<Volunteer>.Failure(new("Invalid experience",
-                $"{nameof(experience)} cannot be less than {Constants.MIN_VALUE}"));
+                $"{nameof(experience)} cannot be less than {Constants.MIN_VALUE}."));
 
-        if (petsAdopted < Constants.MIN_VALUE)
-            return Result<Volunteer>.Failure(new("Invalid petsAdopted",
-                $"{nameof(petsAdopted)} cannot be less than {Constants.MIN_VALUE}"));
-
-        if (petsFoundHomeQuantity < Constants.MIN_VALUE)
-            return Result<Volunteer>.Failure(new("Invalid petsFoundHomeQuantity",
-                $"{nameof(petsFoundHomeQuantity)} cannot be less than {Constants.MIN_VALUE}"));
-
-        if (petsInTreatment < Constants.MIN_VALUE)
-            return Result<Volunteer>.Failure(new("Invalid petsInTreatment",
-                $"{nameof(petsInTreatment)} cannot be less than {Constants.MIN_VALUE}"));
-        
-        
         var volunteer = new Volunteer(
             volunteerId,
             fullName,
             description,
             experience,
-            petsAdopted,
-            petsFoundHomeQuantity,
-            petsInTreatment,
             phoneNumber,
-            socialNetworks ?? [],
-            requisites ?? []
+            details,
+            pets ?? []
         );
-        
+
         return Result<Volunteer>.Success(volunteer);
     }
 }

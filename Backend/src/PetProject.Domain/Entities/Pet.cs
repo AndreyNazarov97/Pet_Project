@@ -7,7 +7,6 @@ namespace PetProject.Domain.Entities;
 public class Pet : Entity<PetId>
 {
     private readonly List<PetPhoto> _photos = [];
-    private readonly List<Requisite> _requisites = [];
     
     private Pet(){}
 
@@ -27,7 +26,7 @@ public class Pet : Entity<PetId>
         bool isVaccinated,
         DateTimeOffset birthDate,
         HelpStatus helpStatus,
-        List<Requisite> requisites,
+        PetDetails details,
         List<PetPhoto> photos) 
         : base(id)
     {
@@ -46,7 +45,7 @@ public class Pet : Entity<PetId>
         BirthDate = birthDate;
         HelpStatus = helpStatus;
         CreatedAt = DateTimeOffset.UtcNow;
-        AddRequisites(requisites);
+        Details = details;
         AddPetPhotos(photos);
     }
     
@@ -65,11 +64,13 @@ public class Pet : Entity<PetId>
     public DateTimeOffset BirthDate { get; private set; }
     public HelpStatus HelpStatus { get; private set; }
     public DateTimeOffset CreatedAt { get; private set; }
+    public PetDetails Details { get; private set; }
     
-    public IReadOnlyCollection<Requisite> Requisites => _requisites.AsReadOnly();
+    
     public IReadOnlyCollection<PetPhoto> Photos => _photos.AsReadOnly();
-
-    public void AddRequisites(List<Requisite> requisites) => _requisites.AddRange(requisites);
+    
+    public void UpdateDetails(PetDetails details) => Details = details;
+    public void AddRequisites(List<Requisite> requisites) => Details.AddRequisites(requisites);
     public void AddPetPhotos(List<PetPhoto> petPhotos) => _photos.AddRange(petPhotos);
     
     public void SetVaccinated(bool isVaccinated) => IsVaccinated = isVaccinated;
@@ -122,7 +123,7 @@ public class Pet : Entity<PetId>
         bool isVaccinated,
         DateTimeOffset birthDate,
         HelpStatus helpStatus,
-        List<Requisite>? requisites,
+        PetDetails details,
         List<PetPhoto>? photos)
     {
         if(string.IsNullOrWhiteSpace(name) || name.Length > Constants.MAX_SHORT_TEXT_LENGTH)
@@ -166,7 +167,7 @@ public class Pet : Entity<PetId>
             isVaccinated,
             birthDate,
             helpStatus,
-            requisites ?? [],
+            details,
             photos ?? []);
 
         return Result<Pet>.Success(pet);

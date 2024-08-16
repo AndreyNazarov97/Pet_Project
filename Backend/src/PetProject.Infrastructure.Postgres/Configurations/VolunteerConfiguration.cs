@@ -1,8 +1,6 @@
-﻿using System.Text.Json;
-using Microsoft.EntityFrameworkCore;
+﻿using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Metadata.Builders;
 using PetProject.Domain.Entities;
-using PetProject.Domain.Entities.ValueObjects;
 using PetProject.Domain.Shared;
 
 namespace PetProject.Infrastructure.Postgres.Configurations;
@@ -31,17 +29,6 @@ public class VolunteerConfiguration : IEntityTypeConfiguration<Volunteer>
             .IsRequired()
             .HasMaxLength(Constants.MAX_LONG_TEXT_LENGTH);
         
-        builder.Property(x => x.Experience)
-            .IsRequired();
-        
-        builder.Property(x => x.PetsAdopted)
-            .IsRequired();
-        
-        builder.Property(x => x.PetsFoundHomeQuantity)
-            .IsRequired();
-        
-        builder.Property(x => x.PetsInTreatment)
-            .IsRequired();
         
         builder.ComplexProperty(x => x.PhoneNumber, p =>
         {
@@ -64,14 +51,30 @@ public class VolunteerConfiguration : IEntityTypeConfiguration<Volunteer>
                 .HasColumnName("patronymic")
                 .HasMaxLength(Constants.MAX_SHORT_TEXT_LENGTH);
         });
-        
-        builder.OwnsMany(v => v.Requisites, r =>
+
+        builder.OwnsOne(v => v.Details, d =>
         {
-            r.ToJson();
+            d.ToJson();
+            d.OwnsMany(vd => vd.SocialNetworks, sn =>
+            {
+                sn.Property(s => s.Title)
+                    .HasMaxLength(Constants.MAX_SHORT_TEXT_LENGTH);
+                sn.Property(s => s.Link)
+                    .HasMaxLength(Constants.MAX_LONG_TEXT_LENGTH);
+            });
+
+            d.OwnsMany(vd => vd.Requisites, r =>
+            {
+                r.Property(r => r.Title)
+                    .HasMaxLength(Constants.MAX_SHORT_TEXT_LENGTH);
+                r.Property(r => r.Description)
+                    .HasMaxLength(Constants.MAX_LONG_TEXT_LENGTH);
+            });
         });
-        builder.OwnsMany(v => v.SocialNetworks, r =>
-        {
-            r.ToJson();
-        });
+
+        builder
+            .HasMany(x => x.Pets)
+            .WithOne()
+            .OnDelete(DeleteBehavior.ClientSetNull);
     }
 }

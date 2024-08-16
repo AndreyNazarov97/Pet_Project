@@ -105,9 +105,17 @@ public class PetConfiguration : IEntityTypeConfiguration<Pet>
                 .HasMaxLength(Constants.PHONE_NUMBER_MAX_LENGTH);
         });
 
-        builder.OwnsMany(x => x.Requisites, r =>
+        builder.OwnsOne(v => v.Details, d =>
         {
-            r.ToJson();
+            d.ToJson();
+          
+            d.OwnsMany(vd => vd.Requisites, r =>
+            {
+                r.Property(r => r.Title)
+                    .HasMaxLength(Constants.MAX_SHORT_TEXT_LENGTH);
+                r.Property(r => r.Description)
+                    .HasMaxLength(Constants.MAX_LONG_TEXT_LENGTH);
+            });
         });
             
         builder
