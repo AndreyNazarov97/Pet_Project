@@ -20,5 +20,19 @@ public class MinioController : ControllerBase
         await _minioProvider.UploadFile(stream, BUCKET_NAME, file.FileName, cancellationToken);
         return Ok(file.FileName);
     }
+
+    [HttpDelete]
+    public async Task<IActionResult> DeleteFile(string fileName, CancellationToken cancellationToken = default)
+    {
+        await _minioProvider.DeleteFile(BUCKET_NAME, fileName, cancellationToken);
+        return Ok(fileName);
+    }
+
+    [HttpGet]
+    public async Task<IActionResult> DownloadFile(string fileName)
+    {
+        var url = await _minioProvider.DownloadFile(BUCKET_NAME, fileName);
+        return Ok(url);
+    }
     
 }
