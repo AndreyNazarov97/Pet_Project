@@ -1,23 +1,18 @@
 ﻿using Minio;
 using Minio.DataModel.Args;
 using PetProject.Application.Abstractions;
+using PetProject.Domain.Shared;
 
 namespace PetProject.API.Providers;
 
 public class MinioProvider : IMinioProvider
 {
+    private const int EXPIRY = 604800; // 7 days
     private readonly IMinioClient _minioClient;
 
-    public MinioProvider(IConfiguration configuration)
+    public MinioProvider(IMinioClient minioClient)
     {
-        var endpoint = configuration.GetValue<string>("Minio:Endpoint");
-        var accessKey = configuration.GetValue<string>("Minio:AccessKey");
-        var secretKey = configuration.GetValue<string>("Minio:SecretKey");
-
-        _minioClient = new MinioClient()
-            .WithEndpoint(endpoint)
-            .WithCredentials(accessKey, secretKey)
-            .Build();
+        _minioClient = minioClient;
     }
 
     public async Task<string> DownloadFile(string bucketName, string fileName)
@@ -25,28 +20,41 @@ public class MinioProvider : IMinioProvider
         var getObjectArgs = new PresignedGetObjectArgs()
             .WithBucket(bucketName)
             .WithObject(fileName)
-            .WithExpiry(60 * 60 * 24 * 7);
+            .WithExpiry(EXPIRY);
 
         var downloadUrl = await _minioClient.PresignedGetObjectAsync(getObjectArgs);
         return downloadUrl;
     }
 
-    public async Task UploadFile(Stream stream, string bucketName, string fileName,
+    public async Task<Result> UploadFile(Stream stream, string bucketName, string fileName,
         CancellationToken cancellationToken = default)
     {
-        if (!await _minioClient.BucketExistsAsync(new BucketExistsArgs().WithBucket(bucketName), cancellationToken))
+        try
         {
-            await _minioClient.MakeBucketAsync(new MakeBucketArgs().WithBucket(bucketName), cancellationToken);
+            var bucketExistsArgs = new BucketExistsArgs().WithBucket(bucketName);
+            var isBucketExist = !await _minioClient.BucketExistsAsync(bucketExistsArgs, cancellationToken);
+
+            if (isBucketExist)
+            {
+                var makeBucketArgs = new MakeBucketArgs().WithBucket(bucketName);
+                await _minioClient.MakeBucketAsync(makeBucketArgs, cancellationToken);
+            }
+
+            var putObjectArgs = new PutObjectArgs()
+                .WithBucket(bucketName)
+                .WithObject(fileName)
+                .WithStreamData(stream)
+                .WithObjectSize(stream.Length)
+                .WithContentType("application/octet-stream");
+
+            await _minioClient.PutObjectAsync(putObjectArgs, cancellationToken);
+
+            return Result.Success();
         }
-
-        var putObjectArgs = new PutObjectArgs()
-            .WithBucket(bucketName)
-            .WithObject(fileName)
-            .WithStreamData(stream)
-            .WithObjectSize(stream.Length)
-            .WithContentType("application/octet-stream");
-
-        await _minioClient.PutObjectAsync(putObjectArgs, cancellationToken);
+        catch (Exception e)
+        {
+            return Result.Failure(new Error("Could not upload file", e.Message));
+        }
     }
 
     public async Task DeleteFile(string bucketName, string fileName, CancellationToken cancellationToken = default)
