@@ -1,5 +1,6 @@
 ﻿using Microsoft.AspNetCore.Mvc;
 using PetProject.API.Providers;
+using PetProject.Application.Abstractions;
 
 namespace PetProject.API.Controllers;
 [Controller]
@@ -7,8 +8,8 @@ namespace PetProject.API.Controllers;
 public class MinioController : ControllerBase
 {
     public const string BUCKET_NAME = "pet-project";
-    private readonly MinioProvider _minioProvider;
-    public MinioController(MinioProvider minioProvider)
+    private readonly IMinioProvider _minioProvider;
+    public MinioController(IMinioProvider minioProvider)
     {
         _minioProvider = minioProvider;
     }

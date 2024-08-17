@@ -1,9 +1,10 @@
 ﻿using Minio;
 using Minio.DataModel.Args;
+using PetProject.Application.Abstractions;
 
 namespace PetProject.API.Providers;
 
-public class MinioProvider
+public class MinioProvider : IMinioProvider
 {
     private readonly IMinioClient _minioClient;
 
