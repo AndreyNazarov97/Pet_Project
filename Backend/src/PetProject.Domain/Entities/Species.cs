@@ -24,8 +24,8 @@ public class Species : Entity<SpeciesId>
     public static Result<Species> Create(SpeciesId id, string name)
     {
         if (string.IsNullOrWhiteSpace(name) || name.Length > Constants.MAX_SHORT_TEXT_LENGTH)
-            return Result<Species>.Failure(new("Invalid name", $"{nameof(name)} cannot be null or empty or longer than {Constants.MAX_SHORT_TEXT_LENGTH} characters."));
-        
+            return Errors.General.ValueIsRequired(nameof(name));
+                
         return new Species(id, name);
     }
 

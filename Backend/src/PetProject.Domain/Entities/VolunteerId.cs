@@ -11,4 +11,6 @@ public class VolunteerId
 
     public static VolunteerId NewVolunteerId() => new(Guid.NewGuid());
     public static VolunteerId Empty() => new(Guid.Empty);
+    
+    public static implicit operator Guid(VolunteerId id) => id.Id;
 }

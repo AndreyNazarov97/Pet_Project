@@ -59,12 +59,10 @@ public class Volunteer : Entity<VolunteerId>
     )
     {
         if (string.IsNullOrWhiteSpace(description) || description.Length > Constants.MAX_LONG_TEXT_LENGTH)
-            return Result<Volunteer>.Failure(new("Invalid description",
-                $"{nameof(description)} cannot be null or empty or longer than {Constants.MAX_LONG_TEXT_LENGTH} characters."));
+            return Errors.General.ValueIsRequired(nameof(description));
 
         if (experience < Constants.MIN_VALUE)
-            return Result<Volunteer>.Failure(new("Invalid experience",
-                $"{nameof(experience)} cannot be less than {Constants.MIN_VALUE}."));
+            return Errors.General.ValueIsInvalid(nameof(experience));
 
         var volunteer = new Volunteer(
             volunteerId,

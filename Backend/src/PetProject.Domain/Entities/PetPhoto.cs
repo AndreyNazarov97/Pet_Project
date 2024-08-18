@@ -21,7 +21,7 @@ public class PetPhoto : Entity<PetPhotoId>
     public static Result<PetPhoto> Create(PetPhotoId id, string path, bool isMain)
     {
         if(string.IsNullOrWhiteSpace(path) || path.Length > Constants.MAX_PATH_LENGTH)
-            return Result<PetPhoto>.Failure(new("Invalid path", $"{nameof(path)} cannot be null or empty or longer than {Constants.MAX_PATH_LENGTH} characters."));
+            return Errors.General.ValueIsRequired(nameof(path));
         
         var petPhoto = new PetPhoto(id, path, isMain);
         return Result<PetPhoto>.Success(petPhoto);
