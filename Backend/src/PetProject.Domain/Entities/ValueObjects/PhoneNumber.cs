@@ -21,7 +21,7 @@ public class PhoneNumber : ValueObject
     public static Result<PhoneNumber> Create(string number)
     {
         if(string.IsNullOrWhiteSpace(number) || !ValidationRegex.IsMatch(number))
-            throw new Exception("Invalid phone number");
+            return Errors.General.ValueIsInvalid(nameof(number));
 
         var phoneNumber = new PhoneNumber(number);
         return Result<PhoneNumber>.Success(phoneNumber);

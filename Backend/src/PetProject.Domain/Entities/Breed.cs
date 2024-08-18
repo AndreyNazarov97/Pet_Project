@@ -18,7 +18,7 @@ public class Breed : Entity<BreedId>
     public static Result<Breed> Create(BreedId breedId ,string name)
     {
         if (string.IsNullOrWhiteSpace(name) || name.Length > Constants.MAX_SHORT_TEXT_LENGTH)
-            return Result<Breed>.Failure(new("Invalid name", $"{nameof(name)} cannot be null or empty or longer than {Constants.MAX_SHORT_TEXT_LENGTH} characters."));
+            return Errors.General.ValueIsRequired(nameof(name));
         
         var breed = new Breed(breedId, name);
         return Result<Breed>.Success(breed);

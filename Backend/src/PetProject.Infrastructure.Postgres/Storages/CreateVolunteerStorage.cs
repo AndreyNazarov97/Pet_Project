@@ -1,5 +1,4 @@
-﻿using Microsoft.EntityFrameworkCore;
-using PetProject.Application.UseCases.CreateVolunteer;
+﻿using PetProject.Application.UseCases.CreateVolunteer;
 using PetProject.Domain.Entities;
 
 namespace PetProject.Infrastructure.Postgres.Storages;

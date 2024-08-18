@@ -23,12 +23,14 @@ public class FullName : ValueObject
 
     public static Result<FullName> Create(string firstName, string lastName, string? patronymic = null)
     {
-        if(string.IsNullOrWhiteSpace(firstName) || !ValidationRegex.IsMatch(firstName))
-            return Result<FullName>.Failure(new("Invalid first name", $"{nameof(firstName)} cannot be null and cannot contain special characters"));
+        if (string.IsNullOrWhiteSpace(firstName) || !ValidationRegex.IsMatch(firstName))
+            return Errors.General.ValueIsInvalid(nameof(firstName));
+        
         if(string.IsNullOrWhiteSpace(lastName) || !ValidationRegex.IsMatch(lastName))
-            return Result<FullName>.Failure(new("Invalid last name", $"{nameof(lastName)} cannot be null and cannot contain special characters"));
+            return Errors.General.ValueIsInvalid(nameof(lastName));
+        
         if(patronymic != null && !ValidationRegex.IsMatch(patronymic))
-            return Result<FullName>.Failure(new("Invalid patronymic", $"{nameof(patronymic)} cannot be null and cannot contain special characters"));
+            return Errors.General.ValueIsInvalid(nameof(patronymic));
         
         var fullName = new FullName(firstName, lastName, patronymic);
         return Result<FullName>.Success(fullName);

@@ -18,9 +18,9 @@ public class SocialNetwork : ValueObject
     public static Result<SocialNetwork> Create(string title, string link)
     {
         if(string.IsNullOrWhiteSpace(title) || title.Length > Constants.MAX_SHORT_TEXT_LENGTH)
-            return Result<SocialNetwork>.Failure(new("Invalid title", $"{nameof(title)} cannot be null or empty or longer than {Constants.MAX_SHORT_TEXT_LENGTH} characters"));
-        if(string.IsNullOrWhiteSpace(link) || link.Length > Constants.MAX_LONG_TEXT_LENGTH)
-            return Result<SocialNetwork>.Failure(new("Invalid link", $"{nameof(link)} cannot be null or empty or longer than {Constants.MAX_LONG_TEXT_LENGTH} characters"));
+            return Errors.General.ValueIsRequired(nameof(title));
+        if (string.IsNullOrWhiteSpace(link) || link.Length > Constants.MAX_LONG_TEXT_LENGTH)
+            return Errors.General.ValueIsRequired(nameof(link));
         
         var socialNetwork = new SocialNetwork(title, link);
         return Result<SocialNetwork>.Success(socialNetwork);
