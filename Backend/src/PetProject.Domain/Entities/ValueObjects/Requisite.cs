@@ -18,9 +18,10 @@ public class Requisite : ValueObject
     public static Result<Requisite> Create(string title, string description)
     {
         if(string.IsNullOrWhiteSpace(title) || title.Length > Constants.MAX_SHORT_TEXT_LENGTH)
-            return Result<Requisite>.Failure(new("Invalid title", $"{nameof(title)} cannot be null or empty or longer than {Constants.MAX_SHORT_TEXT_LENGTH} characters"));
+            return Errors.General.ValueIsRequired(nameof(title));
+                
         if(string.IsNullOrWhiteSpace(description) || description.Length > Constants.MAX_LONG_TEXT_LENGTH)
-            return Result<Requisite>.Failure(new("Invalid description", $"{nameof(description)} cannot be null or empty or longer than {Constants.MAX_LONG_TEXT_LENGTH} characters"));
+            return  Errors.General.ValueIsRequired(nameof(description));
         
         var requisite = new Requisite(title, description);
         return Result<Requisite>.Success(requisite);

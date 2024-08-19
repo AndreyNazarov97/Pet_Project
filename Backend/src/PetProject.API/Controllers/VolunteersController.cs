@@ -1,5 +1,8 @@
 ﻿using Microsoft.AspNetCore.Mvc;
+using PetProject.API.Extensions;
+using PetProject.API.Response;
 using PetProject.Application.UseCases.CreateVolunteer;
+using PetProject.Domain.Entities;
 
 namespace PetProject.API.Controllers;
 [Controller]
@@ -7,17 +10,13 @@ namespace PetProject.API.Controllers;
 public class VolunteersController : ControllerBase
 {
     [HttpPost]
-    public async Task<IActionResult> CreateVolunteer(
+    public async Task<ActionResult<VolunteerId>> CreateVolunteer(
         [FromBody] CreateVolunteerRequest request,
         [FromServices] ICreateVolunteerUseCase useCase,
         CancellationToken cancellationToken)
     {
-        var volunteer = await useCase.Create(request, cancellationToken);
-        
-        if (volunteer.IsFailure)
-        {
-            return BadRequest(volunteer.Error);
-        }
-        return Ok(volunteer);
+        var volunteerId = await useCase.Create(request, cancellationToken);
+
+        return volunteerId.ToResponse();
     }
 }

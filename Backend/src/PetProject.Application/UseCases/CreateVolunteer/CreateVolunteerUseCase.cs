@@ -1,4 +1,5 @@
 ﻿using FluentValidation;
+using PetProject.Application.UseCases.GetVolunteer;
 using PetProject.Domain.Entities;
 using PetProject.Domain.Entities.ValueObjects;
 using PetProject.Domain.Shared;
@@ -9,6 +10,7 @@ namespace PetProject.Application.UseCases.CreateVolunteer;
 public class CreateVolunteerUseCase : ICreateVolunteerUseCase
 {
     private readonly ICreateVolunteerStorage _storage;
+    private readonly IGetVolunteerStorage _getVolunteerStorage;
     private readonly IValidator<CreateVolunteerRequest> _createVolunteerRequestValidator;
     private readonly ILogger _logger;
 
@@ -16,8 +18,11 @@ public class CreateVolunteerUseCase : ICreateVolunteerUseCase
         ICreateVolunteerStorage storage,
         IValidator<CreateVolunteerRequest> createVolunteerRequestValidator,
         ILogger logger)
+        IGetVolunteerStorage getVolunteerStorage,
+        IValidator<CreateVolunteerRequest> createVolunteerRequestValidator)
     {
         _storage = storage;
+        _getVolunteerStorage = getVolunteerStorage;
         _createVolunteerRequestValidator = createVolunteerRequestValidator;
         _logger = logger;
     }
@@ -27,11 +32,7 @@ public class CreateVolunteerUseCase : ICreateVolunteerUseCase
         var validation = await _createVolunteerRequestValidator.ValidateAsync(request, cancellationToken);
         if (!validation.IsValid)
         {
-            var error = new Error(
-                string.Join(", ", validation.Errors.Select(x => x.ErrorCode)),
-                string.Join(", ", validation.Errors.Select(x => x.ErrorMessage)));
-
-            return Result<VolunteerId>.Failure(error);
+            return Errors.General.ValueIsInvalid("request");
         }
 
         var socialNetworks = request.SocialNetworks.Select(s =>
@@ -58,6 +59,11 @@ public class CreateVolunteerUseCase : ICreateVolunteerUseCase
             return Result<VolunteerId>.Failure(fullName.Error!);
         }
         
+        var existedPhoneNumber = await _getVolunteerStorage.GetByPhone(phoneNumber.Value, cancellationToken);
+        if (existedPhoneNumber.IsSuccess)
+        {
+            return Errors.Volunteer.PhoneNumberAlreadyExists();
+        }
 
         var volunteerEntity = Volunteer.Create(
             VolunteerId.NewVolunteerId(),
