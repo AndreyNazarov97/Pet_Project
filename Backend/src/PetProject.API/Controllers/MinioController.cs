@@ -1,39 +1,45 @@
 ﻿using Microsoft.AspNetCore.Mvc;
+using PetProject.API.Extensions;
 using PetProject.API.Providers;
 using PetProject.Application.Abstractions;
+using PetProject.Domain.Shared;
 
 namespace PetProject.API.Controllers;
+
 [Controller]
 [Route("minio")]
 public class MinioController : ControllerBase
 {
     public const string BUCKET_NAME = "pet-project";
     private readonly IMinioProvider _minioProvider;
+
     public MinioController(IMinioProvider minioProvider)
     {
         _minioProvider = minioProvider;
     }
-    
+
     [HttpPost]
-    public async Task<IActionResult> UploadFile(IFormFile file, CancellationToken cancellationToken = default)
+    public async Task<ActionResult> UploadFile(IFormFile file, CancellationToken cancellationToken = default)
     {
-        using var stream = file.OpenReadStream();
-        await _minioProvider.UploadFile(stream, BUCKET_NAME, file.FileName, cancellationToken);
-        return Ok(file.FileName);
+        await using var stream = file.OpenReadStream();
+        var result = await _minioProvider.UploadFile(stream, BUCKET_NAME, file.FileName, cancellationToken);
+
+        return result.ToResponse();
     }
 
     [HttpDelete]
-    public async Task<IActionResult> DeleteFile(string fileName, CancellationToken cancellationToken = default)
+    public async Task<ActionResult> DeleteFile(string fileName, CancellationToken cancellationToken = default)
     {
-        await _minioProvider.DeleteFile(BUCKET_NAME, fileName, cancellationToken);
-        return Ok(fileName);
+        var result = await _minioProvider.DeleteFile(BUCKET_NAME, fileName, cancellationToken);
+
+        return result.ToResponse();
     }
 
     [HttpGet]
-    public async Task<IActionResult> DownloadFile(string fileName)
+    public async Task<ActionResult<string>> DownloadFile(string fileName)
     {
-        var url = await _minioProvider.DownloadFile(BUCKET_NAME, fileName);
-        return Ok(url);
+        var result = await _minioProvider.DownloadFile(BUCKET_NAME, fileName);
+
+        return result.ToResponse();
     }
-    
 }

@@ -3,6 +3,7 @@ using PetProject.Application.UseCases.GetVolunteer;
 using PetProject.Domain.Entities;
 using PetProject.Domain.Entities.ValueObjects;
 using PetProject.Domain.Shared;
+using Serilog;
 
 namespace PetProject.Application.UseCases.CreateVolunteer;
 
@@ -11,15 +12,18 @@ public class CreateVolunteerUseCase : ICreateVolunteerUseCase
     private readonly ICreateVolunteerStorage _storage;
     private readonly IGetVolunteerStorage _getVolunteerStorage;
     private readonly IValidator<CreateVolunteerRequest> _createVolunteerRequestValidator;
+    private readonly ILogger _logger;
 
     public CreateVolunteerUseCase(
         ICreateVolunteerStorage storage,
         IGetVolunteerStorage getVolunteerStorage,
+        ILogger logger,
         IValidator<CreateVolunteerRequest> createVolunteerRequestValidator)
     {
         _storage = storage;
         _getVolunteerStorage = getVolunteerStorage;
         _createVolunteerRequestValidator = createVolunteerRequestValidator;
+        _logger = logger;
     }
 
     public async Task<Result<VolunteerId>> Create(CreateVolunteerRequest request, CancellationToken cancellationToken)
@@ -35,19 +39,19 @@ public class CreateVolunteerUseCase : ICreateVolunteerUseCase
         var requisites = request.Requisites.Select(r =>
             Requisite.Create(r.Title, r.Description).Value).ToList();
         var details = VolunteerDetails.Create(
-            requisites, 
+            requisites,
             socialNetworks);
-        if(details.IsFailure)
+        if (details.IsFailure)
         {
             return Result<VolunteerId>.Failure(details.Error!);
         }
-        
+
         var phoneNumber = PhoneNumber.Create(request.PhoneNumber);
         if (phoneNumber.IsFailure)
         {
             return Result<VolunteerId>.Failure(phoneNumber.Error!);
         }
-        
+
         var fullName = FullName.Create(request.FirstName, request.LastName, request.Patronymic);
         if (fullName.IsFailure)
         {
@@ -68,6 +72,8 @@ public class CreateVolunteerUseCase : ICreateVolunteerUseCase
             phoneNumber.Value,
             details.Value,
             null);
+
+        _logger.Information("Create volunteer: {Volunteer}", volunteerEntity.Value);
 
         if (volunteerEntity.IsFailure)
         {

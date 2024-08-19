@@ -2,7 +2,7 @@ version: '3.9'
 
 networks:
   default :
-    name: 'PetProjectNetwork'
+    name: 'pet_project_network'
     
 volumes :
   PetProject-pg: 
@@ -12,7 +12,7 @@ volumes :
     
 services:
   postgres:
-    container_name: 'Pet_Postgres'
+    container_name: 'pet_postgres'
     image: 'postgres:latest'
     ports:
       - '5432:5432'
@@ -35,15 +35,23 @@ services:
       - pgadmin:/var/lib/pgadmin
    
   minio:
-    container_name: minio
-    image: minio/minio
+    container_name: 'pet_minio'
+    image: 'minio/minio'
     ports:
-      - 9000:9000
-      - 9001:9001
+      - '9000:9000'
+      - '9001:9001'
     environment:
       - MINIO_ACCESS_KEY=minio_admin
       - MINIO_SECRET_KEY=minio_password
     volumes:
       - minio_data:/data
     command: server --console-address ":9001" /data
-    restart: always
+  
+  seq:
+    container_name: 'pet_seq'
+    image: 'datalust/seq:latest'
+    ports:
+      - '5341:5341'
+      - '8081:80'
+    environment:
+      - ACCEPT_EULA=Y

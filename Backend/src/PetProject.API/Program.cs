@@ -1,3 +1,4 @@
+using Microsoft.AspNetCore.HttpLogging;
 using Microsoft.Extensions.Options;
 using Minio;
 using Minio.AspNetCore;
@@ -6,9 +7,25 @@ using PetProject.API.Providers;
 using PetProject.Application;
 using PetProject.Application.Abstractions;
 using PetProject.Infrastructure.Postgres;
+using Serilog;
 using MinioOptions = PetProject.API.Providers.MinioOptions;
 
 var builder = WebApplication.CreateBuilder(args);
+
+
+builder.Host.UseSerilog((context, configuration) => 
+    configuration.ReadFrom.Configuration(context.Configuration));
+
+builder.Services.AddHttpLogging(options =>
+{
+    options.LoggingFields = options.LoggingFields |
+                            HttpLoggingFields.RequestBody |
+                            HttpLoggingFields.RequestHeaders |
+                            HttpLoggingFields.ResponseBody |
+                            HttpLoggingFields.ResponseHeaders;
+});
+
+
 
 builder.Services.AddControllers();
 builder.Services.AddEndpointsApiExplorer();
@@ -30,7 +47,10 @@ builder.Services.AddScoped<IMinioProvider, MinioProvider>();
 
 var app = builder.Build();
 
-//app.UseMiddleware<ExceptionHandlingMiddleware>();
+app.UseSerilogRequestLogging(); 
+
+
+app.UseMiddleware<ExceptionHandlingMiddleware>();
 
 // Configure the HTTP request pipeline.
 if (app.Environment.IsDevelopment())

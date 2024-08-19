@@ -11,5 +11,7 @@ public class BreedId
 
     public static BreedId NewBreedId() => new(Guid.NewGuid());
     public static BreedId Empty() => new(Guid.Empty);
+    
+    public override string ToString() => Id.ToString();
 
 }
