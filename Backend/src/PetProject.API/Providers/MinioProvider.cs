@@ -39,6 +39,7 @@ public class MinioProvider : IMinioProvider
         }
         catch (Exception e)
         {
+            _logger.Error(e, "File {FileName} could not be downloaded from Minio", fileName);
             return Errors.Minio.CouldNotDownloadFile();
         }
         
@@ -75,6 +76,7 @@ public class MinioProvider : IMinioProvider
         }
         catch (Exception e)
         {
+            _logger.Error(e, "File {FileName} could not be uploaded to Minio", fileName);
             return Errors.Minio.CouldNotUploadFile();
         }
     }
@@ -96,6 +98,7 @@ public class MinioProvider : IMinioProvider
         }
         catch (Exception e)
         {
+            _logger.Error(e, "File {FileName} could not be deleted from Minio", fileName);
             return Errors.Minio.CouldNotDeleteFile();
         }
         
