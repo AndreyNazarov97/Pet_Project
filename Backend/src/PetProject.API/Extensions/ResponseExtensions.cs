@@ -9,7 +9,7 @@ public static class ResponseExtensions
     public static ActionResult ToResponse(this Result result)
     {
         if (result.IsSuccess)
-            return new OkResult();
+            return new OkObjectResult(Envelope.Ok("Ok"));
         
         var statusCode = result.Error!.Type switch
         {

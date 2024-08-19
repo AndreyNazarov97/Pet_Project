@@ -16,9 +16,8 @@ public class CreateVolunteerUseCase : ICreateVolunteerUseCase
 
     public CreateVolunteerUseCase(
         ICreateVolunteerStorage storage,
-        IValidator<CreateVolunteerRequest> createVolunteerRequestValidator,
-        ILogger logger)
         IGetVolunteerStorage getVolunteerStorage,
+        ILogger logger,
         IValidator<CreateVolunteerRequest> createVolunteerRequestValidator)
     {
         _storage = storage;
@@ -40,25 +39,25 @@ public class CreateVolunteerUseCase : ICreateVolunteerUseCase
         var requisites = request.Requisites.Select(r =>
             Requisite.Create(r.Title, r.Description).Value).ToList();
         var details = VolunteerDetails.Create(
-            requisites, 
+            requisites,
             socialNetworks);
-        if(details.IsFailure)
+        if (details.IsFailure)
         {
             return Result<VolunteerId>.Failure(details.Error!);
         }
-        
+
         var phoneNumber = PhoneNumber.Create(request.PhoneNumber);
         if (phoneNumber.IsFailure)
         {
             return Result<VolunteerId>.Failure(phoneNumber.Error!);
         }
-        
+
         var fullName = FullName.Create(request.FirstName, request.LastName, request.Patronymic);
         if (fullName.IsFailure)
         {
             return Result<VolunteerId>.Failure(fullName.Error!);
         }
-        
+
         var existedPhoneNumber = await _getVolunteerStorage.GetByPhone(phoneNumber.Value, cancellationToken);
         if (existedPhoneNumber.IsSuccess)
         {

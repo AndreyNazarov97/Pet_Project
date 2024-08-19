@@ -31,4 +31,27 @@ public static class Errors
                 "Phone number already exists");
         }
     }
+    public static class Minio
+    {
+        public static Error CouldNotUploadFile()
+        {
+            return Error.Failure(
+                "minio.could.not.upload.file", 
+                "Could not upload file");
+        }
+
+        public static Error CouldNotDeleteFile()
+        {
+            return Error.Failure(
+                "minio.could.not.delete.file", 
+                "Could not delete file");
+        }
+
+        public static Error CouldNotDownloadFile()
+        {
+            return Error.Failure(
+                "minio.could.not.download.file", 
+                "Could not download file");
+        }
+    }
 }

@@ -15,15 +15,23 @@ public class MinioProvider : IMinioProvider
         _minioClient = minioClient;
     }
 
-    public async Task<string> DownloadFile(string bucketName, string fileName)
+    public async Task<Result<string>> DownloadFile(string bucketName, string fileName)
     {
-        var getObjectArgs = new PresignedGetObjectArgs()
-            .WithBucket(bucketName)
-            .WithObject(fileName)
-            .WithExpiry(EXPIRY);
+        try
+        {
+            var getObjectArgs = new PresignedGetObjectArgs()
+                .WithBucket(bucketName)
+                .WithObject(fileName)
+                .WithExpiry(EXPIRY);
 
-        var downloadUrl = await _minioClient.PresignedGetObjectAsync(getObjectArgs);
-        return downloadUrl;
+            var downloadUrl = await _minioClient.PresignedGetObjectAsync(getObjectArgs);
+            return downloadUrl;
+        }
+        catch (Exception e)
+        {
+            return Errors.Minio.CouldNotDownloadFile();
+        }
+        
     }
 
     public async Task<Result> UploadFile(Stream stream, string bucketName, string fileName,
@@ -53,15 +61,25 @@ public class MinioProvider : IMinioProvider
         }
         catch (Exception e)
         {
-            return Result.Failure(new Error("Could not upload file", e.Message));
+            return Errors.Minio.CouldNotUploadFile();
         }
     }
 
-    public async Task DeleteFile(string bucketName, string fileName, CancellationToken cancellationToken = default)
+    public async Task<Result> DeleteFile(string bucketName, string fileName, CancellationToken cancellationToken = default)
     {
-        var removeObjectArgs = new RemoveObjectArgs()
-            .WithBucket(bucketName)
-            .WithObject(fileName);
-        await _minioClient.RemoveObjectAsync(removeObjectArgs, cancellationToken);
+        try
+        {
+            var removeObjectArgs = new RemoveObjectArgs()
+                .WithBucket(bucketName)
+                .WithObject(fileName);
+            await _minioClient.RemoveObjectAsync(removeObjectArgs, cancellationToken);
+
+            return Result.Success();
+        }
+        catch (Exception e)
+        {
+            return Errors.Minio.CouldNotDeleteFile();
+        }
+        
     }
 }
