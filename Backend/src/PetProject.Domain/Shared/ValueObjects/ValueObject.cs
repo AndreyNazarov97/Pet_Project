@@ -1,4 +1,4 @@
-﻿namespace PetProject.Domain.Shared;
+﻿namespace PetProject.Domain.Shared.ValueObjects;
 
 public abstract class ValueObject
 {

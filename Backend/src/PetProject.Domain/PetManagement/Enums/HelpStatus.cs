@@ -1,4 +1,4 @@
-﻿namespace PetProject.Domain.Enums;
+﻿namespace PetProject.Domain.PetManagement.Enums;
 
 public enum HelpStatus
 {

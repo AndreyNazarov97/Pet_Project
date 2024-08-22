@@ -1,10 +1,11 @@
 ﻿using PetProject.Domain.Shared;
+using PetProject.Domain.Shared.EntityIds;
 
-namespace PetProject.Domain.Entities;
+namespace PetProject.Domain.PetManagement.Entities;
 
 public class PetPhoto : Entity<PetPhotoId>
 {
-    private PetPhoto(){}
+    private PetPhoto(PetPhotoId id) : base(id) { }
     private PetPhoto(PetPhotoId id, string path, bool isMain)
     : base(id)
     {

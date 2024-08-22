@@ -1,16 +1,14 @@
 ﻿using System.Text.RegularExpressions;
 using PetProject.Domain.Shared;
+using PetProject.Domain.Shared.ValueObjects;
 
-namespace PetProject.Domain.Entities.ValueObjects;
+namespace PetProject.Domain.PetManagement.Entities.ValueObjects;
 
 public class FullName : ValueObject
 {
     private static readonly Regex ValidationRegex = new Regex(
         @"^[\p{L}\p{M}]{2,50}$",
         RegexOptions.Singleline | RegexOptions.Compiled);
-    public string FirstName { get; }
-    public string LastName { get; }
-    public string? Patronymic { get; }
     
     private FullName(){}
 
@@ -20,6 +18,10 @@ public class FullName : ValueObject
         LastName = lastName;
         Patronymic = patronymic;
     }
+    
+    public string FirstName { get; }
+    public string LastName { get; }
+    public string? Patronymic { get; }
 
     public static Result<FullName> Create(string firstName, string lastName, string? patronymic = null)
     {

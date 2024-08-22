@@ -1,6 +1,8 @@
 ﻿using PetProject.Domain.Shared;
+using PetProject.Domain.Shared.EntityIds;
+using PetProject.Domain.Shared.ValueObjects;
 
-namespace PetProject.Domain.Entities.ValueObjects;
+namespace PetProject.Domain.PetManagement.Entities.ValueObjects;
 
 public class AnimalType : ValueObject
 {

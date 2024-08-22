@@ -1,12 +1,10 @@
 ﻿using PetProject.Domain.Shared;
+using PetProject.Domain.Shared.ValueObjects;
 
-namespace PetProject.Domain.Entities.ValueObjects;
+namespace PetProject.Domain.PetManagement.Entities.ValueObjects;
 
 public class SocialNetwork : ValueObject
 {
-    public string Title { get; }
-    public string Link { get; }
-    
     private SocialNetwork(){}
 
     private SocialNetwork(string title, string link)
@@ -14,6 +12,9 @@ public class SocialNetwork : ValueObject
         Title = title;
         Link = link;
     }
+    
+    public string Title { get; }
+    public string Link { get; }
 
     public static Result<SocialNetwork> Create(string title, string link)
     {

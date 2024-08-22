@@ -1,7 +1,8 @@
 ﻿using System.Reflection;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.Logging;
-using PetProject.Domain.Entities;
+using PetProject.Domain.PetManagement.AggregateRoot;
+using PetProject.Domain.PetManagement.Entities;
 
 namespace PetProject.Infrastructure.Postgres;
 
@@ -13,8 +14,6 @@ public class PetProjectDbContext : DbContext
     }
     
     public DbSet<Volunteer> Volunteers { get; set; }
-    public DbSet<Pet> Pets { get; set; }
-    public DbSet<PetPhoto> PetPhotos { get; set; }
     public DbSet<Species> Species { get; set; }
     
 

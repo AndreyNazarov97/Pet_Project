@@ -1,7 +1,6 @@
 ﻿using FluentValidation;
 using Microsoft.Extensions.DependencyInjection;
 using PetProject.Application.UseCases.CreateVolunteer;
-using PetProject.Domain.Entities;
 
 namespace PetProject.Application;
 

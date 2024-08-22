@@ -1,19 +1,25 @@
 ﻿using FluentValidation;
+using PetProject.Application.Validation;
+using PetProject.Domain.PetManagement.Entities.ValueObjects;
+using PetProject.Domain.Shared.ValueObjects;
 
 namespace PetProject.Application.UseCases.CreateVolunteer;
 
 public class CreateVolunteerRequestValidator : AbstractValidator<CreateVolunteerRequest>
 {
-    public CreateVolunteerRequestValidator()
+    public CreateVolunteerRequestValidator() 
     {
-        RuleFor(x => x.Description).NotEmpty().MaximumLength(1000);
-        RuleFor(x => x.FirstName).NotEmpty().MaximumLength(50);
-        RuleFor(x => x.LastName).NotEmpty().MaximumLength(50);
-        RuleFor(x => x.Patronymic).MaximumLength(50);
-        RuleFor(x => x.Experience).GreaterThan(-1);
-        RuleFor(x => x.SocialNetworks).NotEmpty();
-        RuleFor(x => x.Requisites).NotEmpty();
-        
-        RuleFor(x => x.PhoneNumber).NotEmpty().Matches(@"^7\d{10}$");
+        RuleFor(c => c.Description).MustBeValueObject(NotNullableText.Create);
+        RuleFor(c => new {c.FirstName, c.LastName, c.Patronymic})
+            .MustBeValueObject(f => 
+                FullName.Create(f.FirstName, f.LastName, f.Patronymic));
+        RuleFor(c => c.Experience).MustBeValueObject(Experience.Create);
+        RuleFor(c => c.PhoneNumber).MustBeValueObject(PhoneNumber.Create);
+
+
+        RuleForEach(c => c.Requisites)
+            .MustBeValueObject(r => Requisite.Create(r.Title, r.Description));
+        RuleForEach(c => c.SocialNetworks)
+            .MustBeValueObject(s => SocialNetwork.Create(s.Title, s.Link));
     }
 }
