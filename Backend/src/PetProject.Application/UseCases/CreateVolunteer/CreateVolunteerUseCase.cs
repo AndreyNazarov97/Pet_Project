@@ -1,8 +1,11 @@
 ﻿using FluentValidation;
 using PetProject.Application.UseCases.GetVolunteer;
-using PetProject.Domain.Entities;
-using PetProject.Domain.Entities.ValueObjects;
+using PetProject.Domain.PetManagement.AggregateRoot;
+using PetProject.Domain.PetManagement.Entities;
+using PetProject.Domain.PetManagement.Entities.ValueObjects;
 using PetProject.Domain.Shared;
+using PetProject.Domain.Shared.EntityIds;
+using PetProject.Domain.Shared.ValueObjects;
 using Serilog;
 
 namespace PetProject.Application.UseCases.CreateVolunteer;
@@ -28,12 +31,6 @@ public class CreateVolunteerUseCase : ICreateVolunteerUseCase
 
     public async Task<Result<VolunteerId>> Create(CreateVolunteerRequest request, CancellationToken cancellationToken)
     {
-        var validation = await _createVolunteerRequestValidator.ValidateAsync(request, cancellationToken);
-        if (!validation.IsValid)
-        {
-            return Errors.General.ValueIsInvalid("request");
-        }
-
         var socialNetworks = request.SocialNetworks.Select(s =>
             SocialNetwork.Create(s.Title, s.Link).Value).ToList();
         var requisites = request.Requisites.Select(r =>
@@ -46,40 +43,30 @@ public class CreateVolunteerUseCase : ICreateVolunteerUseCase
             return Result<VolunteerId>.Failure(details.Error!);
         }
 
-        var phoneNumber = PhoneNumber.Create(request.PhoneNumber);
-        if (phoneNumber.IsFailure)
-        {
-            return Result<VolunteerId>.Failure(phoneNumber.Error!);
-        }
+        var phoneNumber = PhoneNumber.Create(request.PhoneNumber).Value;
+        var fullName = FullName.Create(request.FirstName, request.LastName, request.Patronymic).Value;
+        var description = NotNullableText.Create(request.Description).Value;
+        var experience = Experience.Create(request.Experience).Value;
 
-        var fullName = FullName.Create(request.FirstName, request.LastName, request.Patronymic);
-        if (fullName.IsFailure)
-        {
-            return Result<VolunteerId>.Failure(fullName.Error!);
-        }
 
-        var existedPhoneNumber = await _getVolunteerStorage.GetByPhone(phoneNumber.Value, cancellationToken);
+        var existedPhoneNumber = await _getVolunteerStorage.GetByPhone(phoneNumber, cancellationToken);
         if (existedPhoneNumber.IsSuccess)
         {
             return Errors.Volunteer.PhoneNumberAlreadyExists();
         }
 
-        var volunteerEntity = Volunteer.Create(
+
+        var volunteer = new Volunteer(
             VolunteerId.NewVolunteerId(),
-            fullName.Value,
-            request.Description,
-            request.Experience,
-            phoneNumber.Value,
+            fullName,
+            description,
+            experience,
+            phoneNumber,
             details.Value,
             null);
 
-        _logger.Information("Create volunteer: {Volunteer}", volunteerEntity.Value);
+        _logger.Information("Create volunteer: {Volunteer}", volunteer);
 
-        if (volunteerEntity.IsFailure)
-        {
-            return Result<VolunteerId>.Failure(volunteerEntity.Error!);
-        }
-
-        return await _storage.CreateVolunteer(volunteerEntity.Value, cancellationToken);
+        return await _storage.CreateVolunteer(volunteer, cancellationToken);
     }
 }

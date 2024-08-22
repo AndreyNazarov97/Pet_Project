@@ -1,6 +1,4 @@
-﻿using PetProject.Domain.Shared;
-
-namespace PetProject.Domain.Entities.ValueObjects;
+﻿namespace PetProject.Domain.Shared.ValueObjects;
 
 public class Requisite : ValueObject
 {

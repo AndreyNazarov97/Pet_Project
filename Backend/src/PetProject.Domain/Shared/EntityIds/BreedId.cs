@@ -1,4 +1,4 @@
-﻿namespace PetProject.Domain.Entities;
+﻿namespace PetProject.Domain.Shared.EntityIds;
 
 public class BreedId 
 {

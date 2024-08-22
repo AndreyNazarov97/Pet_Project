@@ -1,5 +1,6 @@
 ﻿using PetProject.Application.UseCases.CreateVolunteer;
-using PetProject.Domain.Entities;
+using PetProject.Domain.PetManagement.AggregateRoot;
+using PetProject.Domain.Shared.EntityIds;
 
 namespace PetProject.Infrastructure.Postgres.Storages;
 

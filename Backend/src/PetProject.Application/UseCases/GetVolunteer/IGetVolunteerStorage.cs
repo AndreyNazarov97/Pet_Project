@@ -1,6 +1,7 @@
-﻿using PetProject.Domain.Entities;
-using PetProject.Domain.Entities.ValueObjects;
+﻿using PetProject.Domain.PetManagement.AggregateRoot;
 using PetProject.Domain.Shared;
+using PetProject.Domain.Shared.EntityIds;
+using PetProject.Domain.Shared.ValueObjects;
 
 namespace PetProject.Application.UseCases.GetVolunteer;
 

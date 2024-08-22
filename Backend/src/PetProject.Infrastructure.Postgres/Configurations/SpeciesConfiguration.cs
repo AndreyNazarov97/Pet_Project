@@ -1,7 +1,8 @@
 ﻿using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Metadata.Builders;
-using PetProject.Domain.Entities;
+using PetProject.Domain.PetManagement.Entities;
 using PetProject.Domain.Shared;
+using PetProject.Domain.Shared.EntityIds;
 
 namespace PetProject.Infrastructure.Postgres.Configurations;
 

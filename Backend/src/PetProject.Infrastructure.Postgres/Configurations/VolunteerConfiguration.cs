@@ -1,7 +1,8 @@
 ﻿using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Metadata.Builders;
-using PetProject.Domain.Entities;
+using PetProject.Domain.PetManagement.AggregateRoot;
 using PetProject.Domain.Shared;
+using PetProject.Domain.Shared.EntityIds;
 
 namespace PetProject.Infrastructure.Postgres.Configurations;
 
@@ -15,21 +16,24 @@ public class VolunteerConfiguration : IEntityTypeConfiguration<Volunteer>
             .HasConversion(
                 id => id.Id,
                 id => VolunteerId.NewVolunteerId());
-        
+
         builder
             .ToTable(t =>
             {
-                t.HasCheckConstraint("ck_volunteer_experience", "\"experience\" >= 0");
                 t.HasCheckConstraint("ck_volunteer_pets_adopted", "\"pets_adopted\" >= 0");
                 t.HasCheckConstraint("ck_volunteer_pets_found_home_quantity", "\"pets_found_home_quantity\" >= 0");
                 t.HasCheckConstraint("ck_volunteer_pets_in_treatment", "\"pets_in_treatment\" >= 0");
             });
-        
-        builder.Property(x => x.Description)
-            .IsRequired()
-            .HasMaxLength(Constants.MAX_LONG_TEXT_LENGTH);
-        
-        
+
+        builder.ComplexProperty(x => x.Description, p =>
+        {
+            p.IsRequired();
+            p.Property(x => x.Value)
+                .HasColumnName("description")
+                .HasMaxLength(Constants.MAX_LONG_TEXT_LENGTH);
+        }); 
+
+
         builder.ComplexProperty(x => x.PhoneNumber, p =>
         {
             p.IsRequired();
@@ -37,7 +41,13 @@ public class VolunteerConfiguration : IEntityTypeConfiguration<Volunteer>
                 .HasColumnName("phone_number")
                 .HasMaxLength(Constants.PHONE_NUMBER_MAX_LENGTH);
         });
-        
+
+        builder.ComplexProperty(x => x.Experience, p =>
+        {
+            p.IsRequired();
+            p.Property(x => x.Value).HasColumnName("experience");
+        });
+
         builder.ComplexProperty(x => x.FullName, f =>
         {
             f.IsRequired();
@@ -75,6 +85,8 @@ public class VolunteerConfiguration : IEntityTypeConfiguration<Volunteer>
         builder
             .HasMany(x => x.Pets)
             .WithOne()
-            .OnDelete(DeleteBehavior.ClientSetNull);
+            .OnDelete(DeleteBehavior.Cascade);
+
+        builder.Navigation(v => v.Pets).AutoInclude();
     }
 }

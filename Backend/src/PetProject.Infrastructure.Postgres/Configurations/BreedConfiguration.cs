@@ -1,7 +1,8 @@
 ﻿using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Metadata.Builders;
-using PetProject.Domain.Entities;
+using PetProject.Domain.PetManagement.Entities;
 using PetProject.Domain.Shared;
+using PetProject.Domain.Shared.EntityIds;
 
 namespace PetProject.Infrastructure.Postgres.Configurations;
 
@@ -17,8 +18,13 @@ public class BreedConfiguration : IEntityTypeConfiguration<Breed>
                 id => id.Id,
                 id => BreedId.NewBreedId());
 
-        builder.Property(x => x.Name)
-            .IsRequired()
-            .HasMaxLength(Constants.MAX_SHORT_TEXT_LENGTH);
+        builder.ComplexProperty(x => x.Name, pb =>
+        {
+            pb.IsRequired();
+            pb.Property(x => x.Value)
+                .HasColumnName("name")
+                .HasMaxLength(Constants.MAX_SHORT_TEXT_LENGTH);
+
+        });
     }
 }

@@ -1,9 +1,10 @@
-﻿using PetProject.Domain.Entities.ValueObjects;
+﻿using PetProject.Domain.PetManagement.Entities.ValueObjects;
 using PetProject.Domain.Shared;
+using PetProject.Domain.Shared.ValueObjects;
 
-namespace PetProject.Domain.Entities;
+namespace PetProject.Domain.PetManagement.Entities;
 
-public class VolunteerDetails : Entity<Guid>
+public class VolunteerDetails 
 {
     private readonly List<Requisite> _requisites = [];
     private readonly List<SocialNetwork> _socialNetworks = [];

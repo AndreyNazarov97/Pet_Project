@@ -1,6 +1,7 @@
 ﻿using PetProject.Domain.Shared;
+using PetProject.Domain.Shared.EntityIds;
 
-namespace PetProject.Domain.Entities;
+namespace PetProject.Domain.PetManagement.Entities;
 
 /// <summary>
 /// Вид Животного
@@ -9,7 +10,7 @@ public class Species : Entity<SpeciesId>
 {
     private readonly List<Breed> _breeds = [];
     
-    private Species(){}
+    private Species(SpeciesId id) : base(id) { }
     private Species(SpeciesId id, string name)
     : base(id)
     {

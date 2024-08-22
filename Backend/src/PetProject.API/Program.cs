@@ -1,13 +1,13 @@
 using Microsoft.AspNetCore.HttpLogging;
-using Microsoft.Extensions.Options;
-using Minio;
 using Minio.AspNetCore;
 using PetProject.API.Middlewares;
 using PetProject.API.Providers;
+using PetProject.API.Validation;
 using PetProject.Application;
 using PetProject.Application.Abstractions;
 using PetProject.Infrastructure.Postgres;
 using Serilog;
+using SharpGrip.FluentValidation.AutoValidation.Mvc.Extensions;
 using MinioOptions = PetProject.API.Providers.MinioOptions;
 
 var builder = WebApplication.CreateBuilder(args);
@@ -39,6 +39,10 @@ builder.Services.AddMinio(options =>
     options.SecretKey = minioOptions.SecretKey;
 });
 
+builder.Services.AddFluentValidationAutoValidation(config =>
+{
+    config.OverrideDefaultResultFactoryWith<CustomResultFactory>();
+});
 
 builder.Services.AddApplication();
 builder.Services.AddPostgresInfrastructure(builder.Configuration);
