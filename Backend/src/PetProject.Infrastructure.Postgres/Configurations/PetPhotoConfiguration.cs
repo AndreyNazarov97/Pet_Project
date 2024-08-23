@@ -16,7 +16,7 @@ public class PetPhotoConfiguration : IEntityTypeConfiguration<PetPhoto>
         builder.Property(x => x.Id)
             .HasConversion(
                 id => id.Id,
-                id => PetPhotoId.NewPetPhotoId());
+                id => PetPhotoId.FromGuid(id));
         
         builder.Property(x => x.Path)
             .IsRequired()

@@ -3,6 +3,7 @@ using Microsoft.AspNetCore.Mvc;
 using PetProject.API.Extensions;
 using PetProject.API.Response;
 using PetProject.Application.UseCases.CreateVolunteer;
+using PetProject.Application.UseCases.UpdateVolunteer;
 using PetProject.Domain.Shared;
 using PetProject.Domain.Shared.EntityIds;
 
@@ -20,5 +21,18 @@ public class VolunteersController : ControllerBase
         var volunteerId = await useCase.Create(request, cancellationToken);
 
         return volunteerId.ToResponse();
+    }
+
+    [HttpPut("{volunteerGuid:guid}/update-main-info")]
+    public async Task<ActionResult> UpdateVolunteerMainInfo(
+        [FromRoute] Guid volunteerGuid,
+        [FromBody] UpdateMainInfoRequest request,
+        [FromServices] IUpdateVolunteerUseCase useCase,
+        CancellationToken cancellationToken)
+    {
+        var volunteerId = VolunteerId.FromGuid(volunteerGuid);
+        await useCase.UpdateMainInfo(volunteerId, request, cancellationToken);
+
+        return Result.Success().ToResponse();
     }
 }

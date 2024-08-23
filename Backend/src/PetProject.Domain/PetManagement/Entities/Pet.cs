@@ -1,4 +1,5 @@
-﻿using PetProject.Domain.PetManagement.Entities.ValueObjects;
+﻿using PetProject.Domain.PetManagement.Entities.Details;
+using PetProject.Domain.PetManagement.Entities.ValueObjects;
 using PetProject.Domain.PetManagement.Enums;
 using PetProject.Domain.Shared;
 using PetProject.Domain.Shared.EntityIds;
@@ -74,10 +75,7 @@ public class Pet : Entity<PetId>
     public void UpdateDetails(PetDetails details) => Details = details;
     public void AddRequisites(List<Requisite> requisites) => Details.AddRequisites(requisites);
     public void AddPetPhotos(List<PetPhoto> petPhotos) => _photos.AddRange(petPhotos);
-
-    public void SetVaccinated(bool isVaccinated) => IsVaccinated = isVaccinated;
-    public void SetCastrated(bool isCastrated) => IsCastrated = isCastrated;
-
+    
     public Result SetMainPhoto(PetPhoto photo)
     {
         if (!_photos.Contains(photo))
@@ -89,25 +87,7 @@ public class Pet : Entity<PetId>
         photo.SetAsMain();
         return Result.Success();
     }
-
-    public Result UpdatePhoneNumber(PhoneNumber phoneNumber)
-    {
-        OwnerPhoneNumber = phoneNumber;
-        return Result.Success();
-    }
-
-    public Result UpdateHelpStatus(HelpStatus helpStatus)
-    {
-        HelpStatus = helpStatus;
-        return Result.Success();
-    }
-
-    public Result UpdateAddress(Adress adress)
-    {
-        Address = adress;
-        return Result.Success();
-    }
-
+    
     public static Result<Pet> Create(
         PetId id,
         NotNullableString name,

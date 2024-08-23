@@ -1,8 +1,8 @@
 ﻿using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Metadata.Builders;
-using PetProject.Domain.PetManagement.Entities;
 using PetProject.Domain.Shared;
 using PetProject.Domain.Shared.EntityIds;
+using PetProject.Domain.SpeciesManagment.AggregateRoot;
 
 namespace PetProject.Infrastructure.Postgres.Configurations;
 
@@ -16,7 +16,7 @@ public class SpeciesConfiguration : IEntityTypeConfiguration<Species>
         builder.Property(x => x.Id)
             .HasConversion(
                 id => id.Id,
-                id => SpeciesId.NewSpeciesId());
+                id => SpeciesId.FromGuid(id));
         
         builder.Property(x => x.Name)
             .IsRequired()

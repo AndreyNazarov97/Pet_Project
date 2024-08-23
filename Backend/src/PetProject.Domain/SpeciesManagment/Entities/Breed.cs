@@ -2,7 +2,7 @@
 using PetProject.Domain.Shared.EntityIds;
 using PetProject.Domain.Shared.ValueObjects;
 
-namespace PetProject.Domain.PetManagement.Entities;
+namespace PetProject.Domain.SpeciesManagment.Entities;
 /// <summary>
 /// Порода 
 /// </summary>

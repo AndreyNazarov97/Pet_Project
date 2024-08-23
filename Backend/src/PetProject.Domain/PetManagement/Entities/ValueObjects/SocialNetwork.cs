@@ -32,4 +32,9 @@ public class SocialNetwork : ValueObject
         yield return Title;
         yield return Link;
     }
+
+    public override string ToString()
+    {
+        return $"{Title} - {Link}";
+    }
 }

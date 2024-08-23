@@ -85,44 +85,7 @@ namespace PetProject.Infrastructure.Postgres.Migrations
                     b.HasKey("Id")
                         .HasName("pk_volunteers");
 
-                    b.ToTable("volunteers", null, t =>
-                        {
-                            t.HasCheckConstraint("ck_volunteer_pets_adopted", "\"pets_adopted\" >= 0");
-
-                            t.HasCheckConstraint("ck_volunteer_pets_found_home_quantity", "\"pets_found_home_quantity\" >= 0");
-
-                            t.HasCheckConstraint("ck_volunteer_pets_in_treatment", "\"pets_in_treatment\" >= 0");
-                        });
-                });
-
-            modelBuilder.Entity("PetProject.Domain.PetManagement.Entities.Breed", b =>
-                {
-                    b.Property<Guid>("Id")
-                        .HasColumnType("uuid")
-                        .HasColumnName("id");
-
-                    b.Property<Guid?>("SpeciesId")
-                        .HasColumnType("uuid")
-                        .HasColumnName("species_id");
-
-                    b.ComplexProperty<Dictionary<string, object>>("Name", "PetProject.Domain.PetManagement.Entities.Breed.Name#NotNullableString", b1 =>
-                        {
-                            b1.IsRequired();
-
-                            b1.Property<string>("Value")
-                                .IsRequired()
-                                .HasMaxLength(100)
-                                .HasColumnType("character varying(100)")
-                                .HasColumnName("name");
-                        });
-
-                    b.HasKey("Id")
-                        .HasName("pk_breeds");
-
-                    b.HasIndex("SpeciesId")
-                        .HasDatabaseName("ix_breeds_species_id");
-
-                    b.ToTable("breeds", (string)null);
+                    b.ToTable("volunteers", (string)null);
                 });
 
             modelBuilder.Entity("PetProject.Domain.PetManagement.Entities.Pet", b =>
@@ -320,7 +283,7 @@ namespace PetProject.Infrastructure.Postgres.Migrations
                     b.ToTable("pet_photos", (string)null);
                 });
 
-            modelBuilder.Entity("PetProject.Domain.PetManagement.Entities.Species", b =>
+            modelBuilder.Entity("PetProject.Domain.SpeciesManagment.AggregateRoot.Species", b =>
                 {
                     b.Property<Guid>("Id")
                         .HasColumnType("uuid")
@@ -338,16 +301,46 @@ namespace PetProject.Infrastructure.Postgres.Migrations
                     b.ToTable("species", (string)null);
                 });
 
+            modelBuilder.Entity("PetProject.Domain.SpeciesManagment.Entities.Breed", b =>
+                {
+                    b.Property<Guid>("Id")
+                        .HasColumnType("uuid")
+                        .HasColumnName("id");
+
+                    b.Property<Guid?>("SpeciesId")
+                        .HasColumnType("uuid")
+                        .HasColumnName("species_id");
+
+                    b.ComplexProperty<Dictionary<string, object>>("Name", "PetProject.Domain.SpeciesManagment.Entities.Breed.Name#NotNullableString", b1 =>
+                        {
+                            b1.IsRequired();
+
+                            b1.Property<string>("Value")
+                                .IsRequired()
+                                .HasMaxLength(100)
+                                .HasColumnType("character varying(100)")
+                                .HasColumnName("name");
+                        });
+
+                    b.HasKey("Id")
+                        .HasName("pk_breeds");
+
+                    b.HasIndex("SpeciesId")
+                        .HasDatabaseName("ix_breeds_species_id");
+
+                    b.ToTable("breeds", (string)null);
+                });
+
             modelBuilder.Entity("PetProject.Domain.PetManagement.AggregateRoot.Volunteer", b =>
                 {
-                    b.OwnsOne("PetProject.Domain.PetManagement.Entities.VolunteerDetails", "Details", b1 =>
+                    b.OwnsOne("PetProject.Domain.PetManagement.AggregateRoot.Volunteer.Details#PetProject.Domain.PetManagement.Entities.Details.VolunteerDetails", "Details", b1 =>
                         {
                             b1.Property<Guid>("VolunteerId")
                                 .HasColumnType("uuid");
 
                             b1.HasKey("VolunteerId");
 
-                            b1.ToTable("volunteers");
+                            b1.ToTable("volunteers", (string)null);
 
                             b1.ToJson("details");
 
@@ -355,7 +348,37 @@ namespace PetProject.Infrastructure.Postgres.Migrations
                                 .HasForeignKey("VolunteerId")
                                 .HasConstraintName("fk_volunteers_volunteers_id");
 
-                            b1.OwnsMany("PetProject.Domain.PetManagement.Entities.ValueObjects.SocialNetwork", "SocialNetworks", b2 =>
+                            b1.OwnsMany("PetProject.Domain.PetManagement.AggregateRoot.Volunteer.Details#PetProject.Domain.PetManagement.Entities.Details.VolunteerDetails.Requisites#PetProject.Domain.Shared.ValueObjects.Requisite", "Requisites", b2 =>
+                                {
+                                    b2.Property<Guid>("VolunteerDetailsVolunteerId")
+                                        .HasColumnType("uuid");
+
+                                    b2.Property<int>("Id")
+                                        .ValueGeneratedOnAdd()
+                                        .HasColumnType("integer");
+
+                                    b2.Property<string>("Description")
+                                        .IsRequired()
+                                        .HasMaxLength(300)
+                                        .HasColumnType("character varying(300)");
+
+                                    b2.Property<string>("Title")
+                                        .IsRequired()
+                                        .HasMaxLength(100)
+                                        .HasColumnType("character varying(100)");
+
+                                    b2.HasKey("VolunteerDetailsVolunteerId", "Id");
+
+                                    b2.ToTable("volunteers", (string)null);
+
+                                    b2.ToJson("details");
+
+                                    b2.WithOwner()
+                                        .HasForeignKey("VolunteerDetailsVolunteerId")
+                                        .HasConstraintName("fk_volunteers_volunteers_volunteer_details_volunteer_id");
+                                });
+
+                            b1.OwnsMany("PetProject.Domain.PetManagement.AggregateRoot.Volunteer.Details#PetProject.Domain.PetManagement.Entities.Details.VolunteerDetails.SocialNetworks#PetProject.Domain.PetManagement.Entities.ValueObjects.SocialNetwork", "SocialNetworks", b2 =>
                                 {
                                     b2.Property<Guid>("VolunteerDetailsVolunteerId")
                                         .HasColumnType("uuid");
@@ -376,37 +399,7 @@ namespace PetProject.Infrastructure.Postgres.Migrations
 
                                     b2.HasKey("VolunteerDetailsVolunteerId", "Id");
 
-                                    b2.ToTable("volunteers");
-
-                                    b2.ToJson("details");
-
-                                    b2.WithOwner()
-                                        .HasForeignKey("VolunteerDetailsVolunteerId")
-                                        .HasConstraintName("fk_volunteers_volunteers_volunteer_details_volunteer_id");
-                                });
-
-                            b1.OwnsMany("PetProject.Domain.Shared.ValueObjects.Requisite", "Requisites", b2 =>
-                                {
-                                    b2.Property<Guid>("VolunteerDetailsVolunteerId")
-                                        .HasColumnType("uuid");
-
-                                    b2.Property<int>("Id")
-                                        .ValueGeneratedOnAdd()
-                                        .HasColumnType("integer");
-
-                                    b2.Property<string>("Description")
-                                        .IsRequired()
-                                        .HasMaxLength(300)
-                                        .HasColumnType("character varying(300)");
-
-                                    b2.Property<string>("Title")
-                                        .IsRequired()
-                                        .HasMaxLength(100)
-                                        .HasColumnType("character varying(100)");
-
-                                    b2.HasKey("VolunteerDetailsVolunteerId", "Id");
-
-                                    b2.ToTable("volunteers");
+                                    b2.ToTable("volunteers", (string)null);
 
                                     b2.ToJson("details");
 
@@ -424,15 +417,6 @@ namespace PetProject.Infrastructure.Postgres.Migrations
                         .IsRequired();
                 });
 
-            modelBuilder.Entity("PetProject.Domain.PetManagement.Entities.Breed", b =>
-                {
-                    b.HasOne("PetProject.Domain.PetManagement.Entities.Species", null)
-                        .WithMany("Breeds")
-                        .HasForeignKey("SpeciesId")
-                        .OnDelete(DeleteBehavior.Cascade)
-                        .HasConstraintName("fk_breeds_species_species_id");
-                });
-
             modelBuilder.Entity("PetProject.Domain.PetManagement.Entities.Pet", b =>
                 {
                     b.HasOne("PetProject.Domain.PetManagement.AggregateRoot.Volunteer", null)
@@ -441,14 +425,14 @@ namespace PetProject.Infrastructure.Postgres.Migrations
                         .OnDelete(DeleteBehavior.Cascade)
                         .HasConstraintName("fk_pets_volunteers_volunteer_id");
 
-                    b.OwnsOne("PetProject.Domain.PetManagement.Entities.PetDetails", "Details", b1 =>
+                    b.OwnsOne("PetProject.Domain.PetManagement.Entities.Pet.Details#PetProject.Domain.PetManagement.Entities.Details.PetDetails", "Details", b1 =>
                         {
                             b1.Property<Guid>("PetId")
                                 .HasColumnType("uuid");
 
                             b1.HasKey("PetId");
 
-                            b1.ToTable("pets");
+                            b1.ToTable("pets", (string)null);
 
                             b1.ToJson("details");
 
@@ -456,7 +440,7 @@ namespace PetProject.Infrastructure.Postgres.Migrations
                                 .HasForeignKey("PetId")
                                 .HasConstraintName("fk_pets_pets_id");
 
-                            b1.OwnsMany("PetProject.Domain.Shared.ValueObjects.Requisite", "Requisites", b2 =>
+                            b1.OwnsMany("PetProject.Domain.PetManagement.Entities.Pet.Details#PetProject.Domain.PetManagement.Entities.Details.PetDetails.Requisites#PetProject.Domain.Shared.ValueObjects.Requisite", "Requisites", b2 =>
                                 {
                                     b2.Property<Guid>("PetDetailsPetId")
                                         .HasColumnType("uuid");
@@ -477,7 +461,7 @@ namespace PetProject.Infrastructure.Postgres.Migrations
 
                                     b2.HasKey("PetDetailsPetId", "Id");
 
-                                    b2.ToTable("pets");
+                                    b2.ToTable("pets", (string)null);
 
                                     b2.ToJson("details");
 
@@ -502,6 +486,15 @@ namespace PetProject.Infrastructure.Postgres.Migrations
                         .HasConstraintName("fk_pet_photos_pets_pet_id");
                 });
 
+            modelBuilder.Entity("PetProject.Domain.SpeciesManagment.Entities.Breed", b =>
+                {
+                    b.HasOne("PetProject.Domain.SpeciesManagment.AggregateRoot.Species", null)
+                        .WithMany("Breeds")
+                        .HasForeignKey("SpeciesId")
+                        .OnDelete(DeleteBehavior.Cascade)
+                        .HasConstraintName("fk_breeds_species_species_id");
+                });
+
             modelBuilder.Entity("PetProject.Domain.PetManagement.AggregateRoot.Volunteer", b =>
                 {
                     b.Navigation("Pets");
@@ -512,7 +505,7 @@ namespace PetProject.Infrastructure.Postgres.Migrations
                     b.Navigation("Photos");
                 });
 
-            modelBuilder.Entity("PetProject.Domain.PetManagement.Entities.Species", b =>
+            modelBuilder.Entity("PetProject.Domain.SpeciesManagment.AggregateRoot.Species", b =>
                 {
                     b.Navigation("Breeds");
                 });

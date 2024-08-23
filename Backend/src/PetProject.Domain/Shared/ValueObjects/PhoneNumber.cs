@@ -30,4 +30,9 @@ public class PhoneNumber : ValueObject
     {
         yield return Number;
     }
+
+    public override string ToString()
+    {
+        return Number;
+    }
 }

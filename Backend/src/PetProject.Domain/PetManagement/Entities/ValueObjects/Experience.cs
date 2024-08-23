@@ -25,4 +25,9 @@ public class Experience : ValueObject
     {
         yield return Value;
     }
+
+    public override string ToString()
+    {
+        return Value.ToString();
+    }
 }

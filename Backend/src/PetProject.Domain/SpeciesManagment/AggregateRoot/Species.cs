@@ -1,7 +1,8 @@
 ﻿using PetProject.Domain.Shared;
 using PetProject.Domain.Shared.EntityIds;
+using PetProject.Domain.SpeciesManagment.Entities;
 
-namespace PetProject.Domain.PetManagement.Entities;
+namespace PetProject.Domain.SpeciesManagment.AggregateRoot;
 
 /// <summary>
 /// Вид Животного

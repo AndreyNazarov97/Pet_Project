@@ -3,6 +3,7 @@ using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.Logging;
 using PetProject.Domain.PetManagement.AggregateRoot;
 using PetProject.Domain.PetManagement.Entities;
+using PetProject.Domain.SpeciesManagment.AggregateRoot;
 
 namespace PetProject.Infrastructure.Postgres;
 

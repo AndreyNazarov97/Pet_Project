@@ -30,4 +30,9 @@ public class Requisite : ValueObject
         yield return Title;
         yield return Description;
     }
+    
+    public override string ToString()
+    {
+        return $"{Title} - {Description}";
+    }
 }

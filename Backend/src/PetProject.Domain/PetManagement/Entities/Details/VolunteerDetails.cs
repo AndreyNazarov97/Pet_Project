@@ -2,7 +2,7 @@
 using PetProject.Domain.Shared;
 using PetProject.Domain.Shared.ValueObjects;
 
-namespace PetProject.Domain.PetManagement.Entities;
+namespace PetProject.Domain.PetManagement.Entities.Details;
 
 public class VolunteerDetails 
 {

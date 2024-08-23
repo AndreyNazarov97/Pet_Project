@@ -1,8 +1,8 @@
 ﻿using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Metadata.Builders;
-using PetProject.Domain.PetManagement.Entities;
 using PetProject.Domain.Shared;
 using PetProject.Domain.Shared.EntityIds;
+using PetProject.Domain.SpeciesManagment.Entities;
 
 namespace PetProject.Infrastructure.Postgres.Configurations;
 
@@ -16,7 +16,7 @@ public class BreedConfiguration : IEntityTypeConfiguration<Breed>
         builder.Property(x => x.Id)
             .HasConversion(
                 id => id.Id,
-                id => BreedId.NewBreedId());
+                id => BreedId.FromGuid(id));
 
         builder.ComplexProperty(x => x.Name, pb =>
         {

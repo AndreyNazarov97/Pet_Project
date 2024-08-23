@@ -16,7 +16,7 @@ public class CreateVolunteerStorage : ICreateVolunteerStorage
 
     public async Task<VolunteerId> CreateVolunteer(Volunteer volunteer, CancellationToken cancellationToken)
     {
-        await _dbContext.Set<Volunteer>().AddAsync(volunteer, cancellationToken);
+        await _dbContext.Volunteers.AddAsync(volunteer, cancellationToken);
         await _dbContext.SaveChangesAsync(cancellationToken);
 
         return volunteer.Id;

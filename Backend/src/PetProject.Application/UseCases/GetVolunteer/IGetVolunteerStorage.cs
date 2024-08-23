@@ -9,4 +9,5 @@ public interface IGetVolunteerStorage
 {
     Task<Result<Volunteer>> GetVolunteer(VolunteerId id, CancellationToken cancellationToken);
     Task<Result<Volunteer>> GetByPhone(PhoneNumber phoneNumber, CancellationToken cancellationToken);
+    Task SaveChangesAsync(CancellationToken cancellationToken);
 }

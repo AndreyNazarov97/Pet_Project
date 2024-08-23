@@ -1,4 +1,5 @@
 ﻿using PetProject.Domain.PetManagement.Entities;
+using PetProject.Domain.PetManagement.Entities.Details;
 using PetProject.Domain.PetManagement.Entities.ValueObjects;
 using PetProject.Domain.PetManagement.Enums;
 using PetProject.Domain.Shared;
@@ -18,7 +19,7 @@ public class Volunteer : Entity<VolunteerId>
     public Experience Experience { get; private set; }
     public PhoneNumber PhoneNumber { get; private set; }
     public VolunteerDetails Details { get; private set; }
-    public IReadOnlyCollection<Pet> Pets => _pets;
+    public IReadOnlyCollection<Pet> Pets => _pets.AsReadOnly();
     
     public Volunteer(
         VolunteerId id,
@@ -46,4 +47,12 @@ public class Volunteer : Entity<VolunteerId>
     public int PetsNeedsHelp() => _pets.Count(p => p.HelpStatus == HelpStatus.NeedsHelp);
     public int PetsFoundHome() => _pets.Count(p => p.HelpStatus == HelpStatus.FoundHome);
 
+    public void UpdateMainInfo(
+        FullName? fullName, PhoneNumber? phoneNumber, NotNullableText? description, Experience? experience)
+    {
+        FullName = fullName ?? FullName;
+        PhoneNumber = phoneNumber ?? PhoneNumber;
+        Description = description ?? Description;
+        Experience = experience ?? Experience;
+    }
 }
