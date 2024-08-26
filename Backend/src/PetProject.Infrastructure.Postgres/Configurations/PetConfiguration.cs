@@ -11,40 +11,14 @@ public class PetConfiguration : IEntityTypeConfiguration<Pet>
     public void Configure(EntityTypeBuilder<Pet> builder)
     {
         builder.ToTable("pets");
-
-        builder.ToTable(t =>
-        {
-            t.HasCheckConstraint("ck_pet_weight", "\"weight\" > 0");
-            t.HasCheckConstraint("ck_pet_height", "\"height\" > 0");
-        });
-
+        
         builder.HasKey(x => x.Id);
         builder.Property(x => x.Id)
             .HasConversion(
                 id => id.Id,
                 id => PetId.FromGuid(id));
-
-        builder.Property(p => p.Weight)
-            .IsRequired();
-
-        builder.Property(p => p.Height)
-            .IsRequired();
-
-        builder.Property(p => p.IsCastrated)
-            .IsRequired();
-
-        builder.Property(p => p.BirthDate)
-            .IsRequired();
-
-        builder.Property(p => p.IsVaccinated)
-            .IsRequired();
-
-        builder.Property(p => p.HelpStatus)
-            .IsRequired();
-
-        builder.Property(p => p.CreatedAt)
-            .IsRequired();
-
+        
+        
         builder.ComplexProperty(x => x.Name, p =>
         {
             p.IsRequired();
@@ -145,6 +119,6 @@ public class PetConfiguration : IEntityTypeConfiguration<Pet>
             .HasForeignKey("pet_id")
             .OnDelete(DeleteBehavior.Cascade);
 
-        builder.Navigation(p => p.Photos).AutoInclude();
+        //builder.Navigation(p => p.Photos).AutoInclude();
     }
 }

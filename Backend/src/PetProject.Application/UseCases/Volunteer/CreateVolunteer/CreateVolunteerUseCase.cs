@@ -1,7 +1,5 @@
 ﻿using FluentValidation;
-using PetProject.Application.UseCases.GetVolunteer;
-using PetProject.Domain.PetManagement.AggregateRoot;
-using PetProject.Domain.PetManagement.Entities;
+using PetProject.Application.UseCases.Volunteer.GetVolunteer;
 using PetProject.Domain.PetManagement.Entities.Details;
 using PetProject.Domain.PetManagement.Entities.ValueObjects;
 using PetProject.Domain.Shared;
@@ -9,7 +7,7 @@ using PetProject.Domain.Shared.EntityIds;
 using PetProject.Domain.Shared.ValueObjects;
 using Serilog;
 
-namespace PetProject.Application.UseCases.CreateVolunteer;
+namespace PetProject.Application.UseCases.Volunteer.CreateVolunteer;
 
 public class CreateVolunteerUseCase : ICreateVolunteerUseCase
 {
@@ -57,7 +55,7 @@ public class CreateVolunteerUseCase : ICreateVolunteerUseCase
         }
 
 
-        var volunteer = new Volunteer(
+        var volunteer = new Domain.PetManagement.AggregateRoot.Volunteer(
             VolunteerId.NewVolunteerId(),
             fullName,
             description,

@@ -45,7 +45,8 @@ builder.Services.AddFluentValidationAutoValidation(config =>
 });
 
 builder.Services.AddApplication();
-builder.Services.AddPostgresInfrastructure(builder.Configuration);
+builder.Services.AddPostgresInfrastructure();
+
 builder.Services.AddScoped<IMinioProvider, MinioProvider>();
 
 

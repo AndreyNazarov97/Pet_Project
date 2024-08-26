@@ -68,11 +68,9 @@ public class Pet : Entity<PetId>
     public HelpStatus HelpStatus { get; private set; }
     public DateTimeOffset CreatedAt { get; private set; }
     public PetDetails Details { get; private set; }
-
-
+    
     public IReadOnlyCollection<PetPhoto> Photos => _photos.AsReadOnly();
-
-    public void UpdateDetails(PetDetails details) => Details = details;
+    
     public void AddRequisites(List<Requisite> requisites) => Details.AddRequisites(requisites);
     public void AddPetPhotos(List<PetPhoto> petPhotos) => _photos.AddRange(petPhotos);
     

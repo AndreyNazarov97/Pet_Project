@@ -3,7 +3,7 @@ using PetProject.Application.Validation;
 using PetProject.Domain.PetManagement.Entities.ValueObjects;
 using PetProject.Domain.Shared.ValueObjects;
 
-namespace PetProject.Application.UseCases.CreateVolunteer;
+namespace PetProject.Application.UseCases.Volunteer.CreateVolunteer;
 
 public class CreateVolunteerRequestValidator : AbstractValidator<CreateVolunteerRequest>
 {

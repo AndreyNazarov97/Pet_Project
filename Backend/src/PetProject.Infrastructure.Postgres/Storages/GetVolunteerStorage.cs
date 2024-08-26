@@ -1,5 +1,5 @@
 ﻿using Microsoft.EntityFrameworkCore;
-using PetProject.Application.UseCases.GetVolunteer;
+using PetProject.Application.UseCases.Volunteer.GetVolunteer;
 using PetProject.Domain.PetManagement.AggregateRoot;
 using PetProject.Domain.Shared;
 using PetProject.Domain.Shared.EntityIds;
@@ -16,18 +16,14 @@ public class GetVolunteerStorage : IGetVolunteerStorage
         _dbContext = dbContext;
     }
 
-    public async Task<Result<Volunteer>> GetVolunteer(VolunteerId id, CancellationToken cancellationToken)
+    public async Task<Result<Volunteer>> GetById(VolunteerId id, CancellationToken cancellationToken)
     {
-        // удалить после решения проблемы с инклудами
         var queryable = _dbContext.Volunteers
-            .Where(x => x.Id == id);
+            .Where(v => v.Id == id);
         var query = queryable.ToQueryString();
-        var queryvolunteer = await queryable.FirstOrDefaultAsync(cancellationToken);
-        
-        var volunteer = await _dbContext.Volunteers
-            .FirstOrDefaultAsync(v => v.Id == id, cancellationToken);
-       
 
+        var volunteer = await queryable.FirstOrDefaultAsync(cancellationToken);
+        
         if (volunteer is null)
         {
             return Result<Volunteer>.Failure(Errors.General.NotFound(id));
@@ -39,11 +35,9 @@ public class GetVolunteerStorage : IGetVolunteerStorage
     public async Task<Result<Volunteer>> GetByPhone(PhoneNumber phoneNumber, CancellationToken cancellationToken)
     {
         var volunteer = await _dbContext.Volunteers
-            .Where(x => x.PhoneNumber == phoneNumber)
-            .Include(v => v.Pets)
-                .ThenInclude(p => p.Photos)
+            .Where(v => v.PhoneNumber == phoneNumber)
             .FirstOrDefaultAsync(cancellationToken);
-        
+
         if (volunteer is null)
         {
             return Result<Volunteer>.Failure(Errors.General.NotFound());

@@ -1,6 +1,6 @@
 ﻿using PetProject.Domain.Dto;
 
-namespace PetProject.Application.UseCases.CreateVolunteer;
+namespace PetProject.Application.UseCases.Volunteer.CreateVolunteer;
 
 public class CreateVolunteerRequest
 {

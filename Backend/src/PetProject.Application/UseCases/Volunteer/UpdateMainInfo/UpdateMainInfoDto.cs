@@ -1,6 +1,6 @@
-﻿namespace PetProject.Application.UseCases.UpdateVolunteer;
+﻿namespace PetProject.Application.UseCases.Volunteer.UpdateMainInfo;
 
-public record UpdateMainInfoRequest(
+public record UpdateMainInfoDto(
     string FirstName, 
     string LastName, 
     string Patronymic, 

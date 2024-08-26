@@ -15,7 +15,7 @@ public class PetDetails
     }
     
     
-    public IReadOnlyCollection<Requisite> Requisites => _requisites;
+    public IReadOnlyCollection<Requisite> Requisites => _requisites.AsReadOnly();
 
     
     public void AddRequisites(List<Requisite> requisites) => _requisites.AddRange(requisites);

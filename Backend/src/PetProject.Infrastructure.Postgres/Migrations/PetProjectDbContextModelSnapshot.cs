@@ -118,13 +118,13 @@ namespace PetProject.Infrastructure.Postgres.Migrations
                         .HasColumnType("boolean")
                         .HasColumnName("is_vaccinated");
 
-                    b.Property<Guid?>("VolunteerId")
-                        .HasColumnType("uuid")
-                        .HasColumnName("volunteer_id");
-
                     b.Property<double>("Weight")
                         .HasColumnType("double precision")
                         .HasColumnName("weight");
+
+                    b.Property<Guid?>("volunteer_id")
+                        .HasColumnType("uuid")
+                        .HasColumnName("volunteer_id");
 
                     b.ComplexProperty<Dictionary<string, object>>("Address", "PetProject.Domain.PetManagement.Entities.Pet.Address#Adress", b1 =>
                         {
@@ -243,15 +243,10 @@ namespace PetProject.Infrastructure.Postgres.Migrations
                     b.HasKey("Id")
                         .HasName("pk_pets");
 
-                    b.HasIndex("VolunteerId")
+                    b.HasIndex("volunteer_id")
                         .HasDatabaseName("ix_pets_volunteer_id");
 
-                    b.ToTable("pets", null, t =>
-                        {
-                            t.HasCheckConstraint("ck_pet_height", "\"height\" > 0");
-
-                            t.HasCheckConstraint("ck_pet_weight", "\"weight\" > 0");
-                        });
+                    b.ToTable("pets", (string)null);
                 });
 
             modelBuilder.Entity("PetProject.Domain.PetManagement.Entities.PetPhoto", b =>
@@ -270,14 +265,14 @@ namespace PetProject.Infrastructure.Postgres.Migrations
                         .HasColumnType("character varying(255)")
                         .HasColumnName("path");
 
-                    b.Property<Guid?>("PetId")
+                    b.Property<Guid?>("pet_id")
                         .HasColumnType("uuid")
                         .HasColumnName("pet_id");
 
                     b.HasKey("Id")
                         .HasName("pk_pet_photos");
 
-                    b.HasIndex("PetId")
+                    b.HasIndex("pet_id")
                         .HasDatabaseName("ix_pet_photos_pet_id");
 
                     b.ToTable("pet_photos", (string)null);
@@ -421,7 +416,7 @@ namespace PetProject.Infrastructure.Postgres.Migrations
                 {
                     b.HasOne("PetProject.Domain.PetManagement.AggregateRoot.Volunteer", null)
                         .WithMany("Pets")
-                        .HasForeignKey("VolunteerId")
+                        .HasForeignKey("volunteer_id")
                         .OnDelete(DeleteBehavior.Cascade)
                         .HasConstraintName("fk_pets_volunteers_volunteer_id");
 
@@ -481,7 +476,7 @@ namespace PetProject.Infrastructure.Postgres.Migrations
                 {
                     b.HasOne("PetProject.Domain.PetManagement.Entities.Pet", null)
                         .WithMany("Photos")
-                        .HasForeignKey("PetId")
+                        .HasForeignKey("pet_id")
                         .OnDelete(DeleteBehavior.Cascade)
                         .HasConstraintName("fk_pet_photos_pets_pet_id");
                 });

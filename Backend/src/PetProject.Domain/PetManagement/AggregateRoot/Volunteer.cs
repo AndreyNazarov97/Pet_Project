@@ -18,7 +18,7 @@ public class Volunteer : Entity<VolunteerId>
     public NotNullableText Description { get; private set; }
     public Experience Experience { get; private set; }
     public PhoneNumber PhoneNumber { get; private set; }
-    public VolunteerDetails Details { get; private set; }
+    public VolunteerDetails Details { get; private set; } 
     public IReadOnlyCollection<Pet> Pets => _pets.AsReadOnly();
     
     public Volunteer(
@@ -28,7 +28,7 @@ public class Volunteer : Entity<VolunteerId>
         Experience experience,
         PhoneNumber phoneNumber,
         VolunteerDetails details,
-        List<Pet>? pets)
+        Pet? pet)
         : base(id)
     {
         FullName = fullName;
@@ -37,10 +37,10 @@ public class Volunteer : Entity<VolunteerId>
         Details = details;
         Experience = experience;
 
-        if (pets != null) AddPets(pets);
+        if (pet != null) AddPet(pet);
     }
 
-    public void AddPets(List<Pet> pets) => _pets.AddRange(pets);
+    public void AddPet(Pet pet) => _pets.Add(pet);
     public void AddSocialNetworks(List<SocialNetwork> socialNetworks) => Details.AddSocialNetworks(socialNetworks);
     public void AddRequisites(List<Requisite> requisites) => Details.AddRequisites(requisites);
     public int PetsLookingForHome() => _pets.Count(p => p.HelpStatus == HelpStatus.LookingForHome);
@@ -55,4 +55,6 @@ public class Volunteer : Entity<VolunteerId>
         Description = description ?? Description;
         Experience = experience ?? Experience;
     }
+    public void UpdateSocialNetworks(List<SocialNetwork> socialNetworks) => Details.UpdateSocialNetworks(socialNetworks);
+    public void UpdateRequisites(List<Requisite> requisites) => Details.UpdateRequisites(requisites);
 }
