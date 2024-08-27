@@ -1,12 +1,10 @@
 ﻿namespace PetProject.Domain.Shared.ValueObjects;
 
-public class Requisite : ValueObject
+public record Requisite 
 {
     public string Title { get; }
     public string Description { get; }
     
-    private Requisite(){}
-
     private Requisite(string title, string description)
     {
         Title = title;
@@ -22,13 +20,8 @@ public class Requisite : ValueObject
             return  Errors.General.ValueIsRequired(nameof(description));
         
         var requisite = new Requisite(title, description);
-        return Result<Requisite>.Success(requisite);
-    }
-    
-    public override IEnumerable<object> GetEqualityComponents()
-    {
-        yield return Title;
-        yield return Description;
+
+        return requisite;
     }
     
     public override string ToString()

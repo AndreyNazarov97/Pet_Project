@@ -32,9 +32,11 @@ public class CreateVolunteerUseCase : ICreateVolunteerUseCase
     {
         var socialNetworks = request.SocialNetworks.Select(s =>
             SocialNetwork.Create(s.Title, s.Link).Value).ToList();
+        var socialNetworksList = new SocialNetworkList(socialNetworks);
+        
         var requisites = request.Requisites.Select(r =>
             Requisite.Create(r.Title, r.Description).Value).ToList();
-        var details = new VolunteerDetails(requisites, socialNetworks);
+        var requisitesList = new RequisitesList(requisites);
 
         var phoneNumber = PhoneNumber.Create(request.PhoneNumber).Value;
         var fullName = FullName.Create(request.FirstName, request.LastName, request.Patronymic).Value;
@@ -55,7 +57,8 @@ public class CreateVolunteerUseCase : ICreateVolunteerUseCase
             description,
             experience,
             phoneNumber,
-            details);
+            requisitesList,
+            socialNetworksList);
 
         _logger.Information("Create volunteer: {Volunteer}", volunteer);
 

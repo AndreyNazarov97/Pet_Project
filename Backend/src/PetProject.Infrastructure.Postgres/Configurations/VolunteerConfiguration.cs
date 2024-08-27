@@ -53,22 +53,32 @@ public class VolunteerConfiguration : IEntityTypeConfiguration<Volunteer>
                 .HasMaxLength(Constants.MAX_SHORT_TEXT_LENGTH);
         });
 
-        builder.OwnsOne(v => v.Details, d =>
+        builder.OwnsOne(v => v.Requisites, rb =>
         {
-            d.ToJson();
-            d.OwnsMany(vd => vd.SocialNetworks, sn =>
+            rb.ToJson("requisites");
+
+            rb.OwnsMany(r => r.Requisites, requisitesBuilder =>
             {
-                sn.Property(s => s.Title)
+                requisitesBuilder.Property(r => r.Title)
+                    .IsRequired()
                     .HasMaxLength(Constants.MAX_SHORT_TEXT_LENGTH);
-                sn.Property(s => s.Link)
+                requisitesBuilder.Property(r => r.Description)
+                    .IsRequired()
                     .HasMaxLength(Constants.MAX_LONG_TEXT_LENGTH);
             });
+        });
 
-            d.OwnsMany(vd => vd.Requisites, r =>
+        builder.OwnsOne(v => v.SocialNetworks, sb =>
+        {
+            sb.ToJson("social_networks");
+
+            sb.OwnsMany(s => s.SocialNetworks, socialNetworksBuilder =>
             {
-                r.Property(r => r.Title)
+                socialNetworksBuilder.Property(s => s.Title)
+                    .IsRequired()
                     .HasMaxLength(Constants.MAX_SHORT_TEXT_LENGTH);
-                r.Property(r => r.Description)
+                socialNetworksBuilder.Property(s => s.Link)
+                    .IsRequired()
                     .HasMaxLength(Constants.MAX_LONG_TEXT_LENGTH);
             });
         });

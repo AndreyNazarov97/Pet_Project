@@ -1,5 +1,4 @@
 ﻿using PetProject.Domain.PetManagement.Entities;
-using PetProject.Domain.PetManagement.Entities.Details;
 using PetProject.Domain.PetManagement.Entities.ValueObjects;
 using PetProject.Domain.PetManagement.Enums;
 using PetProject.Domain.Shared;
@@ -18,7 +17,8 @@ public class Volunteer : Entity<VolunteerId>
     public NotNullableText Description { get; private set; }
     public Experience Experience { get; private set; }
     public PhoneNumber PhoneNumber { get; private set; }
-    public VolunteerDetails Details { get; private set; } 
+    public RequisitesList Requisites { get; private set; } 
+    public SocialNetworkList SocialNetworks { get; private set; }
     public IReadOnlyCollection<Pet> Pets => _pets.AsReadOnly();
     
     public Volunteer(
@@ -27,14 +27,16 @@ public class Volunteer : Entity<VolunteerId>
         NotNullableText description,
         Experience experience,
         PhoneNumber phoneNumber,
-        VolunteerDetails details)
+        RequisitesList requisites,
+        SocialNetworkList socialNetworks)
         : base(id)
     {
         FullName = fullName;
         Description = description;
         PhoneNumber = phoneNumber;
-        Details = details;
         Experience = experience;
+        Requisites = requisites;
+        SocialNetworks = socialNetworks;
     }
 
     public void AddPet(Pet pet) => _pets.Add(pet);
@@ -51,19 +53,6 @@ public class Volunteer : Entity<VolunteerId>
         Experience = experience ?? Experience;
     }
 
-    public void UpdateSocialNetworks(List<SocialNetwork> socialNetworks)
-    {
-        var details = new VolunteerDetails(
-            Details.Requisites.ToList(),
-            socialNetworks);
-        Details = details;
-    }
-
-    public void UpdateRequisites(List<Requisite> requisites)
-    {
-        var details = new VolunteerDetails(
-            requisites,
-            Details.SocialNetworks.ToList());
-        Details = details;
-    }
+    public void UpdateSocialNetworks(SocialNetworkList socialNetworks) => SocialNetworks = socialNetworks;
+    public void UpdateRequisites(RequisitesList requisites) => Requisites = requisites;
 }

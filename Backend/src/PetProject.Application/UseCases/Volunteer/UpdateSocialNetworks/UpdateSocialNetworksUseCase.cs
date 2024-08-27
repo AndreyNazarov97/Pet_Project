@@ -30,8 +30,9 @@ public class UpdateSocialNetworksUseCase : IUpdateSocialNetworksUseCase
 
         var socialNetworks = request.Dto.SocialNetworks
             .Select(s => SocialNetwork.Create(s.Title, s.Link).Value).ToList();
+        var socialNetworksList = new SocialNetworkList(socialNetworks);
        
-        volunteer.Value.UpdateSocialNetworks(socialNetworks);
+        volunteer.Value.UpdateSocialNetworks(socialNetworksList);
         await _getVolunteerStorage.SaveChangesAsync(cancellationToken);
         
         _logger.Information("Volunteer {id} social networks was updated", volunteerId);

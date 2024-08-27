@@ -30,8 +30,9 @@ public class UpdateRequisitesUseCase : IUpdateRequisitesUseCase
 
         var requisites = request.Dto.Requisites
             .Select(r => Requisite.Create(r.Title, r.Description).Value).ToList();
+        var requisitesList = new RequisitesList(requisites);
 
-        volunteer.Value.UpdateRequisites(requisites);
+        volunteer.Value.UpdateRequisites(requisitesList);
         await _getVolunteerStorage.SaveChangesAsync(cancellationToken);
 
         _logger.Information("Volunteer {id} requisites was updated", volunteerId);
