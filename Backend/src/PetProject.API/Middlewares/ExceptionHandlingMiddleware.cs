@@ -38,3 +38,11 @@ public class ExceptionHandlingMiddleware
         await context.Response.WriteAsJsonAsync(envelope);
     }
 }
+public static class ExceptionHandlingMiddlewareExtensions
+{
+    public static void UseExceptionHandling(
+        this IApplicationBuilder builder)
+    {
+        builder.UseMiddleware<ExceptionHandlingMiddleware>();
+    }
+}

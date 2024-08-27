@@ -54,10 +54,9 @@ builder.Services.AddScoped<IMinioProvider, MinioProvider>();
 
 var app = builder.Build();
 
-app.UseSerilogRequestLogging(); 
+app.UseSerilogRequestLogging();
 
-
-app.UseMiddleware<ExceptionHandlingMiddleware>();
+app.UseExceptionHandling();
 
 // Configure the HTTP request pipeline.
 if (app.Environment.IsDevelopment())
