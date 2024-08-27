@@ -45,18 +45,4 @@ public class UpdateMainInfoUseCase : IUpdateMainInfoUseCase
         _logger.Information("Volunteer {id} was updated", volunteerId);
         return Result.Success();
     }
-
-    public Task<Result> UpdateSocialNetworks(
-        UpdateSocialNetworksRequest request,
-        CancellationToken cancellationToken)
-    {
-        throw new NotImplementedException();
-    }
-
-    public Task<Result> UpdateRequisites(
-        UpdateRequisitesRequest request,
-        CancellationToken cancellationToken)
-    {
-        throw new NotImplementedException();
-    }
 }

@@ -38,8 +38,6 @@ public class Volunteer : Entity<VolunteerId>
     }
 
     public void AddPet(Pet pet) => _pets.Add(pet);
-    public void AddSocialNetworks(List<SocialNetwork> socialNetworks) => Details.AddSocialNetworks(socialNetworks);
-    public void AddRequisites(List<Requisite> requisites) => Details.AddRequisites(requisites);
     public int PetsLookingForHome() => _pets.Count(p => p.HelpStatus == HelpStatus.LookingForHome);
     public int PetsNeedsHelp() => _pets.Count(p => p.HelpStatus == HelpStatus.NeedsHelp);
     public int PetsFoundHome() => _pets.Count(p => p.HelpStatus == HelpStatus.FoundHome);
@@ -52,6 +50,20 @@ public class Volunteer : Entity<VolunteerId>
         Description = description ?? Description;
         Experience = experience ?? Experience;
     }
-    public void UpdateSocialNetworks(List<SocialNetwork> socialNetworks) => Details.UpdateSocialNetworks(socialNetworks);
-    public void UpdateRequisites(List<Requisite> requisites) => Details.UpdateRequisites(requisites);
+
+    public void UpdateSocialNetworks(List<SocialNetwork> socialNetworks)
+    {
+        var details = new VolunteerDetails(
+            Details.Requisites.ToList(),
+            socialNetworks);
+        Details = details;
+    }
+
+    public void UpdateRequisites(List<Requisite> requisites)
+    {
+        var details = new VolunteerDetails(
+            requisites,
+            Details.SocialNetworks.ToList());
+        Details = details;
+    }
 }
