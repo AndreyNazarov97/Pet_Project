@@ -1,4 +1,5 @@
 ﻿using System.Net;
+using PetProject.API.Response;
 using ILogger = Serilog.ILogger;
 
 namespace PetProject.API.Middlewares;
@@ -29,9 +30,11 @@ public class ExceptionHandlingMiddleware
     private async Task HandleExceptionAsync(HttpContext context, Exception exception)
     {
         _logger.Error(exception, exception.Message);
+        var responseError = new ResponseError("server.internal", exception.Message, null);
+        var envelope = Envelope.Error([responseError]);
 
         context.Response.ContentType = "application/json";
-        context.Response.StatusCode = (int)HttpStatusCode.InternalServerError;
-        await context.Response.WriteAsJsonAsync(exception.Message);
+        context.Response.StatusCode = StatusCodes.Status500InternalServerError;
+        await context.Response.WriteAsJsonAsync(envelope);
     }
 }
