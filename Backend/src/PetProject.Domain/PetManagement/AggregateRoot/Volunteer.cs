@@ -27,8 +27,7 @@ public class Volunteer : Entity<VolunteerId>
         NotNullableText description,
         Experience experience,
         PhoneNumber phoneNumber,
-        VolunteerDetails details,
-        Pet? pet)
+        VolunteerDetails details)
         : base(id)
     {
         FullName = fullName;
@@ -36,8 +35,6 @@ public class Volunteer : Entity<VolunteerId>
         PhoneNumber = phoneNumber;
         Details = details;
         Experience = experience;
-
-        if (pet != null) AddPet(pet);
     }
 
     public void AddPet(Pet pet) => _pets.Add(pet);

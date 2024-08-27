@@ -9,6 +9,7 @@ public class UpdateMainInfoRequestValidator : AbstractValidator<UpdateMainInfoRe
 {
     public UpdateMainInfoRequestValidator()
     {
+        
         RuleFor(c => c.Dto.Description).MustBeValueObject(NotNullableText.Create);
         RuleFor(c => new {c.Dto.FirstName, c.Dto.LastName, c.Dto.Patronymic})
             .MustBeValueObject(f => 

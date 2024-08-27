@@ -61,8 +61,7 @@ public class CreateVolunteerUseCase : ICreateVolunteerUseCase
             description,
             experience,
             phoneNumber,
-            details.Value,
-            null);
+            details.Value);
 
         _logger.Information("Create volunteer: {Volunteer}", volunteer);
 
