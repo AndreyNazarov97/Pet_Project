@@ -1,5 +1,7 @@
 using Microsoft.AspNetCore.HttpLogging;
+using Microsoft.EntityFrameworkCore;
 using Minio.AspNetCore;
+using PetProject.API;
 using PetProject.API.Middlewares;
 using PetProject.API.Providers;
 using PetProject.API.Validation;
@@ -45,7 +47,8 @@ builder.Services.AddFluentValidationAutoValidation(config =>
 });
 
 builder.Services.AddApplication();
-builder.Services.AddPostgresInfrastructure(builder.Configuration);
+builder.Services.AddPostgresInfrastructure();
+
 builder.Services.AddScoped<IMinioProvider, MinioProvider>();
 
 
@@ -61,6 +64,8 @@ if (app.Environment.IsDevelopment())
 {
     app.UseSwagger();
     app.UseSwaggerUI();
+
+    await app.ApplyMigrations();
 }
 
 app.UseHttpsRedirection();

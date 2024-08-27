@@ -1,6 +1,5 @@
 ﻿using Microsoft.EntityFrameworkCore;
-using PetProject.Application.UseCases;
-using PetProject.Application.UseCases.GetVolunteer;
+using PetProject.Application.UseCases.Volunteer.GetVolunteer;
 using PetProject.Domain.PetManagement.AggregateRoot;
 using PetProject.Domain.Shared;
 using PetProject.Domain.Shared.EntityIds;
@@ -17,21 +16,38 @@ public class GetVolunteerStorage : IGetVolunteerStorage
         _dbContext = dbContext;
     }
 
-    public async Task<Result<Volunteer>> GetVolunteer(VolunteerId id, CancellationToken cancellationToken)
+    public async Task<Result<Volunteer>> GetById(VolunteerId id, CancellationToken cancellationToken)
     {
-        return await _dbContext.Volunteers
-                   .Include(v => v.Pets)
-                       .ThenInclude(p => p.Photos)
-                   .FirstOrDefaultAsync(x => x.Id == id, cancellationToken) 
-                    ?? Result<Volunteer>.Failure(Errors.General.NotFound(id));
+        var queryable = _dbContext.Volunteers
+            .Where(v => v.Id == id);
+        var query = queryable.ToQueryString();
+
+        var volunteer = await queryable.FirstOrDefaultAsync(cancellationToken);
+        
+        if (volunteer is null)
+        {
+            return Result<Volunteer>.Failure(Errors.General.NotFound(id));
+        }
+
+        return Result<Volunteer>.Success(volunteer);
     }
-    
+
     public async Task<Result<Volunteer>> GetByPhone(PhoneNumber phoneNumber, CancellationToken cancellationToken)
     {
-        return await _dbContext.Volunteers
-                   .Include(v => v.Pets)
-                       .ThenInclude(p => p.Photos)
-                   .FirstOrDefaultAsync(x => x.PhoneNumber == phoneNumber, cancellationToken) 
-                    ?? Result<Volunteer>.Failure(Errors.General.NotFound());
+        var volunteer = await _dbContext.Volunteers
+            .Where(v => v.PhoneNumber == phoneNumber)
+            .FirstOrDefaultAsync(cancellationToken);
+
+        if (volunteer is null)
+        {
+            return Result<Volunteer>.Failure(Errors.General.NotFound());
+        }
+
+        return Result<Volunteer>.Success(volunteer);
+    }
+
+    public async Task SaveChangesAsync(CancellationToken cancellationToken)
+    {
+        await _dbContext.SaveChangesAsync(cancellationToken);
     }
 }

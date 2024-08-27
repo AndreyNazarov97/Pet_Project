@@ -15,25 +15,16 @@ public class VolunteerConfiguration : IEntityTypeConfiguration<Volunteer>
         builder.Property(x => x.Id)
             .HasConversion(
                 id => id.Id,
-                id => VolunteerId.NewVolunteerId());
-
-        builder
-            .ToTable(t =>
-            {
-                t.HasCheckConstraint("ck_volunteer_pets_adopted", "\"pets_adopted\" >= 0");
-                t.HasCheckConstraint("ck_volunteer_pets_found_home_quantity", "\"pets_found_home_quantity\" >= 0");
-                t.HasCheckConstraint("ck_volunteer_pets_in_treatment", "\"pets_in_treatment\" >= 0");
-            });
-
+                id => VolunteerId.FromGuid(id));
+        
         builder.ComplexProperty(x => x.Description, p =>
         {
             p.IsRequired();
             p.Property(x => x.Value)
                 .HasColumnName("description")
                 .HasMaxLength(Constants.MAX_LONG_TEXT_LENGTH);
-        }); 
-
-
+        });
+        
         builder.ComplexProperty(x => x.PhoneNumber, p =>
         {
             p.IsRequired();
@@ -85,8 +76,9 @@ public class VolunteerConfiguration : IEntityTypeConfiguration<Volunteer>
         builder
             .HasMany(x => x.Pets)
             .WithOne()
+            .HasForeignKey("volunteer_id")
             .OnDelete(DeleteBehavior.Cascade);
 
-        builder.Navigation(v => v.Pets).AutoInclude();
+        //builder.Navigation(v => v.Pets).AutoInclude();
     }
 }

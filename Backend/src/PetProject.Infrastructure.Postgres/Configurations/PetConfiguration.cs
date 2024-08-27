@@ -11,39 +11,13 @@ public class PetConfiguration : IEntityTypeConfiguration<Pet>
     public void Configure(EntityTypeBuilder<Pet> builder)
     {
         builder.ToTable("pets");
-
-        builder.ToTable(t =>
-        {
-            t.HasCheckConstraint("ck_pet_weight", "\"weight\" > 0");
-            t.HasCheckConstraint("ck_pet_height", "\"height\" > 0");
-        });
         
         builder.HasKey(x => x.Id);
         builder.Property(x => x.Id)
             .HasConversion(
                 id => id.Id,
-                id => PetId.NewPetId());
+                id => PetId.FromGuid(id));
         
-        builder.Property(p => p.Weight)
-            .IsRequired();
-        
-        builder.Property(p => p.Height)
-            .IsRequired(); 
-        
-        builder.Property(p => p.IsCastrated)
-            .IsRequired(); 
-        
-        builder.Property(p => p.BirthDate)
-            .IsRequired(); 
-        
-        builder.Property(p => p.IsVaccinated)
-            .IsRequired(); 
-        
-        builder.Property(p => p.HelpStatus)
-            .IsRequired();
-        
-        builder.Property(p => p.CreatedAt)
-            .IsRequired();
         
         builder.ComplexProperty(x => x.Name, p =>
         {
@@ -51,7 +25,6 @@ public class PetConfiguration : IEntityTypeConfiguration<Pet>
             p.Property(x => x.Value)
                 .HasColumnName("name")
                 .HasMaxLength(Constants.MAX_SHORT_TEXT_LENGTH);
-                
         });
 
         builder.ComplexProperty(p => p.Description, pb =>
@@ -60,7 +33,6 @@ public class PetConfiguration : IEntityTypeConfiguration<Pet>
             pb.Property(x => x.Value)
                 .HasColumnName("description")
                 .HasMaxLength(Constants.MAX_LONG_TEXT_LENGTH);
-
         });
 
         builder.ComplexProperty(p => p.BreedName, pb =>
@@ -69,7 +41,6 @@ public class PetConfiguration : IEntityTypeConfiguration<Pet>
             pb.Property(x => x.Value)
                 .HasColumnName("breed_name")
                 .HasMaxLength(Constants.MAX_SHORT_TEXT_LENGTH);
-
         });
 
         builder.ComplexProperty(p => p.Color, pb =>
@@ -78,7 +49,6 @@ public class PetConfiguration : IEntityTypeConfiguration<Pet>
             pb.Property(x => x.Value)
                 .HasColumnName("color")
                 .HasMaxLength(Constants.MAX_SHORT_TEXT_LENGTH);
-
         });
 
         builder.ComplexProperty(p => p.HealthInfo, pb =>
@@ -87,7 +57,6 @@ public class PetConfiguration : IEntityTypeConfiguration<Pet>
             pb.Property(x => x.Value)
                 .HasColumnName("health_info")
                 .HasMaxLength(Constants.MAX_LONG_TEXT_LENGTH);
-
         });
 
         builder.ComplexProperty(p => p.AnimalType, at =>
@@ -134,7 +103,7 @@ public class PetConfiguration : IEntityTypeConfiguration<Pet>
         builder.OwnsOne(v => v.Details, d =>
         {
             d.ToJson();
-          
+
             d.OwnsMany(vd => vd.Requisites, r =>
             {
                 r.Property(r => r.Title)
@@ -143,12 +112,13 @@ public class PetConfiguration : IEntityTypeConfiguration<Pet>
                     .HasMaxLength(Constants.MAX_LONG_TEXT_LENGTH);
             });
         });
-            
+
         builder
             .HasMany(x => x.Photos)
             .WithOne()
+            .HasForeignKey("pet_id")
             .OnDelete(DeleteBehavior.Cascade);
 
-        builder.Navigation(p => p.Photos).AutoInclude();
+        //builder.Navigation(p => p.Photos).AutoInclude();
     }
 }

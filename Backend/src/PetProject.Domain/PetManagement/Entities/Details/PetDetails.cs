@@ -1,7 +1,7 @@
 ﻿using PetProject.Domain.Shared;
 using PetProject.Domain.Shared.ValueObjects;
 
-namespace PetProject.Domain.PetManagement.Entities;
+namespace PetProject.Domain.PetManagement.Entities.Details;
 
 public class PetDetails
 {
@@ -15,7 +15,7 @@ public class PetDetails
     }
     
     
-    public IReadOnlyCollection<Requisite> Requisites => _requisites;
+    public IReadOnlyCollection<Requisite> Requisites => _requisites.AsReadOnly();
 
     
     public void AddRequisites(List<Requisite> requisites) => _requisites.AddRange(requisites);

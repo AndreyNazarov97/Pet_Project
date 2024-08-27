@@ -50,4 +50,9 @@ public class Adress : ValueObject
         yield return House;
         yield return Flat;
     }
+
+    public override string ToString()
+    {
+        return $"{Country}, {City}, {Street}, {House}, {Flat}";
+    }
 }

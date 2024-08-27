@@ -2,9 +2,9 @@
 using PetProject.Domain.Shared;
 using PetProject.Domain.Shared.ValueObjects;
 
-namespace PetProject.Domain.PetManagement.Entities;
+namespace PetProject.Domain.PetManagement.Entities.Details;
 
-public class VolunteerDetails 
+public class VolunteerDetails : ValueObject
 {
     private readonly List<Requisite> _requisites = [];
     private readonly List<SocialNetwork> _socialNetworks = [];
@@ -18,13 +18,23 @@ public class VolunteerDetails
         _socialNetworks = socialNetworks;
     }
     
-    public IReadOnlyCollection<SocialNetwork> SocialNetworks => _socialNetworks;
-    public IReadOnlyCollection<Requisite> Requisites => _requisites;
+    public IReadOnlyCollection<SocialNetwork> SocialNetworks => _socialNetworks.AsReadOnly();
+    public IReadOnlyCollection<Requisite> Requisites => _requisites.AsReadOnly();
     
     
     public void AddSocialNetworks(List<SocialNetwork> socialNetworks) => _socialNetworks.AddRange(socialNetworks);
     public void AddRequisites(List<Requisite> requisites) => _requisites.AddRange(requisites);
+    public void UpdateRequisites(List<Requisite> requisites)
+    { 
+        _requisites.Clear();
+        _requisites.AddRange(requisites);
+    }
 
+    public void UpdateSocialNetworks(List<SocialNetwork> socialNetworks)
+    {
+        _socialNetworks.Clear();
+        _socialNetworks.AddRange(socialNetworks);
+    }
     public static Result<VolunteerDetails> Create(
         List<Requisite>? requisites, 
         List<SocialNetwork>? socialNetworks)
@@ -34,5 +44,10 @@ public class VolunteerDetails
             socialNetworks ?? []);
         return Result<VolunteerDetails>.Success(details);
     }
-    
+
+    public override IEnumerable<object> GetEqualityComponents()
+    {
+        yield return _requisites;
+        yield return _socialNetworks;
+    }
 }

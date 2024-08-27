@@ -1,7 +1,7 @@
 ﻿using PetProject.Domain.Shared;
 using PetProject.Domain.Shared.EntityIds;
 
-namespace PetProject.Application.UseCases.CreateVolunteer;
+namespace PetProject.Application.UseCases.Volunteer.CreateVolunteer;
 
 public interface ICreateVolunteerUseCase
 {

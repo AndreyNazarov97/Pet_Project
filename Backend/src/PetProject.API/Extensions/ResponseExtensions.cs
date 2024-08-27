@@ -57,24 +57,4 @@ public static class ResponseExtensions
             StatusCode = statusCode
         };
     }
-
-    public static ActionResult ToValidationErrorResponse(this ValidationResult validationResult)
-    {
-        if (validationResult.IsValid)
-            throw new InvalidOperationException("Result cannot be succed");
-
-        var validationErrors = validationResult.Errors;
-
-        var responseErrors =
-            from validationError in validationErrors
-            let error = Error.Deserialize(validationError.ErrorMessage)
-            select new ResponseError(error.Code, error.Message, validationError.PropertyName);
-
-        var envelope = Envelope.Error(responseErrors);
-
-        return new ObjectResult(envelope)
-        {
-            StatusCode = StatusCodes.Status400BadRequest
-        };
-    }
 }
