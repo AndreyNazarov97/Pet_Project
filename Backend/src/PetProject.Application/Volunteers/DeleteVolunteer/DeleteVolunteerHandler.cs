@@ -11,18 +11,18 @@ public class DeleteVolunteerHandler(IVolunteersRepository repository, ILogger<De
         CancellationToken cancellationToken = default)
     {
         var volunteerId = VolunteerId.Create(request.Id);
-        var volunteer = await repository.GetById(volunteerId, cancellationToken);
-        if (volunteer.IsFailure)
-            return volunteer.Error;
+        var volunteerResult = await repository.GetById(volunteerId, cancellationToken);
+        if (volunteerResult.IsFailure)
+            return volunteerResult.Error;
 
-        volunteer.Value.Deactivate();
+        volunteerResult.Value.Deactivate();
         
-        var result = await repository.Delete(volunteer.Value, cancellationToken);
+        var result = await repository.Delete(volunteerResult.Value, cancellationToken);
         if (result.IsFailure)
-            return volunteer.Error;
+            return volunteerResult.Error;
         
         logger.Log(LogLevel.Information, "Volunteer deleted with Id {volunteerId}", volunteerId);
         
-        return volunteer.Value.Id.Id;
+        return volunteerResult.Value.Id.Id;
     }
 }

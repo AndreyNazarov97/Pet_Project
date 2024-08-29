@@ -1,7 +1,7 @@
 ﻿using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.Logging;
-using PetProject.Domain.Species;
+using PetProject.Domain.SpeciesManagement;
 using PetProject.Domain.VolunteerManagement;
 
 namespace PetProject.Infrastructure.Postgres;

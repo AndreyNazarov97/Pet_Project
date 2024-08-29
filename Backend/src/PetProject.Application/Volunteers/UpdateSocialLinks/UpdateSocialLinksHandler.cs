@@ -20,8 +20,7 @@ public class UpdateSocialLinksHandler(IVolunteersRepository repository, ILogger<
             return volunteer.Error;
 
         var socialLinks = request.Dto.SocialLinks
-            .Select(x => SocialLink.Create(x.Name, x.Url))
-            .Select(x => x.Value);
+            .Select(x => SocialLink.Create(x.Name, x.Url).Value);
         var socialLinksList = new SocialLinksList(socialLinks);
 
         volunteer.Value.UpdateSocialLinks(socialLinksList);

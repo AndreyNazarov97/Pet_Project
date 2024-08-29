@@ -1,9 +1,8 @@
-﻿using CSharpFunctionalExtensions;
-using PetProject.Domain.Shared;
+﻿using PetProject.Domain.Shared.Common;
 using PetProject.Domain.Shared.EntityIds;
-using PetProject.Domain.VolunteerManagement;
+using PetProject.Domain.SpeciesManagement.ValueObjects;
 
-namespace PetProject.Domain.Species;
+namespace PetProject.Domain.SpeciesManagement;
 
 public class Species : AggregateRoot<SpeciesId>
 {

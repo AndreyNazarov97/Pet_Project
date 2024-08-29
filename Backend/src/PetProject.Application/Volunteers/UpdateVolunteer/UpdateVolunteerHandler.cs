@@ -17,18 +17,21 @@ public class UpdateVolunteerHandler(IVolunteersRepository repository, ILogger<Up
         if (volunteer.IsFailure)
             return volunteer.Error;
 
-        var fullName = FullName.Create(request.Dto.FullName.Name, request.Dto.FullName.Surname, request.Dto.FullName.Patronymic)
+        var fullName = FullName.Create(
+                request.Dto.FullName.Name, 
+                request.Dto.FullName.Surname, 
+                request.Dto.FullName.Patronymic)
             .Value;
         var description = Description.Create(request.Dto.Description).Value;
         var ageExperience = AgeExperience.Create(request.Dto.AgeExperience).Value;
         var phoneNumber = PhoneNumber.Create(request.Dto.PhoneNumber).Value;
 
         volunteer.Value.UpdateMainInfo(fullName, description, ageExperience, phoneNumber);
-        
+
         var resultUpdate = await repository.Save(volunteer.Value, token);
-        if (resultUpdate.IsFailure) 
+        if (resultUpdate.IsFailure)
             return resultUpdate.Error;
-        
+
         logger.LogDebug("Volunteer {volunteerId} was full updated", volunteerId);
 
         return resultUpdate.Value;

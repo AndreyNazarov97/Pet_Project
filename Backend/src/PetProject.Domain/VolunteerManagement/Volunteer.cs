@@ -1,5 +1,6 @@
 ﻿using PetProject.Domain.Interfaces;
 using PetProject.Domain.Shared;
+using PetProject.Domain.Shared.Common;
 using PetProject.Domain.Shared.EntityIds;
 using PetProject.Domain.Shared.ValueObjects;
 using PetProject.Domain.VolunteerManagement.Enums;
@@ -67,7 +68,6 @@ public class Volunteer : AggregateRoot<VolunteerId>, ISoftDeletable
     public void Activate()
     {
         _isDeleted = false;
-        if (_pets.Count == 0) return;
         foreach (var pet in _pets)
         {
             pet.Activate();
@@ -76,8 +76,6 @@ public class Volunteer : AggregateRoot<VolunteerId>, ISoftDeletable
     public void Deactivate()
     {
         _isDeleted = true;
-        if (_pets.Count == 0) return;
-        
         foreach (var pet in _pets)
         {
             pet.Deactivate();

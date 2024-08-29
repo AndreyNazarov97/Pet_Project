@@ -1,7 +1,7 @@
 ﻿using CSharpFunctionalExtensions;
 using PetProject.Domain.Shared;
 
-namespace PetProject.Domain.Species;
+namespace PetProject.Domain.SpeciesManagement.ValueObjects;
 
 public record SpeciesName
 {
