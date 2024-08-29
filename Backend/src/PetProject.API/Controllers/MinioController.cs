@@ -7,9 +7,7 @@ using PetProject.Domain.Shared;
 
 namespace PetProject.API.Controllers;
 
-[Controller]
-[Route("minio")]
-public class MinioController : ControllerBase
+public class MinioController : ApplicationController
 {
     public const string BUCKET_NAME = "pet-project";
     private readonly IMinioProvider _minioProvider;
@@ -26,9 +24,8 @@ public class MinioController : ControllerBase
         var result = await _minioProvider.UploadFile(stream, BUCKET_NAME, file.FileName, cancellationToken);
         if (result.IsFailure)
             return result.Error.ToResponse();
-
-        var envelope = Envelope.Ok(result);
-        return Ok(envelope);
+        
+        return Ok(result);
     }
 
     [HttpDelete]
@@ -38,8 +35,7 @@ public class MinioController : ControllerBase
         if (result.IsFailure)
             return result.Error.ToResponse();
 
-        var envelope = Envelope.Ok(result);
-        return Ok(envelope);
+        return Ok(result);
     }
 
     [HttpGet]
@@ -49,7 +45,6 @@ public class MinioController : ControllerBase
         if (result.IsFailure)
             return result.Error.ToResponse();
 
-        var envelope = Envelope.Ok(result);
-        return Ok(envelope);
+        return Ok(result);
     }
 }
