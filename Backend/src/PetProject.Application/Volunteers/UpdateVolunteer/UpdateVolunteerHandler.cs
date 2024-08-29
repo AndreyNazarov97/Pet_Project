@@ -23,7 +23,7 @@ public class UpdateVolunteerHandler(IVolunteersRepository repository, ILogger<Up
                 request.Dto.FullName.Patronymic)
             .Value;
         var description = Description.Create(request.Dto.Description).Value;
-        var ageExperience = AgeExperience.Create(request.Dto.AgeExperience).Value;
+        var ageExperience = Experience.Create(request.Dto.AgeExperience).Value;
         var phoneNumber = PhoneNumber.Create(request.Dto.PhoneNumber).Value;
 
         volunteer.Value.UpdateMainInfo(fullName, description, ageExperience, phoneNumber);

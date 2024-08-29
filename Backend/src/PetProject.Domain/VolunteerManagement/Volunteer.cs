@@ -19,14 +19,14 @@ public class Volunteer : AggregateRoot<VolunteerId>, ISoftDeletable
         VolunteerId id,
         FullName fullName,
         Description generalDescription,
-        AgeExperience ageExperience,
+        Experience experience,
         PhoneNumber number,
         SocialLinksList socialLinksList,
         RequisitesList requisitesList) : base(id)
     {
         FullName = fullName;
         GeneralDescription = generalDescription;
-        AgeExperience = ageExperience;
+        Experience = experience;
         PhoneNumber = number;
         SocialLinksList = socialLinksList;
         RequisitesList = requisitesList;
@@ -34,7 +34,7 @@ public class Volunteer : AggregateRoot<VolunteerId>, ISoftDeletable
 
     public FullName FullName { get; private set; }
     public Description GeneralDescription { get; private set; }
-    public AgeExperience AgeExperience { get; private set; }
+    public Experience Experience { get; private set; }
     public PhoneNumber PhoneNumber { get; private set; }
     public IReadOnlyList<Pet>? Pets => _pets.AsReadOnly();
     public SocialLinksList SocialLinksList { get; private set; }
@@ -52,12 +52,12 @@ public class Volunteer : AggregateRoot<VolunteerId>, ISoftDeletable
     
     public void UpdateMainInfo(FullName fullName,
         Description generalDescription,
-        AgeExperience ageExperience,
+        Experience experience,
         PhoneNumber number)
     {
         FullName = fullName;
         GeneralDescription = generalDescription;
-        AgeExperience = ageExperience;
+        Experience = experience;
         PhoneNumber = number;
     }
     public void UpdateSocialLinks(SocialLinksList list) =>

@@ -17,7 +17,7 @@ public class CreateVolunteerRequestValidator : AbstractValidator<CreateVolunteer
             .MustBeValueObject(Description.Create);
 
         RuleFor(c => c.AgeExperience)
-            .MustBeValueObject(AgeExperience.Create);
+            .MustBeValueObject(Experience.Create);
 
         RuleFor(c => c.Number)
             .MustBeValueObject(PhoneNumber.Create);

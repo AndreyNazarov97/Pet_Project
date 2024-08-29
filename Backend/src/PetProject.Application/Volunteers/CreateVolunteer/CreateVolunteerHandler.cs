@@ -25,7 +25,7 @@ public class CreateVolunteerHandler(IVolunteersRepository repository, ILogger<Cr
 
         var fullName = FullName.Create(request.FullName.Name, request.FullName.Surname, request.FullName.Patronymic);
         var description = Description.Create(request.Description);
-        var ageExperience = AgeExperience.Create(request.AgeExperience);
+        var ageExperience = Experience.Create(request.AgeExperience);
 
         var socialLinks = request.SocialLinks
             .Select(x => SocialLink.Create(x.Name, x.Url).Value);
