@@ -1,68 +1,94 @@
-﻿using Microsoft.AspNetCore.Mvc;
+﻿using CSharpFunctionalExtensions;
+using FluentValidation;
+using Microsoft.AspNetCore.Mvc;
 using PetProject.API.Extensions;
-using PetProject.Application.UseCases.Volunteer.CreateVolunteer;
-using PetProject.Application.UseCases.Volunteer.UpdateMainInfo;
-using PetProject.Application.UseCases.Volunteer.UpdateRequisites;
-using PetProject.Application.UseCases.Volunteer.UpdateSocialNetworks;
-using PetProject.Domain.Dto;
-using PetProject.Domain.Shared;
+using PetProject.Application.Dto;
+using PetProject.Application.Volunteers.CreateVolunteer;
+using PetProject.Application.Volunteers.UpdateRequisites;
+using PetProject.Application.Volunteers.UpdateSocialLinks;
+using PetProject.Application.Volunteers.UpdateVolunteer;
 using PetProject.Domain.Shared.EntityIds;
 
 namespace PetProject.API.Controllers;
-[Controller]
-[Route("volunteers")]
-public class VolunteersController : ControllerBase
+public class VolunteersController : ApplicationController
 {
     [HttpPost]
     public async Task<ActionResult<VolunteerId>> CreateVolunteer(
         [FromBody] CreateVolunteerRequest request,
-        [FromServices] ICreateVolunteerUseCase useCase,
+        [FromServices] CreateVolunteerHandler handler,
         CancellationToken cancellationToken)
     {
-        var volunteerId = await useCase.Create(request, cancellationToken);
+        var result = await handler.Execute(request, cancellationToken);
 
-        return volunteerId.ToResponse();
+        if (result.IsFailure)
+            return result.Error.ToResponse();
+
+        return Ok(result.Value);
     }
 
     [HttpPut("{volunteerId:guid}/main-info")]
     public async Task<ActionResult> UpdateVolunteerMainInfo(
         [FromRoute] Guid volunteerId,
-        [FromBody] UpdateMainInfoDto dto,
-        [FromServices] IUpdateMainInfoUseCase useCase,
+        [FromBody] UpdateVolunteerDto dto,
+        [FromServices] UpdateVolunteerHandler handler,
+        [FromServices] IValidator<UpdateVolunteerRequest> validator,
         CancellationToken cancellationToken)
     {
-        var request = new UpdateMainInfoRequest(volunteerId, dto);
+        var request = new UpdateVolunteerRequest(volunteerId, dto);
         
-        await useCase.UpdateMainInfo(request, cancellationToken);
+        var validationResult = await validator.ValidateAsync(request, cancellationToken);
+        if (!validationResult.IsValid)
+            return validationResult.ToValidationErrorResponse();
+        
+        var result = await handler.Execute(request, cancellationToken);
+        
+        if (result.IsFailure)
+            return result.Error.ToResponse();
 
-        return Result.Success().ToResponse();
+        return Ok(result.Value);
     }
 
     [HttpPut("{volunteerId:guid}/requisites")]
     public async Task<ActionResult> UpdateVolunteerRequisites(
         [FromRoute] Guid volunteerId,
         [FromBody] UpdateRequisitesDto dto,
-        [FromServices] IUpdateRequisitesUseCase useCase,
+        [FromServices] UpdateRequisitesHandler handler,
+        [FromServices] IValidator<UpdateRequisitesRequest> validator,
         CancellationToken cancellationToken)
     {
         var request = new UpdateRequisitesRequest(volunteerId, dto);
         
-        await useCase.UpdateRequisites(request, cancellationToken);
-    
-        return Result.Success().ToResponse();
+        var validationResult = await validator.ValidateAsync(request, cancellationToken);
+        if (!validationResult.IsValid)
+            return validationResult.ToValidationErrorResponse();
+        
+        var result = await handler.Execute(request, cancellationToken);
+        
+        if (result.IsFailure)
+            return result.Error.ToResponse();
+
+        return Ok(result.Value);
     }
     
     [HttpPut("{volunteerId:guid}/social-networks")]
     public async Task<ActionResult> UpdateVolunteerSocialNetworks(
         [FromRoute] Guid volunteerId,
-        [FromBody] UpdateSocialNetworksDto dto,
-        [FromServices] IUpdateSocialNetworksUseCase useCase,
+        [FromBody] UpdateSocialLinksDto dto,
+        [FromServices] UpdateSocialLinksHandler handler,
+        [FromServices] IValidator<UpdateSocialLinksRequest> validator,
         CancellationToken cancellationToken)
     {
-        var request = new UpdateSocialNetworksRequest(volunteerId, dto);
+        var request = new UpdateSocialLinksRequest(volunteerId, dto);
         
-        await useCase.UpdateSocialNetworks(request, cancellationToken);
-    
-        return Result.Success().ToResponse();
+        var validationResult = await validator.ValidateAsync(request, cancellationToken);
+        if (!validationResult.IsValid)
+            return validationResult.ToValidationErrorResponse();
+        
+        var result = await handler.Execute(request, cancellationToken);
+        
+        if (result.IsFailure)
+            return result.Error.ToResponse();
+
+        return Ok(result.Value);
     }
 }

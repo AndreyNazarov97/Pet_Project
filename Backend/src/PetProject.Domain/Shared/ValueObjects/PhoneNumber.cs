@@ -1,38 +1,22 @@
 ﻿using System.Text.RegularExpressions;
+using CSharpFunctionalExtensions;
 
 namespace PetProject.Domain.Shared.ValueObjects;
 
-public class PhoneNumber : ValueObject
+public record PhoneNumber 
 {
-    private static readonly Regex ValidationRegex = new Regex(
-       @"^7\d{10}$",
-       RegexOptions.Singleline | RegexOptions.Compiled);
-    
-    public string Number { get; }
+    private const string PhoneRegex = @"^((8|\+7)[\- ]?)?(\(?\d{3}\)?[\-]?)?[\d\-]{7,10}$";
+    public string Value { get; }
+    private PhoneNumber(string value) => Value = value;
 
-    private PhoneNumber(){}
-
-    private PhoneNumber(string number)
+    public static Result<PhoneNumber, Error> Create(string number)
     {
-        Number = number;
-    }
-    
-    public static Result<PhoneNumber> Create(string number)
-    {
-        if(string.IsNullOrWhiteSpace(number) || !ValidationRegex.IsMatch(number))
-            return Errors.General.ValueIsInvalid(nameof(number));
+        if (string.IsNullOrWhiteSpace(number))
+            return Errors.General.ValueIsInvalid("Number");
 
-        var phoneNumber = new PhoneNumber(number);
-        return Result<PhoneNumber>.Success(phoneNumber);
-    }
+        if (Regex.IsMatch(number, PhoneRegex) == false)
+            return Errors.General.ValueIsInvalid("Phone");
 
-    public override IEnumerable<object> GetEqualityComponents()
-    {
-        yield return Number;
-    }
-
-    public override string ToString()
-    {
-        return Number;
+        return new PhoneNumber(number);
     }
 }

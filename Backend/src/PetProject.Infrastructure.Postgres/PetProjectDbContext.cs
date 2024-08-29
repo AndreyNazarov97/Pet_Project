@@ -1,10 +1,8 @@
-﻿using System.Reflection;
-using Microsoft.EntityFrameworkCore;
+﻿using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.Logging;
-using PetProject.Domain.PetManagement.AggregateRoot;
-using PetProject.Domain.PetManagement.Entities;
-using PetProject.Domain.SpeciesManagment.AggregateRoot;
+using PetProject.Domain.Species;
+using PetProject.Domain.VolunteerManagement;
 
 namespace PetProject.Infrastructure.Postgres;
 
@@ -32,7 +30,7 @@ public class PetProjectDbContext : DbContext
 
     protected override void OnModelCreating(ModelBuilder modelBuilder)
     {
-        modelBuilder.ApplyConfigurationsFromAssembly(Assembly.GetExecutingAssembly());
+        modelBuilder.ApplyConfigurationsFromAssembly(typeof(PetProjectDbContext).Assembly);
     }
     private static ILoggerFactory CreateLoggerFactory()
     {

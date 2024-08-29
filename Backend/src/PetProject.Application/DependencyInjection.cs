@@ -1,9 +1,10 @@
 ﻿using FluentValidation;
 using Microsoft.Extensions.DependencyInjection;
-using PetProject.Application.UseCases.Volunteer.CreateVolunteer;
-using PetProject.Application.UseCases.Volunteer.UpdateMainInfo;
-using PetProject.Application.UseCases.Volunteer.UpdateRequisites;
-using PetProject.Application.UseCases.Volunteer.UpdateSocialNetworks;
+using PetProject.Application.Volunteers.CreateVolunteer;
+using PetProject.Application.Volunteers.DeleteVolunteer;
+using PetProject.Application.Volunteers.UpdateRequisites;
+using PetProject.Application.Volunteers.UpdateSocialLinks;
+using PetProject.Application.Volunteers.UpdateVolunteer;
 
 namespace PetProject.Application;
 
@@ -11,12 +12,11 @@ public static class DependencyInjection
 {
     public static void AddApplication(this IServiceCollection services)
     {
-        services.AddScoped<ICreateVolunteerUseCase, CreateVolunteerUseCase>()
-            .AddScoped<IUpdateMainInfoUseCase, UpdateMainInfoUseCase>()
-            .AddScoped<IUpdateSocialNetworksUseCase, UpdateSocialNetworksUseCase>()
-            .AddScoped<IUpdateRequisitesUseCase, UpdateRequisitesUseCase>();
-
-
-        services.AddValidatorsFromAssemblyContaining<CreateVolunteerUseCase>();
+        services.AddScoped<CreateVolunteerHandler>();
+        services.AddScoped<UpdateVolunteerHandler>();
+        services.AddScoped<UpdateSocialLinksHandler>();
+        services.AddScoped<UpdateRequisitesHandler>();
+        services.AddScoped<DeleteVolunteerHandler>();
+        services.AddValidatorsFromAssembly(typeof(DependencyInjection).Assembly);
     }
 }

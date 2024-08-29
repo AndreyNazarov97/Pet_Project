@@ -1,7 +1,6 @@
 using Microsoft.AspNetCore.HttpLogging;
-using Microsoft.EntityFrameworkCore;
 using Minio.AspNetCore;
-using PetProject.API;
+using PetProject.API.Extensions;
 using PetProject.API.Middlewares;
 using PetProject.API.Providers;
 using PetProject.API.Validation;

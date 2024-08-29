@@ -7,8 +7,7 @@
     </PropertyGroup>
 
     <ItemGroup>
-      <Compile Remove="Shared\ValueObjects\Requisites.cs" />
-      <Compile Remove="PetManagement\Entities\ValueObjects\SocialNetworks.cs" />
+        <PackageReference Include="CSharpFunctionalExtensions" Version="2.42.5" />
     </ItemGroup>
 
 </Project>

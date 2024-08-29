@@ -1,3 +1,0 @@
-﻿namespace PetProject.Domain.Dto;
-
-public record FullNameDto(string FirstName, string LastName, string? Patronymic);
