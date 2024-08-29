@@ -1,8 +1,7 @@
 ﻿using Microsoft.Extensions.DependencyInjection;
-using PetProject.Application.UseCases.Volunteer.CreateVolunteer;
-using PetProject.Application.UseCases.Volunteer.GetVolunteer;
+using PetProject.Application.Volunteers;
 using PetProject.Infrastructure.Postgres.Abstractions;
-using PetProject.Infrastructure.Postgres.Storages;
+using PetProject.Infrastructure.Postgres.Repositories;
 
 namespace PetProject.Infrastructure.Postgres;
 
@@ -13,8 +12,7 @@ public static class DependencyInjection
         services
             .AddScoped<PetProjectDbContext>()
             .AddScoped<IMomentProvider, MomentProvider>()
-            .AddScoped<ICreateVolunteerStorage, CreateVolunteerStorage>()
-            .AddScoped<IGetVolunteerStorage, GetVolunteerStorage>();
+            .AddScoped<IVolunteersRepository, VolunteersRepository>();
         
         
     }

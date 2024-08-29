@@ -1,8 +1,8 @@
 ﻿using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Metadata.Builders;
-using PetProject.Domain.PetManagement.AggregateRoot;
 using PetProject.Domain.Shared;
 using PetProject.Domain.Shared.EntityIds;
+using PetProject.Domain.VolunteerManagement;
 
 namespace PetProject.Infrastructure.Postgres.Configurations;
 
@@ -11,74 +11,97 @@ public class VolunteerConfiguration : IEntityTypeConfiguration<Volunteer>
     public void Configure(EntityTypeBuilder<Volunteer> builder)
     {
         builder.ToTable("volunteers");
-        builder.HasKey(x => x.Id);
-        builder.Property(x => x.Id)
+
+        builder.HasKey(v => v.Id);
+        builder.Property(v => v.Id)
             .HasConversion(
                 id => id.Id,
-                id => VolunteerId.FromGuid(id));
-        
-        builder.ComplexProperty(x => x.Description, p =>
+                value => VolunteerId.Create(value));
+
+        builder.ComplexProperty(v => v.FullName, vb =>
         {
-            p.IsRequired();
-            p.Property(x => x.Value)
-                .HasColumnName("description")
-                .HasMaxLength(Constants.MAX_LONG_TEXT_LENGTH);
+            vb.Property(v => v.Name)
+                .IsRequired()
+                .HasMaxLength(Constants.MIN_TEXT_LENGTH)
+                .HasColumnName("name");
+
+            vb.Property(v => v.Surname)
+                .IsRequired()
+                .HasMaxLength(Constants.MIN_TEXT_LENGTH)
+                .HasColumnName("surname");
+
+            vb.Property(v => v.Patronymic)
+                .IsRequired()
+                .HasMaxLength(Constants.MIN_TEXT_LENGTH)
+                .HasColumnName("patronymic");
         });
-        
-        builder.ComplexProperty(x => x.PhoneNumber, p =>
+
+
+        builder.ComplexProperty(v => v.GeneralDescription, vb =>
         {
-            p.IsRequired();
-            p.Property(x => x.Number)
+            vb.Property(d => d.Value)
+                .HasColumnName("general_description")
+                .HasMaxLength(Constants.MAX_TEXT_LENGTH);
+        });
+
+        builder.ComplexProperty(v => v.AgeExperience, vb =>
+        {
+            vb.Property(v => v.Years)
+                .HasColumnName("age_experience")
+                .IsRequired();
+        });
+
+        builder.ComplexProperty(v => v.PhoneNumber, vb =>
+        {
+            vb.Property(p => p.Value)
                 .HasColumnName("phone_number")
-                .HasMaxLength(Constants.PHONE_NUMBER_MAX_LENGTH);
+                .IsRequired();
         });
-
-        builder.ComplexProperty(x => x.Experience, p =>
+        
+        builder.OwnsOne(v => v.SocialLinksList, vb =>
         {
-            p.IsRequired();
-            p.Property(x => x.Value).HasColumnName("experience");
-        });
+            vb.ToJson("social_links");
 
-        builder.ComplexProperty(x => x.FullName, f =>
-        {
-            f.IsRequired();
-            f.Property(f => f.FirstName)
-                .HasColumnName("first_name")
-                .HasMaxLength(Constants.MAX_SHORT_TEXT_LENGTH);
-            f.Property(f => f.LastName)
-                .HasColumnName("last_name")
-                .HasMaxLength(Constants.MAX_SHORT_TEXT_LENGTH);
-            f.Property(f => f.Patronymic)
-                .HasColumnName("patronymic")
-                .HasMaxLength(Constants.MAX_SHORT_TEXT_LENGTH);
-        });
-
-        builder.OwnsOne(v => v.Details, d =>
-        {
-            d.ToJson();
-            d.OwnsMany(vd => vd.SocialNetworks, sn =>
+            vb.OwnsMany(v => v.SocialLinks, vbs =>
             {
-                sn.Property(s => s.Title)
-                    .HasMaxLength(Constants.MAX_SHORT_TEXT_LENGTH);
-                sn.Property(s => s.Link)
-                    .HasMaxLength(Constants.MAX_LONG_TEXT_LENGTH);
-            });
+                vbs.Property(v => v.Title)
+                    .IsRequired()
+                    .HasColumnName("name")
+                    .HasMaxLength(Constants.MIN_TEXT_LENGTH);
 
-            d.OwnsMany(vd => vd.Requisites, r =>
-            {
-                r.Property(r => r.Title)
-                    .HasMaxLength(Constants.MAX_SHORT_TEXT_LENGTH);
-                r.Property(r => r.Description)
-                    .HasMaxLength(Constants.MAX_LONG_TEXT_LENGTH);
+                vbs.Property(v => v.Url)
+                    .IsRequired()
+                    .HasColumnName("url");
             });
         });
 
-        builder
-            .HasMany(x => x.Pets)
+        builder.OwnsOne(v => v.RequisitesList, vb =>
+        {
+            vb.ToJson("requisites");
+
+            vb.OwnsMany(v => v.Requisites, vbr =>
+            {
+                vbr.Property(v => v.Title)
+                    .IsRequired()
+                    .HasColumnName("name")
+                    .HasMaxLength(Constants.MIN_TEXT_LENGTH);
+
+                vbr.Property(v => v.Description)
+                    .IsRequired()
+                    .HasColumnName("description")
+                    .HasMaxLength(Constants.EXTRA_TEXT_LENGTH);
+            });
+        });
+
+        builder.Property<bool>("_isDeleted")
+            .UsePropertyAccessMode(PropertyAccessMode.Field)
+            .HasColumnName("is_deleted");
+        
+        builder.HasMany(v => v.Pets)
             .WithOne()
             .HasForeignKey("volunteer_id")
             .OnDelete(DeleteBehavior.Cascade);
-
-        //builder.Navigation(v => v.Pets).AutoInclude();
+        
+        builder.Navigation(v => v.Pets).AutoInclude();
     }
 }

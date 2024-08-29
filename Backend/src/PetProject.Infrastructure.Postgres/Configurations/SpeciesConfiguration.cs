@@ -2,7 +2,7 @@
 using Microsoft.EntityFrameworkCore.Metadata.Builders;
 using PetProject.Domain.Shared;
 using PetProject.Domain.Shared.EntityIds;
-using PetProject.Domain.SpeciesManagment.AggregateRoot;
+using PetProject.Domain.Species;
 
 namespace PetProject.Infrastructure.Postgres.Configurations;
 
@@ -10,19 +10,22 @@ public class SpeciesConfiguration : IEntityTypeConfiguration<Species>
 {
     public void Configure(EntityTypeBuilder<Species> builder)
     {
-        builder.ToTable("species");
-        
-        builder.HasKey(x => x.Id);
-        builder.Property(x => x.Id)
-            .HasConversion(
-                id => id.Id,
-                id => SpeciesId.FromGuid(id));
-        
-        builder.Property(x => x.Name)
-            .IsRequired()
-            .HasMaxLength(Constants.MAX_SHORT_TEXT_LENGTH);
+        builder.HasKey(s => s.Id);
 
-        builder.HasMany(x => x.Breeds)
+        builder.Property(s => s.Id)
+            .HasConversion(
+                speciesId => speciesId.Id,
+                result => SpeciesId.Create(result));
+
+        builder.ComplexProperty(s => s.Name, sb =>
+        {
+            sb.IsRequired();
+            sb.Property(sn => sn.Value)
+                .HasColumnName("species_name")
+                .HasMaxLength(Constants.MIN_TEXT_LENGTH);
+        });
+
+        builder.HasMany(s => s.Breeds)
             .WithOne()
             .OnDelete(DeleteBehavior.Cascade);
     }

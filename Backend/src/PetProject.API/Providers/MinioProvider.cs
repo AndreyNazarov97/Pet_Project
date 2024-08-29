@@ -1,4 +1,5 @@
-﻿using Minio;
+﻿using CSharpFunctionalExtensions;
+using Minio;
 using Minio.DataModel.Args;
 using PetProject.Application.Abstractions;
 using PetProject.Domain.Shared;
@@ -21,7 +22,7 @@ public class MinioProvider : IMinioProvider
         _logger = logger;
     }
 
-    public async Task<Result<string>> DownloadFile(string bucketName, string fileName)
+    public async Task<Result<string, Error>> DownloadFile(string bucketName, string fileName)
     {
         try
         {
@@ -45,7 +46,7 @@ public class MinioProvider : IMinioProvider
         
     }
 
-    public async Task<Result> UploadFile(Stream stream, string bucketName, string fileName,
+    public async Task<UnitResult<Error>> UploadFile(Stream stream, string bucketName, string fileName,
         CancellationToken cancellationToken = default)
     {
         try
@@ -72,7 +73,7 @@ public class MinioProvider : IMinioProvider
             
             _logger.Information("File {FileName} uploaded to Minio", fileName);
 
-            return Result.Success();
+            return UnitResult.Success<Error>();
         }
         catch (Exception e)
         {
@@ -81,7 +82,7 @@ public class MinioProvider : IMinioProvider
         }
     }
 
-    public async Task<Result> DeleteFile(string bucketName, string fileName, CancellationToken cancellationToken = default)
+    public async Task<UnitResult<Error>> DeleteFile(string bucketName, string fileName, CancellationToken cancellationToken = default)
     {
         try
         {
@@ -94,7 +95,7 @@ public class MinioProvider : IMinioProvider
             await _minioClient.RemoveObjectAsync(removeObjectArgs, cancellationToken);
             
             _logger.Information("File {FileName} deleted from Minio", fileName);
-            return Result.Success();
+            return UnitResult.Success<Error>();
         }
         catch (Exception e)
         {
