@@ -20,8 +20,7 @@ public class UpdateRequisitesHandler(IVolunteersRepository repository, ILogger<U
             return volunteer.Error;
 
         var requisites = request.Dto.Requisites
-            .Select(x => Requisite.Create(x.Name, x.Description))
-            .Select(x => x.Value);
+            .Select(x => Requisite.Create(x.Name, x.Description).Value);
         var requisitesList = new RequisitesList(requisites);
 
         volunteer.Value.UpdateRequisites(requisitesList);

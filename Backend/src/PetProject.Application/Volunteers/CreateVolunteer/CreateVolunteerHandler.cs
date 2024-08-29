@@ -16,35 +16,33 @@ public class CreateVolunteerHandler(IVolunteersRepository repository, ILogger<Cr
     {
         var phoneNumber = PhoneNumber.Create(request.Number);
 
-        var volunteer = await repository.GetByPhoneNumber(phoneNumber.Value, token);
+        var existedVolunteer = await repository.GetByPhoneNumber(phoneNumber.Value, token);
 
-        if (volunteer.IsSuccess)
+        if (existedVolunteer.IsSuccess)
             return Errors.Model.AlreadyExist("Volunteer");
 
         var volunteerId = VolunteerId.NewId();
 
         var fullName = FullName.Create(request.FullName.Name, request.FullName.Surname, request.FullName.Patronymic);
-
         var description = Description.Create(request.Description);
-
-        var ageExperience = AgeExperience.Create(request.AgeExperience);
+        var ageExperience = Experience.Create(request.AgeExperience);
 
         var socialLinks = request.SocialLinks
-            .Select(x => SocialLink.Create(x.Name, x.Url))
-            .Select(x => x.Value);
+            .Select(x => SocialLink.Create(x.Name, x.Url).Value);
         var socialLinksList = new SocialLinksList(socialLinks);
 
         var requisites = request.Requisites
-            .Select(x => Requisite.Create(x.Name, x.Description))
-            .Select(x => x.Value);
+            .Select(x => Requisite.Create(x.Name, x.Description).Value);
         var requisitesList = new RequisitesList(requisites);
 
-        var volunteerResult = new Volunteer(volunteerId,
+        var volunteer = new Volunteer(volunteerId,
             fullName.Value, description.Value,
             ageExperience.Value, phoneNumber.Value, socialLinksList, requisitesList);
 
+        await repository.Add(volunteer, token);
+        
         logger.Log(LogLevel.Information, "Created new volunteer: {VolunteerId}", volunteerId);
-
-        return await repository.Add(volunteerResult, token);
+        
+        return volunteerId.Id;
     }
 }

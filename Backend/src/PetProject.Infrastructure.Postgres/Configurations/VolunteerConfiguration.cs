@@ -44,7 +44,7 @@ public class VolunteerConfiguration : IEntityTypeConfiguration<Volunteer>
                 .HasMaxLength(Constants.MAX_TEXT_LENGTH);
         });
 
-        builder.ComplexProperty(v => v.AgeExperience, vb =>
+        builder.ComplexProperty(v => v.Experience, vb =>
         {
             vb.Property(v => v.Years)
                 .HasColumnName("age_experience")

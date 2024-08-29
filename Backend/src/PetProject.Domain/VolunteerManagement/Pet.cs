@@ -8,7 +8,7 @@ using PetProject.Domain.VolunteerManagement.ValueObjects;
 
 namespace PetProject.Domain.VolunteerManagement;
 
-public class Pet : Shared.Entity<PetId>, ISoftDeletable
+public class Pet : Shared.Common.Entity<PetId>, ISoftDeletable
 {
     private bool _isDeleted = false;
     

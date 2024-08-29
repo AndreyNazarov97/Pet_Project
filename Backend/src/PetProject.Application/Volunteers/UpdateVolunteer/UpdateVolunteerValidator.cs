@@ -28,7 +28,7 @@ public class UpdateVolunteerDtoValidator : AbstractValidator<UpdateVolunteerDto>
             .MustBeValueObject(Description.Create);
 
         RuleFor(c => c.AgeExperience)
-            .MustBeValueObject(AgeExperience.Create);
+            .MustBeValueObject(Experience.Create);
 
         RuleFor(c => c.PhoneNumber)
             .MustBeValueObject(PhoneNumber.Create);
