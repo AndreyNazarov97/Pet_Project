@@ -6,6 +6,7 @@ using PetProject.API.Providers;
 using PetProject.API.Validation;
 using PetProject.Application;
 using PetProject.Application.Abstractions;
+using PetProject.Infrastructure.Authorization;
 using PetProject.Infrastructure.Postgres;
 using Serilog;
 using SharpGrip.FluentValidation.AutoValidation.Mvc.Extensions;
@@ -14,7 +15,7 @@ using MinioOptions = PetProject.API.Providers.MinioOptions;
 var builder = WebApplication.CreateBuilder(args);
 
 
-builder.Host.UseSerilog((context, configuration) => 
+builder.Host.UseSerilog((context, configuration) =>
     configuration.ReadFrom.Configuration(context.Configuration));
 
 builder.Services.AddHttpLogging(options =>
@@ -25,7 +26,6 @@ builder.Services.AddHttpLogging(options =>
                             HttpLoggingFields.ResponseBody |
                             HttpLoggingFields.ResponseHeaders;
 });
-
 
 
 builder.Services.AddControllers();
@@ -46,7 +46,9 @@ builder.Services.AddFluentValidationAutoValidation(config =>
 });
 
 builder.Services.AddApplication();
-builder.Services.AddPostgresInfrastructure();
+builder.Services
+    .AddPostgresInfrastructure()
+    .AddAuthorizationInfrastructure();
 
 builder.Services.AddScoped<IMinioProvider, MinioProvider>();
 
@@ -67,6 +69,9 @@ if (app.Environment.IsDevelopment())
 }
 
 app.UseHttpsRedirection();
+
+app.UseAuthentication();
+app.UseAuthorization();
 
 app.MapControllers();
 

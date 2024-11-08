@@ -7,13 +7,13 @@ namespace PetProject.Infrastructure.Postgres;
 
 public static class DependencyInjection
 {
-    public static void AddPostgresInfrastructure(this IServiceCollection services)
+    public static IServiceCollection AddPostgresInfrastructure(this IServiceCollection services)
     {
         services
             .AddScoped<PetProjectDbContext>()
             .AddScoped<IMomentProvider, MomentProvider>()
             .AddScoped<IVolunteersRepository, VolunteersRepository>();
-        
-        
+
+        return services;
     }
 }

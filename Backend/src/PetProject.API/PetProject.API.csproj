@@ -32,6 +32,7 @@
     </ItemGroup>
 
     <ItemGroup>
+      <ProjectReference Include="..\..\PetProject.Infrastructure.Authorization\PetProject.Infrastructure.Authorization.csproj" />
       <ProjectReference Include="..\PetProject.Application\PetProject.Application.csproj" />
       <ProjectReference Include="..\PetProject.Domain\PetProject.Domain.csproj" />
       <ProjectReference Include="..\PetProject.Infrastructure.Postgres\PetProject.Infrastructure.Postgres.csproj" />
