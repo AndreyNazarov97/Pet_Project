@@ -1,6 +1,6 @@
 ﻿using PetProject.Application.Dto;
 
-namespace PetProject.Application.Volunteers.CreateVolunteer;
+namespace PetProject.Application.VolunteersManagement.CreateVolunteer;
 
 public record CreateVolunteerRequest(
     FullNameDto FullName,

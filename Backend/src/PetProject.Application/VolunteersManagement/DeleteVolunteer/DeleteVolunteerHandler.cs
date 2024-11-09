@@ -3,7 +3,7 @@ using Microsoft.Extensions.Logging;
 using PetProject.Domain.Shared;
 using PetProject.Domain.Shared.EntityIds;
 
-namespace PetProject.Application.Volunteers.DeleteVolunteer;
+namespace PetProject.Application.VolunteersManagement.DeleteVolunteer;
 
 public class DeleteVolunteerHandler(IVolunteersRepository repository, ILogger<DeleteVolunteerHandler> logger)
 {

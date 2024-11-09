@@ -2,10 +2,9 @@
 using Microsoft.Extensions.Logging;
 using PetProject.Domain.Shared;
 using PetProject.Domain.Shared.EntityIds;
-using PetProject.Domain.VolunteerManagement;
 using PetProject.Domain.VolunteerManagement.ValueObjects;
 
-namespace PetProject.Application.Volunteers.UpdateSocialLinks;
+namespace PetProject.Application.VolunteersManagement.UpdateSocialLinks;
 
 public class UpdateSocialLinksHandler(IVolunteersRepository repository, ILogger<UpdateSocialLinksHandler> logger)
 {

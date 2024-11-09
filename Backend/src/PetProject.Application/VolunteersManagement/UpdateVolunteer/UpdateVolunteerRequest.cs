@@ -1,6 +1,6 @@
 ﻿using PetProject.Application.Dto;
 
-namespace PetProject.Application.Volunteers.UpdateVolunteer;
+namespace PetProject.Application.VolunteersManagement.UpdateVolunteer;
 
 public record UpdateVolunteerRequest(
     Guid IdVolunteer,

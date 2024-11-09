@@ -12,8 +12,8 @@ using PetProject.Infrastructure.Authorization;
 namespace PetProject.Infrastructure.Authorization.Migrations
 {
     [DbContext(typeof(AuthorizationDbContext))]
-    [Migration("20241108204924_Initial")]
-    partial class Initial
+    [Migration("20241109064323_InitialAuth")]
+    partial class InitialAuth
     {
         /// <inheritdoc />
         protected override void BuildTargetModel(ModelBuilder modelBuilder)

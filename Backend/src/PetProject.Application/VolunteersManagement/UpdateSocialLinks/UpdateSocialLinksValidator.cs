@@ -2,10 +2,9 @@
 using PetProject.Application.Dto;
 using PetProject.Application.Validation;
 using PetProject.Domain.Shared;
-using PetProject.Domain.VolunteerManagement;
 using PetProject.Domain.VolunteerManagement.ValueObjects;
 
-namespace PetProject.Application.Volunteers.UpdateSocialLinks;
+namespace PetProject.Application.VolunteersManagement.UpdateSocialLinks;
 
 public class UpdateSocialLinksRequestValidator : AbstractValidator<UpdateSocialLinksRequest>
 {

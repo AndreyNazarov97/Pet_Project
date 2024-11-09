@@ -2,10 +2,9 @@
 using PetProject.Application.Dto;
 using PetProject.Application.Validation;
 using PetProject.Domain.Shared;
-using PetProject.Domain.VolunteerManagement;
 using PetProject.Domain.VolunteerManagement.ValueObjects;
 
-namespace PetProject.Application.Volunteers.UpdateRequisites;
+namespace PetProject.Application.VolunteersManagement.UpdateRequisites;
 
 public class UpdateRequisitesRequestValidator : AbstractValidator<UpdateRequisitesRequest>
 {

@@ -4,7 +4,7 @@ using PetProject.Domain.Shared;
 using PetProject.Domain.Shared.EntityIds;
 using PetProject.Domain.Shared.ValueObjects;
 
-namespace PetProject.Application.Volunteers.UpdateVolunteer;
+namespace PetProject.Application.VolunteersManagement.UpdateVolunteer;
 
 public class UpdateVolunteerHandler(IVolunteersRepository repository, ILogger<UpdateVolunteerHandler> logger)
 {

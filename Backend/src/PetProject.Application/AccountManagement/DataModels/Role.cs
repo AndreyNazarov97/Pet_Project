@@ -1,6 +1,6 @@
 ﻿using Microsoft.AspNetCore.Identity;
 
-namespace PetProject.Infrastructure.Authorization;
+namespace PetProject.Application.AccountManagement.DataModels;
 
 public class Role : IdentityRole<Guid>
 {

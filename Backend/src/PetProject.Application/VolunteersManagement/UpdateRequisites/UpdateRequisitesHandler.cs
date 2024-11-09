@@ -2,10 +2,9 @@
 using Microsoft.Extensions.Logging;
 using PetProject.Domain.Shared;
 using PetProject.Domain.Shared.EntityIds;
-using PetProject.Domain.VolunteerManagement;
 using PetProject.Domain.VolunteerManagement.ValueObjects;
 
-namespace PetProject.Application.Volunteers.UpdateRequisites;
+namespace PetProject.Application.VolunteersManagement.UpdateRequisites;
 
 public class UpdateRequisitesHandler(IVolunteersRepository repository, ILogger<UpdateRequisitesHandler> logger)
 {

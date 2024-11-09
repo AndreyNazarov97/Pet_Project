@@ -3,10 +3,10 @@ using FluentValidation;
 using Microsoft.AspNetCore.Mvc;
 using PetProject.API.Extensions;
 using PetProject.Application.Dto;
-using PetProject.Application.Volunteers.CreateVolunteer;
-using PetProject.Application.Volunteers.UpdateRequisites;
-using PetProject.Application.Volunteers.UpdateSocialLinks;
-using PetProject.Application.Volunteers.UpdateVolunteer;
+using PetProject.Application.VolunteersManagement.CreateVolunteer;
+using PetProject.Application.VolunteersManagement.UpdateRequisites;
+using PetProject.Application.VolunteersManagement.UpdateSocialLinks;
+using PetProject.Application.VolunteersManagement.UpdateVolunteer;
 using PetProject.Domain.Shared.EntityIds;
 
 namespace PetProject.API.Controllers;

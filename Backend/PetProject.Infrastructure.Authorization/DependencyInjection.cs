@@ -4,6 +4,7 @@ using Microsoft.AspNetCore.Identity;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
+using PetProject.Application.AccountManagement.DataModels;
 
 namespace PetProject.Infrastructure.Authorization;
 
@@ -14,7 +15,10 @@ public static class DependencyInjection
         services.AddScoped<AuthorizationDbContext>();
         
         services
-            .AddIdentity<User, Role>()
+            .AddIdentity<User, Role>(options =>
+            {
+                options.User.RequireUniqueEmail = true;
+            })
             .AddEntityFrameworkStores<AuthorizationDbContext>()
             .AddDefaultTokenProviders();
 

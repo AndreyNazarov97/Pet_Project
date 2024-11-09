@@ -2,7 +2,7 @@
 using PetProject.Application.Validation;
 using PetProject.Domain.Shared;
 
-namespace PetProject.Application.Volunteers.DeleteVolunteer;
+namespace PetProject.Application.VolunteersManagement.DeleteVolunteer;
 
 public class DeleteVolunteerValidator : AbstractValidator<DeleteVolunteerRequest>
 {

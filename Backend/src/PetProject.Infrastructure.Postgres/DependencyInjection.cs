@@ -1,5 +1,5 @@
 ﻿using Microsoft.Extensions.DependencyInjection;
-using PetProject.Application.Volunteers;
+using PetProject.Application.VolunteersManagement;
 using PetProject.Infrastructure.Postgres.Abstractions;
 using PetProject.Infrastructure.Postgres.Repositories;
 
