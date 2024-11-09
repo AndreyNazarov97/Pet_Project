@@ -1,4 +1,5 @@
 using Microsoft.AspNetCore.HttpLogging;
+using Microsoft.OpenApi.Models;
 using Minio.AspNetCore;
 using PetProject.API.Extensions;
 using PetProject.API.Middlewares;
@@ -30,7 +31,36 @@ builder.Services.AddHttpLogging(options =>
 
 builder.Services.AddControllers();
 builder.Services.AddEndpointsApiExplorer();
-builder.Services.AddSwaggerGen();
+builder.Services.AddSwaggerGen(options =>
+{
+    options.SwaggerDoc("v1", new()
+    {
+        Title = "PetProject.API", 
+        Version = "v1"
+    });
+
+    options.AddSecurityDefinition("Bearer", new()
+    {
+        In = ParameterLocation.Header,
+        Description = "Please insert JWT with Bearer into field",
+        Name = "Authorization",
+        Type = SecuritySchemeType.ApiKey
+    });
+    options.AddSecurityRequirement(new OpenApiSecurityRequirement()
+    {
+        {
+            new OpenApiSecurityScheme
+            {
+                Reference = new OpenApiReference
+                {
+                    Type = ReferenceType.SecurityScheme,
+                    Id = "Bearer"
+                }
+            },
+            []
+        }
+    });
+});
 
 builder.Services.AddMinio(options =>
 {
@@ -48,7 +78,7 @@ builder.Services.AddFluentValidationAutoValidation(config =>
 builder.Services.AddApplication();
 builder.Services
     .AddPostgresInfrastructure()
-    .AddAuthorizationInfrastructure();
+    .AddAuthorizationInfrastructure(builder.Configuration);
 
 builder.Services.AddScoped<IMinioProvider, MinioProvider>();
 

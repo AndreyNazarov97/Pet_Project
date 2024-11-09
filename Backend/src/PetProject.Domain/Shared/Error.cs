@@ -39,6 +39,7 @@ public record Error
 
         return new Error(parts[0], parts[1], type);
     }
+    public ErrorList ToErrorList() => new([this]);
 }
 
 public enum ErrorType

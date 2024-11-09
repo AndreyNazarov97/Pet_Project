@@ -19,7 +19,7 @@ public class CreateVolunteerHandler(IVolunteersRepository repository, ILogger<Cr
         var existedVolunteer = await repository.GetByPhoneNumber(phoneNumber.Value, token);
 
         if (existedVolunteer.IsSuccess)
-            return Errors.Model.AlreadyExist("Volunteer");
+            return Errors.General.AlreadyExist("Volunteer");
 
         var volunteerId = VolunteerId.NewId();
 

@@ -1,17 +1,36 @@
-﻿using CSharpFunctionalExtensions;
-using FluentValidation;
+﻿using FluentValidation;
+using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 using PetProject.API.Extensions;
 using PetProject.Application.Dto;
 using PetProject.Application.VolunteersManagement.CreateVolunteer;
+using PetProject.Application.VolunteersManagement.GetVolunteer;
 using PetProject.Application.VolunteersManagement.UpdateRequisites;
 using PetProject.Application.VolunteersManagement.UpdateSocialLinks;
 using PetProject.Application.VolunteersManagement.UpdateVolunteer;
 using PetProject.Domain.Shared.EntityIds;
 
-namespace PetProject.API.Controllers;
+namespace PetProject.API.Controllers.Volunteer;
+
 public class VolunteersController : ApplicationController
 {
+    [Authorize]
+    [HttpGet("{volunteerId:guid}")]
+    public async Task<ActionResult<VolunteerDto>> GetVolunteer(
+        [FromRoute] Guid volunteerId,
+        [FromServices] GetVolunteerHandler handler,
+        CancellationToken cancellationToken)
+    {
+        var request = new GetVolunteerRequest(volunteerId);
+
+        var result = await handler.Handle(request, cancellationToken);
+
+        if (result.IsFailure)
+            return result.Error.ToResponse();
+
+        return Ok(result.Value);
+    }
+    
     [HttpPost]
     public async Task<ActionResult<VolunteerId>> CreateVolunteer(
         [FromBody] CreateVolunteerRequest request,
