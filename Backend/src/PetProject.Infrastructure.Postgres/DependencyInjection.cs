@@ -1,4 +1,5 @@
 ﻿using Microsoft.Extensions.DependencyInjection;
+using PetProject.Application.SpeciesManagement;
 using PetProject.Application.Volunteers;
 using PetProject.Infrastructure.Postgres.Abstractions;
 using PetProject.Infrastructure.Postgres.Repositories;
@@ -12,7 +13,8 @@ public static class DependencyInjection
         services
             .AddScoped<PetProjectDbContext>()
             .AddScoped<IMomentProvider, MomentProvider>()
-            .AddScoped<IVolunteersRepository, VolunteersRepository>();
+            .AddScoped<IVolunteersRepository, VolunteersRepository>()
+            .AddScoped<ISpeciesRepository, SpeciesRepository>();
         
         
     }

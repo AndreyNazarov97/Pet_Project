@@ -3,7 +3,7 @@ using PetProject.API.Response;
 
 namespace PetProject.API.Controllers;
 [Controller]
-[Route("[controller]")]
+[Route("api/[controller]")]
 public abstract class ApplicationController : ControllerBase
 {
     public override OkObjectResult Ok(object? value)
