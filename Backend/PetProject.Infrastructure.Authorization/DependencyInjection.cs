@@ -1,6 +1,7 @@
 ﻿using System.Text;
 using CSharpFunctionalExtensions;
 using Microsoft.AspNetCore.Authentication.JwtBearer;
+using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.Configuration;
@@ -16,7 +17,7 @@ public static class DependencyInjection
     public static IServiceCollection AddAuthorizationInfrastructure(this IServiceCollection services,
         IConfiguration configuration)
     {
-        services.Configure<JwtOptions>(
+        services.Configure<JwtOptions>( 
             configuration.GetSection(JwtOptions.Jwt)); 
         
         services.AddTransient<ITokenProvider, JwtTokenProvider>();
@@ -54,7 +55,11 @@ public static class DependencyInjection
                     IssuerSigningKey = new SymmetricSecurityKey(Encoding.UTF8.GetBytes(jwtOptions.SecretKey))
                 };
             });
+        
         services.AddAuthorization();
+
+        services.AddSingleton<IAuthorizationHandler, PermissionRequirementHandler>();
+        services.AddSingleton<IAuthorizationPolicyProvider, PermissionPolicyProvider>();
 
         return services;
     }

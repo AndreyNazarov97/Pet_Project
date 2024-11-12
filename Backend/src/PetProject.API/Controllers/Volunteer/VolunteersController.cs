@@ -9,12 +9,13 @@ using PetProject.Application.VolunteersManagement.UpdateRequisites;
 using PetProject.Application.VolunteersManagement.UpdateSocialLinks;
 using PetProject.Application.VolunteersManagement.UpdateVolunteer;
 using PetProject.Domain.Shared.EntityIds;
+using PetProject.Infrastructure.Authorization;
 
 namespace PetProject.API.Controllers.Volunteer;
 
 public class VolunteersController : ApplicationController
 {
-    [Authorize]
+    [Permission("volunteer.read")]
     [HttpGet("{volunteerId:guid}")]
     public async Task<ActionResult<VolunteerDto>> GetVolunteer(
         [FromRoute] Guid volunteerId,
@@ -31,6 +32,7 @@ public class VolunteersController : ApplicationController
         return Ok(result.Value);
     }
     
+    [Permission("volunteer.create")]
     [HttpPost]
     public async Task<ActionResult<VolunteerId>> CreateVolunteer(
         [FromBody] CreateVolunteerRequest request,

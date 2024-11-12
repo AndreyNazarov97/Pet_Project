@@ -26,6 +26,8 @@ public class JwtTokenProvider : ITokenProvider
         {
             new Claim(CustomClaims.Sub, user.Id.ToString()),
             new Claim(CustomClaims.Email, user.Email ?? ""),
+            new Claim("Permission", "volunteer.read"),
+            new Claim("Permission", "volunteer.create"),
         };
         
         var jwtToken = new JwtSecurityToken(
