@@ -26,8 +26,8 @@ public class Pet : Shared.Common.Entity<PetId>, ISoftDeletable
     public bool IsVaccinated { get; private set; }
     public HelpStatus HelpStatus { get; private set; }
     public DateTimeOffset DateCreated { get; }
-    public PetPhotosList PetPhotosList { get; private set; }
-    public RequisitesList RequisitesList { get; private set; }
+    public PetPhotosList PetPhotosList { get; private set; } 
+    public RequisitesList RequisitesList { get; private set; } 
 
 
     public Pet(PetId id,
@@ -58,6 +58,7 @@ public class Pet : Shared.Common.Entity<PetId>, ISoftDeletable
         HelpStatus = helpStatus;
         RequisitesList = requisites;
         PetPhotosList = petPhotos;
+        DateCreated = DateTimeOffset.UtcNow;
     }
     
     public void Activate()

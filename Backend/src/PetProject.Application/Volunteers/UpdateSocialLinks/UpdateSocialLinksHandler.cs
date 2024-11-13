@@ -9,17 +9,17 @@ namespace PetProject.Application.Volunteers.UpdateSocialLinks;
 
 public class UpdateSocialLinksHandler(IVolunteersRepository repository, ILogger<UpdateSocialLinksHandler> logger)
 {
-    public async Task<Result<Guid, Error>> Execute(UpdateSocialLinksRequest request,
+    public async Task<Result<Guid, Error>> Execute(UpdateSocialLinksCommand command,
         CancellationToken token = default)
     {
-        var volunteerId = VolunteerId.Create(request.Id);
+        var volunteerId = VolunteerId.Create(command.Id);
 
         var volunteer = await repository.GetById(volunteerId, token);
 
         if (volunteer.IsFailure)
             return volunteer.Error;
 
-        var socialLinks = request.Dto.SocialLinks
+        var socialLinks = command.Dto.SocialLinks
             .Select(x => SocialLink.Create(x.Name, x.Url).Value);
         var socialLinksList = new SocialLinksList(socialLinks);
 

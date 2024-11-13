@@ -7,7 +7,7 @@ using PetProject.Domain.VolunteerManagement.ValueObjects;
 
 namespace PetProject.Application.Volunteers.UpdateSocialLinks;
 
-public class UpdateSocialLinksRequestValidator : AbstractValidator<UpdateSocialLinksRequest>
+public class UpdateSocialLinksRequestValidator : AbstractValidator<UpdateSocialLinksCommand>
 {
     public UpdateSocialLinksRequestValidator()
     {

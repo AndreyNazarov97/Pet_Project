@@ -2,6 +2,6 @@
 
 namespace PetProject.Application.Volunteers.UpdateRequisites;
 
-public record UpdateRequisitesRequest(
+public record UpdateRequisitesCommand(
     Guid Id, 
     UpdateRequisitesDto Dto);

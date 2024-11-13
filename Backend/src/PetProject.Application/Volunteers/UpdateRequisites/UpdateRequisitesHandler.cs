@@ -9,17 +9,17 @@ namespace PetProject.Application.Volunteers.UpdateRequisites;
 
 public class UpdateRequisitesHandler(IVolunteersRepository repository, ILogger<UpdateRequisitesHandler> logger)
 {
-    public async Task<Result<Guid, Error>> Execute(UpdateRequisitesRequest request,
+    public async Task<Result<Guid, Error>> Execute(UpdateRequisitesCommand command,
         CancellationToken token = default)
     {
-        var volunteerId = VolunteerId.Create(request.Id);
+        var volunteerId = VolunteerId.Create(command.Id);
 
         var volunteer = await repository.GetById(volunteerId, token);
 
         if (volunteer.IsFailure)
             return volunteer.Error;
 
-        var requisites = request.Dto.Requisites
+        var requisites = command.Dto.Requisites
             .Select(x => Requisite.Create(x.Name, x.Description).Value);
         var requisitesList = new RequisitesList(requisites);
 

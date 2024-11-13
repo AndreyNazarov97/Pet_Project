@@ -2,6 +2,6 @@
 
 namespace PetProject.Application.Volunteers.UpdateSocialLinks;
 
-public record UpdateSocialLinksRequest(
+public record UpdateSocialLinksCommand(
     Guid Id, 
     UpdateSocialLinksDto Dto);

@@ -9,19 +9,19 @@ namespace PetProject.Application.SpeciesManagement.CreateBreed;
 
 public class CreateBreedHandler(ISpeciesRepository speciesRepository, ILogger<CreateBreedHandler> logger)
 {
-    public async Task<Result<BreedId, Error>> Handle(CreateBreedRequest request, CancellationToken cancellationToken)
+    public async Task<Result<BreedId, Error>> Handle(CreateBreedCommand command, CancellationToken cancellationToken)
     {
-        var speciesName = SpeciesName.Create(request.SpeciesName).Value;
+        var speciesName = SpeciesName.Create(command.SpeciesName).Value;
         var existedSpecies = await speciesRepository.GetByName(speciesName, cancellationToken);
 
         if (existedSpecies.IsFailure)
             return Errors.General.NotFound();
 
-        if(existedSpecies.Value.Breeds.Any(x => x.BreedName.Value == request.BreedName))
+        if(existedSpecies.Value.Breeds.Any(x => x.BreedName.Value == command.BreedName))
             return Errors.Model.AlreadyExist("Breed");
         
         var breedId = BreedId.NewId();
-        var breedName = BreedName.Create(request.BreedName).Value;
+        var breedName = BreedName.Create(command.BreedName).Value;
         var breed = new Breed(breedId, breedName);
         
         existedSpecies.Value.AddBreeds([breed]);

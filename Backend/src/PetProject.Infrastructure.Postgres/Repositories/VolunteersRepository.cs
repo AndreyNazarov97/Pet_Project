@@ -48,7 +48,6 @@ public class VolunteersRepository(PetProjectDbContext context) : IVolunteersRepo
     {
         var volunteer = await context.Volunteers
             .Where(v => v.Id == id)
-            //.Include(v => v.Pets)
             .FirstOrDefaultAsync(cancellationToken);
 
         if (volunteer == null)

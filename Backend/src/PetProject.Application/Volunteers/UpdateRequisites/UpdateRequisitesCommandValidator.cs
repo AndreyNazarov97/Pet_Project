@@ -7,7 +7,7 @@ using PetProject.Domain.VolunteerManagement.ValueObjects;
 
 namespace PetProject.Application.Volunteers.UpdateRequisites;
 
-public class UpdateRequisitesRequestValidator : AbstractValidator<UpdateRequisitesRequest>
+public class UpdateRequisitesRequestValidator : AbstractValidator<UpdateRequisitesCommand>
 {
     public UpdateRequisitesRequestValidator()
     {

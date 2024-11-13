@@ -2,7 +2,7 @@
 
 namespace PetProject.Application.Volunteers.UpdateVolunteer;
 
-public record UpdateVolunteerRequest(
+public record UpdateVolunteerCommand(
     Guid IdVolunteer,
     UpdateVolunteerDto Dto);
     

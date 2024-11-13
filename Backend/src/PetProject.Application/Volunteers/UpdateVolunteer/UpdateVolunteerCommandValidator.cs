@@ -6,7 +6,7 @@ using PetProject.Domain.Shared.ValueObjects;
 
 namespace PetProject.Application.Volunteers.UpdateVolunteer;
 
-public class UpdateVolunteerRequestValidator : AbstractValidator<UpdateVolunteerRequest>
+public class UpdateVolunteerRequestValidator : AbstractValidator<UpdateVolunteerCommand>
 {
     public UpdateVolunteerRequestValidator()
     {

@@ -11,10 +11,10 @@ public class CreateSpeciesHandler(
     ISpeciesRepository repository,
     ILogger<CreateSpeciesHandler> logger)
 {
-    public async Task<Result<Guid, Error>> Execute(CreateSpeciesRequest request,
+    public async Task<Result<Guid, Error>> Execute(CreateSpeciesCommand command,
         CancellationToken cancellationToken = default)
     {
-        var speciesName = SpeciesName.Create(request.Name);
+        var speciesName = SpeciesName.Create(command.Name);
 
         var existedSpecies = await repository.GetByName(speciesName.Value, cancellationToken);
         

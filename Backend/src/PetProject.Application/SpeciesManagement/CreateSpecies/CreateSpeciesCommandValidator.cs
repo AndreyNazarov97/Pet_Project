@@ -4,9 +4,9 @@ using PetProject.Domain.SpeciesManagement.ValueObjects;
 
 namespace PetProject.Application.SpeciesManagement.CreateSpecies;
 
-public class CreateSpeciesRequestValidator : AbstractValidator<CreateSpeciesRequest>
+public class CreateSpeciesCommandValidator : AbstractValidator<CreateSpeciesCommand>
 {
-    public CreateSpeciesRequestValidator()
+    public CreateSpeciesCommandValidator()
     {
         RuleFor(c => c.Name)
             .MustBeValueObject(SpeciesName.Create);

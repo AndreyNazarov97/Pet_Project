@@ -2,10 +2,10 @@
 
 namespace PetProject.Application.Volunteers.CreateVolunteer;
 
-public record CreateVolunteerRequest(
+public record CreateVolunteerCommand(
     FullNameDto FullName,
     string Description,
     int AgeExperience,
-    string Number,
+    string PhoneNumber,
     IEnumerable<SocialLinkDto> SocialLinks,
     IEnumerable<RequisiteDto> Requisites);

@@ -4,9 +4,9 @@ using PetProject.Domain.Shared;
 
 namespace PetProject.Application.Volunteers.DeleteVolunteer;
 
-public class DeleteVolunteerValidator : AbstractValidator<DeleteVolunteerRequest>
+public class DeleteVolunteerCommandValidator : AbstractValidator<DeleteVolunteerCommand>
 {
-    public DeleteVolunteerValidator()
+    public DeleteVolunteerCommandValidator()
     {
         RuleFor(d => d.Id)
             .NotEmpty()

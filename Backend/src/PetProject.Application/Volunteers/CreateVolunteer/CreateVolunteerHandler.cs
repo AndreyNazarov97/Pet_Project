@@ -11,10 +11,10 @@ namespace PetProject.Application.Volunteers.CreateVolunteer;
 public class CreateVolunteerHandler(IVolunteersRepository repository, ILogger<CreateVolunteerHandler> logger)
 {
     public async Task<Result<Guid, Error>> Execute(
-        CreateVolunteerRequest request, CancellationToken token = default
+        CreateVolunteerCommand command, CancellationToken token = default
     )
     {
-        var phoneNumber = PhoneNumber.Create(request.Number);
+        var phoneNumber = PhoneNumber.Create(command.PhoneNumber);
 
         var existedVolunteer = await repository.GetByPhoneNumber(phoneNumber.Value, token);
 
@@ -23,15 +23,15 @@ public class CreateVolunteerHandler(IVolunteersRepository repository, ILogger<Cr
 
         var volunteerId = VolunteerId.NewId();
 
-        var fullName = FullName.Create(request.FullName.Name, request.FullName.Surname, request.FullName.Patronymic);
-        var description = Description.Create(request.Description);
-        var ageExperience = Experience.Create(request.AgeExperience);
+        var fullName = FullName.Create(command.FullName.Name, command.FullName.Surname, command.FullName.Patronymic);
+        var description = Description.Create(command.Description);
+        var ageExperience = Experience.Create(command.AgeExperience);
 
-        var socialLinks = request.SocialLinks
+        var socialLinks = command.SocialLinks
             .Select(x => SocialLink.Create(x.Name, x.Url).Value);
         var socialLinksList = new SocialLinksList(socialLinks);
 
-        var requisites = request.Requisites
+        var requisites = command.Requisites
             .Select(x => Requisite.Create(x.Name, x.Description).Value);
         var requisitesList = new RequisitesList(requisites);
 

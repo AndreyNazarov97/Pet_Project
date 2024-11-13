@@ -2,6 +2,7 @@
 using Microsoft.Extensions.DependencyInjection;
 using PetProject.Application.SpeciesManagement.CreateBreed;
 using PetProject.Application.SpeciesManagement.CreateSpecies;
+using PetProject.Application.Volunteers.CreatePet;
 using PetProject.Application.Volunteers.CreateVolunteer;
 using PetProject.Application.Volunteers.DeleteVolunteer;
 using PetProject.Application.Volunteers.UpdateRequisites;
@@ -16,6 +17,7 @@ public static class DependencyInjection
     {
         services.AddScoped<CreateSpeciesHandler>();
         services.AddScoped<CreateBreedHandler>();
+        services.AddScoped<CreatePetHandler>();
         
         services.AddScoped<CreateVolunteerHandler>();
         services.AddScoped<UpdateVolunteerHandler>();

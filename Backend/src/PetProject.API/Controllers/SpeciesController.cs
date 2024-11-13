@@ -12,11 +12,11 @@ public class SpeciesController : ApplicationController
 {
     [HttpPost]
     public async Task<ActionResult<SpeciesId>> CreateSpecies(
-        [FromBody] CreateSpeciesRequest request,
+        [FromBody] CreateSpeciesCommand command,
         [FromServices] CreateSpeciesHandler handler,
         CancellationToken cancellationToken)
     {
-        var result = await handler.Execute(request, cancellationToken);
+        var result = await handler.Execute(command, cancellationToken);
 
         if (result.IsFailure)
             return result.Error.ToResponse();
@@ -31,7 +31,7 @@ public class SpeciesController : ApplicationController
         [FromServices] CreateBreedHandler handler,
         CancellationToken cancellationToken)
     {
-        var request = new CreateBreedRequest
+        var request = new CreateBreedCommand
         {
             SpeciesName = speciesName,
             BreedName = dto.Name

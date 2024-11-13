@@ -8,9 +8,9 @@ namespace PetProject.Application.Volunteers.UpdateVolunteer;
 
 public class UpdateVolunteerHandler(IVolunteersRepository repository, ILogger<UpdateVolunteerHandler> logger)
 {
-    public async Task<Result<Guid, Error>> Execute(UpdateVolunteerRequest request, CancellationToken token = default)
+    public async Task<Result<Guid, Error>> Execute(UpdateVolunteerCommand command, CancellationToken token = default)
     {
-        var volunteerId = VolunteerId.Create(request.IdVolunteer);
+        var volunteerId = VolunteerId.Create(command.IdVolunteer);
 
         var volunteer = await repository.GetById(volunteerId, token);
 
@@ -18,13 +18,13 @@ public class UpdateVolunteerHandler(IVolunteersRepository repository, ILogger<Up
             return volunteer.Error;
 
         var fullName = FullName.Create(
-                request.Dto.FullName.Name, 
-                request.Dto.FullName.Surname, 
-                request.Dto.FullName.Patronymic)
+                command.Dto.FullName.Name, 
+                command.Dto.FullName.Surname, 
+                command.Dto.FullName.Patronymic)
             .Value;
-        var description = Description.Create(request.Dto.Description).Value;
-        var ageExperience = Experience.Create(request.Dto.AgeExperience).Value;
-        var phoneNumber = PhoneNumber.Create(request.Dto.PhoneNumber).Value;
+        var description = Description.Create(command.Dto.Description).Value;
+        var ageExperience = Experience.Create(command.Dto.AgeExperience).Value;
+        var phoneNumber = PhoneNumber.Create(command.Dto.PhoneNumber).Value;
 
         volunteer.Value.UpdateMainInfo(fullName, description, ageExperience, phoneNumber);
 

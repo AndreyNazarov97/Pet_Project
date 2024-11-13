@@ -7,10 +7,10 @@ namespace PetProject.Application.Volunteers.DeleteVolunteer;
 
 public class DeleteVolunteerHandler(IVolunteersRepository repository, ILogger<DeleteVolunteerHandler> logger)
 {
-    public async Task<Result<Guid, Error>> Execute(DeleteVolunteerRequest request,
+    public async Task<Result<Guid, Error>> Execute(DeleteVolunteerCommand command,
         CancellationToken cancellationToken = default)
     {
-        var volunteerId = VolunteerId.Create(request.Id);
+        var volunteerId = VolunteerId.Create(command.Id);
         var volunteerResult = await repository.GetById(volunteerId, cancellationToken);
         if (volunteerResult.IsFailure)
             return volunteerResult.Error;
