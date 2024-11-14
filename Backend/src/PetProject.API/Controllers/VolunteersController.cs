@@ -4,6 +4,7 @@ using Microsoft.AspNetCore.Mvc;
 using PetProject.API.Contracts;
 using PetProject.API.Extensions;
 using PetProject.Application.Dto;
+using PetProject.Application.Volunteers.AddPetPhoto;
 using PetProject.Application.Volunteers.CreatePet;
 using PetProject.Application.Volunteers.CreateVolunteer;
 using PetProject.Application.Volunteers.UpdateRequisites;
@@ -14,6 +15,7 @@ using PetProject.Domain.VolunteerManagement.Enums;
 using AddressDto = PetProject.Application.Volunteers.CreatePet.AddressDto;
 
 namespace PetProject.API.Controllers;
+
 public class VolunteersController : ApplicationController
 {
     [HttpPost]
@@ -39,13 +41,13 @@ public class VolunteersController : ApplicationController
         CancellationToken cancellationToken)
     {
         var request = new UpdateVolunteerCommand(volunteerId, dto);
-        
+
         var validationResult = await validator.ValidateAsync(request, cancellationToken);
         if (!validationResult.IsValid)
             return validationResult.ToValidationErrorResponse();
-        
+
         var result = await handler.Execute(request, cancellationToken);
-        
+
         if (result.IsFailure)
             return result.Error.ToResponse();
 
@@ -61,19 +63,19 @@ public class VolunteersController : ApplicationController
         CancellationToken cancellationToken)
     {
         var request = new UpdateRequisitesCommand(volunteerId, dto);
-        
+
         var validationResult = await validator.ValidateAsync(request, cancellationToken);
         if (!validationResult.IsValid)
             return validationResult.ToValidationErrorResponse();
-        
+
         var result = await handler.Execute(request, cancellationToken);
-        
+
         if (result.IsFailure)
             return result.Error.ToResponse();
 
         return Ok(result.Value);
     }
-    
+
     [HttpPut("{volunteerId:guid}/social-networks")]
     public async Task<ActionResult> UpdateSocialNetworks(
         [FromRoute] Guid volunteerId,
@@ -83,31 +85,74 @@ public class VolunteersController : ApplicationController
         CancellationToken cancellationToken)
     {
         var request = new UpdateSocialLinksCommand(volunteerId, dto);
-        
+
         var validationResult = await validator.ValidateAsync(request, cancellationToken);
         if (!validationResult.IsValid)
             return validationResult.ToValidationErrorResponse();
-        
+
         var result = await handler.Execute(request, cancellationToken);
-        
+
         if (result.IsFailure)
             return result.Error.ToResponse();
 
         return Ok(result.Value);
     }
-    
+
     [HttpPost("{volunteerId:guid}/pet")]
     public async Task<ActionResult<PetId>> CreatePet(
-        [FromRoute] Guid volunteerId, 
-        [FromForm]CreatePetRequest request,
+        [FromRoute] Guid volunteerId,
+        [FromForm] CreatePetRequest request,
         [FromServices] CreatePetHandler handler,
         CancellationToken cancellationToken)
     {
         var result = await handler.Handle(request.ToCommand(volunteerId), cancellationToken);
-        
+
         if (result.IsFailure)
             return result.Error.ToResponse();
 
         return Ok(result.Value);
+    }
+
+    [HttpPost("{volunteerId:guid}/pet/{petId:guid}/photo")]
+    public async Task<ActionResult> AddPetPhoto(
+        [FromRoute] Guid volunteerId,
+        [FromRoute] Guid petId,
+        [FromForm] IFormFileCollection photos,
+        [FromServices] AddPetPhotoHandler handler,
+        CancellationToken cancellationToken)
+    {
+        List<FileDto> filesDto = [];
+        try
+        {
+            foreach (var photo in photos)
+            {
+                var stream = photo.OpenReadStream();
+
+                var file = new FileDto(photo.FileName, photo.ContentType, stream);
+                
+                filesDto.Add(file);
+            }
+
+            var command = new AddPetPhotoCommand
+            {
+                VolunteerId = volunteerId,
+                PetId = petId,
+                Photos = filesDto
+            };
+
+            var result = await handler.Handle(command, cancellationToken);
+
+            if (result.IsFailure)
+                return result.Error.ToResponse();
+
+            return Ok(result.Value);
+        }
+        finally
+        {
+            foreach (var fileDto in filesDto)
+            {
+                await fileDto.Content.DisposeAsync();
+            }
+        }
     }
 }

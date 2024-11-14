@@ -13,16 +13,16 @@ namespace PetProject.Application.Volunteers.CreatePet;
 
 public class CreatePetHandler
 {
-    private readonly IMinioProvider _minioProvider;
+    private readonly IFileProvider _fileProvider;
     private readonly IVolunteersRepository _volunteersRepository;
     private readonly ISpeciesRepository _speciesRepository;
 
     public CreatePetHandler(
-        IMinioProvider minioProvider,
+        IFileProvider fileProvider,
         IVolunteersRepository volunteersRepository,
         ISpeciesRepository speciesRepository)
     {
-        _minioProvider = minioProvider;
+        _fileProvider = fileProvider;
         _volunteersRepository = volunteersRepository;
         _speciesRepository = speciesRepository;
     }
@@ -75,7 +75,7 @@ public class CreatePetHandler
             command.IsVaccinated,
             command.HelpStatus,
             new RequisitesList([Requisite.Create("test", "test").Value]),
-            new PetPhotosList([PetPhoto.Create("test", true).Value])
+            new PetPhotosList([])
         );
 
         return pet;

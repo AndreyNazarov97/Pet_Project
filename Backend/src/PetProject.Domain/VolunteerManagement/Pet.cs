@@ -60,6 +60,12 @@ public class Pet : Shared.Common.Entity<PetId>, ISoftDeletable
         PetPhotosList = petPhotos;
         DateCreated = DateTimeOffset.UtcNow;
     }
+
+    public void AddPhotos(IEnumerable<PetPhoto> petPhotos)
+    {
+        var petPhotosList = PetPhotosList.PetPhotos.Concat(petPhotos).ToList();
+        PetPhotosList = new PetPhotosList(petPhotosList);
+    }
     
     public void Activate()
     {

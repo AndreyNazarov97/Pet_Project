@@ -41,7 +41,3 @@ public record CreatePetRequest
         return command;
     }
 }
-
-
-
-public record FileDto(string Name, string ContentType, byte[] Content);
