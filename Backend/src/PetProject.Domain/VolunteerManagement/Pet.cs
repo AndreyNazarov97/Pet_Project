@@ -11,23 +11,25 @@ namespace PetProject.Domain.VolunteerManagement;
 public class Pet : Shared.Common.Entity<PetId>, ISoftDeletable
 {
     private bool _isDeleted = false;
-    
-    protected Pet(PetId id) : base(id){}
+
+    protected Pet(PetId id) : base(id)
+    {
+    }
 
     public PetName PetName { get; private set; }
     public Description GeneralDescription { get; private set; }
     public Description HealthInformation { get; private set; }
     public AnimalType AnimalType { get; private set; }
     public Address Address { get; private set; }
-    public PetPhysicalAttributes PhysicalAttributes{ get; private set; } 
+    public PetPhysicalAttributes PhysicalAttributes { get; private set; }
     public PhoneNumber PhoneNumber { get; private set; }
     public DateOnly BirthDate { get; private set; }
     public bool IsCastrated { get; private set; }
     public bool IsVaccinated { get; private set; }
     public HelpStatus HelpStatus { get; private set; }
     public DateTimeOffset DateCreated { get; }
-    public PetPhotosList PetPhotosList { get; private set; } 
-    public RequisitesList RequisitesList { get; private set; } 
+    public PetPhotosList PetPhotosList { get; private set; }
+    public RequisitesList RequisitesList { get; private set; }
 
 
     public Pet(PetId id,
@@ -51,7 +53,7 @@ public class Pet : Shared.Common.Entity<PetId>, ISoftDeletable
         AnimalType = animalType;
         Address = address;
         PhysicalAttributes = attributes;
-        PhoneNumber = number;   
+        PhoneNumber = number;
         BirthDate = birthDate;
         IsCastrated = isCastrated;
         IsVaccinated = isVaccinated;
@@ -63,10 +65,15 @@ public class Pet : Shared.Common.Entity<PetId>, ISoftDeletable
 
     public void AddPhotos(IEnumerable<PetPhoto> petPhotos)
     {
-        var petPhotosList = PetPhotosList.PetPhotos.Concat(petPhotos).ToList();
-        PetPhotosList = new PetPhotosList(petPhotosList);
+        // здесь из-за отслеживания ef не получается собрать старые фото и прикрепить к новым
+        var updatedPhotos = PetPhotosList.PetPhotos
+            .Concat(petPhotos)
+            .Select(photo => new PetPhoto(photo.Path)) 
+            .ToList();
+        
+        PetPhotosList = new PetPhotosList(petPhotos);
     }
-    
+
     public void Activate()
     {
         _isDeleted = false;

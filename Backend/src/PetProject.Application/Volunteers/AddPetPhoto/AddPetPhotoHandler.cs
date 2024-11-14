@@ -10,7 +10,7 @@ namespace PetProject.Application.Volunteers.AddPetPhoto;
 
 public class AddPetPhotoHandler
 {
-    private const string BucketName = "pet-photo";
+    private const string BucketName = "pet-project";
 
     private readonly IVolunteersRepository _volunteersRepository;
     private readonly IFileProvider _fileProvider;
@@ -26,23 +26,17 @@ public class AddPetPhotoHandler
     public async Task<Result<string, Error>> Handle(AddPetPhotoCommand command,
         CancellationToken cancellationToken = default)
     {
-        List<PetPhoto> petPhotos = [];
-        foreach (var photo in command.Photos)
-        {
-            var extension = Path.GetExtension(photo.FileName);
+        var filesData = command.Photos
+            .Select(photo => new FileDataDto(photo.Content, photo.FileName, BucketName))
+            .ToList();
 
-            var filePath = FilePath.Create(Guid.NewGuid().ToString(), extension);
-            if (filePath.IsFailure)
-                return filePath.Error;
-
-            var fileData = new FileDataDto(photo.Content, filePath.Value.Path, BucketName);
-
-            var uploadResult = await _fileProvider.UploadFile(fileData, cancellationToken);
-            if (uploadResult.IsFailure) 
-                return uploadResult.Error;
-            
-            petPhotos.Add(new PetPhoto(filePath.Value));
-        }
+        var uploadResult = await _fileProvider.UploadFiles(filesData, cancellationToken);
+        if (uploadResult.IsFailure) 
+            return uploadResult.Error;
+        
+        var petPhotos = uploadResult.Value
+            .Select(p => new PetPhoto(p))
+            .ToList();
         
         var volunteerId = VolunteerId.Create(command.VolunteerId);
         var volunteerResult = await _volunteersRepository.GetById(volunteerId, cancellationToken);

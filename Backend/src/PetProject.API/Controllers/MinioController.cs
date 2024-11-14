@@ -4,6 +4,7 @@ using PetProject.API.Response;
 using PetProject.Application.Abstractions;
 using PetProject.Application.Dto;
 using PetProject.Domain.Shared;
+using PetProject.Infrastructure.Postgres.Processors;
 
 namespace PetProject.API.Controllers;
 
@@ -18,16 +19,19 @@ public class MinioController : ApplicationController
     }
 
     [HttpPost]
-    public async Task<ActionResult> UploadFile(IFormFile file, CancellationToken cancellationToken = default)
+    public async Task<ActionResult> UploadFiles(IFormFileCollection files, CancellationToken cancellationToken = default)
     {
-        await using var stream = file.OpenReadStream();
-        var fileData = new FileDataDto(stream, file.FileName, BucketName);
+        await using var fileProcessor = new FormFileProcessor();
+        var filesDto = fileProcessor.Process(files);
+        var filesData = filesDto.Select(f => new FileDataDto(f.Content, f.FileName, BucketName)).ToList();
         
-        var result = await _fileProvider.UploadFile(fileData, cancellationToken);
+        var result = await _fileProvider.UploadFiles(filesData, cancellationToken);
+        
+    
         if (result.IsFailure)
             return result.Error.ToResponse();
-        
-        return Ok(result);
+    
+        return Ok(result.Value);
     }
 
     [HttpDelete]
@@ -38,7 +42,7 @@ public class MinioController : ApplicationController
         if (result.IsFailure)
             return result.Error.ToResponse();
 
-        return Ok(result);
+        return Ok();
     }
 
     [HttpGet]
@@ -50,6 +54,6 @@ public class MinioController : ApplicationController
         if (result.IsFailure)
             return result.Error.ToResponse();
 
-        return Ok(result);
+        return Ok(result.Value);
     }
 }

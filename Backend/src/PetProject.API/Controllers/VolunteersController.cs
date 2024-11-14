@@ -12,6 +12,7 @@ using PetProject.Application.Volunteers.UpdateSocialLinks;
 using PetProject.Application.Volunteers.UpdateVolunteer;
 using PetProject.Domain.Shared.EntityIds;
 using PetProject.Domain.VolunteerManagement.Enums;
+using PetProject.Infrastructure.Postgres.Processors;
 using AddressDto = PetProject.Application.Volunteers.CreatePet.AddressDto;
 
 namespace PetProject.API.Controllers;
@@ -121,38 +122,21 @@ public class VolunteersController : ApplicationController
         [FromServices] AddPetPhotoHandler handler,
         CancellationToken cancellationToken)
     {
-        List<FileDto> filesDto = [];
-        try
+        await using var fileProcessor = new FormFileProcessor();
+        var filesDto = fileProcessor.Process(photos);
+        
+        var command = new AddPetPhotoCommand
         {
-            foreach (var photo in photos)
-            {
-                var stream = photo.OpenReadStream();
+            VolunteerId = volunteerId,
+            PetId = petId,
+            Photos = filesDto
+        };
 
-                var file = new FileDto(photo.FileName, photo.ContentType, stream);
-                
-                filesDto.Add(file);
-            }
+        var result = await handler.Handle(command, cancellationToken);
 
-            var command = new AddPetPhotoCommand
-            {
-                VolunteerId = volunteerId,
-                PetId = petId,
-                Photos = filesDto
-            };
+        if (result.IsFailure)
+            return result.Error.ToResponse();
 
-            var result = await handler.Handle(command, cancellationToken);
-
-            if (result.IsFailure)
-                return result.Error.ToResponse();
-
-            return Ok(result.Value);
-        }
-        finally
-        {
-            foreach (var fileDto in filesDto)
-            {
-                await fileDto.Content.DisposeAsync();
-            }
-        }
+        return Ok(result.Value);
     }
 }

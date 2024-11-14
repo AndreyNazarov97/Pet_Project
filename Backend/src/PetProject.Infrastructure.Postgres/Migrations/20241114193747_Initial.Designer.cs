@@ -13,7 +13,7 @@ using PetProject.Infrastructure.Postgres;
 namespace PetProject.Infrastructure.Postgres.Migrations
 {
     [DbContext(typeof(PetProjectDbContext))]
-    [Migration("20240829084012_Initial")]
+    [Migration("20241114193747_Initial")]
     partial class Initial
     {
         /// <inheritdoc />
@@ -26,7 +26,7 @@ namespace PetProject.Infrastructure.Postgres.Migrations
 
             NpgsqlModelBuilderExtensions.UseIdentityByDefaultColumns(modelBuilder);
 
-            modelBuilder.Entity("PetProject.Domain.Species.Breed", b =>
+            modelBuilder.Entity("PetProject.Domain.SpeciesManagement.Breed", b =>
                 {
                     b.Property<Guid>("Id")
                         .HasColumnType("uuid")
@@ -36,7 +36,7 @@ namespace PetProject.Infrastructure.Postgres.Migrations
                         .HasColumnType("uuid")
                         .HasColumnName("species_id");
 
-                    b.ComplexProperty<Dictionary<string, object>>("BreedName", "PetProject.Domain.Species.Breed.BreedName#BreedName", b1 =>
+                    b.ComplexProperty<Dictionary<string, object>>("BreedName", "PetProject.Domain.SpeciesManagement.Breed.BreedName#BreedName", b1 =>
                         {
                             b1.IsRequired();
 
@@ -56,13 +56,13 @@ namespace PetProject.Infrastructure.Postgres.Migrations
                     b.ToTable("breeds", (string)null);
                 });
 
-            modelBuilder.Entity("PetProject.Domain.Species.Species", b =>
+            modelBuilder.Entity("PetProject.Domain.SpeciesManagement.Species", b =>
                 {
                     b.Property<Guid>("Id")
                         .HasColumnType("uuid")
                         .HasColumnName("id");
 
-                    b.ComplexProperty<Dictionary<string, object>>("Name", "PetProject.Domain.Species.Species.Name#SpeciesName", b1 =>
+                    b.ComplexProperty<Dictionary<string, object>>("Name", "PetProject.Domain.SpeciesManagement.Species.Name#SpeciesName", b1 =>
                         {
                             b1.IsRequired();
 
@@ -235,7 +235,7 @@ namespace PetProject.Infrastructure.Postgres.Migrations
                         .HasColumnType("boolean")
                         .HasColumnName("is_deleted");
 
-                    b.ComplexProperty<Dictionary<string, object>>("AgeExperience", "PetProject.Domain.VolunteerManagement.Volunteer.AgeExperience#AgeExperience", b1 =>
+                    b.ComplexProperty<Dictionary<string, object>>("Experience", "PetProject.Domain.VolunteerManagement.Volunteer.Experience#Experience", b1 =>
                         {
                             b1.IsRequired();
 
@@ -295,9 +295,9 @@ namespace PetProject.Infrastructure.Postgres.Migrations
                     b.ToTable("volunteers", (string)null);
                 });
 
-            modelBuilder.Entity("PetProject.Domain.Species.Breed", b =>
+            modelBuilder.Entity("PetProject.Domain.SpeciesManagement.Breed", b =>
                 {
-                    b.HasOne("PetProject.Domain.Species.Species", null)
+                    b.HasOne("PetProject.Domain.SpeciesManagement.Species", null)
                         .WithMany("Breeds")
                         .HasForeignKey("SpeciesId")
                         .OnDelete(DeleteBehavior.Cascade)
@@ -312,7 +312,7 @@ namespace PetProject.Infrastructure.Postgres.Migrations
                         .OnDelete(DeleteBehavior.Cascade)
                         .HasConstraintName("fk_pets_volunteers_volunteer_id");
 
-                    b.OwnsOne("PetProject.Domain.VolunteerManagement.RequisitesList", "RequisitesList", b1 =>
+                    b.OwnsOne("PetProject.Domain.VolunteerManagement.ValueObjects.RequisitesList", "RequisitesList", b1 =>
                         {
                             b1.Property<Guid>("PetId")
                                 .HasColumnType("uuid");
@@ -328,7 +328,7 @@ namespace PetProject.Infrastructure.Postgres.Migrations
                                 .HasForeignKey("PetId")
                                 .HasConstraintName("fk_pets_pets_pet_id");
 
-                            b1.OwnsMany("PetProject.Domain.VolunteerManagement.Requisite", "Requisites", b2 =>
+                            b1.OwnsMany("PetProject.Domain.VolunteerManagement.ValueObjects.Requisite", "Requisites", b2 =>
                                 {
                                     b2.Property<Guid>("RequisitesListPetId")
                                         .HasColumnType("uuid");
@@ -363,7 +363,7 @@ namespace PetProject.Infrastructure.Postgres.Migrations
                             b1.Navigation("Requisites");
                         });
 
-                    b.OwnsOne("PetProject.Domain.VolunteerManagement.PetPhotosList", "PetPhotosList", b1 =>
+                    b.OwnsOne("PetProject.Domain.VolunteerManagement.ValueObjects.PetPhotosList", "PetPhotosList", b1 =>
                         {
                             b1.Property<Guid>("PetId")
                                 .HasColumnType("uuid");
@@ -378,7 +378,7 @@ namespace PetProject.Infrastructure.Postgres.Migrations
                                 .HasForeignKey("PetId")
                                 .HasConstraintName("fk_pets_pets_id");
 
-                            b1.OwnsMany("PetProject.Domain.VolunteerManagement.PetPhoto", "PetPhotos", b2 =>
+                            b1.OwnsMany("PetProject.Domain.VolunteerManagement.ValueObjects.PetPhoto", "PetPhotos", b2 =>
                                 {
                                     b2.Property<Guid>("PetPhotosListPetId")
                                         .HasColumnType("uuid");
@@ -391,12 +391,6 @@ namespace PetProject.Infrastructure.Postgres.Migrations
                                         .HasColumnType("boolean")
                                         .HasColumnName("is_main");
 
-                                    b2.Property<string>("Path")
-                                        .IsRequired()
-                                        .HasMaxLength(500)
-                                        .HasColumnType("character varying(500)")
-                                        .HasColumnName("path");
-
                                     b2.HasKey("PetPhotosListPetId", "Id");
 
                                     b2.ToTable("pets");
@@ -406,6 +400,35 @@ namespace PetProject.Infrastructure.Postgres.Migrations
                                     b2.WithOwner()
                                         .HasForeignKey("PetPhotosListPetId")
                                         .HasConstraintName("fk_pets_pets_pet_photos_list_pet_id");
+
+                                    b2.OwnsOne("PetProject.Domain.Shared.ValueObjects.FilePath", "Path", b3 =>
+                                        {
+                                            b3.Property<Guid>("PetPhotosListPetId")
+                                                .HasColumnType("uuid");
+
+                                            b3.Property<int>("PetPhotoId")
+                                                .HasColumnType("integer");
+
+                                            b3.Property<string>("Path")
+                                                .IsRequired()
+                                                .HasMaxLength(500)
+                                                .HasColumnType("character varying(500)")
+                                                .HasColumnName("path");
+
+                                            b3.HasKey("PetPhotosListPetId", "PetPhotoId")
+                                                .HasName("pk_pets");
+
+                                            b3.ToTable("pets");
+
+                                            b3.ToJson("pet_photos");
+
+                                            b3.WithOwner()
+                                                .HasForeignKey("PetPhotosListPetId", "PetPhotoId")
+                                                .HasConstraintName("fk_pets_pets_pet_photos_list_pet_id_pet_photo_id");
+                                        });
+
+                                    b2.Navigation("Path")
+                                        .IsRequired();
                                 });
 
                             b1.Navigation("PetPhotos");
@@ -420,7 +443,7 @@ namespace PetProject.Infrastructure.Postgres.Migrations
 
             modelBuilder.Entity("PetProject.Domain.VolunteerManagement.Volunteer", b =>
                 {
-                    b.OwnsOne("PetProject.Domain.VolunteerManagement.SocialLinksList", "SocialLinksList", b1 =>
+                    b.OwnsOne("PetProject.Domain.VolunteerManagement.ValueObjects.SocialLinksList", "SocialLinksList", b1 =>
                         {
                             b1.Property<Guid>("VolunteerId")
                                 .HasColumnType("uuid");
@@ -435,7 +458,7 @@ namespace PetProject.Infrastructure.Postgres.Migrations
                                 .HasForeignKey("VolunteerId")
                                 .HasConstraintName("fk_volunteers_volunteers_id");
 
-                            b1.OwnsMany("PetProject.Domain.VolunteerManagement.SocialLink", "SocialLinks", b2 =>
+                            b1.OwnsMany("PetProject.Domain.VolunteerManagement.ValueObjects.SocialLink", "SocialLinks", b2 =>
                                 {
                                     b2.Property<Guid>("SocialLinksListVolunteerId")
                                         .HasColumnType("uuid");
@@ -470,7 +493,7 @@ namespace PetProject.Infrastructure.Postgres.Migrations
                             b1.Navigation("SocialLinks");
                         });
 
-                    b.OwnsOne("PetProject.Domain.VolunteerManagement.RequisitesList", "RequisitesList", b1 =>
+                    b.OwnsOne("PetProject.Domain.VolunteerManagement.ValueObjects.RequisitesList", "RequisitesList", b1 =>
                         {
                             b1.Property<Guid>("VolunteerId")
                                 .HasColumnType("uuid");
@@ -485,7 +508,7 @@ namespace PetProject.Infrastructure.Postgres.Migrations
                                 .HasForeignKey("VolunteerId")
                                 .HasConstraintName("fk_volunteers_volunteers_id");
 
-                            b1.OwnsMany("PetProject.Domain.VolunteerManagement.Requisite", "Requisites", b2 =>
+                            b1.OwnsMany("PetProject.Domain.VolunteerManagement.ValueObjects.Requisite", "Requisites", b2 =>
                                 {
                                     b2.Property<Guid>("RequisitesListVolunteerId")
                                         .HasColumnType("uuid");
@@ -528,7 +551,7 @@ namespace PetProject.Infrastructure.Postgres.Migrations
                         .IsRequired();
                 });
 
-            modelBuilder.Entity("PetProject.Domain.Species.Species", b =>
+            modelBuilder.Entity("PetProject.Domain.SpeciesManagement.Species", b =>
                 {
                     b.Navigation("Breeds");
                 });
