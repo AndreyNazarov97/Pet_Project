@@ -19,7 +19,9 @@ public class MinioController : ApplicationController
     }
 
     [HttpPost]
-    public async Task<ActionResult> UploadFiles(IFormFileCollection files, CancellationToken cancellationToken = default)
+    public async Task<ActionResult> UploadFiles(
+        IFormFileCollection files,
+        CancellationToken cancellationToken = default)
     {
         await using var fileProcessor = new FormFileProcessor();
         var filesDto = fileProcessor.Process(files);
@@ -35,7 +37,9 @@ public class MinioController : ApplicationController
     }
 
     [HttpDelete]
-    public async Task<ActionResult> DeleteFile(string fileName, CancellationToken cancellationToken = default)
+    public async Task<ActionResult> DeleteFile(
+        string fileName, 
+        CancellationToken cancellationToken = default)
     {
         var fileMetaData = new FileMetaDataDto(fileName, BucketName);
         var result = await _fileProvider.DeleteFile(fileMetaData, cancellationToken);

@@ -1,12 +1,9 @@
-﻿using FluentValidation;
-using MediatR;
+﻿using MediatR;
 using Microsoft.AspNetCore.Mvc;
 using PetProject.API.Controllers.Species.Requests;
 using PetProject.API.Extensions;
 using PetProject.Application.Dto;
 using PetProject.Application.SpeciesManagement;
-using PetProject.Application.SpeciesManagement.CreateBreed;
-using PetProject.Application.SpeciesManagement.CreateSpecies;
 using PetProject.Domain.Shared.EntityIds;
 
 namespace PetProject.API.Controllers.Species;
@@ -23,13 +20,9 @@ public class SpeciesController : ApplicationController
     [HttpPost]
     public async Task<ActionResult<SpeciesId>> CreateSpecies(
         [FromBody] CreateSpeciesRequest request,
-        [FromServices] IValidator<CreateSpeciesCommand> validator,
         CancellationToken cancellationToken)
     {
         var command = request.ToCommand();
-        var validationResult = await validator.ValidateAsync(command, cancellationToken);
-        if (!validationResult.IsValid)
-            return validationResult.ToValidationErrorResponse();
         
         var result = await _mediator.Send(command, cancellationToken);
 
@@ -43,14 +36,9 @@ public class SpeciesController : ApplicationController
     public async Task<ActionResult<BreedId>> CreateBreed(
         [FromRoute] string speciesName,
         [FromBody] CreateBreedRequest request,
-        [FromServices] IValidator<CreateBreedCommand> validator,
         CancellationToken cancellationToken)
     {
         var command = request.ToCommand(speciesName);
-        var validationResult = await validator.ValidateAsync(command, cancellationToken);
-        if (!validationResult.IsValid)
-            return validationResult.ToValidationErrorResponse();
-        
         var result = await _mediator.Send(command, cancellationToken);
 
         if (result.IsFailure)
