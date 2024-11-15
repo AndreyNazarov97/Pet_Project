@@ -65,15 +65,9 @@ public class Pet : Shared.Common.Entity<PetId>, ISoftDeletable
 
     public void AddPhotos(IEnumerable<PetPhoto> petPhotos)
     {
-        // здесь из-за отслеживания ef не получается собрать старые фото и прикрепить к новым
-        var updatedPhotos = PetPhotosList.PetPhotos
-            .Concat(petPhotos)
-            .Select(photo => new PetPhoto(photo.Path)) 
-            .ToList();
-        
-        PetPhotosList = new PetPhotosList(petPhotos);
+        PetPhotosList.AddPhotos(petPhotos);
     }
-
+    
     public void Activate()
     {
         _isDeleted = false;

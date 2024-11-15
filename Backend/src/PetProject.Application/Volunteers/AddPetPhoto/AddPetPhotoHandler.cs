@@ -49,7 +49,7 @@ public class AddPetPhotoHandler
         var pet = volunteer.GetById(petId);
         if (pet is null)
             return Errors.General.NotFound(command.PetId);
-
+        
         pet.AddPhotos(petPhotos);
         await _volunteersRepository.Save(volunteer, cancellationToken);
 
