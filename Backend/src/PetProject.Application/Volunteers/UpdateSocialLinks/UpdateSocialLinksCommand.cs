@@ -2,6 +2,8 @@
 
 namespace PetProject.Application.Volunteers.UpdateSocialLinks;
 
-public record UpdateSocialLinksCommand(
-    Guid Id, 
-    UpdateSocialLinksDto Dto);
+public record UpdateSocialLinksCommand()
+{
+    public required Guid Id { get; init; } 
+    public required IEnumerable<SocialLinkDto> SocialLinks { get; init; } 
+}

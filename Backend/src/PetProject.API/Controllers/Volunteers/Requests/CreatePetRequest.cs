@@ -1,7 +1,8 @@
-﻿using PetProject.Application.Volunteers.CreatePet;
+﻿using PetProject.Application.Dto;
+using PetProject.Application.Volunteers.CreatePet;
 using PetProject.Domain.VolunteerManagement.Enums;
 
-namespace PetProject.API.Contracts;
+namespace PetProject.API.Controllers.Volunteers.Requests;
 
 public record CreatePetRequest
 {

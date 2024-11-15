@@ -1,26 +1,18 @@
 ﻿using FluentValidation;
-using PetProject.Application.Dto;
 using PetProject.Application.Validation;
 using PetProject.Domain.Shared;
 using PetProject.Domain.Shared.ValueObjects;
 
 namespace PetProject.Application.Volunteers.UpdateVolunteer;
 
-public class UpdateVolunteerRequestValidator : AbstractValidator<UpdateVolunteerCommand>
+public class UpdateVolunteerCommandValidator : AbstractValidator<UpdateVolunteerCommand>
 {
-    public UpdateVolunteerRequestValidator()
+    public UpdateVolunteerCommandValidator()
     {
         RuleFor(v => v.IdVolunteer)
             .NotEmpty()
-            .WithError(Errors.General.LengthIsInvalid("Id"));;
+            .WithError(Errors.General.LengthIsInvalid("Id"));
         
-    }
-}
-
-public class UpdateVolunteerDtoValidator : AbstractValidator<UpdateVolunteerDto>
-{
-    public UpdateVolunteerDtoValidator()
-    {
         RuleFor(c => new { c.FullName.Name, c.FullName.Surname, c.FullName.Patronymic })
             .MustBeValueObject(x => FullName.Create(x.Name, x.Surname, x.Patronymic));
 

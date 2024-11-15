@@ -35,13 +35,13 @@ public class UpdateVolunteerHandler
             return volunteer.Error;
 
         var fullName = FullName.Create(
-                command.Dto.FullName.Name, 
-                command.Dto.FullName.Surname, 
-                command.Dto.FullName.Patronymic)
+                command.FullName.Name, 
+                command.FullName.Surname, 
+                command.FullName.Patronymic)
             .Value;
-        var description = Description.Create(command.Dto.Description).Value;
-        var ageExperience = Experience.Create(command.Dto.AgeExperience).Value;
-        var phoneNumber = PhoneNumber.Create(command.Dto.PhoneNumber).Value;
+        var description = Description.Create(command.Description).Value;
+        var ageExperience = Experience.Create(command.AgeExperience).Value;
+        var phoneNumber = PhoneNumber.Create(command.PhoneNumber).Value;
 
         volunteer.Value.UpdateMainInfo(fullName, description, ageExperience, phoneNumber);
 

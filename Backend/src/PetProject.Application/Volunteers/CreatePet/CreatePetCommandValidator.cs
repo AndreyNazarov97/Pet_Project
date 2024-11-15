@@ -1,4 +1,5 @@
 ﻿using FluentValidation;
+using PetProject.Application.Dto.Validators;
 using PetProject.Application.Validation;
 using PetProject.Domain.Shared.ValueObjects;
 using PetProject.Domain.VolunteerManagement.ValueObjects;
@@ -9,9 +10,9 @@ public class CreatePetCommandValidator : AbstractValidator<CreatePetCommand>
 {
     public CreatePetCommandValidator()
     {
-        RuleFor(c => new { c.Address.Country, c.Address.City, c.Address.Street, c.Address.House, c.Address.Flat })
-            .MustBeValueObject(x => Address.Create(x.Country, x.City, x.Street, x.House, x.Flat));
-
+        RuleFor(c => c.Address)
+            .SetValidator(new AddressDtoValidator());
+        
         RuleFor(c => c.Name)
             .MustBeValueObject(PetName.Create);
 

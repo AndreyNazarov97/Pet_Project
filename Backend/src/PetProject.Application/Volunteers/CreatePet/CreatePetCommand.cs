@@ -1,4 +1,5 @@
-﻿using PetProject.Domain.VolunteerManagement.Enums;
+﻿using PetProject.Application.Dto;
+using PetProject.Domain.VolunteerManagement.Enums;
 
 namespace PetProject.Application.Volunteers.CreatePet;
 
@@ -19,4 +20,4 @@ public record CreatePetCommand
     public required HelpStatus HelpStatus { get; init; }
 }
 
-public record AddressDto(string Country, string City, string Street, string House, string Flat);
+

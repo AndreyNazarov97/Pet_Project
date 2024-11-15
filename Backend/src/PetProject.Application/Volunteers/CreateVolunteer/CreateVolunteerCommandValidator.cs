@@ -1,4 +1,5 @@
 ﻿using FluentValidation;
+using PetProject.Application.Dto.Validators;
 using PetProject.Application.Validation;
 using PetProject.Domain.Shared.ValueObjects;
 using PetProject.Domain.VolunteerManagement;
@@ -10,9 +11,9 @@ public class CreateVolunteerCommandValidator : AbstractValidator<CreateVolunteer
 {
     public CreateVolunteerCommandValidator()
     {
-        RuleFor(c => new { c.FullName.Name, c.FullName.Surname, c.FullName.Patronymic })
-            .MustBeValueObject(x => FullName.Create(x.Name, x.Surname, x.Patronymic));
-
+        RuleFor(c => c.FullName)
+            .SetValidator(new FullNameDtoValidator());
+        
         RuleFor(c => c.Description)
             .MustBeValueObject(Description.Create);
 
@@ -23,9 +24,9 @@ public class CreateVolunteerCommandValidator : AbstractValidator<CreateVolunteer
             .MustBeValueObject(PhoneNumber.Create);
 
         RuleForEach(c => c.Requisites)
-            .MustBeValueObject(s => Requisite.Create(s.Name, s.Description));
+            .SetValidator(new RequisiteDtoValidator()); 
 
         RuleForEach(c => c.SocialLinks)
-            .MustBeValueObject(s => SocialLink.Create(s.Name, s.Url));
+            .SetValidator(new SocialLinkDtoValidator());
     }
 }

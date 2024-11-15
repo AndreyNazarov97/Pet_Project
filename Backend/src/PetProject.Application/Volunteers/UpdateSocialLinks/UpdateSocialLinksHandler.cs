@@ -34,7 +34,7 @@ public class UpdateSocialLinksHandler
         if (volunteer.IsFailure)
             return volunteer.Error;
 
-        var socialLinks = command.Dto.SocialLinks
+        var socialLinks = command.SocialLinks
             .Select(x => SocialLink.Create(x.Name, x.Url).Value);
         var socialLinksList = new SocialLinksList(socialLinks);
 

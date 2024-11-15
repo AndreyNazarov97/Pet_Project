@@ -34,7 +34,7 @@ public class UpdateRequisitesHandler
         if (volunteer.IsFailure)
             return volunteer.Error;
 
-        var requisites = command.Dto.Requisites
+        var requisites = command.Requisites
             .Select(x => Requisite.Create(x.Name, x.Description).Value);
         var requisitesList = new RequisitesList(requisites);
 

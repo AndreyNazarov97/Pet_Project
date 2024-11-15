@@ -1,4 +1,6 @@
-﻿using Microsoft.AspNetCore.Mvc;
+﻿using FluentValidation;
+using Microsoft.AspNetCore.Mvc;
+using PetProject.API.Controllers.Species.Requests;
 using PetProject.API.Extensions;
 using PetProject.Application.Dto;
 using PetProject.Application.SpeciesManagement;
@@ -6,16 +8,22 @@ using PetProject.Application.SpeciesManagement.CreateBreed;
 using PetProject.Application.SpeciesManagement.CreateSpecies;
 using PetProject.Domain.Shared.EntityIds;
 
-namespace PetProject.API.Controllers;
+namespace PetProject.API.Controllers.Species;
 
 public class SpeciesController : ApplicationController
 {
     [HttpPost]
     public async Task<ActionResult<SpeciesId>> CreateSpecies(
-        [FromBody] CreateSpeciesCommand command,
+        [FromBody] CreateSpeciesRequest request,
         [FromServices] CreateSpeciesHandler handler,
+        [FromServices] IValidator<CreateSpeciesCommand> validator,
         CancellationToken cancellationToken)
     {
+        var command = request.ToCommand();
+        var validationResult = await validator.ValidateAsync(command, cancellationToken);
+        if (!validationResult.IsValid)
+            return validationResult.ToValidationErrorResponse();
+        
         var result = await handler.Execute(command, cancellationToken);
 
         if (result.IsFailure)
@@ -27,16 +35,17 @@ public class SpeciesController : ApplicationController
     [HttpPost("{speciesName}/breeds")]
     public async Task<ActionResult<BreedId>> CreateBreed(
         [FromRoute] string speciesName,
-        [FromBody] CreateBreedDto dto,
+        [FromBody] CreateBreedRequest request,
         [FromServices] CreateBreedHandler handler,
+        [FromServices] IValidator<CreateBreedCommand> validator,
         CancellationToken cancellationToken)
     {
-        var request = new CreateBreedCommand
-        {
-            SpeciesName = speciesName,
-            BreedName = dto.Name
-        };
-        var result = await handler.Handle(request, cancellationToken);
+        var command = request.ToCommand(speciesName);
+        var validationResult = await validator.ValidateAsync(command, cancellationToken);
+        if (!validationResult.IsValid)
+            return validationResult.ToValidationErrorResponse();
+        
+        var result = await handler.Handle(command, cancellationToken);
 
         if (result.IsFailure)
             return result.Error.ToResponse();
