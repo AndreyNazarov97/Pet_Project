@@ -1,14 +1,14 @@
 ﻿using CSharpFunctionalExtensions;
+using MediatR;
 using Microsoft.Extensions.Logging;
 using PetProject.Application.Abstractions;
 using PetProject.Domain.Shared;
 using PetProject.Domain.Shared.EntityIds;
-using PetProject.Domain.VolunteerManagement;
 using PetProject.Domain.VolunteerManagement.ValueObjects;
 
-namespace PetProject.Application.Volunteers.UpdateSocialLinks;
+namespace PetProject.Application.VolunteersManagement.UpdateSocialLinks;
 
-public class UpdateSocialLinksHandler
+public class UpdateSocialLinksHandler : IRequestHandler<UpdateSocialLinksCommand, Result<Guid, Error>>
 {
     private readonly IVolunteersRepository _repository;
     private readonly IUnitOfWork _unitOfWork;
@@ -24,7 +24,7 @@ public class UpdateSocialLinksHandler
         _logger = logger;
     }
 
-    public async Task<Result<Guid, Error>> Execute(UpdateSocialLinksCommand command,
+    public async Task<Result<Guid, Error>> Handle(UpdateSocialLinksCommand command,
         CancellationToken cancellationToken = default)
     {
         var volunteerId = VolunteerId.Create(command.Id);

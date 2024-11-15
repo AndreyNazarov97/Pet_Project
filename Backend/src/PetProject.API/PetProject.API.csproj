@@ -35,8 +35,4 @@
       <ProjectReference Include="..\PetProject.Infrastructure.Postgres\PetProject.Infrastructure.Postgres.csproj" />
     </ItemGroup>
 
-    <ItemGroup>
-      <Folder Include="Contracts\" />
-    </ItemGroup>
-
 </Project>

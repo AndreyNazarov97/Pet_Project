@@ -1,4 +1,5 @@
 ﻿using CSharpFunctionalExtensions;
+using MediatR;
 using Microsoft.Extensions.Logging;
 using PetProject.Domain.Shared;
 using PetProject.Domain.Shared.EntityIds;
@@ -6,17 +7,28 @@ using PetProject.Domain.Shared.ValueObjects;
 using PetProject.Domain.VolunteerManagement;
 using PetProject.Domain.VolunteerManagement.ValueObjects;
 
-namespace PetProject.Application.Volunteers.CreateVolunteer;
+namespace PetProject.Application.VolunteersManagement.CreateVolunteer;
 
-public class CreateVolunteerHandler(IVolunteersRepository repository, ILogger<CreateVolunteerHandler> logger)
+public class CreateVolunteerHandler : IRequestHandler<CreateVolunteerCommand, Result<Guid, Error>>
 {
-    public async Task<Result<Guid, Error>> Execute(
+    private readonly IVolunteersRepository _repository;
+    private readonly ILogger<CreateVolunteerHandler> _logger;
+
+    public CreateVolunteerHandler(
+        IVolunteersRepository repository,
+        ILogger<CreateVolunteerHandler> logger)
+    {
+        _repository = repository;
+        _logger = logger;
+    }
+
+    public async Task<Result<Guid, Error>> Handle(
         CreateVolunteerCommand command, CancellationToken token = default
     )
     {
         var phoneNumber = PhoneNumber.Create(command.PhoneNumber);
 
-        var existedVolunteer = await repository.GetByPhoneNumber(phoneNumber.Value, token);
+        var existedVolunteer = await _repository.GetByPhoneNumber(phoneNumber.Value, token);
 
         if (existedVolunteer.IsSuccess)
             return Errors.Model.AlreadyExist("Volunteer");
@@ -39,9 +51,9 @@ public class CreateVolunteerHandler(IVolunteersRepository repository, ILogger<Cr
             fullName.Value, description.Value,
             ageExperience.Value, phoneNumber.Value, socialLinksList, requisitesList);
 
-        await repository.Add(volunteer, token);
+        await _repository.Add(volunteer, token);
         
-        logger.Log(LogLevel.Information, "Created new volunteer: {VolunteerId}", volunteerId);
+        _logger.Log(LogLevel.Information, "Created new volunteer: {VolunteerId}", volunteerId);
         
         return volunteerId.Id;
     }

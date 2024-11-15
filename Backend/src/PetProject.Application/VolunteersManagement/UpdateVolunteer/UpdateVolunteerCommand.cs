@@ -1,8 +1,11 @@
-﻿using PetProject.Application.Dto;
+﻿using CSharpFunctionalExtensions;
+using MediatR;
+using PetProject.Application.Dto;
+using PetProject.Domain.Shared;
 
-namespace PetProject.Application.Volunteers.UpdateVolunteer;
+namespace PetProject.Application.VolunteersManagement.UpdateVolunteer;
 
-public record UpdateVolunteerCommand
+public record UpdateVolunteerCommand : IRequest<Result<Guid, Error>>
 {
     public required Guid IdVolunteer { get; init; } 
     public required FullNameDto FullName { get; init; } 

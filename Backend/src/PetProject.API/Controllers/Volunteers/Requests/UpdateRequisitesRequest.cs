@@ -1,5 +1,5 @@
 ﻿using PetProject.Application.Dto;
-using PetProject.Application.Volunteers.UpdateRequisites;
+using PetProject.Application.VolunteersManagement.UpdateRequisites;
 
 namespace PetProject.API.Controllers.Volunteers.Requests;
 

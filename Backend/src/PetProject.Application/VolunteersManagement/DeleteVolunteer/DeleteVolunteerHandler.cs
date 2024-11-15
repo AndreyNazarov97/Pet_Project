@@ -1,11 +1,12 @@
 ﻿using CSharpFunctionalExtensions;
+using MediatR;
 using Microsoft.Extensions.Logging;
 using PetProject.Domain.Shared;
 using PetProject.Domain.Shared.EntityIds;
 
-namespace PetProject.Application.Volunteers.DeleteVolunteer;
+namespace PetProject.Application.VolunteersManagement.DeleteVolunteer;
 
-public class DeleteVolunteerHandler
+public class DeleteVolunteerHandler : IRequestHandler<DeleteVolunteerCommand, Result<Guid, Error>>
 {
     private readonly IVolunteersRepository _repository;
     private readonly ILogger<DeleteVolunteerHandler> _logger;
@@ -16,7 +17,7 @@ public class DeleteVolunteerHandler
         _logger = logger;
     }
 
-    public async Task<Result<Guid, Error>> Execute(DeleteVolunteerCommand command,
+    public async Task<Result<Guid, Error>> Handle(DeleteVolunteerCommand command,
         CancellationToken cancellationToken = default)
     {
         var volunteerId = VolunteerId.Create(command.Id);

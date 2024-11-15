@@ -4,7 +4,7 @@ using PetProject.Application.Validation;
 using PetProject.Domain.Shared.ValueObjects;
 using PetProject.Domain.VolunteerManagement.ValueObjects;
 
-namespace PetProject.Application.Volunteers.CreatePet;
+namespace PetProject.Application.VolunteersManagement.CreatePet;
 
 public class CreatePetCommandValidator : AbstractValidator<CreatePetCommand>
 {

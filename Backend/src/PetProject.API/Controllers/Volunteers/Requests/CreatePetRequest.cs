@@ -1,5 +1,5 @@
 ﻿using PetProject.Application.Dto;
-using PetProject.Application.Volunteers.CreatePet;
+using PetProject.Application.VolunteersManagement.CreatePet;
 using PetProject.Domain.VolunteerManagement.Enums;
 
 namespace PetProject.API.Controllers.Volunteers.Requests;

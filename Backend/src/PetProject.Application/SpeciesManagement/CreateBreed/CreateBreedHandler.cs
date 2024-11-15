@@ -1,4 +1,5 @@
 ﻿using CSharpFunctionalExtensions;
+using MediatR;
 using Microsoft.Extensions.Logging;
 using PetProject.Domain.Shared;
 using PetProject.Domain.Shared.EntityIds;
@@ -7,12 +8,22 @@ using PetProject.Domain.SpeciesManagement.ValueObjects;
 
 namespace PetProject.Application.SpeciesManagement.CreateBreed;
 
-public class CreateBreedHandler(ISpeciesRepository speciesRepository, ILogger<CreateBreedHandler> logger)
+public class CreateBreedHandler : IRequestHandler<CreateBreedCommand, Result<Guid, Error>>
 {
-    public async Task<Result<BreedId, Error>> Handle(CreateBreedCommand command, CancellationToken cancellationToken)
+    private readonly ISpeciesRepository _speciesRepository;
+    private readonly ILogger<CreateBreedHandler> _logger;
+
+    public CreateBreedHandler(ISpeciesRepository speciesRepository, 
+        ILogger<CreateBreedHandler> logger)
+    {
+        _speciesRepository = speciesRepository;
+        _logger = logger;
+    }
+
+    public async Task<Result<Guid, Error>> Handle(CreateBreedCommand command, CancellationToken cancellationToken)
     {
         var speciesName = SpeciesName.Create(command.SpeciesName).Value;
-        var existedSpecies = await speciesRepository.GetByName(speciesName, cancellationToken);
+        var existedSpecies = await _speciesRepository.GetByName(speciesName, cancellationToken);
 
         if (existedSpecies.IsFailure)
             return Errors.General.NotFound();
@@ -26,8 +37,8 @@ public class CreateBreedHandler(ISpeciesRepository speciesRepository, ILogger<Cr
         
         existedSpecies.Value.AddBreeds([breed]);
         
-        await speciesRepository.Save(existedSpecies.Value, cancellationToken);
+        await _speciesRepository.Save(existedSpecies.Value, cancellationToken);
         
-        return breed.Id;
+        return breed.Id.Id;
     }
 }

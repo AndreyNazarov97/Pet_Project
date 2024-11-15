@@ -1,15 +1,15 @@
 ﻿using CSharpFunctionalExtensions;
+using MediatR;
 using Microsoft.Extensions.Logging;
 using PetProject.Application.Abstractions;
 using PetProject.Application.Dto;
 using PetProject.Domain.Shared;
 using PetProject.Domain.Shared.EntityIds;
-using PetProject.Domain.Shared.ValueObjects;
 using PetProject.Domain.VolunteerManagement.ValueObjects;
 
-namespace PetProject.Application.Volunteers.AddPetPhoto;
+namespace PetProject.Application.VolunteersManagement.AddPetPhoto;
 
-public class AddPetPhotoHandler
+public class AddPetPhotoHandler : IRequestHandler<AddPetPhotoCommand, Result<string, Error>>
 {
     private const string BucketName = "pet-project";
 

@@ -1,5 +1,5 @@
-﻿using System.Transactions;
-using CSharpFunctionalExtensions;
+﻿using CSharpFunctionalExtensions;
+using MediatR;
 using PetProject.Application.Abstractions;
 using PetProject.Application.Dto;
 using PetProject.Application.SpeciesManagement;
@@ -10,9 +10,9 @@ using PetProject.Domain.SpeciesManagement.ValueObjects;
 using PetProject.Domain.VolunteerManagement;
 using PetProject.Domain.VolunteerManagement.ValueObjects;
 
-namespace PetProject.Application.Volunteers.CreatePet;
+namespace PetProject.Application.VolunteersManagement.CreatePet;
 
-public class CreatePetHandler
+public class CreatePetHandler : IRequestHandler<CreatePetCommand, Result<Guid, Error>>
 {
     private readonly IVolunteersRepository _volunteersRepository;
     private readonly ISpeciesRepository _speciesRepository;

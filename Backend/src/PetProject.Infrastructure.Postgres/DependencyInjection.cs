@@ -3,7 +3,7 @@ using Microsoft.Extensions.DependencyInjection;
 using Minio;
 using PetProject.Application.Abstractions;
 using PetProject.Application.SpeciesManagement;
-using PetProject.Application.Volunteers;
+using PetProject.Application.VolunteersManagement;
 using PetProject.Infrastructure.Postgres.Abstractions;
 using PetProject.Infrastructure.Postgres.Providers;
 using PetProject.Infrastructure.Postgres.Repositories;

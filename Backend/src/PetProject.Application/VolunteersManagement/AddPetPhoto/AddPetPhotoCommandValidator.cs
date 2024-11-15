@@ -3,7 +3,7 @@ using PetProject.Application.Dto.Validators;
 using PetProject.Application.Validation;
 using PetProject.Domain.Shared;
 
-namespace PetProject.Application.Volunteers.AddPetPhoto;
+namespace PetProject.Application.VolunteersManagement.AddPetPhoto;
 
 public class AddPetPhotoCommandValidator : AbstractValidator<AddPetPhotoCommand>
 {

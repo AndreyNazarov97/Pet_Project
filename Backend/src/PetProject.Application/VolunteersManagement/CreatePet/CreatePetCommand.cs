@@ -1,9 +1,12 @@
-﻿using PetProject.Application.Dto;
+﻿using CSharpFunctionalExtensions;
+using MediatR;
+using PetProject.Application.Dto;
+using PetProject.Domain.Shared;
 using PetProject.Domain.VolunteerManagement.Enums;
 
-namespace PetProject.Application.Volunteers.CreatePet;
+namespace PetProject.Application.VolunteersManagement.CreatePet;
 
-public record CreatePetCommand
+public record CreatePetCommand : IRequest<Result<Guid, Error>>
 {
     public required Guid VolunteerId { get; init; }
     public required string Name { get; init; }

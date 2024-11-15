@@ -1,14 +1,14 @@
 ﻿using CSharpFunctionalExtensions;
+using MediatR;
 using Microsoft.Extensions.Logging;
 using PetProject.Application.Abstractions;
 using PetProject.Domain.Shared;
 using PetProject.Domain.Shared.EntityIds;
-using PetProject.Domain.VolunteerManagement;
 using PetProject.Domain.VolunteerManagement.ValueObjects;
 
-namespace PetProject.Application.Volunteers.UpdateRequisites;
+namespace PetProject.Application.VolunteersManagement.UpdateRequisites;
 
-public class UpdateRequisitesHandler
+public class UpdateRequisitesHandler : IRequestHandler<UpdateRequisitesCommand, Result<Guid, Error>>
 {
     private readonly IVolunteersRepository _repository;
     private readonly IUnitOfWork _unitOfWork;
@@ -24,7 +24,7 @@ public class UpdateRequisitesHandler
         _logger = logger;
     }
 
-    public async Task<Result<Guid, Error>> Execute(UpdateRequisitesCommand command,
+    public async Task<Result<Guid, Error>> Handle(UpdateRequisitesCommand command,
         CancellationToken cancellationToken = default)
     {
         var volunteerId = VolunteerId.Create(command.Id);

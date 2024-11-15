@@ -2,10 +2,8 @@
 using PetProject.Application.Dto.Validators;
 using PetProject.Application.Validation;
 using PetProject.Domain.Shared.ValueObjects;
-using PetProject.Domain.VolunteerManagement;
-using PetProject.Domain.VolunteerManagement.ValueObjects;
 
-namespace PetProject.Application.Volunteers.CreateVolunteer;
+namespace PetProject.Application.VolunteersManagement.CreateVolunteer;
 
 public class CreateVolunteerCommandValidator : AbstractValidator<CreateVolunteerCommand>
 {

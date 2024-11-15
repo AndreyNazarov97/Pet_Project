@@ -1,14 +1,14 @@
 ﻿using FluentValidation;
+using MediatR;
 using Microsoft.AspNetCore.Mvc;
 using PetProject.API.Controllers.Volunteers.Requests;
 using PetProject.API.Extensions;
-using PetProject.Application.Dto;
-using PetProject.Application.Volunteers.AddPetPhoto;
-using PetProject.Application.Volunteers.CreatePet;
-using PetProject.Application.Volunteers.CreateVolunteer;
-using PetProject.Application.Volunteers.UpdateRequisites;
-using PetProject.Application.Volunteers.UpdateSocialLinks;
-using PetProject.Application.Volunteers.UpdateVolunteer;
+using PetProject.Application.VolunteersManagement.AddPetPhoto;
+using PetProject.Application.VolunteersManagement.CreatePet;
+using PetProject.Application.VolunteersManagement.CreateVolunteer;
+using PetProject.Application.VolunteersManagement.UpdateRequisites;
+using PetProject.Application.VolunteersManagement.UpdateSocialLinks;
+using PetProject.Application.VolunteersManagement.UpdateVolunteer;
 using PetProject.Domain.Shared.EntityIds;
 using PetProject.Infrastructure.Postgres.Processors;
 
@@ -16,20 +16,27 @@ namespace PetProject.API.Controllers.Volunteers;
 
 public class VolunteersController : ApplicationController
 {
+    private readonly IMediator _mediator;
+
+    public VolunteersController(IMediator mediator)
+    {
+        _mediator = mediator;
+    }
+    
     [HttpPost]
     public async Task<ActionResult<VolunteerId>> Create(
         [FromBody] CreateVolunteerRequest request,
-        [FromServices] CreateVolunteerHandler handler,
         [FromServices] IValidator<CreateVolunteerCommand> validator,
         CancellationToken cancellationToken)
     {
         var command = request.ToCommand();
-        // var validationResult = await validator.ValidateAsync(command, cancellationToken);
-        // if (!validationResult.IsValid)
-        //     return validationResult.ToValidationErrorResponse();
-        
-        var result = await handler.Execute(command, cancellationToken);
 
+        var validationResult = await validator.ValidateAsync(command, cancellationToken);
+        if (!validationResult.IsValid)
+            return validationResult.ToValidationErrorResponse();
+        
+        var result = await _mediator.Send(command, cancellationToken);
+        
         if (result.IsFailure)
             return result.Error.ToResponse();
 
@@ -40,7 +47,6 @@ public class VolunteersController : ApplicationController
     public async Task<ActionResult> UpdateMainInfo(
         [FromRoute] Guid volunteerId,
         [FromBody] UpdateVolunteerRequest request,
-        [FromServices] UpdateVolunteerHandler handler,
         [FromServices] IValidator<UpdateVolunteerCommand> validator,
         CancellationToken cancellationToken)
     {
@@ -50,7 +56,7 @@ public class VolunteersController : ApplicationController
         if (!validationResult.IsValid)
             return validationResult.ToValidationErrorResponse();
 
-        var result = await handler.Execute(command, cancellationToken);
+        var result = await _mediator.Send(command, cancellationToken);
 
         if (result.IsFailure)
             return result.Error.ToResponse();
@@ -62,7 +68,6 @@ public class VolunteersController : ApplicationController
     public async Task<ActionResult> UpdateRequisites(
         [FromRoute] Guid volunteerId,
         [FromBody] UpdateRequisitesRequest request,
-        [FromServices] UpdateRequisitesHandler handler,
         [FromServices] IValidator<UpdateRequisitesCommand> validator,
         CancellationToken cancellationToken)
     {
@@ -72,8 +77,8 @@ public class VolunteersController : ApplicationController
         if (!validationResult.IsValid)
             return validationResult.ToValidationErrorResponse();
 
-        var result = await handler.Execute(command, cancellationToken);
-
+        var result = await _mediator.Send(command, cancellationToken);
+        
         if (result.IsFailure)
             return result.Error.ToResponse();
 
@@ -84,7 +89,6 @@ public class VolunteersController : ApplicationController
     public async Task<ActionResult> UpdateSocialNetworks(
         [FromRoute] Guid volunteerId,
         [FromBody] UpdateSocialLinksRequest request,
-        [FromServices] UpdateSocialLinksHandler handler,
         [FromServices] IValidator<UpdateSocialLinksCommand> validator,
         CancellationToken cancellationToken)
     {
@@ -94,8 +98,8 @@ public class VolunteersController : ApplicationController
         if (!validationResult.IsValid)
             return validationResult.ToValidationErrorResponse();
 
-        var result = await handler.Execute(command, cancellationToken);
-
+        var result = await _mediator.Send(command, cancellationToken);
+        
         if (result.IsFailure)
             return result.Error.ToResponse();
 
@@ -106,7 +110,6 @@ public class VolunteersController : ApplicationController
     public async Task<ActionResult<PetId>> CreatePet(
         [FromRoute] Guid volunteerId,
         [FromForm] CreatePetRequest request,
-        [FromServices] CreatePetHandler handler,
         [FromServices] IValidator<CreatePetCommand> validator,
         CancellationToken cancellationToken)
     {
@@ -116,8 +119,8 @@ public class VolunteersController : ApplicationController
         if (!validationResult.IsValid)
             return validationResult.ToValidationErrorResponse();
         
-        var result = await handler.Handle(request.ToCommand(volunteerId), cancellationToken);
-
+        var result = await _mediator.Send(command, cancellationToken);
+        
         if (result.IsFailure)
             return result.Error.ToResponse();
 
