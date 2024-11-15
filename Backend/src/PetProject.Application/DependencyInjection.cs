@@ -26,6 +26,7 @@ public static class DependencyInjection
         services.AddScoped<UpdateSocialLinksHandler>();
         services.AddScoped<UpdateRequisitesHandler>();
         services.AddScoped<DeleteVolunteerHandler>();
+        
         services.AddValidatorsFromAssembly(typeof(DependencyInjection).Assembly);
     }
 }

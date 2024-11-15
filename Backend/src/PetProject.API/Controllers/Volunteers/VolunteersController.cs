@@ -20,9 +20,15 @@ public class VolunteersController : ApplicationController
     public async Task<ActionResult<VolunteerId>> Create(
         [FromBody] CreateVolunteerRequest request,
         [FromServices] CreateVolunteerHandler handler,
+        [FromServices] IValidator<CreateVolunteerCommand> validator,
         CancellationToken cancellationToken)
     {
-        var result = await handler.Execute(request.ToCommand(), cancellationToken);
+        var command = request.ToCommand();
+        // var validationResult = await validator.ValidateAsync(command, cancellationToken);
+        // if (!validationResult.IsValid)
+        //     return validationResult.ToValidationErrorResponse();
+        
+        var result = await handler.Execute(command, cancellationToken);
 
         if (result.IsFailure)
             return result.Error.ToResponse();

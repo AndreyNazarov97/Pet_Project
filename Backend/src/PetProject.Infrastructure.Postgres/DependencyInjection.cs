@@ -19,7 +19,8 @@ public static class DependencyInjection
             .AddScoped<PetProjectDbContext>()
             .AddScoped<IMomentProvider, MomentProvider>()
             .AddScoped<IVolunteersRepository, VolunteersRepository>()
-            .AddScoped<ISpeciesRepository, SpeciesRepository>();
+            .AddScoped<ISpeciesRepository, SpeciesRepository>()
+            .AddScoped<IUnitOfWork, UnitOfWork>();
     }
 
     public static IServiceCollection AddMinioInfrastructure(this IServiceCollection services, IConfiguration configuration)
