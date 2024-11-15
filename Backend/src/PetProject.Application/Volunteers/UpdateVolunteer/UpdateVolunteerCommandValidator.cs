@@ -12,7 +12,7 @@ public class UpdateVolunteerRequestValidator : AbstractValidator<UpdateVolunteer
     {
         RuleFor(v => v.IdVolunteer)
             .NotEmpty()
-            .WithError(Errors.General.ValueIsRequired("Id"));;
+            .WithError(Errors.General.LengthIsInvalid("Id"));;
         
     }
 }

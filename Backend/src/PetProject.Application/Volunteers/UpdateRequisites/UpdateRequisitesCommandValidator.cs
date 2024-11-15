@@ -13,7 +13,7 @@ public class UpdateRequisitesRequestValidator : AbstractValidator<UpdateRequisit
     {
         RuleFor(x => x.Id)
             .NotEmpty()
-            .WithError(Errors.General.ValueIsRequired("Id"));
+            .WithError(Errors.General.LengthIsInvalid("Id"));
 
     }
 }

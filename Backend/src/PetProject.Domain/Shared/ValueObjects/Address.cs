@@ -22,15 +22,15 @@ public record Address
     public static Result<Address, Error> Create(string country, string city, string street, string house, string flat)
     {
         if (string.IsNullOrWhiteSpace(country) || country.Length > Constants.MIDDLE_TEXT_LENGTH)
-            return Errors.General.ValueIsRequired(nameof(country));
+            return Errors.General.LengthIsInvalid(nameof(country));
         if (string.IsNullOrWhiteSpace(city) || city.Length > Constants.MIDDLE_TEXT_LENGTH)
-            return Errors.General.ValueIsRequired(nameof(city));
+            return Errors.General.LengthIsInvalid(nameof(city));
         if (string.IsNullOrWhiteSpace(street) || street.Length > Constants.MIDDLE_TEXT_LENGTH)
-            return Errors.General.ValueIsRequired(nameof(street));
+            return Errors.General.LengthIsInvalid(nameof(street));
         if (string.IsNullOrWhiteSpace(house) || house.Length > Constants.MIDDLE_TEXT_LENGTH)
-            return Errors.General.ValueIsRequired(nameof(house));
+            return Errors.General.LengthIsInvalid(nameof(house));
         if (string.IsNullOrWhiteSpace(flat) || flat.Length > Constants.MIDDLE_TEXT_LENGTH)
-            return Errors.General.ValueIsRequired(nameof(flat));
+            return Errors.General.LengthIsInvalid(nameof(flat));
 
         var address = new Address(country, city, street, house, flat);
         return address;

@@ -9,10 +9,10 @@ public class AddPetPhotoCommandValidator : AbstractValidator<AddPetPhotoCommand>
     public AddPetPhotoCommandValidator()
     {
         RuleFor(p => p.PetId)
-            .NotEmpty().WithError(Errors.General.ValueIsRequired("PetId"));
+            .NotEmpty().WithError(Errors.General.ValueIsInvalid("PetId"));
         
         RuleFor(p => p.VolunteerId)
-            .NotEmpty().WithError(Errors.General.ValueIsRequired("VolunteerId"));
+            .NotEmpty().WithError(Errors.General.ValueIsInvalid("VolunteerId"));
         
         RuleForEach(p => p.Photos)
             .ChildRules(p =>

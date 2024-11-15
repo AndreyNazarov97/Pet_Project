@@ -13,7 +13,7 @@ public class UpdateSocialLinksRequestValidator : AbstractValidator<UpdateSocialL
     {
         RuleFor(x => x.Id)
             .NotEmpty()
-            .WithError(Errors.General.ValueIsRequired("Id"));
+            .WithError(Errors.General.LengthIsInvalid("Id"));
     }
 }
 

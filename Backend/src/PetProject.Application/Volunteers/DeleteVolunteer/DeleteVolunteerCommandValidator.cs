@@ -10,6 +10,6 @@ public class DeleteVolunteerCommandValidator : AbstractValidator<DeleteVolunteer
     {
         RuleFor(d => d.Id)
             .NotEmpty()
-            .WithError(Errors.General.ValueIsRequired("Id"));
+            .WithError(Errors.General.LengthIsInvalid("Id"));
     }
 }

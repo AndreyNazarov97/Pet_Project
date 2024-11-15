@@ -17,7 +17,7 @@ public record FilePath
             return Errors.General.ValueIsInvalid("extension");
         
         if(string.IsNullOrWhiteSpace(path) || path.Length > Constants.MIDDLE_TEXT_LENGTH)
-            return Errors.General.ValueIsRequired(path);
+            return Errors.General.LengthIsInvalid(path);
 
         var fullPath = path + extension; 
         
