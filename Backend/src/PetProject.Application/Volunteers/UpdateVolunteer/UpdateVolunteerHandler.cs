@@ -1,18 +1,35 @@
 ﻿using CSharpFunctionalExtensions;
 using Microsoft.Extensions.Logging;
+using PetProject.Application.Abstractions;
 using PetProject.Domain.Shared;
 using PetProject.Domain.Shared.EntityIds;
 using PetProject.Domain.Shared.ValueObjects;
 
 namespace PetProject.Application.Volunteers.UpdateVolunteer;
 
-public class UpdateVolunteerHandler(IVolunteersRepository repository, ILogger<UpdateVolunteerHandler> logger)
+public class UpdateVolunteerHandler
 {
-    public async Task<Result<Guid, Error>> Execute(UpdateVolunteerCommand command, CancellationToken token = default)
+    private readonly IVolunteersRepository _repository;
+    private readonly IUnitOfWork _unitOfWork;
+    private readonly ILogger<UpdateVolunteerHandler> _logger;
+
+    public UpdateVolunteerHandler(
+        IVolunteersRepository repository,
+        IUnitOfWork unitOfWork,
+        ILogger<UpdateVolunteerHandler> logger)
+    {
+        _repository = repository;
+        _unitOfWork = unitOfWork;
+        _logger = logger;
+    }
+
+    public async Task<Result<Guid, Error>> Execute(
+        UpdateVolunteerCommand command, 
+        CancellationToken cancellationToken = default)
     {
         var volunteerId = VolunteerId.Create(command.IdVolunteer);
 
-        var volunteer = await repository.GetById(volunteerId, token);
+        var volunteer = await _repository.GetById(volunteerId, cancellationToken);
 
         if (volunteer.IsFailure)
             return volunteer.Error;
@@ -28,12 +45,10 @@ public class UpdateVolunteerHandler(IVolunteersRepository repository, ILogger<Up
 
         volunteer.Value.UpdateMainInfo(fullName, description, ageExperience, phoneNumber);
 
-        var resultUpdate = await repository.Save(volunteer.Value, token);
-        if (resultUpdate.IsFailure)
-            return resultUpdate.Error;
+        await _unitOfWork.SaveChangesAsync(cancellationToken);
 
-        logger.LogDebug("Volunteer {volunteerId} was full updated", volunteerId);
+        _logger.LogDebug("Volunteer {volunteerId} was full updated", volunteerId);
 
-        return resultUpdate.Value;
+        return volunteer.Value.Id.Id;
     }
 }

@@ -16,15 +16,18 @@ public class CreatePetHandler
     private readonly IFileProvider _fileProvider;
     private readonly IVolunteersRepository _volunteersRepository;
     private readonly ISpeciesRepository _speciesRepository;
+    private readonly IUnitOfWork _unitOfWork;
 
     public CreatePetHandler(
         IFileProvider fileProvider,
         IVolunteersRepository volunteersRepository,
-        ISpeciesRepository speciesRepository)
+        ISpeciesRepository speciesRepository,
+        IUnitOfWork unitOfWork)
     {
         _fileProvider = fileProvider;
         _volunteersRepository = volunteersRepository;
         _speciesRepository = speciesRepository;
+        _unitOfWork = unitOfWork;
     }
 
     public async Task<Result<Guid, Error>> Handle(
@@ -40,7 +43,7 @@ public class CreatePetHandler
         var pet = await CreatePet(command, volunteer.PhoneNumber, cancellationToken);
         
         volunteer.AddPet(pet);
-        await _volunteersRepository.Save(volunteer, cancellationToken);
+        await _unitOfWork.SaveChangesAsync(cancellationToken);
  
         return pet.Id.Id;
     }

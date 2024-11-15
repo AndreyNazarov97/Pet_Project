@@ -18,14 +18,6 @@ public class VolunteersRepository(PetProjectDbContext context) : IVolunteersRepo
         return volunteer.Id;
     }
 
-    public async Task<Result<Guid, Error>> Save(Volunteer volunteer,
-        CancellationToken cancellationToken = default)
-    {
-        context.Volunteers.Attach(volunteer);
-        await context.SaveChangesAsync(cancellationToken);
-        return volunteer.Id.Id;
-    }
-
     public async Task<Result<Guid, Error>> Delete(Volunteer volunteer, CancellationToken cancellationToken = default)
     {
         await context.SaveChangesAsync(cancellationToken);

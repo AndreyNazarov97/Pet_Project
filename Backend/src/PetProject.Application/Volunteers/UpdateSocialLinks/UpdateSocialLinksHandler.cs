@@ -1,5 +1,6 @@
 ﻿using CSharpFunctionalExtensions;
 using Microsoft.Extensions.Logging;
+using PetProject.Application.Abstractions;
 using PetProject.Domain.Shared;
 using PetProject.Domain.Shared.EntityIds;
 using PetProject.Domain.VolunteerManagement;
@@ -7,14 +8,28 @@ using PetProject.Domain.VolunteerManagement.ValueObjects;
 
 namespace PetProject.Application.Volunteers.UpdateSocialLinks;
 
-public class UpdateSocialLinksHandler(IVolunteersRepository repository, ILogger<UpdateSocialLinksHandler> logger)
+public class UpdateSocialLinksHandler
 {
+    private readonly IVolunteersRepository _repository;
+    private readonly IUnitOfWork _unitOfWork;
+    private readonly ILogger<UpdateSocialLinksHandler> _logger;
+
+    public UpdateSocialLinksHandler(
+        IVolunteersRepository repository,
+        IUnitOfWork unitOfWork,
+        ILogger<UpdateSocialLinksHandler> logger)
+    {
+        _repository = repository;
+        _unitOfWork = unitOfWork;
+        _logger = logger;
+    }
+
     public async Task<Result<Guid, Error>> Execute(UpdateSocialLinksCommand command,
-        CancellationToken token = default)
+        CancellationToken cancellationToken = default)
     {
         var volunteerId = VolunteerId.Create(command.Id);
 
-        var volunteer = await repository.GetById(volunteerId, token);
+        var volunteer = await _repository.GetById(volunteerId, cancellationToken);
 
         if (volunteer.IsFailure)
             return volunteer.Error;
@@ -24,12 +39,11 @@ public class UpdateSocialLinksHandler(IVolunteersRepository repository, ILogger<
         var socialLinksList = new SocialLinksList(socialLinks);
 
         volunteer.Value.UpdateSocialLinks(socialLinksList);
-        var resultUpdate = await repository.Save(volunteer.Value, token);
-        if (resultUpdate.IsFailure)
-            return resultUpdate.Error;
+        
+        await _unitOfWork.SaveChangesAsync(cancellationToken);
+        
+        _logger.Log(LogLevel.Information, "Volunteer {volunteerId} was updated social links", volunteerId);
 
-        logger.Log(LogLevel.Information, "Volunteer {volunteerId} was updated social links", volunteerId);
-
-        return resultUpdate;
+        return volunteer.Value.Id.Id;
     }
 }
