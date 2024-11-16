@@ -5,7 +5,7 @@ using PetProject.Domain.Shared;
 
 namespace PetProject.Application.VolunteersManagement.UpdateVolunteer;
 
-public record UpdateVolunteerCommand : IRequest<Result<Guid, Error>>
+public record UpdateVolunteerCommand : IRequest<Result<Guid, ErrorList>>
 {
     public required Guid IdVolunteer { get; init; } 
     public required FullNameDto FullName { get; init; } 

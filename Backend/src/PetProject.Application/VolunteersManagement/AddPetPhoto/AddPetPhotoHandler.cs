@@ -9,7 +9,7 @@ using PetProject.Domain.VolunteerManagement.ValueObjects;
 
 namespace PetProject.Application.VolunteersManagement.AddPetPhoto;
 
-public class AddPetPhotoHandler : IRequestHandler<AddPetPhotoCommand, Result<string, Error>>
+public class AddPetPhotoHandler : IRequestHandler<AddPetPhotoCommand, Result<string, ErrorList>>
 {
     private const string BucketName = "pet-project";
 
@@ -30,7 +30,7 @@ public class AddPetPhotoHandler : IRequestHandler<AddPetPhotoCommand, Result<str
         _logger = logger;
     }
 
-    public async Task<Result<string, Error>> Handle(AddPetPhotoCommand command,
+    public async Task<Result<string, ErrorList>> Handle(AddPetPhotoCommand command,
         CancellationToken cancellationToken = default)
     {
         using var transaction = await _unitOfWork.BeginTransactionAsync(cancellationToken);
@@ -51,14 +51,14 @@ public class AddPetPhotoHandler : IRequestHandler<AddPetPhotoCommand, Result<str
             var volunteerId = VolunteerId.Create(command.VolunteerId);
             var volunteerResult = await _volunteersRepository.GetById(volunteerId, cancellationToken);
             if (volunteerResult.IsFailure)
-                return volunteerResult.Error;
+                return volunteerResult.Error.ToErrorList();
         
             var volunteer = volunteerResult.Value;
 
             var petId = PetId.Create(command.PetId);
             var pet = volunteer.GetById(petId);
             if (pet is null)
-                return Errors.General.NotFound(command.PetId);
+                return Errors.General.NotFound(command.PetId).ToErrorList();
         
             pet.AddPhotos(petPhotos);
             await _unitOfWork.SaveChangesAsync(cancellationToken);
@@ -71,7 +71,9 @@ public class AddPetPhotoHandler : IRequestHandler<AddPetPhotoCommand, Result<str
         {
             _logger.LogError(e, "Error while adding pet photo");
             transaction.Rollback();
-            return Error.Failure("could.not.add.pet.photo", "Could not add pet photo");
+            return Error
+                .Failure("could.not.add.pet.photo", "Could not add pet photo")
+                .ToErrorList();
         }
         
     }

@@ -26,7 +26,7 @@ public class MinioProvider : IFileProvider
         _logger = logger;
     }
 
-    public async Task<Result<string, Error>> DownloadFile(FileMetaDataDto fileMetaData)
+    public async Task<Result<string, ErrorList>> DownloadFile(FileMetaDataDto fileMetaData)
     {
         try
         {
@@ -50,11 +50,11 @@ public class MinioProvider : IFileProvider
             _logger.Error(e,
                 "File {FileName} could not be downloaded from Minio",
                 fileMetaData.ObjectName);
-            return Errors.Minio.CouldNotDownloadFile();
+            return Errors.Minio.CouldNotDownloadFile().ToErrorList();
         }
     }
 
-    public async Task<Result<IReadOnlyCollection<FilePath>,Error>> UploadFiles(IEnumerable<FileDataDto> filesData,
+    public async Task<Result<IReadOnlyCollection<FilePath>,ErrorList>> UploadFiles(IEnumerable<FileDataDto> filesData,
         CancellationToken cancellationToken = default)
     {
         var fileList = filesData.ToList();
@@ -64,15 +64,19 @@ public class MinioProvider : IFileProvider
     
         var tasks = fileList.Select(async fileData => await PutObject(fileData, semaphoreSlim, cancellationToken));
         var results = await Task.WhenAll(tasks);
+
+        var errors = results
+            .Where(r => r.IsFailure)
+            .Select(r => r.Error).ToList();
         
-        if(results.Any(r => r.IsFailure))
-            return results.First(r => r.IsFailure).Error;
+        if(errors.Count > 0)
+            return new ErrorList(errors);
         
         _logger.Information("Files uploaded to Minio");
         return results.Select(r => r.Value).ToList();
     }
 
-    public async Task<UnitResult<Error>> DeleteFile(FileMetaDataDto fileMetaData,
+    public async Task<UnitResult<ErrorList>> DeleteFile(FileMetaDataDto fileMetaData,
         CancellationToken cancellationToken = default)
     {
         try
@@ -86,12 +90,12 @@ public class MinioProvider : IFileProvider
             await _minioClient.RemoveObjectAsync(removeObjectArgs, cancellationToken);
 
             _logger.Information("File {FileName} deleted from Minio", fileMetaData.ObjectName);
-            return UnitResult.Success<Error>();
+            return UnitResult.Success<ErrorList>();
         }
         catch (Exception e)
         {
             _logger.Error(e, "File {FileName} could not be deleted from Minio", fileMetaData.ObjectName);
-            return Errors.Minio.CouldNotDeleteFile();
+            return Errors.Minio.CouldNotDeleteFile().ToErrorList();
         }
     }
 

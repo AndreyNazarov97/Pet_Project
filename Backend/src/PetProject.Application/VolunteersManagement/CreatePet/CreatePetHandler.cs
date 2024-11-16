@@ -12,7 +12,7 @@ using PetProject.Domain.VolunteerManagement.ValueObjects;
 
 namespace PetProject.Application.VolunteersManagement.CreatePet;
 
-public class CreatePetHandler : IRequestHandler<CreatePetCommand, Result<Guid, Error>>
+public class CreatePetHandler : IRequestHandler<CreatePetCommand, Result<Guid, ErrorList>>
 {
     private readonly IVolunteersRepository _volunteersRepository;
     private readonly ISpeciesRepository _speciesRepository;
@@ -28,14 +28,14 @@ public class CreatePetHandler : IRequestHandler<CreatePetCommand, Result<Guid, E
         _unitOfWork = unitOfWork;
     }
 
-    public async Task<Result<Guid, Error>> Handle(
+    public async Task<Result<Guid, ErrorList>> Handle(
         CreatePetCommand command,
         CancellationToken cancellationToken)
     {
         var volunteerId = VolunteerId.Create(command.VolunteerId);
         var volunteerResult = await _volunteersRepository.GetById(volunteerId, cancellationToken);
         if (volunteerResult.IsFailure)
-            return volunteerResult.Error;
+            return volunteerResult.Error.ToErrorList();
         
         var volunteer = volunteerResult.Value;
         var pet = await CreatePet(command, volunteer.PhoneNumber, cancellationToken);

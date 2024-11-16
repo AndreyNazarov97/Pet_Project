@@ -3,6 +3,7 @@ using Microsoft.AspNetCore.Mvc;
 using PetProject.API.Controllers.Volunteers.Requests;
 using PetProject.API.Extensions;
 using PetProject.Application.VolunteersManagement.AddPetPhoto;
+using PetProject.Application.VolunteersManagement.DeleteVolunteer;
 using PetProject.Domain.Shared.EntityIds;
 using PetProject.Infrastructure.Postgres.Processors;
 
@@ -78,6 +79,24 @@ public class VolunteersController : ApplicationController
             return result.Error.ToResponse();
 
         return Ok(result.Value);
+    }
+
+    [HttpDelete("{volunteerId:guid}")]
+    public async Task<ActionResult> DeleteVolunteer(
+        [FromRoute] Guid volunteerId,
+        CancellationToken cancellationToken)
+    {
+        var command = new DeleteVolunteerCommand
+        {
+            Id = volunteerId
+        };
+        
+        var result = await _mediator.Send(command, cancellationToken);
+        
+        if (result.IsFailure)
+            return result.Error.ToResponse();
+
+        return Ok();
     }
 
     [HttpPost("{volunteerId:guid}/pet")]

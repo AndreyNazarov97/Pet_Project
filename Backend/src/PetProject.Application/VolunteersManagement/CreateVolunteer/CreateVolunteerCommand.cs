@@ -5,7 +5,7 @@ using PetProject.Domain.Shared;
 
 namespace PetProject.Application.VolunteersManagement.CreateVolunteer;
 
-public record CreateVolunteerCommand : IRequest<Result<Guid, Error>>
+public record CreateVolunteerCommand : IRequest<Result<Guid, ErrorList>>
 {
     public required FullNameDto FullName { get; init; } 
     public required string Description { get; init; }

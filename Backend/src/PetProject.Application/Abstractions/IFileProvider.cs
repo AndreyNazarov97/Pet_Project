@@ -7,12 +7,12 @@ namespace PetProject.Application.Abstractions;
 
 public interface IFileProvider
 {
-    public Task<Result<string, Error>> DownloadFile(FileMetaDataDto fileMetaData);
+    public Task<Result<string, ErrorList>> DownloadFile(FileMetaDataDto fileMetaData);
 
 
-    public  Task<Result<IReadOnlyCollection<FilePath>,Error>> UploadFiles(IEnumerable<FileDataDto>  filesData, CancellationToken cancellationToken = default);
+    public  Task<Result<IReadOnlyCollection<FilePath>,ErrorList>> UploadFiles(IEnumerable<FileDataDto>  filesData, CancellationToken cancellationToken = default);
 
 
-    public Task<UnitResult<Error>> DeleteFile(FileMetaDataDto fileMetaData, CancellationToken cancellationToken = default);
+    public Task<UnitResult<ErrorList>> DeleteFile(FileMetaDataDto fileMetaData, CancellationToken cancellationToken = default);
 
 }

@@ -8,7 +8,7 @@ using PetProject.Domain.VolunteerManagement.ValueObjects;
 
 namespace PetProject.Application.VolunteersManagement.UpdateSocialLinks;
 
-public class UpdateSocialLinksHandler : IRequestHandler<UpdateSocialLinksCommand, Result<Guid, Error>>
+public class UpdateSocialLinksHandler : IRequestHandler<UpdateSocialLinksCommand, Result<Guid, ErrorList>>
 {
     private readonly IVolunteersRepository _repository;
     private readonly IUnitOfWork _unitOfWork;
@@ -24,7 +24,7 @@ public class UpdateSocialLinksHandler : IRequestHandler<UpdateSocialLinksCommand
         _logger = logger;
     }
 
-    public async Task<Result<Guid, Error>> Handle(UpdateSocialLinksCommand command,
+    public async Task<Result<Guid, ErrorList>> Handle(UpdateSocialLinksCommand command,
         CancellationToken cancellationToken = default)
     {
         var volunteerId = VolunteerId.Create(command.Id);
@@ -32,7 +32,7 @@ public class UpdateSocialLinksHandler : IRequestHandler<UpdateSocialLinksCommand
         var volunteer = await _repository.GetById(volunteerId, cancellationToken);
 
         if (volunteer.IsFailure)
-            return volunteer.Error;
+            return volunteer.Error.ToErrorList();
 
         var socialLinks = command.SocialLinks
             .Select(x => SocialLink.Create(x.Name, x.Url).Value);

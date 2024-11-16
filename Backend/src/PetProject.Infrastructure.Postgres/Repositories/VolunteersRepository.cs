@@ -20,7 +20,13 @@ public class VolunteersRepository(PetProjectDbContext context) : IVolunteersRepo
 
     public async Task<Result<Guid, Error>> Delete(Volunteer volunteer, CancellationToken cancellationToken = default)
     {
-        await context.SaveChangesAsync(cancellationToken);
+        var existedVolunteer = await context.Volunteers
+            .FirstOrDefaultAsync(v => v.Id == volunteer.Id, cancellationToken);
+
+        if (existedVolunteer == null)
+            return Errors.General.NotFound();
+
+        context.Volunteers.Remove(existedVolunteer);
         return volunteer.Id.Id;
     }
 

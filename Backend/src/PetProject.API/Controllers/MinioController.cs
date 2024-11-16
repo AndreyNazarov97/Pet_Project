@@ -29,7 +29,6 @@ public class MinioController : ApplicationController
         
         var result = await _fileProvider.UploadFiles(filesData, cancellationToken);
         
-    
         if (result.IsFailure)
             return result.Error.ToResponse();
     

@@ -9,7 +9,7 @@ using PetProject.Domain.VolunteerManagement.ValueObjects;
 
 namespace PetProject.Application.VolunteersManagement.CreateVolunteer;
 
-public class CreateVolunteerHandler : IRequestHandler<CreateVolunteerCommand, Result<Guid, Error>>
+public class CreateVolunteerHandler : IRequestHandler<CreateVolunteerCommand, Result<Guid, ErrorList>>
 {
     private readonly IVolunteersRepository _repository;
     private readonly ILogger<CreateVolunteerHandler> _logger;
@@ -22,7 +22,7 @@ public class CreateVolunteerHandler : IRequestHandler<CreateVolunteerCommand, Re
         _logger = logger;
     }
 
-    public async Task<Result<Guid, Error>> Handle(
+    public async Task<Result<Guid, ErrorList>> Handle(
         CreateVolunteerCommand command, CancellationToken token = default
     )
     {
@@ -31,7 +31,10 @@ public class CreateVolunteerHandler : IRequestHandler<CreateVolunteerCommand, Re
         var existedVolunteer = await _repository.GetByPhoneNumber(phoneNumber.Value, token);
 
         if (existedVolunteer.IsSuccess)
-            return Errors.Model.AlreadyExist("Volunteer");
+        {
+            return Errors.Model.AlreadyExist("Volunteer").ToErrorList();
+        }
+            
 
         var volunteerId = VolunteerId.NewId();
 

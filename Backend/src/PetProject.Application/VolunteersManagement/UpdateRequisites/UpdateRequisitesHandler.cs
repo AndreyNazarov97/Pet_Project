@@ -8,7 +8,7 @@ using PetProject.Domain.VolunteerManagement.ValueObjects;
 
 namespace PetProject.Application.VolunteersManagement.UpdateRequisites;
 
-public class UpdateRequisitesHandler : IRequestHandler<UpdateRequisitesCommand, Result<Guid, Error>>
+public class UpdateRequisitesHandler : IRequestHandler<UpdateRequisitesCommand, Result<Guid, ErrorList>>
 {
     private readonly IVolunteersRepository _repository;
     private readonly IUnitOfWork _unitOfWork;
@@ -24,7 +24,7 @@ public class UpdateRequisitesHandler : IRequestHandler<UpdateRequisitesCommand, 
         _logger = logger;
     }
 
-    public async Task<Result<Guid, Error>> Handle(UpdateRequisitesCommand command,
+    public async Task<Result<Guid, ErrorList>> Handle(UpdateRequisitesCommand command,
         CancellationToken cancellationToken = default)
     {
         var volunteerId = VolunteerId.Create(command.Id);
@@ -32,7 +32,7 @@ public class UpdateRequisitesHandler : IRequestHandler<UpdateRequisitesCommand, 
         var volunteer = await _repository.GetById(volunteerId, cancellationToken);
 
         if (volunteer.IsFailure)
-            return volunteer.Error;
+            return volunteer.Error.ToErrorList();
 
         var requisites = command.Requisites
             .Select(x => Requisite.Create(x.Name, x.Description).Value);

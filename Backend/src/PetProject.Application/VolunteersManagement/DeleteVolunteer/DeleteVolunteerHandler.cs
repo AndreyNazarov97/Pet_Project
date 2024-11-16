@@ -6,7 +6,7 @@ using PetProject.Domain.Shared.EntityIds;
 
 namespace PetProject.Application.VolunteersManagement.DeleteVolunteer;
 
-public class DeleteVolunteerHandler : IRequestHandler<DeleteVolunteerCommand, Result<Guid, Error>>
+public class DeleteVolunteerHandler : IRequestHandler<DeleteVolunteerCommand, UnitResult<ErrorList>>
 {
     private readonly IVolunteersRepository _repository;
     private readonly ILogger<DeleteVolunteerHandler> _logger;
@@ -17,22 +17,22 @@ public class DeleteVolunteerHandler : IRequestHandler<DeleteVolunteerCommand, Re
         _logger = logger;
     }
 
-    public async Task<Result<Guid, Error>> Handle(DeleteVolunteerCommand command,
+    public async Task<UnitResult<ErrorList>> Handle(DeleteVolunteerCommand command,
         CancellationToken cancellationToken = default)
     {
         var volunteerId = VolunteerId.Create(command.Id);
         var volunteerResult = await _repository.GetById(volunteerId, cancellationToken);
         if (volunteerResult.IsFailure)
-            return volunteerResult.Error;
+            return volunteerResult.Error.ToErrorList();
 
         volunteerResult.Value.Deactivate();
         
         var result = await _repository.Delete(volunteerResult.Value, cancellationToken);
         if (result.IsFailure)
-            return volunteerResult.Error;
+            return volunteerResult.Error.ToErrorList();
         
         _logger.Log(LogLevel.Information, "Volunteer deleted with Id {volunteerId}", volunteerId);
         
-        return volunteerResult.Value.Id.Id;
+        return UnitResult.Success<ErrorList>();
     }
 }

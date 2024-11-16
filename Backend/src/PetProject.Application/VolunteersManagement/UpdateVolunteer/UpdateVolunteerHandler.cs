@@ -8,7 +8,7 @@ using PetProject.Domain.Shared.ValueObjects;
 
 namespace PetProject.Application.VolunteersManagement.UpdateVolunteer;
 
-public class UpdateVolunteerHandler : IRequestHandler<UpdateVolunteerCommand, Result<Guid, Error>>
+public class UpdateVolunteerHandler : IRequestHandler<UpdateVolunteerCommand, Result<Guid, ErrorList>>
 {
     private readonly IVolunteersRepository _repository;
     private readonly IUnitOfWork _unitOfWork;
@@ -24,7 +24,7 @@ public class UpdateVolunteerHandler : IRequestHandler<UpdateVolunteerCommand, Re
         _logger = logger;
     }
 
-    public async Task<Result<Guid, Error>> Handle(
+    public async Task<Result<Guid, ErrorList>> Handle(
         UpdateVolunteerCommand command, 
         CancellationToken cancellationToken = default)
     {
@@ -33,7 +33,7 @@ public class UpdateVolunteerHandler : IRequestHandler<UpdateVolunteerCommand, Re
         var volunteer = await _repository.GetById(volunteerId, cancellationToken);
 
         if (volunteer.IsFailure)
-            return volunteer.Error;
+            return volunteer.Error.ToErrorList();
 
         var fullName = FullName.Create(
                 command.FullName.Name, 

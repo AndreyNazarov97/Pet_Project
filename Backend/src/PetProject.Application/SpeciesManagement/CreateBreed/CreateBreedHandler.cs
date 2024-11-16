@@ -8,7 +8,7 @@ using PetProject.Domain.SpeciesManagement.ValueObjects;
 
 namespace PetProject.Application.SpeciesManagement.CreateBreed;
 
-public class CreateBreedHandler : IRequestHandler<CreateBreedCommand, Result<Guid, Error>>
+public class CreateBreedHandler : IRequestHandler<CreateBreedCommand, Result<Guid, ErrorList>>
 {
     private readonly ISpeciesRepository _speciesRepository;
     private readonly ILogger<CreateBreedHandler> _logger;
@@ -20,16 +20,16 @@ public class CreateBreedHandler : IRequestHandler<CreateBreedCommand, Result<Gui
         _logger = logger;
     }
 
-    public async Task<Result<Guid, Error>> Handle(CreateBreedCommand command, CancellationToken cancellationToken)
+    public async Task<Result<Guid, ErrorList>> Handle(CreateBreedCommand command, CancellationToken cancellationToken)
     {
         var speciesName = SpeciesName.Create(command.SpeciesName).Value;
         var existedSpecies = await _speciesRepository.GetByName(speciesName, cancellationToken);
 
         if (existedSpecies.IsFailure)
-            return Errors.General.NotFound();
+            return Errors.General.NotFound().ToErrorList();
 
         if(existedSpecies.Value.Breeds.Any(x => x.BreedName.Value == command.BreedName))
-            return Errors.Model.AlreadyExist("Breed");
+            return Errors.Model.AlreadyExist("Breed").ToErrorList();
         
         var breedId = BreedId.NewId();
         var breedName = BreedName.Create(command.BreedName).Value;
