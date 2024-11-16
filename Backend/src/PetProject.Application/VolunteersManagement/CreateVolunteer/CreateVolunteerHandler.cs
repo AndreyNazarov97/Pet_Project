@@ -32,7 +32,7 @@ public class CreateVolunteerHandler : IRequestHandler<CreateVolunteerCommand, Re
 
         if (existedVolunteer.IsSuccess)
         {
-            return Errors.Model.AlreadyExist("Volunteer").ToErrorList();
+            return Errors.General.AlreadyExist("Volunteer").ToErrorList();
         }
             
 

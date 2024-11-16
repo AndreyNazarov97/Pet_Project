@@ -1,4 +1,5 @@
 using Microsoft.AspNetCore.HttpLogging;
+using Microsoft.OpenApi.Models;
 using PetProject.API.Extensions;
 using PetProject.API.Middlewares;
 using PetProject.Application;
@@ -22,7 +23,36 @@ builder.Services.AddHttpLogging(options =>
 
 builder.Services.AddControllers();
 builder.Services.AddEndpointsApiExplorer();
-builder.Services.AddSwaggerGen();
+builder.Services.AddSwaggerGen(options =>
+{
+    options.SwaggerDoc("v1", new()
+    {
+        Title = "PetProject.API", 
+        Version = "v1"
+    });
+
+    options.AddSecurityDefinition("Bearer", new()
+    {
+        In = ParameterLocation.Header,
+        Description = "Please insert JWT with Bearer into field",
+        Name = "Authorization",
+        Type = SecuritySchemeType.ApiKey
+    });
+    options.AddSecurityRequirement(new OpenApiSecurityRequirement()
+    {
+        {
+            new OpenApiSecurityScheme
+            {
+                Reference = new OpenApiReference
+                {
+                    Type = ReferenceType.SecurityScheme,
+                    Id = "Bearer"
+                }
+            },
+            []
+        }
+    });
+});
 
 builder.Services.AddApplication();
 builder.Services
@@ -46,6 +76,9 @@ if (app.Environment.IsDevelopment())
 }
 
 app.UseHttpsRedirection();
+
+app.UseAuthentication();
+app.UseAuthorization();
 
 app.MapControllers();
 

@@ -23,17 +23,21 @@ public static class Errors
             var label = name == null ? "" : " " + name + " ";
             return Error.Validation("length.is.invalid", $"invalid{label}length");
         }
-    }
-
-    public static class Model
-    {
+        
         public static Error AlreadyExist(string? name = null)
         {
             var label = name ?? "entity";
             return Error.Validation($"{label}.already.exist", $"{label} already exist");
         }
     }
-
+    
+    public static class User
+    { 
+        public static Error InvalidCredentials()
+        {
+            return Error.Validation("credentials.is.invalid", "Invalid credentials");
+        }
+    }
     public static class Minio
     {
         public static Error CouldNotDownloadFile()

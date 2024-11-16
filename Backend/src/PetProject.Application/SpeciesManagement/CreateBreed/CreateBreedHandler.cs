@@ -29,7 +29,7 @@ public class CreateBreedHandler : IRequestHandler<CreateBreedCommand, Result<Gui
             return Errors.General.NotFound().ToErrorList();
 
         if(existedSpecies.Value.Breeds.Any(x => x.BreedName.Value == command.BreedName))
-            return Errors.Model.AlreadyExist("Breed").ToErrorList();
+            return Errors.General.AlreadyExist("Breed").ToErrorList();
         
         var breedId = BreedId.NewId();
         var breedName = BreedName.Create(command.BreedName).Value;

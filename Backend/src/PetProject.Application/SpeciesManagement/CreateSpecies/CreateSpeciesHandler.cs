@@ -28,7 +28,7 @@ public class CreateSpeciesHandler : IRequestHandler<CreateSpeciesCommand, Result
         var existedSpecies = await _repository.GetByName(speciesName.Value, cancellationToken);
         
         if (existedSpecies.IsSuccess)
-            return Errors.Model.AlreadyExist("Species").ToErrorList();
+            return Errors.General.AlreadyExist("Species").ToErrorList();
         
         var speciesId = SpeciesId.NewId();
         var species = new Species(speciesId, speciesName.Value, []);

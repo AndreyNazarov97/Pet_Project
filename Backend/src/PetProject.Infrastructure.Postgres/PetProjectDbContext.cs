@@ -9,7 +9,8 @@ namespace PetProject.Infrastructure.Postgres;
 public class PetProjectDbContext : DbContext
 {
     private readonly IConfiguration _configuration;
-    
+
+
     public PetProjectDbContext(IConfiguration configuration)
     {
         _configuration = configuration;

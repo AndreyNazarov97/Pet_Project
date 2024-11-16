@@ -1,7 +1,6 @@
 ﻿using CSharpFunctionalExtensions;
 using Minio;
 using Minio.DataModel.Args;
-using Minio.DataModel.Response;
 using PetProject.Application.Abstractions;
 using PetProject.Application.Dto;
 using PetProject.Domain.Shared;
