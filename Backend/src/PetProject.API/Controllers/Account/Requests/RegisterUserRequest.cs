@@ -4,5 +4,10 @@ namespace PetProject.API.Controllers.Account.Requests;
 
 public record RegisterUserRequest(string Email, string Username ,string Password)
 {
-    public RegisterUserCommand ToCommand() => new(Email, Username, Password);
+    public RegisterUserCommand ToCommand() => new()
+    {
+        Email = Email,
+        Username = Username,
+        Password = Password
+    };
 }

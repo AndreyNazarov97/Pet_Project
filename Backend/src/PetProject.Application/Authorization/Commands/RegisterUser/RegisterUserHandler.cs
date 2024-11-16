@@ -1,4 +1,5 @@
 ﻿using CSharpFunctionalExtensions;
+using MediatR;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.Extensions.Logging;
 using PetProject.Application.Authorization.DataModels;
@@ -6,7 +7,7 @@ using PetProject.Domain.Shared;
 
 namespace PetProject.Application.Authorization.Commands.RegisterUser;
 
-public class RegisterUserHandler
+public class RegisterUserHandler : IRequestHandler<RegisterUserCommand, UnitResult<ErrorList>>
 {
     private readonly UserManager<User> _userManager;
     private readonly ILogger<RegisterUserHandler> _logger;

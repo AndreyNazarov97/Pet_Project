@@ -1,3 +1,11 @@
-﻿namespace PetProject.Application.Authorization.Commands.LoginUser;
+﻿using CSharpFunctionalExtensions;
+using MediatR;
+using PetProject.Domain.Shared;
 
-public record LoginUserCommand(string Email, string Password);
+namespace PetProject.Application.Authorization.Commands.LoginUser;
+
+public record LoginUserCommand() : IRequest<Result<string,ErrorList>>
+{
+    public required string Email { get; init; }
+    public required string Password { get; init; }
+}

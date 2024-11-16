@@ -1,21 +1,27 @@
-﻿using Microsoft.AspNetCore.Mvc;
+﻿using MediatR;
+using Microsoft.AspNetCore.Mvc;
 using PetProject.API.Controllers.Account.Requests;
 using PetProject.API.Extensions;
-using PetProject.API.Response;
-using PetProject.Application.Authorization.Commands.LoginUser;
-using PetProject.Application.Authorization.Commands.RegisterUser;
 
 namespace PetProject.API.Controllers.Account;
 
 public class AccountController : ApplicationController
 {
+    private readonly IMediator _mediator;
+
+    public AccountController(
+        IMediator mediator)
+    {
+        _mediator = mediator;
+    }
     [HttpPost("register")]
     public async Task<IActionResult> Register(
         [FromBody] RegisterUserRequest request,
-        [FromServices] RegisterUserHandler handler,
         CancellationToken cancellationToken)
     {
-        var result = await handler.Handle(request.ToCommand(), cancellationToken);
+        var command = request.ToCommand();
+        
+        var result = await _mediator.Send(command, cancellationToken);
 
         if (result.IsFailure)
             return result.Error.ToResponse();
@@ -26,10 +32,11 @@ public class AccountController : ApplicationController
     [HttpPost("login")]
     public async Task<IActionResult> Login(
         [FromBody] LoginRequest request,
-        [FromServices] LoginHandler handler,
         CancellationToken cancellationToken)
     {
-        var result = await handler.Handle(request.ToCommand(), cancellationToken);
+        var command = request.ToCommand();
+        
+        var result = await _mediator.Send(command, cancellationToken);
 
         if (result.IsFailure)
             return result.Error.ToResponse();

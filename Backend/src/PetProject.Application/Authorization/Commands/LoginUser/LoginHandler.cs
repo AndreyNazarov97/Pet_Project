@@ -1,4 +1,5 @@
 ﻿using CSharpFunctionalExtensions;
+using MediatR;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.Extensions.Logging;
 using PetProject.Application.Authorization.DataModels;
@@ -6,7 +7,7 @@ using PetProject.Domain.Shared;
 
 namespace PetProject.Application.Authorization.Commands.LoginUser;
 
-public class LoginHandler
+public class LoginHandler : IRequestHandler<LoginUserCommand, Result<string,ErrorList>>
 {
     private readonly UserManager<User> _userManager;
     private readonly ITokenProvider _tokenProvider;
