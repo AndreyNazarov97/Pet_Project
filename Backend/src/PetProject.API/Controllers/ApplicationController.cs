@@ -2,7 +2,7 @@
 using PetProject.API.Response;
 
 namespace PetProject.API.Controllers;
-[Controller]
+[ApiController]
 [Route("api/[controller]")]
 public abstract class ApplicationController : ControllerBase
 {

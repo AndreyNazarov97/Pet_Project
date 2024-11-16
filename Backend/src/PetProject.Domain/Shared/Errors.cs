@@ -18,10 +18,10 @@ public static class Errors
             return Error.NotFound("record.not.found", $"record not found{forId}");
         }
 
-        public static Error ValueIsRequired(string? name = null)
+        public static Error LengthIsInvalid(string? name = null)
         {
             var label = name == null ? "" : " " + name + " ";
-            return Error.Validation("length.is.invalid", $"invalid{label}length)");
+            return Error.Validation("length.is.invalid", $"invalid{label}length");
         }
     }
 

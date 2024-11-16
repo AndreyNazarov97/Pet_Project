@@ -1,4 +1,5 @@
 ﻿using CSharpFunctionalExtensions;
+using MediatR;
 using Microsoft.Extensions.Logging;
 using PetProject.Domain.Shared;
 using PetProject.Domain.Shared.EntityIds;
@@ -7,27 +8,37 @@ using PetProject.Domain.SpeciesManagement.ValueObjects;
 
 namespace PetProject.Application.SpeciesManagement.CreateBreed;
 
-public class CreateBreedHandler(ISpeciesRepository speciesRepository, ILogger<CreateBreedHandler> logger)
+public class CreateBreedHandler : IRequestHandler<CreateBreedCommand, Result<Guid, ErrorList>>
 {
-    public async Task<Result<BreedId, Error>> Handle(CreateBreedRequest request, CancellationToken cancellationToken)
+    private readonly ISpeciesRepository _speciesRepository;
+    private readonly ILogger<CreateBreedHandler> _logger;
+
+    public CreateBreedHandler(ISpeciesRepository speciesRepository, 
+        ILogger<CreateBreedHandler> logger)
     {
-        var speciesName = SpeciesName.Create(request.SpeciesName).Value;
-        var existedSpecies = await speciesRepository.GetByName(speciesName, cancellationToken);
+        _speciesRepository = speciesRepository;
+        _logger = logger;
+    }
+
+    public async Task<Result<Guid, ErrorList>> Handle(CreateBreedCommand command, CancellationToken cancellationToken)
+    {
+        var speciesName = SpeciesName.Create(command.SpeciesName).Value;
+        var existedSpecies = await _speciesRepository.GetByName(speciesName, cancellationToken);
 
         if (existedSpecies.IsFailure)
-            return Errors.General.NotFound();
+            return Errors.General.NotFound().ToErrorList();
 
-        if(existedSpecies.Value.Breeds.Any(x => x.BreedName.Value == request.BreedName))
-            return Errors.Model.AlreadyExist("Breed");
+        if(existedSpecies.Value.Breeds.Any(x => x.BreedName.Value == command.BreedName))
+            return Errors.Model.AlreadyExist("Breed").ToErrorList();
         
         var breedId = BreedId.NewId();
-        var breedName = BreedName.Create(request.BreedName).Value;
+        var breedName = BreedName.Create(command.BreedName).Value;
         var breed = new Breed(breedId, breedName);
         
         existedSpecies.Value.AddBreeds([breed]);
         
-        await speciesRepository.Save(existedSpecies.Value, cancellationToken);
+        await _speciesRepository.Save(existedSpecies.Value, cancellationToken);
         
-        return breed.Id;
+        return breed.Id.Id;
     }
 }

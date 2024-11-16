@@ -1,6 +1,6 @@
 ﻿using CSharpFunctionalExtensions;
 using Microsoft.EntityFrameworkCore;
-using PetProject.Application.Volunteers;
+using PetProject.Application.VolunteersManagement;
 using PetProject.Domain.Shared;
 using PetProject.Domain.Shared.EntityIds;
 using PetProject.Domain.Shared.ValueObjects;
@@ -18,17 +18,15 @@ public class VolunteersRepository(PetProjectDbContext context) : IVolunteersRepo
         return volunteer.Id;
     }
 
-    public async Task<Result<Guid, Error>> Save(Volunteer volunteer,
-        CancellationToken cancellationToken = default)
-    {
-        context.Volunteers.Attach(volunteer);
-        await context.SaveChangesAsync(cancellationToken);
-        return volunteer.Id.Id;
-    }
-
     public async Task<Result<Guid, Error>> Delete(Volunteer volunteer, CancellationToken cancellationToken = default)
     {
-        await context.SaveChangesAsync(cancellationToken);
+        var existedVolunteer = await context.Volunteers
+            .FirstOrDefaultAsync(v => v.Id == volunteer.Id, cancellationToken);
+
+        if (existedVolunteer == null)
+            return Errors.General.NotFound();
+
+        context.Volunteers.Remove(existedVolunteer);
         return volunteer.Id.Id;
     }
 
@@ -48,7 +46,6 @@ public class VolunteersRepository(PetProjectDbContext context) : IVolunteersRepo
     {
         var volunteer = await context.Volunteers
             .Where(v => v.Id == id)
-            //.Include(v => v.Pets)
             .FirstOrDefaultAsync(cancellationToken);
 
         if (volunteer == null)
