@@ -1,5 +1,6 @@
 ﻿using Microsoft.AspNetCore.Mvc;
 using PetProject.API.Controllers.Account.Requests;
+using PetProject.API.Extensions;
 using PetProject.API.Response;
 using PetProject.Application.Authorization.Commands.LoginUser;
 using PetProject.Application.Authorization.Commands.RegisterUser;
@@ -17,16 +18,7 @@ public class AccountController : ApplicationController
         var result = await handler.Handle(request.ToCommand(), cancellationToken);
 
         if (result.IsFailure)
-        {
-            var responseErrors = result.Error.Select(e => new ResponseError(e.Code, e.Message, null))
-                .ToList();
-            var envelope = Envelope.Error(responseErrors);
-
-            return new ObjectResult(envelope)
-            {
-                StatusCode = StatusCodes.Status500InternalServerError
-            };
-        }
+            return result.Error.ToResponse();
 
         return Ok();
     }
@@ -40,16 +32,7 @@ public class AccountController : ApplicationController
         var result = await handler.Handle(request.ToCommand(), cancellationToken);
 
         if (result.IsFailure)
-        {
-            var responseErrors = result.Error.Select(e => new ResponseError(e.Code, e.Message, null))
-                .ToList();
-            var envelope = Envelope.Error(responseErrors);
-
-            return new ObjectResult(envelope)
-            {
-                StatusCode = StatusCodes.Status500InternalServerError
-            };
-        }
+            return result.Error.ToResponse();
 
         return Ok(result.Value);
     }

@@ -1,50 +1,62 @@
 ﻿using Microsoft.AspNetCore.Mvc;
 using PetProject.API.Extensions;
-using PetProject.API.Providers;
 using PetProject.API.Response;
 using PetProject.Application.Abstractions;
+using PetProject.Application.Dto;
 using PetProject.Domain.Shared;
+using PetProject.Infrastructure.Postgres.Processors;
 
 namespace PetProject.API.Controllers;
 
 public class MinioController : ApplicationController
 {
-    public const string BUCKET_NAME = "pet-project";
-    private readonly IMinioProvider _minioProvider;
+    public const string BucketName = "pet-project";
+    private readonly IFileProvider _fileProvider;
 
-    public MinioController(IMinioProvider minioProvider)
+    public MinioController(IFileProvider fileProvider)
     {
-        _minioProvider = minioProvider;
+        _fileProvider = fileProvider;
     }
 
     [HttpPost]
-    public async Task<ActionResult> UploadFile(IFormFile file, CancellationToken cancellationToken = default)
+    public async Task<ActionResult> UploadFiles(
+        IFormFileCollection files,
+        CancellationToken cancellationToken = default)
     {
-        await using var stream = file.OpenReadStream();
-        var result = await _minioProvider.UploadFile(stream, BUCKET_NAME, file.FileName, cancellationToken);
+        await using var fileProcessor = new FormFileProcessor();
+        var filesDto = fileProcessor.Process(files);
+        var filesData = filesDto.Select(f => new FileDataDto(f.Content, f.FileName, BucketName)).ToList();
+        
+        var result = await _fileProvider.UploadFiles(filesData, cancellationToken);
+        
         if (result.IsFailure)
             return result.Error.ToResponse();
-        
-        return Ok(result);
+    
+        return Ok(result.Value);
     }
 
     [HttpDelete]
-    public async Task<ActionResult> DeleteFile(string fileName, CancellationToken cancellationToken = default)
+    public async Task<ActionResult> DeleteFile(
+        string fileName, 
+        CancellationToken cancellationToken = default)
     {
-        var result = await _minioProvider.DeleteFile(BUCKET_NAME, fileName, cancellationToken);
+        var fileMetaData = new FileMetaDataDto(fileName, BucketName);
+        var result = await _fileProvider.DeleteFile(fileMetaData, cancellationToken);
         if (result.IsFailure)
             return result.Error.ToResponse();
 
-        return Ok(result);
+        return Ok();
     }
 
     [HttpGet]
     public async Task<ActionResult<string>> DownloadFile(string fileName)
     {
-        var result = await _minioProvider.DownloadFile(BUCKET_NAME, fileName);
+        var fileMetaData = new FileMetaDataDto(fileName, BucketName);
+        
+        var result = await _fileProvider.DownloadFile(fileMetaData);
         if (result.IsFailure)
             return result.Error.ToResponse();
 
-        return Ok(result);
+        return Ok(result.Value);
     }
 }

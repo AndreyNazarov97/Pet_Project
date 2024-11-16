@@ -134,10 +134,13 @@ public class PetConfiguration : IEntityTypeConfiguration<Pet>
 
             plb.OwnsMany(pl => pl.PetPhotos, ppb =>
             {
-                ppb.Property(p => p.Path)
-                    .IsRequired()
-                    .HasColumnName("path")
-                    .HasMaxLength(Constants.MAX_TEXT_LENGTH);
+                ppb.OwnsOne(petPhoto => petPhoto.Path, filePathBuilder =>
+                {
+                    filePathBuilder.Property(p => p.Path)
+                        .IsRequired()
+                        .HasColumnName("path")
+                        .HasMaxLength(Constants.MAX_TEXT_LENGTH);
+                });
 
                 ppb.Property(p => p.IsMain)
                     .IsRequired()

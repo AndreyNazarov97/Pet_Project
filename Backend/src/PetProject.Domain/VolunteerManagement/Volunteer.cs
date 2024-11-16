@@ -64,6 +64,8 @@ public class Volunteer : AggregateRoot<VolunteerId>, ISoftDeletable
         SocialLinksList = list;
     public void UpdateRequisites(RequisitesList list) =>
         RequisitesList = list;
+    
+    public Pet? GetById(PetId id) => _pets.FirstOrDefault(x => x.Id == id);
 
     public void Activate()
     {

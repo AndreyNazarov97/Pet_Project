@@ -11,15 +11,17 @@ namespace PetProject.Domain.VolunteerManagement;
 public class Pet : Shared.Common.Entity<PetId>, ISoftDeletable
 {
     private bool _isDeleted = false;
-    
-    protected Pet(PetId id) : base(id){}
+
+    protected Pet(PetId id) : base(id)
+    {
+    }
 
     public PetName PetName { get; private set; }
     public Description GeneralDescription { get; private set; }
     public Description HealthInformation { get; private set; }
     public AnimalType AnimalType { get; private set; }
     public Address Address { get; private set; }
-    public PetPhysicalAttributes PhysicalAttributes{ get; private set; } 
+    public PetPhysicalAttributes PhysicalAttributes { get; private set; }
     public PhoneNumber PhoneNumber { get; private set; }
     public DateOnly BirthDate { get; private set; }
     public bool IsCastrated { get; private set; }
@@ -51,13 +53,19 @@ public class Pet : Shared.Common.Entity<PetId>, ISoftDeletable
         AnimalType = animalType;
         Address = address;
         PhysicalAttributes = attributes;
-        PhoneNumber = number;   
+        PhoneNumber = number;
         BirthDate = birthDate;
         IsCastrated = isCastrated;
         IsVaccinated = isVaccinated;
         HelpStatus = helpStatus;
         RequisitesList = requisites;
         PetPhotosList = petPhotos;
+        DateCreated = DateTimeOffset.UtcNow;
+    }
+
+    public void AddPhotos(IEnumerable<PetPhoto> petPhotos)
+    {
+        PetPhotosList.AddPhotos(petPhotos);
     }
     
     public void Activate()

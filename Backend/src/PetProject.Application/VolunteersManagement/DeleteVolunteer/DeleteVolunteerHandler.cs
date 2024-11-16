@@ -1,28 +1,38 @@
 ﻿using CSharpFunctionalExtensions;
+using MediatR;
 using Microsoft.Extensions.Logging;
 using PetProject.Domain.Shared;
 using PetProject.Domain.Shared.EntityIds;
 
 namespace PetProject.Application.VolunteersManagement.DeleteVolunteer;
 
-public class DeleteVolunteerHandler(IVolunteersRepository repository, ILogger<DeleteVolunteerHandler> logger)
+public class DeleteVolunteerHandler : IRequestHandler<DeleteVolunteerCommand, UnitResult<ErrorList>>
 {
-    public async Task<Result<Guid, Error>> Execute(DeleteVolunteerRequest request,
+    private readonly IVolunteersRepository _repository;
+    private readonly ILogger<DeleteVolunteerHandler> _logger;
+
+    public DeleteVolunteerHandler(IVolunteersRepository repository, ILogger<DeleteVolunteerHandler> logger)
+    {
+        _repository = repository;
+        _logger = logger;
+    }
+
+    public async Task<UnitResult<ErrorList>> Handle(DeleteVolunteerCommand command,
         CancellationToken cancellationToken = default)
     {
-        var volunteerId = VolunteerId.Create(request.Id);
-        var volunteerResult = await repository.GetById(volunteerId, cancellationToken);
+        var volunteerId = VolunteerId.Create(command.Id);
+        var volunteerResult = await _repository.GetById(volunteerId, cancellationToken);
         if (volunteerResult.IsFailure)
-            return volunteerResult.Error;
+            return volunteerResult.Error.ToErrorList();
 
         volunteerResult.Value.Deactivate();
         
-        var result = await repository.Delete(volunteerResult.Value, cancellationToken);
+        var result = await _repository.Delete(volunteerResult.Value, cancellationToken);
         if (result.IsFailure)
-            return volunteerResult.Error;
+            return volunteerResult.Error.ToErrorList();
         
-        logger.Log(LogLevel.Information, "Volunteer deleted with Id {volunteerId}", volunteerId);
+        _logger.Log(LogLevel.Information, "Volunteer deleted with Id {volunteerId}", volunteerId);
         
-        return volunteerResult.Value.Id.Id;
+        return UnitResult.Success<ErrorList>();
     }
 }

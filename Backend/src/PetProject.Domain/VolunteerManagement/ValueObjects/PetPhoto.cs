@@ -1,24 +1,18 @@
-﻿using CSharpFunctionalExtensions;
-using PetProject.Domain.Shared;
+﻿using PetProject.Domain.Shared.ValueObjects;
 
 namespace PetProject.Domain.VolunteerManagement.ValueObjects;
 
 public record PetPhoto
 {
-    public string Path { get; }
-    public bool IsMain { get; }
+    public FilePath Path { get; }
+    public bool IsMain { get; } = false;
 
-    private PetPhoto(string path, bool isMain)
+    private PetPhoto()
+    {
+        
+    }
+    public PetPhoto(FilePath path)
     {
         Path = path;
-        IsMain = isMain;
-    }
-
-    public static Result<PetPhoto, Error> Create(string path, bool isImageMain)
-    {
-        if (string.IsNullOrWhiteSpace(path))
-            return Errors.General.ValueIsInvalid("path cannot be empty");
-
-        return new PetPhoto(path, isImageMain);
     }
 }

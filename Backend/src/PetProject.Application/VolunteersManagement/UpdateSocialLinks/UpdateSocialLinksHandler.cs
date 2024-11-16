@@ -1,34 +1,49 @@
 ﻿using CSharpFunctionalExtensions;
+using MediatR;
 using Microsoft.Extensions.Logging;
+using PetProject.Application.Abstractions;
 using PetProject.Domain.Shared;
 using PetProject.Domain.Shared.EntityIds;
 using PetProject.Domain.VolunteerManagement.ValueObjects;
 
 namespace PetProject.Application.VolunteersManagement.UpdateSocialLinks;
 
-public class UpdateSocialLinksHandler(IVolunteersRepository repository, ILogger<UpdateSocialLinksHandler> logger)
+public class UpdateSocialLinksHandler : IRequestHandler<UpdateSocialLinksCommand, Result<Guid, ErrorList>>
 {
-    public async Task<Result<Guid, Error>> Execute(UpdateSocialLinksRequest request,
-        CancellationToken token = default)
-    {
-        var volunteerId = VolunteerId.Create(request.Id);
+    private readonly IVolunteersRepository _repository;
+    private readonly IUnitOfWork _unitOfWork;
+    private readonly ILogger<UpdateSocialLinksHandler> _logger;
 
-        var volunteer = await repository.GetById(volunteerId, token);
+    public UpdateSocialLinksHandler(
+        IVolunteersRepository repository,
+        IUnitOfWork unitOfWork,
+        ILogger<UpdateSocialLinksHandler> logger)
+    {
+        _repository = repository;
+        _unitOfWork = unitOfWork;
+        _logger = logger;
+    }
+
+    public async Task<Result<Guid, ErrorList>> Handle(UpdateSocialLinksCommand command,
+        CancellationToken cancellationToken = default)
+    {
+        var volunteerId = VolunteerId.Create(command.Id);
+
+        var volunteer = await _repository.GetById(volunteerId, cancellationToken);
 
         if (volunteer.IsFailure)
-            return volunteer.Error;
+            return volunteer.Error.ToErrorList();
 
-        var socialLinks = request.Dto.SocialLinks
+        var socialLinks = command.SocialLinks
             .Select(x => SocialLink.Create(x.Name, x.Url).Value);
         var socialLinksList = new SocialLinksList(socialLinks);
 
         volunteer.Value.UpdateSocialLinks(socialLinksList);
-        var resultUpdate = await repository.Save(volunteer.Value, token);
-        if (resultUpdate.IsFailure)
-            return resultUpdate.Error;
+        
+        await _unitOfWork.SaveChangesAsync(cancellationToken);
+        
+        _logger.Log(LogLevel.Information, "Volunteer {volunteerId} was updated social links", volunteerId);
 
-        logger.Log(LogLevel.Information, "Volunteer {volunteerId} was updated social links", volunteerId);
-
-        return resultUpdate;
+        return volunteer.Value.Id.Id;
     }
 }
