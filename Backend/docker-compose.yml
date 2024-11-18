@@ -11,6 +11,11 @@ volumes :
     
     
 services:
+  backend:
+    container_name: 'pet_backend'
+    build:
+      context: src/
+      
   postgres:
     container_name: 'pet_postgres'
     image: 'postgres:latest'
