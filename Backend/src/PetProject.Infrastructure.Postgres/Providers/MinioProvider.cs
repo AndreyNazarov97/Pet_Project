@@ -1,11 +1,13 @@
 ﻿using CSharpFunctionalExtensions;
+using Microsoft.Extensions.Logging;
 using Minio;
+using Minio.ApiEndpoints;
 using Minio.DataModel.Args;
 using PetProject.Application.Abstractions;
 using PetProject.Application.Dto;
 using PetProject.Domain.Shared;
 using PetProject.Domain.Shared.ValueObjects;
-using ILogger = Serilog.ILogger;
+
 
 
 namespace PetProject.Infrastructure.Postgres.Providers;
@@ -15,11 +17,11 @@ public class MinioProvider : IFileProvider
     private const int MaxDegreeOfParallelism = 10;
     private const int Expiry = 604800; // 7 days
     private readonly IMinioClient _minioClient;
-    private readonly ILogger _logger;
+    private readonly ILogger<MinioProvider> _logger;
 
     public MinioProvider(
         IMinioClient minioClient,
-        ILogger logger)
+        ILogger<MinioProvider> logger)
     {
         _minioClient = minioClient;
         _logger = logger;
@@ -34,11 +36,11 @@ public class MinioProvider : IFileProvider
                 .WithObject(fileMetaData.ObjectName)
                 .WithExpiry(Expiry);
 
-            _logger.Information("File {FileName} downloading from Minio", fileMetaData.ObjectName);
+            _logger.LogInformation("File {FileName} downloading from Minio", fileMetaData.ObjectName);
 
             var downloadUrl = await _minioClient.PresignedGetObjectAsync(getObjectArgs);
-
-            _logger.Information(
+            
+            _logger.LogInformation(
                 "File {FileName} downloaded from Minio with url {DownloadUrl}",
                 fileMetaData.ObjectName,
                 downloadUrl);
@@ -46,7 +48,7 @@ public class MinioProvider : IFileProvider
         }
         catch (Exception e)
         {
-            _logger.Error(e,
+            _logger.LogError(e,
                 "File {FileName} could not be downloaded from Minio",
                 fileMetaData.ObjectName);
             return Errors.Minio.CouldNotDownloadFile().ToErrorList();
@@ -71,8 +73,27 @@ public class MinioProvider : IFileProvider
         if(errors.Count > 0)
             return new ErrorList(errors);
         
-        _logger.Information("Files uploaded to Minio");
+        _logger.LogInformation("Files uploaded to Minio");
         return results.Select(r => r.Value).ToList();
+    }
+
+    [Obsolete("Obsolete")]
+    public async Task<Result<IReadOnlyCollection<string>,ErrorList>>  GetFiles(string bucketName)
+    {
+        var listObjectsArgs = new ListObjectsArgs()
+            .WithBucket(bucketName)
+            .WithRecursive(false);
+
+        var objects = _minioClient.ListObjectsAsync(listObjectsArgs);
+
+        List<string> paths = [];
+        
+        var subscription = objects.Subscribe(
+            (item) => paths.Add(item.Key),
+            ex => _logger.LogError(ex, "Error occured while getting objects"),
+            () => _logger.LogInformation("Successfully uploaded files"));
+
+        return paths;
     }
 
     public async Task<UnitResult<ErrorList>> DeleteFile(FileMetaDataDto fileMetaData,
@@ -84,16 +105,16 @@ public class MinioProvider : IFileProvider
                 .WithBucket(fileMetaData.BucketName)
                 .WithObject(fileMetaData.ObjectName);
 
-            _logger.Information("File {FileName} deleting from Minio", fileMetaData.ObjectName);
+            _logger.LogInformation("File {FileName} deleting from Minio", fileMetaData.ObjectName);
 
             await _minioClient.RemoveObjectAsync(removeObjectArgs, cancellationToken);
 
-            _logger.Information("File {FileName} deleted from Minio", fileMetaData.ObjectName);
+            _logger.LogInformation("File {FileName} deleted from Minio", fileMetaData.ObjectName);
             return UnitResult.Success<ErrorList>();
         }
         catch (Exception e)
         {
-            _logger.Error(e, "File {FileName} could not be deleted from Minio", fileMetaData.ObjectName);
+            _logger.LogError(e, "File {FileName} could not be deleted from Minio", fileMetaData.ObjectName);
             return Errors.Minio.CouldNotDeleteFile().ToErrorList();
         }
     }
@@ -146,7 +167,7 @@ public class MinioProvider : IFileProvider
         }
         catch (Exception ex)
         {
-            _logger.Error(ex, "Fail to upload files to Minio");
+            _logger.LogError(ex, "Fail to upload files to Minio");
             return Errors.Minio.CouldNotUploadFile();
         }
         finally

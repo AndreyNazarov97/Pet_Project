@@ -48,6 +48,17 @@ public class MinioController : ApplicationController
         return Ok();
     }
 
+    [HttpGet("files")]
+    public async Task<ActionResult<string[]>> GetList()
+    {
+        var result = await _fileProvider.GetFiles(BucketName);
+        if (result.IsFailure)
+            return result.Error.ToResponse();
+        
+        
+        return Ok(result.Value);
+    }
+    
     [HttpGet]
     public async Task<ActionResult<string>> DownloadFile(string fileName)
     {
