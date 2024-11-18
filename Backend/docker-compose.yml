@@ -15,7 +15,17 @@ services:
     container_name: 'pet_backend'
     build:
       context: src/
-      
+    depends_on:
+      - postgres
+      - minio
+      - seq
+    environment:
+        - ASPNETCORE_ENVIRONMENT=Docker
+    ports:
+      - 8080:8080
+      - 5001:5001
+  
+  
   postgres:
     container_name: 'pet_postgres'
     image: 'postgres:latest'

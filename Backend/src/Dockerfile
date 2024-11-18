@@ -1,6 +1,6 @@
 ﻿FROM mcr.microsoft.com/dotnet/aspnet:8.0 AS base
 WORKDIR /app
-EXPOSE 80
+EXPOSE 8080
 
 
 FROM mcr.microsoft.com/dotnet/sdk:8.0 AS build
@@ -11,7 +11,8 @@ COPY ["PetProject.Application/PetProject.Application.csproj", "PetProject.Applic
 COPY ["PetProject.Domain/PetProject.Domain.csproj", "PetProject.Domain/"]
 COPY ["PetProject.Infrastructure.Postgres/PetProject.Infrastructure.Postgres.csproj", "PetProject.Infrastructure.Postgres/"]
 COPY ["PetProject.Infrastructure.Authorization/PetProject.Infrastructure.Authorization.csproj", "PetProject.Infrastructure.Authorization/"]
-RUN dotnet restore "src/PetProject.API/PetProject.API.csproj"
+RUN dotnet restore "PetProject.API/PetProject.API.csproj"
+WORKDIR "/src"
 COPY . .
 RUN dotnet build "PetProject.API/PetProject.API.csproj" -c $BUILD_CONFIGURATION -o /app/build
 
