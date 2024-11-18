@@ -3,6 +3,7 @@ using Microsoft.OpenApi.Models;
 using PetProject.API.Extensions;
 using PetProject.API.Middlewares;
 using PetProject.Application;
+using PetProject.Infrastructure.Authorization;
 using PetProject.Infrastructure.Postgres;
 using Serilog;
 
@@ -56,6 +57,7 @@ builder.Services.AddSwaggerGen(options =>
 
 builder.Services.AddApplication();
 builder.Services
+    .AddAuthorizationInfrastructure(builder.Configuration)
     .AddMinioInfrastructure(builder.Configuration)
     .AddPostgresInfrastructure();
 
@@ -67,7 +69,8 @@ app.UseSerilogRequestLogging();
 app.UseExceptionHandling();
 
 // Configure the HTTP request pipeline.
-if (app.Environment.IsDevelopment())
+if (app.Environment.IsDevelopment()
+    || app.Environment.IsEnvironment("Docker"))
 {
     app.UseSwagger();
     app.UseSwaggerUI();

@@ -19,6 +19,6 @@
     </ItemGroup>
 
     <ItemGroup>
-        <ProjectReference Include="..\src\PetProject.Infrastructure.Postgres\PetProject.Infrastructure.Postgres.csproj"/>
+        <ProjectReference Include="..\PetProject.Infrastructure.Postgres\PetProject.Infrastructure.Postgres.csproj"/>
     </ItemGroup>
 </Project>
