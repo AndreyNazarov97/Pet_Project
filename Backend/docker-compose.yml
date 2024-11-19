@@ -11,6 +11,15 @@ volumes :
     
     
 services:
+  nginx:
+    container_name: 'pet_nginx'
+    image: 'nginx:stable-alpine'
+    depends_on:
+      - backend
+    ports:
+      - 80:80
+      - 443:443
+
   backend:
     container_name: 'pet_backend'
     build:

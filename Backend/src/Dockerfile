@@ -9,7 +9,7 @@ WORKDIR /src
 COPY ["PetProject.API/PetProject.API.csproj", "PetProject.API/"]
 COPY ["PetProject.Application/PetProject.Application.csproj", "PetProject.Application/"]
 COPY ["PetProject.Domain/PetProject.Domain.csproj", "PetProject.Domain/"]
-COPY ["PetProject.Infrastructure.Postgres/PetProject.Infrastructure.Postgres.csproj", "PetProject.Infrastructure.Postgres/"]
+COPY ["PetProject.Infrastructure/PetProject.Infrastructure.csproj", "PetProject.Infrastructure.Postgres/"]
 COPY ["PetProject.Infrastructure.Authorization/PetProject.Infrastructure.Authorization.csproj", "PetProject.Infrastructure.Authorization/"]
 RUN dotnet restore "PetProject.API/PetProject.API.csproj"
 WORKDIR "/src"
