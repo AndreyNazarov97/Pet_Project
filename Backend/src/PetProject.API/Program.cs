@@ -74,7 +74,19 @@ if (app.Environment.IsDevelopment()
 {
     app.UseSwagger();
     app.UseSwaggerUI();
+    
+    app.Use(async (context, next) =>
+    {
+        if (context.Request.Path == "/")
+        {
+            context.Response.Redirect("/swagger");
+            return;
+        }
 
+        await next();
+    });
+    
+    
     await app.ApplyMigrations();
 }
 
