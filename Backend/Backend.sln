@@ -19,6 +19,10 @@ Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "Solution-items", "Solution-
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "PetProject.Infrastructure.Authorization", "src\PetProject.Infrastructure.Authorization\PetProject.Infrastructure.Authorization.csproj", "{C68D7B75-9CBF-454E-A05D-E125465316AE}"
 EndProject
+Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "tests", "tests", "{0E11ADB2-2524-40EE-97AE-AB2DE84AAB35}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "PetProject.Domain.Tests", "tests\PetProject.Domain.Tests\PetProject.Domain.Tests.csproj", "{CA69524A-A75F-42BD-8055-2D20F6DA3B77}"
+EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
 		Debug|Any CPU = Debug|Any CPU
@@ -48,5 +52,12 @@ Global
 		{C68D7B75-9CBF-454E-A05D-E125465316AE}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{C68D7B75-9CBF-454E-A05D-E125465316AE}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{C68D7B75-9CBF-454E-A05D-E125465316AE}.Release|Any CPU.Build.0 = Release|Any CPU
+		{CA69524A-A75F-42BD-8055-2D20F6DA3B77}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{CA69524A-A75F-42BD-8055-2D20F6DA3B77}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{CA69524A-A75F-42BD-8055-2D20F6DA3B77}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{CA69524A-A75F-42BD-8055-2D20F6DA3B77}.Release|Any CPU.Build.0 = Release|Any CPU
+	EndGlobalSection
+	GlobalSection(NestedProjects) = preSolution
+		{CA69524A-A75F-42BD-8055-2D20F6DA3B77} = {0E11ADB2-2524-40EE-97AE-AB2DE84AAB35}
 	EndGlobalSection
 EndGlobal

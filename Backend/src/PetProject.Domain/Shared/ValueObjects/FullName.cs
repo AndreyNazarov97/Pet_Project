@@ -15,7 +15,7 @@ public record FullName
         Patronymic = patronymic;
     }
 
-    public static Result<FullName, Error> Create(string name, string surname, string? patronymic)
+    public static Result<FullName, Error> Create(string name, string surname, string? patronymic = null)
     {
         if (string.IsNullOrWhiteSpace(name) || name.Length > Constants.MIN_TEXT_LENGTH)
             return Errors.General.ValueIsInvalid("Name");
