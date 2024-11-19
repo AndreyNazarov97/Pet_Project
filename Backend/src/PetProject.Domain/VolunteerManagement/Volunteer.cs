@@ -1,4 +1,5 @@
-﻿using PetProject.Domain.Interfaces;
+﻿using CSharpFunctionalExtensions;
+using PetProject.Domain.Interfaces;
 using PetProject.Domain.Shared;
 using PetProject.Domain.Shared.Common;
 using PetProject.Domain.Shared.EntityIds;
@@ -9,11 +10,13 @@ using PetProject.Domain.VolunteerManagement.ValueObjects;
 namespace PetProject.Domain.VolunteerManagement;
 
 public class Volunteer : AggregateRoot<VolunteerId>, ISoftDeletable
-{ 
+{
     private bool _isDeleted;
     private readonly List<Pet> _pets = [];
-    
-    private Volunteer(VolunteerId id) : base(id){}
+
+    private Volunteer(VolunteerId id) : base(id)
+    {
+    }
 
     public Volunteer(
         VolunteerId id,
@@ -40,7 +43,30 @@ public class Volunteer : AggregateRoot<VolunteerId>, ISoftDeletable
     public SocialLinksList SocialLinksList { get; private set; }
     public RequisitesList RequisitesList { get; private set; }
 
-    public void AddPet(Pet pet) => _pets.Add(pet);
+    public void AddPet(Pet pet)
+    {
+        pet.SetPosition(Position.Create(_pets.Count + 1).Value);
+
+        _pets.Add(pet);
+    }
+
+    public UnitResult<Error> RemovePet(Pet pet)
+    {
+        if(_pets.Contains(pet) == false)
+            return Error.Validation("pet.not.found", "Pet not found");
+        
+        var petPosition = pet.Position;
+        foreach (var otherPet in _pets.Where(p => 
+                     p.Position.Value > petPosition.Value))
+        {
+            otherPet.SetPosition(Position.Create(otherPet.Position.Value - 1).Value);
+        }
+
+        _pets.Remove(pet);
+    
+        return Result.Success<Error>();
+    }
+
     public int PetsAdoptedCount() =>
         _pets.Count(x => x.HelpStatus == HelpStatus.FoundHome);
 
@@ -49,7 +75,7 @@ public class Volunteer : AggregateRoot<VolunteerId>, ISoftDeletable
 
     public int PetsUnderTreatmentCount() =>
         _pets.Count(x => x.HelpStatus == HelpStatus.NeedsHelp);
-    
+
     public void UpdateMainInfo(FullName fullName,
         Description generalDescription,
         Experience experience,
@@ -60,12 +86,54 @@ public class Volunteer : AggregateRoot<VolunteerId>, ISoftDeletable
         Experience = experience;
         PhoneNumber = number;
     }
+
     public void UpdateSocialLinks(SocialLinksList list) =>
         SocialLinksList = list;
+
     public void UpdateRequisites(RequisitesList list) =>
         RequisitesList = list;
-    
+
     public Pet? GetById(PetId id) => _pets.FirstOrDefault(x => x.Id == id);
+
+    public UnitResult<Error> ChangePetPosition(Pet pet, Position newPosition)
+    {
+        if(_pets.Contains(pet) == false)
+            return Error.Validation("pet.not.found", "Pet not found");
+        
+        if (newPosition.Value > _pets.Count)
+            return Error.Validation("position.is.invalid", "Position is greater than pets count");
+
+        var currentPosition = pet.Position;
+
+        if (currentPosition == newPosition)
+            return Result.Success<Error>();
+        
+        // Перемещение вверх по позиции (уменьшение значения позиции)
+        if (newPosition.Value < currentPosition.Value)
+        {
+            foreach (var otherPet in _pets.Where(p => 
+                         p.Position.Value >= newPosition.Value && 
+                         p.Position.Value < currentPosition.Value))
+            {
+                otherPet.SetPosition(Position.Create(otherPet.Position.Value + 1).Value);
+            }
+        }
+        // Перемещение вниз по позиции (увеличение значения позиции)
+        else
+        {
+            foreach (var otherPet in _pets.Where(p => 
+                         p.Position.Value > currentPosition.Value 
+                         && p.Position.Value <= newPosition.Value))
+            {
+                otherPet.SetPosition(Position.Create(otherPet.Position.Value - 1).Value);
+            }
+        }
+
+        // Установка новой позиции для перемещаемого питомца
+        pet.SetPosition(newPosition);
+    
+        return Result.Success<Error>();
+    }
 
     public void Activate()
     {
@@ -75,6 +143,7 @@ public class Volunteer : AggregateRoot<VolunteerId>, ISoftDeletable
             pet.Activate();
         }
     }
+
     public void Deactivate()
     {
         _isDeleted = true;
