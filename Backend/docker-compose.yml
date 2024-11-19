@@ -9,7 +9,6 @@ volumes :
   pgadmin:
   minio_data:
     
-    
 services:
   nginx:
     container_name: 'pet_nginx'
