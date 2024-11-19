@@ -27,6 +27,7 @@ public class Pet : Shared.Common.Entity<PetId>, ISoftDeletable
     public bool IsCastrated { get; private set; }
     public bool IsVaccinated { get; private set; }
     public HelpStatus HelpStatus { get; private set; }
+    public Position Position { get; private set; }
     public DateTimeOffset DateCreated { get; }
     public PetPhotosList PetPhotosList { get; private set; }
     public RequisitesList RequisitesList { get; private set; }
@@ -66,6 +67,11 @@ public class Pet : Shared.Common.Entity<PetId>, ISoftDeletable
     public void AddPhotos(IEnumerable<PetPhoto> petPhotos)
     {
         PetPhotosList.AddPhotos(petPhotos);
+    }
+    
+    public void SetPosition(Position position)
+    {
+        Position = position;
     }
     
     public void Activate()
