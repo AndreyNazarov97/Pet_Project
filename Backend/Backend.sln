@@ -14,6 +14,7 @@ EndProject
 Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "Solution-items", "Solution-items", "{F78BD72A-D634-44AA-8F11-E88B132BD247}"
 	ProjectSection(SolutionItems) = preProject
 		docker-compose.yml = docker-compose.yml
+		nginx.conf = nginx.conf
 	EndProjectSection
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "PetProject.Infrastructure.Authorization", "src\PetProject.Infrastructure.Authorization\PetProject.Infrastructure.Authorization.csproj", "{C68D7B75-9CBF-454E-A05D-E125465316AE}"
