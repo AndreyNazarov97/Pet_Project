@@ -1,3 +1,3 @@
 ﻿namespace PetProject.Application.Dto;
 
-public record RequisiteDto(string Name, string Description);
+public record RequisiteDto(string Title, string Description);

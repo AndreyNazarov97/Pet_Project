@@ -43,11 +43,11 @@ public class CreateVolunteerHandler : IRequestHandler<CreateVolunteerCommand, Re
         var ageExperience = Experience.Create(command.AgeExperience);
 
         var socialLinks = command.SocialLinks
-            .Select(x => SocialLink.Create(x.Name, x.Url).Value);
+            .Select(x => SocialLink.Create(x.Title, x.Url).Value);
         var socialLinksList = new SocialLinksList(socialLinks);
 
         var requisites = command.Requisites
-            .Select(x => Requisite.Create(x.Name, x.Description).Value);
+            .Select(x => Requisite.Create(x.Title, x.Description).Value);
         var requisitesList = new RequisitesList(requisites);
 
         var volunteer = new Volunteer(volunteerId,

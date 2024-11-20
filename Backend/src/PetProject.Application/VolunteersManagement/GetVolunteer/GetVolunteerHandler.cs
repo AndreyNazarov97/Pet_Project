@@ -1,6 +1,7 @@
 ﻿using CSharpFunctionalExtensions;
 using MediatR;
 using PetProject.Application.Dto;
+using PetProject.Application.Extensions;
 using PetProject.Domain.Shared;
 using PetProject.Domain.Shared.EntityIds;
 
@@ -27,17 +28,15 @@ public class GetVolunteerHandler : IRequestHandler<GetVolunteerQuery, Result<Vol
             return result.Error.ToErrorList();
         }
 
-        var fullNameDto = new FullNameDto(
-            result.Value.FullName.Name, 
-            result.Value.FullName.Surname, 
-            result.Value.FullName.Patronymic);
-        
+        var volunteer = result.Value;
         var volunteerDto = new VolunteerDto
         {
-            FullName = fullNameDto,
-            GeneralDescription = result.Value.GeneralDescription.Value,
-            PhoneNumber = result.Value.PhoneNumber.Value,
-            AgeExperience = result.Value.Experience.Years
+            FullName = volunteer.FullName.ToDto(),
+            GeneralDescription = volunteer.GeneralDescription.Value,
+            PhoneNumber = volunteer.PhoneNumber.Value,
+            AgeExperience = volunteer.Experience.Years,
+            Requisites = volunteer.RequisitesList.ToDto(),
+            SocialLinks = volunteer.SocialLinksList.ToDto()
         };
 
         return volunteerDto;

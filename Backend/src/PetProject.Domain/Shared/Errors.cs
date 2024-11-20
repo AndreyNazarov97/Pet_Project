@@ -27,7 +27,7 @@ public static class Errors
         public static Error AlreadyExist(string? name = null)
         {
             var label = name ?? "entity";
-            return Error.Validation($"{label}.already.exist", $"{label} already exist");
+            return Error.Validation($"{label.ToLower()}.already.exist", $"{label} already exist");
         }
     }
     

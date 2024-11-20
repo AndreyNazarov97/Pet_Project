@@ -1,4 +1,5 @@
-﻿using CSharpFunctionalExtensions;
+﻿using System.Text.Json;
+using CSharpFunctionalExtensions;
 using Dapper;
 using Microsoft.EntityFrameworkCore;
 using PetProject.Application.Dto;
@@ -71,9 +72,17 @@ public class VolunteersRepository : IVolunteersRepository
     public async Task<Result<VolunteerDto[], Error>> GetList(int offset, int limit, CancellationToken cancellationToken = default)
     {
         const string sql = """
-                            SELECT "Id", "FullName", "GeneralDescription", "PhoneNumber", "AgeExperience"
+                            SELECT 
+                                "name", 
+                                "surname", 
+                                "patronymic", 
+                                "general_description", 
+                                "phone_number", 
+                                "age_experience",
+                                "requisites",
+                                "social_links"
                             FROM volunteers
-                            ORDER BY "FullName"
+                            ORDER BY "surname"
                             LIMIT @limit
                             OFFSET @offset
                            """;
@@ -85,17 +94,37 @@ public class VolunteersRepository : IVolunteersRepository
         var command = new CommandDefinition(sql, param, cancellationToken: cancellationToken);
         
         await using var connection = _connectionFactory.GetConnection();
-        var result = (await connection.QueryAsync<VolunteerDto>(command)).ToArray();
-    
-        if(result.Length == 0)
-            return Errors.General.NotFound();
-        
-        return result;
-    }
 
-    public async Task<Result<List<Volunteer>, Error>> GetAll(CancellationToken cancellationToken = default)
-    {
-        var volunteers = await _context.Volunteers.ToListAsync(cancellationToken);
-        return volunteers;
+        await using var reader = await connection.ExecuteReaderAsync(command);
+        
+        var volunteers = new List<VolunteerDto>();
+        while (await reader.ReadAsync(cancellationToken))
+        {
+            var fullNameDto = new FullNameDto(
+                reader.GetString(0),
+                reader.GetString(1),
+                reader.GetString(2));
+            
+            var requisitesJson = reader.GetString(6);
+            var socialLinksJson = reader.GetString(7);
+
+            var requisites = JsonSerializer.Deserialize<RequisitesListDto>(requisitesJson)
+                             ?? new RequisitesListDto(){ Requisites = []};
+            var socialLinks = JsonSerializer.Deserialize<SocialLinksListDto>(socialLinksJson)
+                             ?? new SocialLinksListDto(){ SocialLinks = []};
+            
+            var volunteer = new VolunteerDto
+            {
+                FullName = fullNameDto,
+                GeneralDescription = reader.GetString(3),
+                PhoneNumber = reader.GetString(4),
+                AgeExperience = reader.GetInt32(5),
+                Requisites = requisites.Requisites.ToArray(),
+                SocialLinks = socialLinks.SocialLinks.ToArray(),
+            };
+            volunteers.Add(volunteer);
+        }
+        
+        return volunteers.ToArray();
     }
 }

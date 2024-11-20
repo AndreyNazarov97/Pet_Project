@@ -16,6 +16,8 @@ public static class DependencyInjection
 {
     public static void AddPostgresInfrastructure(this IServiceCollection services)
     {
+        Dapper.DefaultTypeMap.MatchNamesWithUnderscores = true;
+        
         services
             .AddSingleton<IPostgresConnectionFactory, PostgresConnectionFactory>()
             .AddScoped<PetProjectDbContext>()

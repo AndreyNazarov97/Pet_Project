@@ -35,7 +35,7 @@ public class UpdateRequisitesHandler : IRequestHandler<UpdateRequisitesCommand, 
             return volunteer.Error.ToErrorList();
 
         var requisites = command.Requisites
-            .Select(x => Requisite.Create(x.Name, x.Description).Value);
+            .Select(x => Requisite.Create(x.Title, x.Description).Value);
         var requisitesList = new RequisitesList(requisites);
 
         volunteer.Value.UpdateRequisites(requisitesList);
