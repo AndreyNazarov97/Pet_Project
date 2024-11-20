@@ -102,6 +102,13 @@ public class PetConfiguration : IEntityTypeConfiguration<Pet>
                 .IsRequired();
         });
 
+        builder.ComplexProperty(p => p.Position, pb =>
+        {
+            pb.Property(p => p.Value)
+                .HasColumnName("position")
+                .IsRequired();
+        });
+
         builder.Property(p => p.BirthDate).IsRequired();
 
         builder.Property(p => p.IsCastrated).IsRequired();
