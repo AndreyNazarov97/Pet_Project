@@ -3,6 +3,7 @@ using System;
 using System.Collections.Generic;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Infrastructure;
+using Microsoft.EntityFrameworkCore.Migrations;
 using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 using Npgsql.EntityFrameworkCore.PostgreSQL.Metadata;
 using PetProject.Infrastructure.Postgres;
@@ -12,9 +13,11 @@ using PetProject.Infrastructure.Postgres;
 namespace PetProject.Infrastructure.Postgres.Migrations
 {
     [DbContext(typeof(PetProjectDbContext))]
-    partial class PetProjectDbContextModelSnapshot : ModelSnapshot
+    [Migration("20241120175620_Pet_Add_Position")]
+    partial class Pet_Add_Position
     {
-        protected override void BuildModel(ModelBuilder modelBuilder)
+        /// <inheritdoc />
+        protected override void BuildTargetModel(ModelBuilder modelBuilder)
         {
 #pragma warning disable 612, 618
             modelBuilder
