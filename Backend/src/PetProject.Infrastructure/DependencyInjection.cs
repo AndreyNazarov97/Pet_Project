@@ -5,6 +5,7 @@ using PetProject.Application.Abstractions;
 using PetProject.Application.SpeciesManagement;
 using PetProject.Application.VolunteersManagement;
 using PetProject.Infrastructure.Postgres.Abstractions;
+using PetProject.Infrastructure.Postgres.Common;
 using PetProject.Infrastructure.Postgres.Providers;
 using PetProject.Infrastructure.Postgres.Repositories;
 using MinioOptions = PetProject.Infrastructure.Postgres.Options.MinioOptions;
@@ -16,6 +17,7 @@ public static class DependencyInjection
     public static void AddPostgresInfrastructure(this IServiceCollection services)
     {
         services
+            .AddSingleton<IPostgresConnectionFactory, PostgresConnectionFactory>()
             .AddScoped<PetProjectDbContext>()
             .AddScoped<IMomentProvider, MomentProvider>()
             .AddScoped<IVolunteersRepository, VolunteersRepository>()

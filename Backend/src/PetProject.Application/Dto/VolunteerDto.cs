@@ -2,8 +2,8 @@
 
 public record VolunteerDto
 {
-    public string FullName { get; init; } = null!;
-    public string GeneralDescription { get; init; } = null!;
-    public int AgeExperience { get; init; }
-    public string PhoneNumber { get; init; } = null!;
+    public required FullNameDto FullName { get; init; } 
+    public required string GeneralDescription { get; init; }
+    public required int AgeExperience { get; init; }
+    public required string PhoneNumber { get; init; } 
 }
