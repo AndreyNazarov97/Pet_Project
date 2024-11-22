@@ -1,4 +1,5 @@
 ﻿using CSharpFunctionalExtensions;
+using PetProject.Application.Models;
 using PetProject.Domain.Shared;
 using PetProject.Domain.Shared.EntityIds;
 using PetProject.Domain.SpeciesManagement;
@@ -11,6 +12,8 @@ public interface ISpeciesRepository
     Task<Result<List<Species>, Error>> GetAll(CancellationToken cancellationToken = default);
     
     Task<Result<Species, Error>> Get(SpeciesId id, CancellationToken cancellationToken = default);
+    
+    Task<Result<Species[],Error>> Query(SpeciesQueryModel query, CancellationToken cancellationToken = default);
     
     Task<Result<Species, Error>> GetByName(SpeciesName name, CancellationToken cancellationToken = default);
     

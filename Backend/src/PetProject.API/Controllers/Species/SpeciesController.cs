@@ -3,6 +3,7 @@ using Microsoft.AspNetCore.Mvc;
 using PetProject.API.Controllers.Species.Requests;
 using PetProject.API.Extensions;
 using PetProject.Application.Dto;
+using PetProject.Application.Models;
 using PetProject.Application.SpeciesManagement;
 using PetProject.Domain.Shared.EntityIds;
 
