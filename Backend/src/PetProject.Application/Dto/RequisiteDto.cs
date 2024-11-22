@@ -1,3 +1,13 @@
-﻿namespace PetProject.Application.Dto;
+﻿using PetProject.Domain.VolunteerManagement.ValueObjects;
 
-public record RequisiteDto(string Title, string Description);
+namespace PetProject.Application.Dto;
+
+public record RequisiteDto(string Title, string Description)
+{
+    public Requisite ToEntity()
+    {
+        var requisite = Requisite.Create(Title, Description).Value;
+        
+        return requisite;
+    }
+}

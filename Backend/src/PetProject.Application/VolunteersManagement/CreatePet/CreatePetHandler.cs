@@ -33,15 +33,19 @@ public class CreatePetHandler : IRequestHandler<CreatePetCommand, Result<Guid, E
         CreatePetCommand command,
         CancellationToken cancellationToken)
     {
-        var volunteerId = VolunteerId.Create(command.VolunteerId);
-        var volunteerResult = await _volunteersRepository.GetById(volunteerId, cancellationToken);
-        if (volunteerResult.IsFailure)
-            return volunteerResult.Error.ToErrorList();
+        var volunteerQuery = new VolunteerQueryModel()
+        {
+            VolunteerIds = [command.VolunteerId]
+        };
+
+        var volunteer = (await _volunteersRepository.Query(volunteerQuery, cancellationToken)).SingleOrDefault();
+        if(volunteer == null) 
+            return Errors.General.NotFound().ToErrorList();
         
-        var volunteer = volunteerResult.Value;
-        var pet = await CreatePet(command, volunteer.PhoneNumber, cancellationToken);
+        var volunteerEntity = volunteer.ToEntity();
+        var pet = await CreatePet(command, volunteerEntity.PhoneNumber, cancellationToken);
         
-        volunteer.AddPet(pet);
+        volunteerEntity.AddPet(pet);
         await _unitOfWork.SaveChangesAsync(cancellationToken);
  
         return pet.Id.Id;

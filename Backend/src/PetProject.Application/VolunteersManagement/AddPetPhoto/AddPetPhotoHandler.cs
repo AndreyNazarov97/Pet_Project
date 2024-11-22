@@ -3,6 +3,7 @@ using MediatR;
 using Microsoft.Extensions.Logging;
 using PetProject.Application.Abstractions;
 using PetProject.Application.Dto;
+using PetProject.Application.Models;
 using PetProject.Domain.Shared;
 using PetProject.Domain.Shared.EntityIds;
 using PetProject.Domain.VolunteerManagement.ValueObjects;
@@ -48,15 +49,19 @@ public class AddPetPhotoHandler : IRequestHandler<AddPetPhotoCommand, Result<str
                 .Select(p => new PetPhoto(p))
                 .ToList();
         
-            var volunteerId = VolunteerId.Create(command.VolunteerId);
-            var volunteerResult = await _volunteersRepository.GetById(volunteerId, cancellationToken);
-            if (volunteerResult.IsFailure)
-                return volunteerResult.Error.ToErrorList();
+            var volunteerQuery = new VolunteerQueryModel()
+            {
+                VolunteerIds = [command.VolunteerId]
+            };
+
+            var volunteer = (await _volunteersRepository.Query(volunteerQuery, cancellationToken)).SingleOrDefault();
+            if(volunteer == null) 
+                return Errors.General.NotFound().ToErrorList();
         
-            var volunteer = volunteerResult.Value;
+            var volunteerEntity = volunteer.ToEntity();
 
             var petId = PetId.Create(command.PetId);
-            var pet = volunteer.GetById(petId);
+            var pet = volunteerEntity.GetById(petId);
             if (pet is null)
                 return Errors.General.NotFound(command.PetId).ToErrorList();
         

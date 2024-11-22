@@ -44,20 +44,10 @@ public class VolunteersRepository : IVolunteersRepository
             return Errors.General.NotFound();
 
         _context.Volunteers.Remove(existedVolunteer);
+        await _context.SaveChangesAsync(cancellationToken);
         return volunteer.Id.Id;
     }
-
-    public async Task<Result<Volunteer, Error>> GetById(VolunteerId id, CancellationToken cancellationToken = default)
-    {
-        var volunteer = await _context.Volunteers
-            .Where(v => v.Id == id)
-            .FirstOrDefaultAsync(cancellationToken);
-
-        if (volunteer == null)
-            return Errors.General.NotFound(id.Id);
-
-        return volunteer;
-    }
+    
     public async Task<VolunteerDto[]> Query(VolunteerQueryModel query,
         CancellationToken cancellationToken = default)
     {
@@ -86,7 +76,10 @@ public class VolunteersRepository : IVolunteersRepository
                             p.birth_date,
                             p.is_castrated,
                             p.is_vaccinated,
-                            p.help_status
+                            p.help_status,
+                            v.id,
+                            p.id,
+                            p.requisites
                         FROM 
                             volunteers v
                         left join 
@@ -168,6 +161,7 @@ public class VolunteersRepository : IVolunteersRepository
 
                 volunteer = new VolunteerDto
                 {
+                    Id = reader.GetGuid(24),
                     FullName = fullNameDto,
                     GeneralDescription = reader.GetString(3),
                     PhoneNumber = phoneNumber,
@@ -188,10 +182,16 @@ public class VolunteersRepository : IVolunteersRepository
                 reader.GetString(16),
                 reader.GetString(17)
             );
+            
+            var petRequisitesJson = reader.GetString(26);
+
+            var petRequisites = JsonSerializer.Deserialize<RequisitesListDto>(petRequisitesJson)
+                             ?? new RequisitesListDto() { Requisites = [] };
 
 
             var pet = new PetDto
             {
+                Id = reader.GetGuid(25),
                 PetName = reader.GetString(8),
                 GeneralDescription = reader.GetString(9),
                 HealthInformation = reader.GetString(10),
@@ -204,7 +204,9 @@ public class VolunteersRepository : IVolunteersRepository
                 BirthDate = reader.GetDateTime(20),
                 IsCastrated = reader.GetBoolean(21),
                 IsVaccinated = reader.GetBoolean(22),
-                HelpStatus = (HelpStatus)reader.GetInt32(23)
+                HelpStatus = (HelpStatus)reader.GetInt32(23),
+                Requisites = petRequisites.Requisites.ToArray(),
+                //TODO add photos 
             };
 
             volunteer.AddPet(pet);

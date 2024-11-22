@@ -1,3 +1,13 @@
-﻿namespace PetProject.Application.Dto;
+﻿using PetProject.Domain.Shared.ValueObjects;
 
-public record AddressDto(string Country, string City, string Street, string House, string Flat);
+namespace PetProject.Application.Dto;
+
+public record AddressDto(string Country, string City, string Street, string House, string Flat)
+{
+    public Address ToEntity()
+    {
+        var address = Address.Create(Country, City, Street, House, Flat).Value;
+        
+        return address;
+    }
+}
