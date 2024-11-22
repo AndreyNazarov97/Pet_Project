@@ -37,7 +37,7 @@ public class VolunteersController : ApplicationController
     
     [HttpGet("list")]
     public async Task<ActionResult<List<Volunteer>>> GetList(
-        [FromQuery] GetListVolunteersRequest request,
+        [FromQuery] GetVolunteersListRequest request,
         CancellationToken cancellationToken)
     {
         var query = request.ToQuery();

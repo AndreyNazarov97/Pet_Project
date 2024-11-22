@@ -83,16 +83,17 @@ public class SpeciesController : ApplicationController
     }
 
     [HttpGet]
-    public async Task<ActionResult<List<SpeciesDto>>> GetSpecies(
-        [FromServices] ISpeciesRepository repository,
+    public async Task<ActionResult<List<SpeciesDto>>> GetSpeciesList(
+        [FromQuery] GetSpeciesListRequest request,
         CancellationToken cancellationToken)
     {
-        var result = await repository.GetAll(cancellationToken);
+        var query = request.ToQuery();
 
-        return Ok(result.Value.Select(x =>
-                new SpeciesDto(
-                    x.Name.Value.ToString(),
-                    x.Breeds.Select(y => y.BreedName.Value.ToString()).ToList()))
-            .ToList());
+        var result = await _mediator.Send(query, cancellationToken);
+
+        if (result.IsFailure)
+            return result.Error.ToResponse();
+
+        return Ok(result.Value);
     }
 }

@@ -1,5 +1,4 @@
-﻿using System.Text.Json;
-using CSharpFunctionalExtensions;
+﻿using CSharpFunctionalExtensions;
 using Dapper;
 using Microsoft.EntityFrameworkCore;
 using PetProject.Application.Dto;
@@ -43,13 +42,10 @@ public class SpeciesRepository : ISpeciesRepository
         return species;
     }
 
-    public async Task<Result<Species[], Error>> Query(SpeciesQueryModel query,
+    public async Task<Result<SpeciesDto[], Error>> Query(SpeciesQueryModel query,
         CancellationToken cancellationToken = default)
     {
-        if (query.IsEmpty())
-            return Array.Empty<Species>();
-
-        var sqlQuery = """
+       var sqlQuery = """
                        select 
                            s.id,
                            s.species_name,
@@ -96,25 +92,23 @@ public class SpeciesRepository : ISpeciesRepository
 
         await using var reader = await connection.ExecuteReaderAsync(command);
 
-        var speciesSet = new HashSet<Species>();
+        var speciesSet = new HashSet<SpeciesDto>();
         while (await reader.ReadAsync(cancellationToken))
         {
-            var speciesId = SpeciesId.Create(reader.GetGuid(0));
-            var breedId = BreedId.Create(reader.GetGuid(2));
-            var breedName = BreedName.Create(reader.GetString(3)).Value;
+            var speciesId = reader.GetGuid(0);
+            var speciesName = reader.GetString(1);
+            var breedId = reader.GetGuid(2);
+            var breedName = reader.GetString(3);
 
-            var species = speciesSet.FirstOrDefault(s => s.Id == speciesId);
+            var species = speciesSet.FirstOrDefault(s => s.Name == speciesName);
             if (species == null)
             {
-                var speciesName = SpeciesName.Create(reader.GetString(1)).Value;
-                species = new Species(speciesId, speciesName, []);
+                species = new SpeciesDto(speciesName, []);
                 
                 speciesSet.Add(species);
             }
 
-            var breed = new Breed(breedId, breedName);
-
-            species.AddBreeds([breed]);
+            species.Breeds.Add(breedName);
         }
 
         return speciesSet.ToArray();
