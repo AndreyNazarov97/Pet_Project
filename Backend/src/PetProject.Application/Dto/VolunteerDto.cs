@@ -8,4 +8,10 @@ public record VolunteerDto
     public required string PhoneNumber { get; init; } 
     public RequisiteDto[] Requisites { get; init; } = [];
     public SocialLinkDto[] SocialLinks { get; init; } = [];
+    public PetDto[] Pets { get; private set; } = [];
+    
+    public void AddPet(PetDto pet)
+    {
+        Pets = Pets.Append(pet).ToArray();
+    }
 }

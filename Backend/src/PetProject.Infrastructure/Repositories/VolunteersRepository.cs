@@ -3,11 +3,13 @@ using CSharpFunctionalExtensions;
 using Dapper;
 using Microsoft.EntityFrameworkCore;
 using PetProject.Application.Dto;
+using PetProject.Application.Models;
 using PetProject.Application.VolunteersManagement;
 using PetProject.Domain.Shared;
 using PetProject.Domain.Shared.EntityIds;
 using PetProject.Domain.Shared.ValueObjects;
 using PetProject.Domain.VolunteerManagement;
+using PetProject.Domain.VolunteerManagement.Enums;
 using PetProject.Infrastructure.Postgres.Abstractions;
 
 namespace PetProject.Infrastructure.Postgres.Repositories;
@@ -125,6 +127,156 @@ public class VolunteersRepository : IVolunteersRepository
             volunteers.Add(volunteer);
         }
         
+        return volunteers.ToArray();
+    }
+     public async Task<Result<VolunteerDto[], Error>> Query(VolunteerQueryModel query,
+        CancellationToken cancellationToken = default)
+    {
+        var sqlQuery = """
+                        SELECT 
+                            v.name, 
+                            v.surname, 
+                            v.patronymic, 
+                            v.general_description, 
+                            v.phone_number, 
+                            v.age_experience,
+                            v.requisites,
+                            v.social_links,
+                            p.pet_name,
+                            p.general_description,
+                            p.health_information,
+                            p.species_id,
+                            p.breed_id,
+                            p.country,
+                            p.city,
+                            p.street,
+                            p.house,
+                            p.flat,
+                            p.weight,
+                            p.height,
+                            p.birth_date,
+                            p.is_castrated,
+                            p.is_vaccinated,
+                            p.help_status
+                        FROM 
+                            volunteers v
+                        left join 
+                            pets p on v.id = p.volunteer_id
+                       """;
+
+        var conditions = new List<string>(["1=1"]);
+        var param = new DynamicParameters();
+
+        if (query.VolunteerIds is { Length: > 0 })
+        {
+            conditions.Add("v.id = any(@VolunteerIds)");
+            param.Add("VolunteerIds", query.VolunteerIds);
+        }
+
+        if (query.PetIds is { Length: > 0 })
+        {
+            conditions.Add("p.id = any(@PetIds)");
+            param.Add("PetIds", query.PetIds);
+        }
+        
+        if (query.SpeciesIds is { Length: > 0 })
+        {
+            conditions.Add("p.species_id = any(@SpeciesIds)");
+            param.Add("SpeciesIds", query.SpeciesIds);
+        }
+        
+        if (query.BreedIds is { Length: > 0 })
+        {
+            conditions.Add("p.breed_id = any(@BreedIds)");
+            param.Add("BreedIds", query.BreedIds);
+        }
+
+        sqlQuery += " where " + string.Join(" and ", conditions);
+
+        if (query.Limit > 0)
+        {
+            sqlQuery += " limit @Limit ";
+            param.Add("Limit", query.Limit);
+        }
+
+        if (query.Offset > 0)
+        {
+            sqlQuery += " offset @Offset ";
+            param.Add("Offset", query.Offset);
+        }
+
+        var command = new CommandDefinition(sqlQuery, param, cancellationToken: cancellationToken);
+
+        await using var connection = _connectionFactory.GetConnection();
+
+        await using var reader = await connection.ExecuteReaderAsync(command);
+
+        var volunteers = new HashSet<VolunteerDto>();
+        while (await reader.ReadAsync(cancellationToken))
+        {
+            var phoneNumber = reader.GetString(4);
+            var volunteer = volunteers.FirstOrDefault(v => v.PhoneNumber == phoneNumber);
+
+            if (volunteer == null)
+            {
+                var fullNameDto = new FullNameDto(
+                    reader.GetString(0),
+                    reader.GetString(1),
+                    reader.GetString(2));
+                var requisitesJson = reader.GetString(6);
+                var socialLinksJson = reader.GetString(7);
+
+                var requisites = JsonSerializer.Deserialize<RequisitesListDto>(requisitesJson)
+                                 ?? new RequisitesListDto() { Requisites = [] };
+                var socialLinks = JsonSerializer.Deserialize<SocialLinksListDto>(socialLinksJson)
+                                  ?? new SocialLinksListDto() { SocialLinks = [] };
+
+                volunteer = new VolunteerDto
+                {
+                    FullName = fullNameDto,
+                    GeneralDescription = reader.GetString(3),
+                    PhoneNumber = phoneNumber,
+                    AgeExperience = reader.GetInt32(5),
+                    Requisites = requisites.Requisites.ToArray(),
+                    SocialLinks = socialLinks.SocialLinks.ToArray(),
+                };
+                volunteers.Add(volunteer);
+            }
+
+            var country = reader.GetString(13);
+            if (country is null)
+            {
+                var addressDto = new AddressDto
+                (
+                    reader.GetString(13),
+                    reader.GetString(14),
+                    reader.GetString(15),
+                    reader.GetString(16),
+                    reader.GetString(17)
+                );
+
+
+                var pet = new PetDto
+                {
+                    PetName = reader.GetString(8),
+                    GeneralDescription = reader.GetString(9),
+                    HealthInformation = reader.GetString(10),
+                    SpeciesId = reader.GetGuid(11),
+                    BreedId = reader.GetGuid(12),
+                    Address = addressDto,
+                    Weight = reader.GetDouble(18),
+                    Height = reader.GetDouble(19),
+                    PhoneNumber = phoneNumber,
+                    BirthDate = reader.GetDateTime(20),
+                    IsCastrated = reader.GetBoolean(21),
+                    IsVaccinated = reader.GetBoolean(22),
+                    HelpStatus = (HelpStatus)reader.GetInt32(23)
+                };
+
+                volunteer.AddPet(pet);
+            }
+        }
+
         return volunteers.ToArray();
     }
 }

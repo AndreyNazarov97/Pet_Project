@@ -1,6 +1,7 @@
 ﻿using CSharpFunctionalExtensions;
 using MediatR;
 using PetProject.Application.Dto;
+using PetProject.Application.Models;
 using PetProject.Domain.Shared;
 
 namespace PetProject.Application.VolunteersManagement.GetListVolunteers;
@@ -18,7 +19,12 @@ public class GetListVolunteersHandler : IRequestHandler<GetListVolunteersQuery, 
     public async Task<Result<VolunteerDto[], ErrorList>> Handle(GetListVolunteersQuery request,
         CancellationToken cancellationToken)
     {
-        var result = await _volunteersRepository.GetList(request.Offset, request.Limit, cancellationToken);
+        var queryModel = new VolunteerQueryModel()
+        {
+            Offset = request.Offset,
+            Limit = request.Limit
+        };
+        var result = await _volunteersRepository.Query(queryModel, cancellationToken);
 
         if (result.IsFailure)
             return result.Error.ToErrorList();
