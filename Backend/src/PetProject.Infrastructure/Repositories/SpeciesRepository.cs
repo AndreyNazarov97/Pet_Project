@@ -25,23 +25,6 @@ public class SpeciesRepository : ISpeciesRepository
         _connectionFactory = connectionFactory;
     }
 
-    public async Task<Result<List<Species>, Error>> GetAll(CancellationToken cancellationToken = default)
-    {
-        var species = await _context.Species.ToListAsync(cancellationToken);
-
-        return species;
-    }
-
-    public async Task<Result<Species, Error>> Get(SpeciesId id, CancellationToken cancellationToken = default)
-    {
-        var species = await _context.Species.FirstOrDefaultAsync(s => s.Id == id, cancellationToken);
-
-        if (species == null)
-            return Errors.General.NotFound(id.Id);
-
-        return species;
-    }
-
     public async Task<Result<SpeciesDto[], Error>> Query(SpeciesQueryModel query,
         CancellationToken cancellationToken = default)
     {
@@ -66,7 +49,7 @@ public class SpeciesRepository : ISpeciesRepository
             param.Add("SpeciesName", query.SpeciesName);
         }
 
-    if (query.SpeciesIds is { Length: > 0 })
+        if (query.SpeciesIds is { Length: > 0 })
         {
             conditions.Add("s.id = any(@SpeciesIds)");
             param.Add("SpeciesIds", query.SpeciesIds);
@@ -110,10 +93,10 @@ public class SpeciesRepository : ISpeciesRepository
             if (species == null)
             {
                 species = new SpeciesDto(speciesName, []);
-                
+
                 speciesSet.Add(species);
             }
-            
+
             var breedDto = new BreedDto(breedName);
 
             species.Breeds.Add(breedDto);
@@ -132,14 +115,7 @@ public class SpeciesRepository : ISpeciesRepository
 
         return species;
     }
-
-    public async Task<Result<SpeciesId, Error>> Save(Species species, CancellationToken cancellationToken = default)
-    {
-        _context.Species.Attach(species);
-        await _context.SaveChangesAsync(cancellationToken);
-        return species.Id;
-    }
-
+    
     public async Task<Result<SpeciesId, Error>> Add(Species species, CancellationToken cancellationToken = default)
     {
         await _context.Species.AddAsync(species, cancellationToken);

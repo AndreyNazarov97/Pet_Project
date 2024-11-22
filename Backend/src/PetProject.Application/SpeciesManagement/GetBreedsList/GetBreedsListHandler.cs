@@ -18,7 +18,7 @@ public class GetBreedsListHandler : IRequestHandler<GetBreedsListQuery, Result<B
     
     public async Task<Result<BreedDto[], ErrorList>> Handle(GetBreedsListQuery request, CancellationToken cancellationToken)
     {
-        var queryModel = new SpeciesQueryModel()
+        var queryModel = new SpeciesQueryModel
         {
             SpeciesName = request.SpeciesName,
             Offset = request.Offset,

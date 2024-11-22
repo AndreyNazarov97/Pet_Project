@@ -1,6 +1,7 @@
 ﻿using CSharpFunctionalExtensions;
 using MediatR;
 using Microsoft.Extensions.Logging;
+using PetProject.Application.Abstractions;
 using PetProject.Domain.Shared;
 using PetProject.Domain.Shared.EntityIds;
 using PetProject.Domain.SpeciesManagement;
@@ -11,12 +12,15 @@ namespace PetProject.Application.SpeciesManagement.CreateBreed;
 public class CreateBreedHandler : IRequestHandler<CreateBreedCommand, Result<Guid, ErrorList>>
 {
     private readonly ISpeciesRepository _speciesRepository;
+    private readonly IUnitOfWork _unitOfWork;
     private readonly ILogger<CreateBreedHandler> _logger;
 
     public CreateBreedHandler(ISpeciesRepository speciesRepository, 
+        IUnitOfWork unitOfWork,
         ILogger<CreateBreedHandler> logger)
     {
         _speciesRepository = speciesRepository;
+        _unitOfWork = unitOfWork;
         _logger = logger;
     }
 
@@ -37,7 +41,8 @@ public class CreateBreedHandler : IRequestHandler<CreateBreedCommand, Result<Gui
         
         existedSpecies.Value.AddBreeds([breed]);
         
-        await _speciesRepository.Save(existedSpecies.Value, cancellationToken);
+        _logger.Log(LogLevel.Information, "Breed {breedName} was created", breedName);
+        await _unitOfWork.SaveChangesAsync(cancellationToken);
         
         return breed.Id.Id;
     }

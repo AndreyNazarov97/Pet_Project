@@ -95,7 +95,7 @@ public class CreatePetHandler : IRequestHandler<CreatePetCommand, Result<Guid, E
         if (breed is null)
             return Errors.General.NotFound();
 
-        var animalType = new AnimalType(speciesResult.Value.Id, breed.Id);
+        var animalType = new AnimalType(speciesName, breedName);
         return animalType;
     }
 

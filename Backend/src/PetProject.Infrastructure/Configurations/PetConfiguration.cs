@@ -2,6 +2,7 @@
 using Microsoft.EntityFrameworkCore.Metadata.Builders;
 using PetProject.Domain.Shared;
 using PetProject.Domain.Shared.EntityIds;
+using PetProject.Domain.SpeciesManagement.ValueObjects;
 using PetProject.Domain.VolunteerManagement;
 
 namespace PetProject.Infrastructure.Postgres.Configurations;
@@ -45,16 +46,16 @@ public class PetConfiguration : IEntityTypeConfiguration<Pet>
         builder.ComplexProperty(p => p.AnimalType, at =>
         {
             at.IsRequired();
-            at.Property(a => a.SpeciesId)
+            at.Property(a => a.SpeciesName)
                 .HasConversion(
-                    id => id.Id,
-                    value => SpeciesId.Create(value))
-                .HasColumnName("species_id");
-            at.Property(a => a.BreedId)
+                    s => s.Value,
+                    value => SpeciesName.Create(value).Value)
+                .HasColumnName("species_name");
+            at.Property(a => a.BreedName)
                 .HasConversion(
-                    id => id.Id,
-                    value => BreedId.Create(value))
-                .HasColumnName("breed_id");
+                    b => b.Value,
+                    value => BreedName.Create(value).Value)
+                .HasColumnName("breed_name");
         });
 
         builder.ComplexProperty(p => p.Address, pb =>
