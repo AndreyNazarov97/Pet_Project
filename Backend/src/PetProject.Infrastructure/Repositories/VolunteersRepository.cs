@@ -243,38 +243,36 @@ public class VolunteersRepository : IVolunteersRepository
                 volunteers.Add(volunteer);
             }
 
-            var country = reader.GetString(13);
-            if (country is null)
+            var country = reader.IsDBNull(13) ? null : reader.GetString(13);
+            if (country is null) continue;
+            var addressDto = new AddressDto
+            (
+                reader.GetString(13),
+                reader.GetString(14),
+                reader.GetString(15),
+                reader.GetString(16),
+                reader.GetString(17)
+            );
+
+
+            var pet = new PetDto
             {
-                var addressDto = new AddressDto
-                (
-                    reader.GetString(13),
-                    reader.GetString(14),
-                    reader.GetString(15),
-                    reader.GetString(16),
-                    reader.GetString(17)
-                );
+                PetName = reader.GetString(8),
+                GeneralDescription = reader.GetString(9),
+                HealthInformation = reader.GetString(10),
+                SpeciesId = reader.GetGuid(11),
+                BreedId = reader.GetGuid(12),
+                Address = addressDto,
+                Weight = reader.GetDouble(18),
+                Height = reader.GetDouble(19),
+                PhoneNumber = phoneNumber,
+                BirthDate = reader.GetDateTime(20),
+                IsCastrated = reader.GetBoolean(21),
+                IsVaccinated = reader.GetBoolean(22),
+                HelpStatus = (HelpStatus)reader.GetInt32(23)
+            };
 
-
-                var pet = new PetDto
-                {
-                    PetName = reader.GetString(8),
-                    GeneralDescription = reader.GetString(9),
-                    HealthInformation = reader.GetString(10),
-                    SpeciesId = reader.GetGuid(11),
-                    BreedId = reader.GetGuid(12),
-                    Address = addressDto,
-                    Weight = reader.GetDouble(18),
-                    Height = reader.GetDouble(19),
-                    PhoneNumber = phoneNumber,
-                    BirthDate = reader.GetDateTime(20),
-                    IsCastrated = reader.GetBoolean(21),
-                    IsVaccinated = reader.GetBoolean(22),
-                    HelpStatus = (HelpStatus)reader.GetInt32(23)
-                };
-
-                volunteer.AddPet(pet);
-            }
+            volunteer.AddPet(pet);
         }
 
         return volunteers.ToArray();
