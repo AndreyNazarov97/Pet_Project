@@ -96,4 +96,20 @@ public class SpeciesController : ApplicationController
 
         return Ok(result.Value);
     }
+    
+    [HttpGet("{speciesName}/breeds")]
+    public async Task<ActionResult<List<BreedDto>>> GetBreedsList(
+        [FromRoute] string speciesName,
+        [FromQuery] GetBreedsListRequest request,
+        CancellationToken cancellationToken)
+    {
+        var query = request.ToQuery(speciesName);
+
+        var result = await _mediator.Send(query, cancellationToken);
+
+        if (result.IsFailure)
+            return result.Error.ToResponse();
+
+        return Ok(result.Value);
+    }
 }

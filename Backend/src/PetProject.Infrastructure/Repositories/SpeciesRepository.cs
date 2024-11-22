@@ -45,7 +45,7 @@ public class SpeciesRepository : ISpeciesRepository
     public async Task<Result<SpeciesDto[], Error>> Query(SpeciesQueryModel query,
         CancellationToken cancellationToken = default)
     {
-       var sqlQuery = """
+        var sqlQuery = """
                        select 
                            s.id,
                            s.species_name,
@@ -60,7 +60,13 @@ public class SpeciesRepository : ISpeciesRepository
         var conditions = new List<string>(["1=1"]);
         var param = new DynamicParameters();
 
-        if (query.SpeciesIds is { Length: > 0 })
+        if (string.IsNullOrEmpty(query.SpeciesName) == false)
+        {
+            conditions.Add("s.species_name = @SpeciesName");
+            param.Add("SpeciesName", query.SpeciesName);
+        }
+
+    if (query.SpeciesIds is { Length: > 0 })
         {
             conditions.Add("s.id = any(@SpeciesIds)");
             param.Add("SpeciesIds", query.SpeciesIds);
@@ -107,8 +113,10 @@ public class SpeciesRepository : ISpeciesRepository
                 
                 speciesSet.Add(species);
             }
+            
+            var breedDto = new BreedDto(breedName);
 
-            species.Breeds.Add(breedName);
+            species.Breeds.Add(breedDto);
         }
 
         return speciesSet.ToArray();
