@@ -10,9 +10,7 @@ namespace PetProject.Application.SpeciesManagement;
 
 public interface ISpeciesRepository
 {
-    Task<Result<SpeciesDto[],Error>> Query(SpeciesQueryModel query, CancellationToken cancellationToken = default);
-    
-    Task<Result<Species, Error>> GetByName(SpeciesName name, CancellationToken cancellationToken = default);
+    Task<SpeciesDto[]> Query(SpeciesQueryModel query, CancellationToken cancellationToken = default);
     
     Task<Result<SpeciesId, Error>> Add(Species species, CancellationToken cancellationToken = default);
     

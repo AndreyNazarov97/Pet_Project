@@ -25,7 +25,7 @@ public class SpeciesRepository : ISpeciesRepository
         _connectionFactory = connectionFactory;
     }
 
-    public async Task<Result<SpeciesDto[], Error>> Query(SpeciesQueryModel query,
+    public async Task<SpeciesDto[]> Query(SpeciesQueryModel query,
         CancellationToken cancellationToken = default)
     {
         var sqlQuery = """
@@ -92,28 +92,17 @@ public class SpeciesRepository : ISpeciesRepository
             var species = speciesSet.FirstOrDefault(s => s.Name == speciesName);
             if (species == null)
             {
-                species = new SpeciesDto(speciesName, []);
+                species = new SpeciesDto(speciesId, speciesName, []);
 
                 speciesSet.Add(species);
             }
 
-            var breedDto = new BreedDto(breedName);
+            var breedDto = new BreedDto(breedId, breedName);
 
             species.Breeds.Add(breedDto);
         }
 
         return speciesSet.ToArray();
-    }
-
-
-    public async Task<Result<Species, Error>> GetByName(SpeciesName name, CancellationToken cancellationToken = default)
-    {
-        var species = await _context.Species.FirstOrDefaultAsync(s => s.Name == name, cancellationToken);
-
-        if (species == null)
-            return Errors.General.NotFound();
-
-        return species;
     }
     
     public async Task<Result<SpeciesId, Error>> Add(Species species, CancellationToken cancellationToken = default)

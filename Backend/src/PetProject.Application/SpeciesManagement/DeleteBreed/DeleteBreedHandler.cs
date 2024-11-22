@@ -23,16 +23,18 @@ public class DeleteBreedHandler : IRequestHandler<DeleteBreedCommand, UnitResult
         _volunteersRepository = volunteersRepository;
         _unitOfWork = unitOfWork;
     }
-    
+
     public async Task<UnitResult<ErrorList>> Handle(DeleteBreedCommand request, CancellationToken cancellationToken)
     {
-        var speciesName = SpeciesName.Create(request.SpeciesName).Value;
-        var breedName = BreedName.Create(request.BreedName).Value;
-        var species = await _speciesRepository.GetByName(speciesName, cancellationToken);
-        if(species.IsFailure)
+        var speciesQuery = new SpeciesQueryModel
+        {
+            SpeciesName = request.SpeciesName
+        };
+        var species = (await _speciesRepository.Query(speciesQuery, cancellationToken)).SingleOrDefault();
+        if (species == null)
             return Errors.General.NotFound().ToErrorList();
-        
-        var existedBreed = species.Value.Breeds.FirstOrDefault(x => x.BreedName == breedName);
+
+        var existedBreed = species.Breeds.FirstOrDefault(x => x.Name == request.BreedName);
         if (existedBreed == null)
             return Errors.General.NotFound().ToErrorList();
 
@@ -40,13 +42,15 @@ public class DeleteBreedHandler : IRequestHandler<DeleteBreedCommand, UnitResult
         {
             BreedIds = [existedBreed.Id]
         };
-        var volunteers = (await _volunteersRepository.Query(volunteerQuery, cancellationToken)).Value;
+        var volunteers = await _volunteersRepository.Query(volunteerQuery, cancellationToken);
         if (volunteers.Length > 0)
             return Error.Conflict("species.is.used.by.volunteers", "Species is used by volunteers").ToErrorList();
 
-        species.Value.RemoveBreed(existedBreed);
+        var speciesEntity = species.ToEntity();
+        var breedEntity = existedBreed.ToEntity();
+        speciesEntity.RemoveBreed(breedEntity);
         await _unitOfWork.SaveChangesAsync(cancellationToken);
-        
+
         return UnitResult.Success<ErrorList>();
     }
 }

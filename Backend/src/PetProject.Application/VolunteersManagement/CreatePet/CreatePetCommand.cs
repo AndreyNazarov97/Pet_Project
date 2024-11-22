@@ -12,8 +12,8 @@ public record CreatePetCommand : IRequest<Result<Guid, ErrorList>>
     public required string Name { get; init; }
     public required string GeneralDescription { get; init; }
     public required string HealthInformation { get; init; }
-    public required string Species { get; init; }
-    public required string Breed { get; init; }
+    public required string SpeciesName { get; init; }
+    public required string BreedName { get; init; }
     public required AddressDto Address { get; init; }
     public required double Weight { get; init; }
     public required double Height { get; init; }

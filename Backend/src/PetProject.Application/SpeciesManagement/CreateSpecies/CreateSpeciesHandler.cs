@@ -1,6 +1,7 @@
 ﻿using CSharpFunctionalExtensions;
 using MediatR;
 using Microsoft.Extensions.Logging;
+using PetProject.Application.Models;
 using PetProject.Domain.Shared;
 using PetProject.Domain.Shared.EntityIds;
 using PetProject.Domain.SpeciesManagement;
@@ -23,21 +24,22 @@ public class CreateSpeciesHandler : IRequestHandler<CreateSpeciesCommand, Result
     public async Task<Result<Guid, ErrorList>> Handle(CreateSpeciesCommand command,
         CancellationToken cancellationToken = default)
     {
-        var speciesName = SpeciesName.Create(command.Name);
-
-        var existedSpecies = await _repository.GetByName(speciesName.Value, cancellationToken);
-        
-        if (existedSpecies.IsSuccess)
+        var speciesQuery = new SpeciesQueryModel
+        {
+            SpeciesName = command.Name
+        };
+        var species = (await _repository.Query(speciesQuery, cancellationToken)).SingleOrDefault();
+        if (species != null)
             return Errors.General.AlreadyExist("Species").ToErrorList();
         
         var speciesId = SpeciesId.NewId();
-        var species = new Species(speciesId, speciesName.Value, []);
+        var speciesEntity = new Species(speciesId, SpeciesName.Create(command.Name).Value, []);
         
-        var result = await _repository.Add(species, cancellationToken);
+        var result = await _repository.Add(speciesEntity, cancellationToken);
         if (result.IsFailure)
             return result.Error.ToErrorList();
         
-        _logger.Log(LogLevel.Information, "Species {speciesName} was created", speciesName);
+        _logger.Log(LogLevel.Information, "Species {speciesName} was created", command.Name);
         
         return result.Value.Id;
     }

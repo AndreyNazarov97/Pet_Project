@@ -47,18 +47,6 @@ public class VolunteersRepository : IVolunteersRepository
         return volunteer.Id.Id;
     }
 
-    public async Task<Result<Volunteer, Error>> GetByPhoneNumber(PhoneNumber requestNumber,
-        CancellationToken cancellationToken = default)
-    {
-        var volunteer =
-            await _context.Volunteers.FirstOrDefaultAsync(v => v.PhoneNumber == requestNumber, cancellationToken);
-
-        if (volunteer == null)
-            return Errors.General.NotFound();
-
-        return volunteer;
-    }
-
     public async Task<Result<Volunteer, Error>> GetById(VolunteerId id, CancellationToken cancellationToken = default)
     {
         var volunteer = await _context.Volunteers
@@ -70,66 +58,7 @@ public class VolunteersRepository : IVolunteersRepository
 
         return volunteer;
     }
-
-    public async Task<Result<VolunteerDto[], Error>> GetList(int offset, int limit, CancellationToken cancellationToken = default)
-    {
-        const string sql = """
-                            SELECT 
-                                "name", 
-                                "surname", 
-                                "patronymic", 
-                                "general_description", 
-                                "phone_number", 
-                                "age_experience",
-                                "requisites",
-                                "social_links"
-                            FROM volunteers
-                            ORDER BY "surname"
-                            LIMIT @limit
-                            OFFSET @offset
-                           """;
-
-        var param = new DynamicParameters();
-        param.Add("offset", offset);
-        param.Add("limit", limit);
-        
-        var command = new CommandDefinition(sql, param, cancellationToken: cancellationToken);
-        
-        await using var connection = _connectionFactory.GetConnection();
-
-        await using var reader = await connection.ExecuteReaderAsync(command);
-        
-        var volunteers = new List<VolunteerDto>();
-        while (await reader.ReadAsync(cancellationToken))
-        {
-            var fullNameDto = new FullNameDto(
-                reader.GetString(0),
-                reader.GetString(1),
-                reader.GetString(2));
-            
-            var requisitesJson = reader.GetString(6);
-            var socialLinksJson = reader.GetString(7);
-
-            var requisites = JsonSerializer.Deserialize<RequisitesListDto>(requisitesJson)
-                             ?? new RequisitesListDto(){ Requisites = []};
-            var socialLinks = JsonSerializer.Deserialize<SocialLinksListDto>(socialLinksJson)
-                             ?? new SocialLinksListDto(){ SocialLinks = []};
-            
-            var volunteer = new VolunteerDto
-            {
-                FullName = fullNameDto,
-                GeneralDescription = reader.GetString(3),
-                PhoneNumber = reader.GetString(4),
-                AgeExperience = reader.GetInt32(5),
-                Requisites = requisites.Requisites.ToArray(),
-                SocialLinks = socialLinks.SocialLinks.ToArray(),
-            };
-            volunteers.Add(volunteer);
-        }
-        
-        return volunteers.ToArray();
-    }
-     public async Task<Result<VolunteerDto[], Error>> Query(VolunteerQueryModel query,
+    public async Task<VolunteerDto[]> Query(VolunteerQueryModel query,
         CancellationToken cancellationToken = default)
     {
         var sqlQuery = """
@@ -145,8 +74,8 @@ public class VolunteersRepository : IVolunteersRepository
                             p.pet_name,
                             p.general_description,
                             p.health_information,
-                            p.species_id,
-                            p.breed_id,
+                            p.species_name,
+                            p.breed_name,
                             p.country,
                             p.city,
                             p.street,
@@ -189,6 +118,12 @@ public class VolunteersRepository : IVolunteersRepository
         {
             conditions.Add("p.breed_id = any(@BreedIds)");
             param.Add("BreedIds", query.BreedIds);
+        }
+        
+        if (string.IsNullOrEmpty(query.PhoneNumber) == false)
+        {
+            conditions.Add("v.phone_number = @PhoneNumber");
+            param.Add("PhoneNumber", query.PhoneNumber);
         }
 
         sqlQuery += " where " + string.Join(" and ", conditions);
@@ -260,8 +195,8 @@ public class VolunteersRepository : IVolunteersRepository
                 PetName = reader.GetString(8),
                 GeneralDescription = reader.GetString(9),
                 HealthInformation = reader.GetString(10),
-                SpeciesId = reader.GetGuid(11),
-                BreedId = reader.GetGuid(12),
+                SpeciesName = reader.GetString(11),
+                BreedName = reader.GetString(12),
                 Address = addressDto,
                 Weight = reader.GetDouble(18),
                 Height = reader.GetDouble(19),

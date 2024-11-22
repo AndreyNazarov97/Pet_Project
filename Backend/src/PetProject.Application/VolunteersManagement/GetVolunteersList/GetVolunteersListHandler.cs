@@ -24,11 +24,8 @@ public class GetVolunteersListHandler : IRequestHandler<GetVolunteersListQuery, 
             Offset = request.Offset,
             Limit = request.Limit
         };
-        var result = await _volunteersRepository.Query(queryModel, cancellationToken);
+        var volunteers = await _volunteersRepository.Query(queryModel, cancellationToken);
 
-        if (result.IsFailure)
-            return result.Error.ToErrorList();
-
-        return result.Value;
+        return volunteers;
     }
 }

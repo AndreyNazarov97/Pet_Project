@@ -24,12 +24,10 @@ public class GetBreedsListHandler : IRequestHandler<GetBreedsListQuery, Result<B
             Offset = request.Offset,
             Limit = request.Limit
         };
-        var result = await _speciesRepository.Query(queryModel, cancellationToken);
+        var species = (await _speciesRepository
+            .Query(queryModel, cancellationToken))
+            .SingleOrDefault();
 
-        if (result.IsFailure)
-            return result.Error.ToErrorList();
-
-        var species = result.Value.SingleOrDefault();
         if (species == null)
             return Errors.General.NotFound().ToErrorList();
         

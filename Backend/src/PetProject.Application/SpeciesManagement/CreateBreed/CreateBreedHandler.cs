@@ -2,6 +2,7 @@
 using MediatR;
 using Microsoft.Extensions.Logging;
 using PetProject.Application.Abstractions;
+using PetProject.Application.Models;
 using PetProject.Domain.Shared;
 using PetProject.Domain.Shared.EntityIds;
 using PetProject.Domain.SpeciesManagement;
@@ -26,20 +27,23 @@ public class CreateBreedHandler : IRequestHandler<CreateBreedCommand, Result<Gui
 
     public async Task<Result<Guid, ErrorList>> Handle(CreateBreedCommand command, CancellationToken cancellationToken)
     {
-        var speciesName = SpeciesName.Create(command.SpeciesName).Value;
-        var existedSpecies = await _speciesRepository.GetByName(speciesName, cancellationToken);
-
-        if (existedSpecies.IsFailure)
+        var speciesQuery = new SpeciesQueryModel
+        {
+            SpeciesName = command.SpeciesName
+        };
+        var species = (await _speciesRepository.Query(speciesQuery, cancellationToken)).SingleOrDefault();
+        if (species == null)
             return Errors.General.NotFound().ToErrorList();
 
-        if(existedSpecies.Value.Breeds.Any(x => x.BreedName.Value == command.BreedName))
+        if(species.Breeds.Any(x => x.Name == command.BreedName))
             return Errors.General.AlreadyExist("Breed").ToErrorList();
         
         var breedId = BreedId.NewId();
         var breedName = BreedName.Create(command.BreedName).Value;
         var breed = new Breed(breedId, breedName);
         
-        existedSpecies.Value.AddBreeds([breed]);
+        var speciesEntity = species.ToEntity();
+        speciesEntity.AddBreeds([breed]);
         
         _logger.Log(LogLevel.Information, "Breed {breedName} was created", breedName);
         await _unitOfWork.SaveChangesAsync(cancellationToken);

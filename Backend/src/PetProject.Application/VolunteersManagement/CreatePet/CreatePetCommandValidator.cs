@@ -22,10 +22,10 @@ public class CreatePetCommandValidator : AbstractValidator<CreatePetCommand>
         RuleFor(c => c.HealthInformation)
             .MustBeValueObject(Description.Create);
 
-        RuleFor(c => c.Species)
+        RuleFor(c => c.SpeciesName)
             .MaximumLength(100);
 
-        RuleFor(c => c.Breed)
+        RuleFor(c => c.BreedName)
             .MaximumLength(100);
 
         RuleFor(c => new{c.Height, c.Weight})

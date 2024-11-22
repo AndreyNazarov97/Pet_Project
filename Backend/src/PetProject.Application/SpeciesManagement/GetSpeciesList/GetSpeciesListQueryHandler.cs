@@ -6,7 +6,7 @@ using PetProject.Domain.Shared;
 
 namespace PetProject.Application.SpeciesManagement.GetSpeciesList;
 
-public class GetSpeciesListQueryHandler : IRequestHandler<GetSpeciesListQuery, Result<SpeciesDto[],ErrorList>>
+public class GetSpeciesListQueryHandler : IRequestHandler<GetSpeciesListQuery, Result<SpeciesDto[], ErrorList>>
 {
     private readonly ISpeciesRepository _speciesRepository;
 
@@ -15,18 +15,17 @@ public class GetSpeciesListQueryHandler : IRequestHandler<GetSpeciesListQuery, R
     {
         _speciesRepository = speciesRepository;
     }
-    public async Task<Result<SpeciesDto[], ErrorList>> Handle(GetSpeciesListQuery request, CancellationToken cancellationToken)
+
+    public async Task<Result<SpeciesDto[], ErrorList>> Handle(GetSpeciesListQuery request,
+        CancellationToken cancellationToken)
     {
-        var queryModel = new SpeciesQueryModel()
+        var speciesQuery = new SpeciesQueryModel()
         {
             Offset = request.Offset,
             Limit = request.Limit
         };
-        var result = await _speciesRepository.Query(queryModel, cancellationToken);
-
-        if (result.IsFailure)
-            return result.Error.ToErrorList();
-
-        return result.Value;
+        var species = await _speciesRepository.Query(speciesQuery, cancellationToken);
+        
+        return species;
     }
 }

@@ -10,21 +10,15 @@ namespace PetProject.Application.VolunteersManagement;
 
 public interface IVolunteersRepository
 {
-    public Task<Guid> Add(Volunteer volunteer, 
-        CancellationToken cancellationToken = default);
-    
-    public Task<Result<Guid, Error>> Delete(Volunteer volunteer, 
-        CancellationToken cancellationToken = default);
-    
-    public Task<Result<Volunteer, Error>> GetByPhoneNumber(PhoneNumber requestNumber,
+    public Task<Guid> Add(Volunteer volunteer,
         CancellationToken cancellationToken = default);
 
-    public Task<Result<Volunteer, Error>> GetById(VolunteerId id, 
+    public Task<Result<Guid, Error>> Delete(Volunteer volunteer,
         CancellationToken cancellationToken = default);
-    
-    Task<Result<VolunteerDto[], Error>> GetList(
-        int offset, int limit, CancellationToken cancellationToken = default);
-    
-    Task<Result<VolunteerDto[], Error>> Query(
+
+    public Task<Result<Volunteer, Error>> GetById(VolunteerId id,
+        CancellationToken cancellationToken = default);
+
+    Task<VolunteerDto[]> Query(
         VolunteerQueryModel query, CancellationToken cancellationToken = default);
 }

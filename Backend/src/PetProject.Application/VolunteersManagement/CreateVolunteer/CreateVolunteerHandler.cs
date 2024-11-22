@@ -1,6 +1,7 @@
 ﻿using CSharpFunctionalExtensions;
 using MediatR;
 using Microsoft.Extensions.Logging;
+using PetProject.Application.Models;
 using PetProject.Domain.Shared;
 using PetProject.Domain.Shared.EntityIds;
 using PetProject.Domain.Shared.ValueObjects;
@@ -26,21 +27,26 @@ public class CreateVolunteerHandler : IRequestHandler<CreateVolunteerCommand, Re
         CreateVolunteerCommand command, CancellationToken token = default
     )
     {
-        var phoneNumber = PhoneNumber.Create(command.PhoneNumber);
+        var volunteerQuery = new VolunteerQueryModel()
+        {
+            PhoneNumber = command.PhoneNumber
+        };
 
-        var existedVolunteer = await _repository.GetByPhoneNumber(phoneNumber.Value, token);
-
-        if (existedVolunteer.IsSuccess)
+        var existedVolunteer = await _repository.Query(volunteerQuery, token);
+        if (existedVolunteer.Length > 0)
         {
             return Errors.General.AlreadyExist("Volunteer").ToErrorList();
         }
-            
-
+        
         var volunteerId = VolunteerId.NewId();
 
-        var fullName = FullName.Create(command.FullName.Name, command.FullName.Surname, command.FullName.Patronymic);
-        var description = Description.Create(command.Description);
-        var ageExperience = Experience.Create(command.AgeExperience);
+        var fullName = FullName.Create(
+            command.FullName.Name, 
+            command.FullName.Surname, 
+            command.FullName.Patronymic).Value;
+        var description = Description.Create(command.Description).Value;
+        var ageExperience = Experience.Create(command.AgeExperience).Value;
+        var phoneNumber = PhoneNumber.Create(command.PhoneNumber).Value;
 
         var socialLinks = command.SocialLinks
             .Select(x => SocialLink.Create(x.Title, x.Url).Value);
@@ -50,9 +56,14 @@ public class CreateVolunteerHandler : IRequestHandler<CreateVolunteerCommand, Re
             .Select(x => Requisite.Create(x.Title, x.Description).Value);
         var requisitesList = new RequisitesList(requisites);
 
-        var volunteer = new Volunteer(volunteerId,
-            fullName.Value, description.Value,
-            ageExperience.Value, phoneNumber.Value, socialLinksList, requisitesList);
+        var volunteer = new Volunteer(
+            volunteerId,
+            fullName, 
+            description,
+            ageExperience, 
+            phoneNumber, 
+            socialLinksList, 
+            requisitesList);
 
         await _repository.Add(volunteer, token);
         
