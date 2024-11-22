@@ -21,5 +21,7 @@ public class Species : AggregateRoot<SpeciesId>
     }
     
     public void AddBreeds(List<Breed> breeds) => _breeds.AddRange(breeds);
+    
+    public void RemoveBreed(Breed breed) => _breeds.Remove(breed);
 
 }

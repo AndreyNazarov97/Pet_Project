@@ -5,6 +5,7 @@ using PetProject.API.Extensions;
 using PetProject.Application.Dto;
 using PetProject.Application.Models;
 using PetProject.Application.SpeciesManagement;
+using PetProject.Application.SpeciesManagement.DeleteBreed;
 using PetProject.Domain.Shared.EntityIds;
 
 namespace PetProject.API.Controllers.Species;
@@ -54,6 +55,25 @@ public class SpeciesController : ApplicationController
         CancellationToken cancellationToken)
     {
         var command = request.ToCommand();
+        var result = await _mediator.Send(command, cancellationToken);
+
+        if (result.IsFailure)
+            return result.Error.ToResponse();
+
+        return Ok();
+    }
+    
+    [HttpDelete("{speciesName}/breeds/{breedName}")]
+    public async Task<ActionResult> DeleteBreed(
+        [FromRoute] string speciesName,
+        [FromRoute] string breedName,
+        CancellationToken cancellationToken)
+    {
+        var command = new DeleteBreedCommand
+        {
+            SpeciesName = speciesName,
+            BreedName = breedName
+        };
         var result = await _mediator.Send(command, cancellationToken);
 
         if (result.IsFailure)
