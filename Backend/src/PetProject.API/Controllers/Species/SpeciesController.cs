@@ -47,6 +47,20 @@ public class SpeciesController : ApplicationController
 
         return Ok(result.Value);
     }
+    
+    [HttpDelete]
+    public async Task<ActionResult> DeleteSpecies(
+        [FromBody] DeleteSpeciesRequest request,
+        CancellationToken cancellationToken)
+    {
+        var command = request.ToCommand();
+        var result = await _mediator.Send(command, cancellationToken);
+
+        if (result.IsFailure)
+            return result.Error.ToResponse();
+
+        return Ok();
+    }
 
     [HttpGet]
     public async Task<ActionResult<List<SpeciesDto>>> GetSpecies(
