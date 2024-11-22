@@ -1,3 +1,3 @@
 ﻿namespace PetProject.Application.Dto;
 
-public record SocialLinkDto(string Name, string Url);
+public record SocialLinkDto(string Title, string Url);

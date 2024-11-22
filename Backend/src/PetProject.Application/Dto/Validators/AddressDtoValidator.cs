@@ -15,6 +15,5 @@ public class AddressDtoValidator : AbstractValidator<AddressDto>
                 x.Street,
                 x.House,
                 x.Flat));
-
     }
 }

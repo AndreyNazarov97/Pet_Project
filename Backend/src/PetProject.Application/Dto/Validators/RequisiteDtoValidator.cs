@@ -8,7 +8,7 @@ public class RequisiteDtoValidator : AbstractValidator<RequisiteDto>
 {
     public RequisiteDtoValidator()
     {
-        RuleFor(c => new {c.Description, c.Name})
+        RuleFor(c => new {c.Description, Name = c.Title})
             .MustBeValueObject(s => Requisite.Create(s.Name, s.Description));
     }
 }

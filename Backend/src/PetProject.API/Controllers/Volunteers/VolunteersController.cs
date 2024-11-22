@@ -4,7 +4,9 @@ using PetProject.API.Controllers.Volunteers.Requests;
 using PetProject.API.Extensions;
 using PetProject.Application.VolunteersManagement.AddPetPhoto;
 using PetProject.Application.VolunteersManagement.DeleteVolunteer;
+using PetProject.Application.VolunteersManagement.GetVolunteer;
 using PetProject.Domain.Shared.EntityIds;
+using PetProject.Domain.VolunteerManagement;
 using PetProject.Infrastructure.Postgres.Processors;
 
 namespace PetProject.API.Controllers.Volunteers;
@@ -17,7 +19,37 @@ public class VolunteersController : ApplicationController
     {
         _mediator = mediator;
     }
+
+    [HttpGet("{volunteerId:guid}")]
+    public async Task<ActionResult<Volunteer>> Get(
+        [FromRoute] Guid volunteerId,
+        CancellationToken cancellationToken)
+    {
+        var query = new GetVolunteerQuery{ VolunteerId = volunteerId };
+
+        var result = await _mediator.Send(query, cancellationToken);
+
+        if (result.IsFailure)
+            return result.Error.ToResponse();
+
+        return Ok(result.Value);
+    }
     
+    [HttpGet("list")]
+    public async Task<ActionResult<List<Volunteer>>> GetList(
+        [FromQuery] GetListVolunteersRequest request,
+        CancellationToken cancellationToken)
+    {
+        var query = request.ToQuery();
+
+        var result = await _mediator.Send(query, cancellationToken);
+
+        if (result.IsFailure)
+            return result.Error.ToResponse();
+
+        return Ok(result.Value);
+    }
+
     [HttpPost]
     public async Task<ActionResult<VolunteerId>> Create(
         [FromBody] CreateVolunteerRequest request,

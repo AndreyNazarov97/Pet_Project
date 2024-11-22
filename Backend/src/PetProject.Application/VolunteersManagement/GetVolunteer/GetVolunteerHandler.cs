@@ -1,11 +1,13 @@
 ﻿using CSharpFunctionalExtensions;
+using MediatR;
 using PetProject.Application.Dto;
+using PetProject.Application.Extensions;
 using PetProject.Domain.Shared;
 using PetProject.Domain.Shared.EntityIds;
 
 namespace PetProject.Application.VolunteersManagement.GetVolunteer;
 
-public class GetVolunteerHandler
+public class GetVolunteerHandler : IRequestHandler<GetVolunteerQuery, Result<VolunteerDto, ErrorList>>
 {
     private readonly IVolunteersRepository _volunteersRepository;
 
@@ -15,24 +17,26 @@ public class GetVolunteerHandler
         _volunteersRepository = volunteersRepository;
     }
 
-    public async Task<Result<VolunteerDto, Error>> Handle(GetVolunteerRequest request,
+    public async Task<Result<VolunteerDto, ErrorList>> Handle(GetVolunteerQuery query,
         CancellationToken cancellationToken = default)
     {
-        var volunteerId = VolunteerId.Create(request.VolunteerId);
+        var volunteerId = VolunteerId.Create(query.VolunteerId);
 
         var result = await _volunteersRepository.GetById(volunteerId, cancellationToken);
         if (result.IsFailure)
         {
-            return result.Error;
+            return result.Error.ToErrorList();
         }
 
+        var volunteer = result.Value;
         var volunteerDto = new VolunteerDto
         {
-            FullName = string.Join(" ", result.Value.FullName.Name, result.Value.FullName.Surname,
-                result.Value.FullName.Patronymic),
-            GeneralDescription = result.Value.GeneralDescription.Value,
-            PhoneNumber = result.Value.PhoneNumber.Value,
-            AgeExperience = result.Value.Experience.Years
+            FullName = volunteer.FullName.ToDto(),
+            GeneralDescription = volunteer.GeneralDescription.Value,
+            PhoneNumber = volunteer.PhoneNumber.Value,
+            AgeExperience = volunteer.Experience.Years,
+            Requisites = volunteer.RequisitesList.ToDto(),
+            SocialLinks = volunteer.SocialLinksList.ToDto()
         };
 
         return volunteerDto;
