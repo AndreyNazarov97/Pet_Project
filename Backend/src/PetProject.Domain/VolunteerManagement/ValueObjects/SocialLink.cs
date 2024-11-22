@@ -14,14 +14,14 @@ public record SocialLink
         Url = url;
     }
 
-    public static Result<SocialLink, Error> Create(string title, string url)
+    public static Result<SocialLink, Error> Create(string name, string url)
     {
-        if (string.IsNullOrWhiteSpace(title) || title.Length > Constants.MAX_TEXT_LENGTH)
+        if (string.IsNullOrWhiteSpace(name) || name.Length > Constants.MAX_TEXT_LENGTH)
             return Errors.General.ValueIsInvalid($"Name");
 
         if (string.IsNullOrWhiteSpace(url) || url.Length > Constants.EXTRA_TEXT_LENGTH)
             return Errors.General.ValueIsInvalid($"Path");
 
-        return new SocialLink(title, url);
+        return new SocialLink(name, url);
     }
 }

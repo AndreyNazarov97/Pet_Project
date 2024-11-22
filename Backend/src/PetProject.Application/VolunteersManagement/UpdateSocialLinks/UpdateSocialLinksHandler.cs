@@ -2,7 +2,6 @@
 using MediatR;
 using Microsoft.Extensions.Logging;
 using PetProject.Application.Abstractions;
-using PetProject.Application.Models;
 using PetProject.Domain.Shared;
 using PetProject.Domain.Shared.EntityIds;
 using PetProject.Domain.VolunteerManagement.ValueObjects;
@@ -28,27 +27,23 @@ public class UpdateSocialLinksHandler : IRequestHandler<UpdateSocialLinksCommand
     public async Task<Result<Guid, ErrorList>> Handle(UpdateSocialLinksCommand command,
         CancellationToken cancellationToken = default)
     {
-        var volunteerQuery = new VolunteerQueryModel()
-        {
-            VolunteerIds = [command.VolunteerId]
-        };
+        var volunteerId = VolunteerId.Create(command.Id);
 
-        var volunteer = (await _repository.Query(volunteerQuery, cancellationToken)).SingleOrDefault();
-        if (volunteer == null)
-            return Errors.General.NotFound(command.VolunteerId).ToErrorList();
+        var volunteer = await _repository.GetById(volunteerId, cancellationToken);
 
-        var volunteerEntity = volunteer.ToEntity();
+        if (volunteer.IsFailure)
+            return volunteer.Error.ToErrorList();
 
         var socialLinks = command.SocialLinks
             .Select(x => SocialLink.Create(x.Title, x.Url).Value);
         var socialLinksList = new SocialLinksList(socialLinks);
 
-        volunteerEntity.UpdateSocialLinks(socialLinksList);
+        volunteer.Value.UpdateSocialLinks(socialLinksList);
         
         await _unitOfWork.SaveChangesAsync(cancellationToken);
         
-        _logger.Log(LogLevel.Information, "Volunteer {volunteerId} was updated social links", command.VolunteerId);
+        _logger.Log(LogLevel.Information, "Volunteer {volunteerId} was updated social links", volunteerId);
 
-        return volunteerEntity.Id.Id;
+        return volunteer.Value.Id.Id;
     }
 }

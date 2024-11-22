@@ -9,7 +9,7 @@ public class UpdateRequisitesCommandValidator : AbstractValidator<UpdateRequisit
 {
     public UpdateRequisitesCommandValidator()
     {
-        RuleFor(x => x.VolunteerId)
+        RuleFor(x => x.Id)
             .NotEmpty()
             .WithError(Errors.General.LengthIsInvalid("Id"));
 

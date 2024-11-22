@@ -9,7 +9,7 @@ public class UpdateSocialLinksCommandValidator : AbstractValidator<UpdateSocialL
 {
     public UpdateSocialLinksCommandValidator()
     {
-        RuleFor(x => x.VolunteerId)
+        RuleFor(x => x.Id)
             .NotEmpty()
             .WithError(Errors.General.LengthIsInvalid("Id"));
         

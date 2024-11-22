@@ -2,7 +2,6 @@
 using MediatR;
 using Microsoft.Extensions.Logging;
 using PetProject.Application.Abstractions;
-using PetProject.Application.Models;
 using PetProject.Domain.Shared;
 using PetProject.Domain.Shared.EntityIds;
 using PetProject.Domain.Shared.ValueObjects;
@@ -29,16 +28,12 @@ public class UpdateVolunteerHandler : IRequestHandler<UpdateVolunteerCommand, Re
         UpdateVolunteerCommand command, 
         CancellationToken cancellationToken = default)
     {
-        var volunteerQuery = new VolunteerQueryModel()
-        {
-            VolunteerIds = [command.VolunteerId]
-        };
+        var volunteerId = VolunteerId.Create(command.IdVolunteer);
 
-        var volunteer = (await _repository.Query(volunteerQuery, cancellationToken)).SingleOrDefault();
-        if (volunteer == null)
-            return Errors.General.NotFound(command.VolunteerId).ToErrorList();
-        
-        var volunteerEntity = volunteer.ToEntity();
+        var volunteer = await _repository.GetById(volunteerId, cancellationToken);
+
+        if (volunteer.IsFailure)
+            return volunteer.Error.ToErrorList();
 
         var fullName = FullName.Create(
                 command.FullName.Name, 
@@ -49,13 +44,12 @@ public class UpdateVolunteerHandler : IRequestHandler<UpdateVolunteerCommand, Re
         var ageExperience = Experience.Create(command.AgeExperience).Value;
         var phoneNumber = PhoneNumber.Create(command.PhoneNumber).Value;
 
-        volunteerEntity.UpdateMainInfo(fullName, description, ageExperience, phoneNumber);
-        //TODO: здесь сущность не отслеживается, соответсвенно не обновляется. То же и в схожих методах
+        volunteer.Value.UpdateMainInfo(fullName, description, ageExperience, phoneNumber);
 
         await _unitOfWork.SaveChangesAsync(cancellationToken);
 
-        _logger.LogDebug("Volunteer {volunteerId} was full updated", command.VolunteerId);
+        _logger.LogDebug("Volunteer {volunteerId} was full updated", volunteerId);
 
-        return volunteerEntity.Id.Id;
+        return volunteer.Value.Id.Id;
     }
 }

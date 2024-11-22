@@ -11,7 +11,7 @@ public record UpdateVolunteerRequest(
 {
     public UpdateVolunteerCommand ToCommand(Guid idVolunteer) => new()
     {
-        VolunteerId = idVolunteer,
+        IdVolunteer = idVolunteer,
         FullName = FullName,
         Description = Description,
         AgeExperience = AgeExperience,

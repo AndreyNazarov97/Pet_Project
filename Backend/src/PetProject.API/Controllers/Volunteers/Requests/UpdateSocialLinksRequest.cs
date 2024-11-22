@@ -7,7 +7,7 @@ public record UpdateSocialLinksRequest(IEnumerable<SocialLinkDto> SocialLinks)
 {
     public UpdateSocialLinksCommand ToCommand(Guid volunteerId) => new()
     {
-        VolunteerId = volunteerId,
+        Id = volunteerId,
         SocialLinks = SocialLinks
     };
 }

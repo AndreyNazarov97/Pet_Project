@@ -7,7 +7,7 @@ public record UpdateRequisitesRequest(IEnumerable<RequisiteDto> Requisites)
 {
     public UpdateRequisitesCommand ToCommand(Guid volunteerId) => new()
     {
-        VolunteerId = volunteerId,
+        Id = volunteerId,
         Requisites = Requisites
     };
 }

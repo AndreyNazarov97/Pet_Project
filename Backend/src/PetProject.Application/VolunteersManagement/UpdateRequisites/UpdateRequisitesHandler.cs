@@ -2,7 +2,6 @@
 using MediatR;
 using Microsoft.Extensions.Logging;
 using PetProject.Application.Abstractions;
-using PetProject.Application.Models;
 using PetProject.Domain.Shared;
 using PetProject.Domain.Shared.EntityIds;
 using PetProject.Domain.VolunteerManagement.ValueObjects;
@@ -28,25 +27,22 @@ public class UpdateRequisitesHandler : IRequestHandler<UpdateRequisitesCommand, 
     public async Task<Result<Guid, ErrorList>> Handle(UpdateRequisitesCommand command,
         CancellationToken cancellationToken = default)
     {
-        var volunteerQuery = new VolunteerQueryModel()
-        {
-            VolunteerIds = [command.VolunteerId]
-        };
+        var volunteerId = VolunteerId.Create(command.Id);
 
-        var volunteer = (await _repository.Query(volunteerQuery, cancellationToken)).SingleOrDefault();
-        if (volunteer == null)
-            return Errors.General.NotFound(command.VolunteerId).ToErrorList();
+        var volunteer = await _repository.GetById(volunteerId, cancellationToken);
+
+        if (volunteer.IsFailure)
+            return volunteer.Error.ToErrorList();
 
         var requisites = command.Requisites
             .Select(x => Requisite.Create(x.Title, x.Description).Value);
         var requisitesList = new RequisitesList(requisites);
 
-        var volunteerEntity = volunteer.ToEntity();
-        volunteerEntity.UpdateRequisites(requisitesList);
+        volunteer.Value.UpdateRequisites(requisitesList);
         
         await _unitOfWork.SaveChangesAsync(cancellationToken);
 
-        _logger.Log(LogLevel.Information, "Volunteer {volunteerId} was updated requisites", command.VolunteerId);
-        return volunteerEntity.Id.Id;
+        _logger.Log(LogLevel.Information, "Volunteer {volunteerId} was updated requisites", volunteerId);
+        return volunteer.Value.Id.Id;
     }
 }

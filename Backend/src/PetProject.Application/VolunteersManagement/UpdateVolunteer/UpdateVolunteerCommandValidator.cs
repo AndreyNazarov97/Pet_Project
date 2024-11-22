@@ -9,7 +9,7 @@ public class UpdateVolunteerCommandValidator : AbstractValidator<UpdateVolunteer
 {
     public UpdateVolunteerCommandValidator()
     {
-        RuleFor(v => v.VolunteerId)
+        RuleFor(v => v.IdVolunteer)
             .NotEmpty()
             .WithError(Errors.General.LengthIsInvalid("Id"));
         

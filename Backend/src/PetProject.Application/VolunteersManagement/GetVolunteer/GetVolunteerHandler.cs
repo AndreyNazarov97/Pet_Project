@@ -2,7 +2,6 @@
 using MediatR;
 using PetProject.Application.Dto;
 using PetProject.Application.Extensions;
-using PetProject.Application.Models;
 using PetProject.Domain.Shared;
 using PetProject.Domain.Shared.EntityIds;
 
@@ -21,15 +20,25 @@ public class GetVolunteerHandler : IRequestHandler<GetVolunteerQuery, Result<Vol
     public async Task<Result<VolunteerDto, ErrorList>> Handle(GetVolunteerQuery query,
         CancellationToken cancellationToken = default)
     {
-        var volunteerQuery = new VolunteerQueryModel()
+        var volunteerId = VolunteerId.Create(query.VolunteerId);
+
+        var result = await _volunteersRepository.GetById(volunteerId, cancellationToken);
+        if (result.IsFailure)
         {
-            VolunteerIds = [query.VolunteerId]
+            return result.Error.ToErrorList();
+        }
+
+        var volunteer = result.Value;
+        var volunteerDto = new VolunteerDto
+        {
+            FullName = volunteer.FullName.ToDto(),
+            GeneralDescription = volunteer.GeneralDescription.Value,
+            PhoneNumber = volunteer.PhoneNumber.Value,
+            AgeExperience = volunteer.Experience.Years,
+            Requisites = volunteer.RequisitesList.ToDto(),
+            SocialLinks = volunteer.SocialLinksList.ToDto()
         };
 
-        var volunteer = (await _volunteersRepository.Query(volunteerQuery, cancellationToken)).SingleOrDefault();
-        if(volunteer == null) 
-            return Errors.General.NotFound().ToErrorList();
-
-        return volunteer;
+        return volunteerDto;
     }
 }

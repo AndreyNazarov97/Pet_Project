@@ -1,8 +1,8 @@
 ﻿using CSharpFunctionalExtensions;
 using MediatR;
 using Microsoft.Extensions.Logging;
-using PetProject.Application.Models;
 using PetProject.Domain.Shared;
+using PetProject.Domain.Shared.EntityIds;
 
 namespace PetProject.Application.VolunteersManagement.DeleteVolunteer;
 
@@ -20,23 +20,18 @@ public class DeleteVolunteerHandler : IRequestHandler<DeleteVolunteerCommand, Un
     public async Task<UnitResult<ErrorList>> Handle(DeleteVolunteerCommand command,
         CancellationToken cancellationToken = default)
     {
-        var volunteerQuery = new VolunteerQueryModel()
-        {
-            VolunteerIds = [command.Id]
-        };
+        var volunteerId = VolunteerId.Create(command.Id);
+        var volunteerResult = await _repository.GetById(volunteerId, cancellationToken);
+        if (volunteerResult.IsFailure)
+            return volunteerResult.Error.ToErrorList();
 
-        var volunteer = (await _repository.Query(volunteerQuery, cancellationToken)).SingleOrDefault();
-        if(volunteer == null) 
-            return Errors.General.NotFound().ToErrorList();
-
-        var volunteerEntity = volunteer.ToEntity();
-        volunteerEntity.Deactivate();
+        volunteerResult.Value.Deactivate();
         
-        var result = await _repository.Delete(volunteerEntity, cancellationToken);
+        var result = await _repository.Delete(volunteerResult.Value, cancellationToken);
         if (result.IsFailure)
-            return result.Error.ToErrorList();
+            return volunteerResult.Error.ToErrorList();
         
-        _logger.Log(LogLevel.Information, "Volunteer deleted with Id {volunteerId}", command.Id);
+        _logger.Log(LogLevel.Information, "Volunteer deleted with Id {volunteerId}", volunteerId);
         
         return UnitResult.Success<ErrorList>();
     }

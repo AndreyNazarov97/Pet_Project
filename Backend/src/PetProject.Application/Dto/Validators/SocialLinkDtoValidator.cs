@@ -9,6 +9,6 @@ public class SocialLinkDtoValidator : AbstractValidator<SocialLinkDto>
     public SocialLinkDtoValidator()
     {
         RuleFor(c => new { Name = c.Title, c.Url})
-            .MustBeValueObject(s => SocialLink.Create(s.Name, s.Url));
+            .MustBeValueObject(s => Requisite.Create(s.Name, s.Url));
     }
 }
