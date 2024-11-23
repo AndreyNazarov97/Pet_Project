@@ -39,7 +39,11 @@ public class CreatePetHandler : IRequestHandler<CreatePetCommand, Result<Guid, E
             return volunteerResult.Error.ToErrorList();
         
         var volunteer = volunteerResult.Value;
-        var pet = await CreatePet(command, volunteer.PhoneNumber, cancellationToken);
+        var petResult = await CreatePet(command, volunteer.PhoneNumber, cancellationToken);
+        if (petResult.IsFailure)
+            return petResult.Error.ToErrorList();
+        
+        var pet = petResult.Value;
         
         volunteer.AddPet(pet);
         await _unitOfWork.SaveChangesAsync(cancellationToken);
@@ -47,7 +51,7 @@ public class CreatePetHandler : IRequestHandler<CreatePetCommand, Result<Guid, E
         return pet.Id.Id;
     }
 
-    private async Task<Pet> CreatePet(
+    private async Task<Result<Pet, Error>> CreatePet(
         CreatePetCommand command,
         PhoneNumber phoneNumber,
         CancellationToken cancellationToken)
@@ -57,7 +61,11 @@ public class CreatePetHandler : IRequestHandler<CreatePetCommand, Result<Guid, E
         var generalDescription = Description.Create(command.GeneralDescription).Value;
         var healthInformation = Description.Create(command.HealthInformation).Value;
 
-        var animalType = (await GetAnimalType(command, cancellationToken)).Value;
+        var animalTypeResult = (await GetAnimalType(command, cancellationToken));
+        if (animalTypeResult.IsFailure)
+            return animalTypeResult.Error;
+        
+        var animalType = animalTypeResult.Value;
 
         var address = GetAddress(command.Address);
 

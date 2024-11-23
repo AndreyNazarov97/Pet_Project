@@ -154,10 +154,13 @@ public class VolunteersRepository : IVolunteersRepository
 
             if (volunteer == null)
             {
-                var fullNameDto = new FullNameDto(
-                    reader.GetString(0),
-                    reader.GetString(1),
-                    reader.GetString(2));
+                var fullNameDto = new FullNameDto
+                {
+                    Name = reader.GetString(0),
+                    Surname = reader.GetString(1),
+                    Patronymic = reader.GetString(2)
+                };
+                    
                 var requisitesJson = reader.GetString(6);
                 var socialLinksJson = reader.GetString(7);
 
@@ -181,13 +184,13 @@ public class VolunteersRepository : IVolunteersRepository
             var country = reader.IsDBNull(13) ? null : reader.GetString(13);
             if (country is null) continue;
             var addressDto = new AddressDto
-            (
-                reader.GetString(13),
-                reader.GetString(14),
-                reader.GetString(15),
-                reader.GetString(16),
-                reader.GetString(17)
-            );
+            {
+                Country = reader.GetString(13),
+                City = reader.GetString(14),
+                Street = reader.GetString(15),
+                House = reader.GetString(16),
+                Flat = reader.GetString(17)
+            };
 
 
             var pet = new PetDto

@@ -8,7 +8,12 @@ public static class VolunteerExtension
 {
     public static FullNameDto ToDto(this FullName fullName)
     {
-        return new FullNameDto(fullName.Name, fullName.Surname, fullName.Patronymic);
+        return new FullNameDto()
+        {
+            Name = fullName.Name,
+            Surname = fullName.Surname,
+            Patronymic = fullName.Patronymic
+        };
     }
 
     public static RequisiteDto ToDto(this Requisite requisite)

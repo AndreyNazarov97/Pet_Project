@@ -4,7 +4,9 @@ namespace PetProject.Domain.Shared;
 
 public class ErrorList : IEnumerable<Error>
 {
-    private  readonly List<Error> _errors;
+    private readonly List<Error> _errors;
+    
+    public IReadOnlyCollection<Error> Errors => _errors.AsReadOnly();
 
     public ErrorList(IEnumerable<Error> errors)
     {
