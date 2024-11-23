@@ -36,36 +36,35 @@ public class AddPetPhotoHandler : IRequestHandler<AddPetPhotoCommand, Result<str
         using var transaction = await _unitOfWork.BeginTransactionAsync(cancellationToken);
         try
         {
-            var filesData = command.Photos
-                .Select(photo => new FileDataDto(photo.Content, photo.FileName, BucketName))
-                .ToList();
-
-            var uploadResult = await _fileProvider.UploadFiles(filesData, cancellationToken);
-            if (uploadResult.IsFailure) 
-                return uploadResult.Error;
-        
-            var petPhotos = uploadResult.Value
-                .Select(p => new PetPhoto(p))
-                .ToList();
-        
             var volunteerId = VolunteerId.Create(command.VolunteerId);
             var volunteerResult = await _volunteersRepository.GetById(volunteerId, cancellationToken);
             if (volunteerResult.IsFailure)
                 return volunteerResult.Error.ToErrorList();
-        
+
             var volunteer = volunteerResult.Value;
 
             var petId = PetId.Create(command.PetId);
             var pet = volunteer.GetById(petId);
             if (pet is null)
                 return Errors.General.NotFound(command.PetId).ToErrorList();
-        
+
+            var filesData = command.Photos
+                .Select(photo => new FileDataDto(photo.Content, photo.FileName, BucketName))
+                .ToList();
+
+            var uploadResult = await _fileProvider.UploadFiles(filesData, cancellationToken);
+            if (uploadResult.IsFailure)
+                return uploadResult.Error;
+
+            var petPhotos = uploadResult.Value
+                .Select(p => new PetPhoto(p))
+                .ToList();
+
             pet.AddPhotos(petPhotos);
             await _unitOfWork.SaveChangesAsync(cancellationToken);
 
             transaction.Commit();
             return "Success";
-
         }
         catch (Exception e)
         {
@@ -75,6 +74,5 @@ public class AddPetPhotoHandler : IRequestHandler<AddPetPhotoCommand, Result<str
                 .Failure("could.not.add.pet.photo", "Could not add pet photo")
                 .ToErrorList();
         }
-        
     }
 }
