@@ -2,6 +2,7 @@
 using MediatR;
 using PetProject.Application.Abstractions;
 using PetProject.Application.Dto;
+using PetProject.Application.Models;
 using PetProject.Application.SpeciesManagement;
 using PetProject.Domain.Shared;
 using PetProject.Domain.Shared.EntityIds;
@@ -85,17 +86,22 @@ public class CreatePetHandler : IRequestHandler<CreatePetCommand, Result<Guid, E
     private async Task<Result<AnimalType, Error>> GetAnimalType(CreatePetCommand command,
         CancellationToken cancellationToken)
     {
-        var speciesName = SpeciesName.Create(command.Species).Value;
-        var speciesResult = await _speciesRepository.GetByName(speciesName, cancellationToken);
-        if (speciesResult.IsFailure)
-            return speciesResult.Error;
-
-        var breedName = BreedName.Create(command.Breed).Value;
-        var breed = speciesResult.Value.Breeds.FirstOrDefault(b => b.BreedName == breedName);
+        var speciesQuery = new SpeciesQueryModel
+        {
+            SpeciesName = command.SpeciesName
+        };
+        var species = (await _speciesRepository.Query(speciesQuery, cancellationToken)).SingleOrDefault();
+        if (species == null)
+            return Errors.General.NotFound();
+        
+        var breed = species.Breeds.FirstOrDefault(b => b.Name == command.BreedName);
         if (breed is null)
             return Errors.General.NotFound();
+        
+        var speciesName = SpeciesName.Create(command.SpeciesName).Value;
+        var breedName = BreedName.Create(command.BreedName).Value;
 
-        var animalType = new AnimalType(speciesResult.Value.Id, breed.Id);
+        var animalType = new AnimalType(speciesName, breedName);
         return animalType;
     }
 

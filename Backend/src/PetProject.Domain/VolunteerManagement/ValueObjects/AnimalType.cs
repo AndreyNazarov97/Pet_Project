@@ -1,16 +1,17 @@
 ﻿using PetProject.Domain.Shared.EntityIds;
+using PetProject.Domain.SpeciesManagement.ValueObjects;
 
 namespace PetProject.Domain.VolunteerManagement.ValueObjects
 {
     public record AnimalType
     {
-        public SpeciesId SpeciesId { get;  }
-        public BreedId BreedId { get;  }
+        public SpeciesName SpeciesName { get;  }
+        public BreedName BreedName { get;  }
         
-        public AnimalType(SpeciesId speciesId, BreedId breedId)
+        public AnimalType(SpeciesName speciesName, BreedName breedName)
         {
-            SpeciesId = speciesId;
-            BreedId = breedId;
+            SpeciesName = speciesName;
+            BreedName = breedName;
         }
     }
 }
