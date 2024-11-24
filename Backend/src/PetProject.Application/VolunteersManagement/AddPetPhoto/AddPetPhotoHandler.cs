@@ -5,11 +5,12 @@ using PetProject.Application.Abstractions;
 using PetProject.Application.Dto;
 using PetProject.Domain.Shared;
 using PetProject.Domain.Shared.EntityIds;
+using PetProject.Domain.Shared.ValueObjects;
 using PetProject.Domain.VolunteerManagement.ValueObjects;
 
 namespace PetProject.Application.VolunteersManagement.AddPetPhoto;
 
-public class AddPetPhotoHandler : IRequestHandler<AddPetPhotoCommand, Result<string, ErrorList>>
+public class AddPetPhotoHandler : IRequestHandler<AddPetPhotoCommand, Result<FilePath[], ErrorList>>
 {
     private const string BucketName = "pet-project";
 
@@ -30,7 +31,7 @@ public class AddPetPhotoHandler : IRequestHandler<AddPetPhotoCommand, Result<str
         _logger = logger;
     }
 
-    public async Task<Result<string, ErrorList>> Handle(AddPetPhotoCommand command,
+    public async Task<Result<FilePath[], ErrorList>> Handle(AddPetPhotoCommand command,
         CancellationToken cancellationToken = default)
     {
         using var transaction = await _unitOfWork.BeginTransactionAsync(cancellationToken);
@@ -64,7 +65,7 @@ public class AddPetPhotoHandler : IRequestHandler<AddPetPhotoCommand, Result<str
             await _unitOfWork.SaveChangesAsync(cancellationToken);
 
             transaction.Commit();
-            return "Success";
+            return uploadResult.Value.ToArray();
         }
         catch (Exception e)
         {

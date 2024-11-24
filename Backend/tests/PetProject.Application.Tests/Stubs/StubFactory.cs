@@ -3,6 +3,7 @@ using Moq;
 using PetProject.Application.Abstractions;
 using PetProject.Application.SpeciesManagement;
 using PetProject.Application.VolunteersManagement;
+using PetProject.Application.VolunteersManagement.AddPetPhoto;
 using PetProject.Application.VolunteersManagement.CreateVolunteer;
 using PetProject.Application.VolunteersManagement.DeleteVolunteer;
 using PetProject.Application.VolunteersManagement.UpdateRequisites;
@@ -52,5 +53,11 @@ public static class StubFactory
             new Mock<IVolunteersRepository>(),
             new Mock<IUnitOfWork>(),
             new Mock<ISpeciesRepository>());
+    
+    public static AddPetPhotoHandlerStub CreateAddPetPhotoHandlerStub() 
+        => new(new Mock<IVolunteersRepository>(),
+            new Mock<IFileProvider>(),
+            new Mock<IUnitOfWork>(),
+            new Mock<ILogger<AddPetPhotoHandler>>());
     
 }

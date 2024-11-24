@@ -1,4 +1,5 @@
 using Bogus;
+using Bogus.DataSets;
 using PetProject.Domain.VolunteerManagement.Enums;
 
 namespace PetProject.Application.Tests.Creators;
@@ -7,6 +8,7 @@ public static class Random
 {
     private static readonly Faker Faker = new();
 
+    public static Address Address => Faker.Address;
     public static int Experience => Faker.Random.Int(1, 10);
     public static string Name => Faker.Name.FirstName();
     public static string LoremParagraph => Faker.Lorem.Paragraph();

@@ -34,11 +34,12 @@ public class TestData
             SpeciesName.Create("Test species").Value,
             BreedName.Create("Test breed").Value),
         Address.Create(
-                "Test address",
-                "Test city",
-                "Test street",
-                "Test house",
-                "Test flat")
+                Random.Address.Country(),
+                Random.Address.City(),
+                Random.Address.StreetName(),
+                Random.Address.BuildingNumber(),
+                new Faker().Random.Number(1, 100).ToString()
+                )
             .Value,
         PetPhysicalAttributes.Create(10, 10).Value,
         PhoneNumber.Create(Random.PhoneNumber).Value,
@@ -76,4 +77,9 @@ public class TestData
                 "Bulldog")
         }
     );
+    
+    public static FileDto FileDto => new(
+        Random.Name + ".jpg", 
+        "image/jpeg", 
+        new MemoryStream());
 }
