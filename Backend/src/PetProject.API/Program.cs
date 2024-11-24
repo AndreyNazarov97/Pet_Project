@@ -88,6 +88,8 @@ if (app.Environment.IsDevelopment()
     
     
     await app.ApplyMigrations();
+
+    await app.SeedPetProjectDbContext();
 }
 
 app.UseHttpsRedirection();
