@@ -5,7 +5,7 @@ namespace PetProject.Domain.VolunteerManagement.ValueObjects;
 public record PetPhoto
 {
     public FilePath Path { get; }
-    public bool IsMain { get; } = false;
+    public bool IsMain { get; init; } = false;
 
     private PetPhoto()
     {

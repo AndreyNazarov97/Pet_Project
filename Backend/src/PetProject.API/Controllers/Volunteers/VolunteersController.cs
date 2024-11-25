@@ -192,6 +192,23 @@ public class VolunteersController : ApplicationController
         return Ok(result.Value);
     }
 
+    [HttpPut("{volunteerId:guid}/pet/{petId:guid}/photo")]
+    public async Task<ActionResult> SetMainPetPhoto(
+        [FromRoute] Guid volunteerId,
+        [FromRoute] Guid petId,
+        [FromBody] SetMainPetPhotoRequest request,
+        CancellationToken cancellationToken)
+    {
+        var command = request.ToCommand(volunteerId, petId);
+
+        var result = await _mediator.Send(command, cancellationToken);
+
+        if (result.IsFailure)
+            return result.Error.ToResponse();
+
+        return Ok("Success");
+    }
+
     [HttpPut("{volunteerId:guid}/pet/{petId:guid}/status")]
     public async Task<ActionResult> ChangePetStatus(
         [FromRoute] Guid volunteerId,

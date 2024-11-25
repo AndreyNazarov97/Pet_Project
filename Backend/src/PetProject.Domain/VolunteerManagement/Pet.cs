@@ -105,6 +105,12 @@ public class Pet : Shared.Common.Entity<PetId>, ISoftDeletable
         HelpStatus = status;
     }
     
+    public UnitResult<Error> SetMainPhoto(PetPhoto petPhoto)
+    {
+        var result = PetPhotosList.SetMainPhoto(petPhoto);
+       return result;
+    }
+    
     public void Activate()
     {
         _isDeleted = false;
