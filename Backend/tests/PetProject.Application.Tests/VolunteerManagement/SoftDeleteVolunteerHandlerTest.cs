@@ -4,7 +4,7 @@ using Microsoft.Extensions.Logging;
 using Moq;
 using PetProject.Application.Tests.Extensions;
 using PetProject.Application.Tests.Stubs;
-using PetProject.Application.VolunteersManagement.DeleteVolunteer;
+using PetProject.Application.VolunteersManagement.SoftDeleteVolunteer;
 using PetProject.Domain.Shared;
 using PetProject.Domain.Shared.EntityIds;
 using PetProject.Domain.VolunteerManagement;
@@ -12,9 +12,9 @@ using PetProject.SharedTestData;
 
 namespace PetProject.Application.Tests.VolunteerManagement;
 
-public class DeleteVolunteerHandlerTest
+public class SoftDeleteVolunteerHandlerTest
 {
-    private static DeleteVolunteerCommand Command => new()
+    private static SoftDeleteVolunteerCommand Command => new()
     {
         VolunteerId = Guid.NewGuid()
     };

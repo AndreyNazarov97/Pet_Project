@@ -44,6 +44,7 @@ public class VolunteersRepository : IVolunteersRepository
             return Errors.General.NotFound();
 
         _context.Volunteers.Remove(existedVolunteer);
+        await _context.SaveChangesAsync(cancellationToken);
         return volunteer.Id.Id;
     }
 
@@ -90,10 +91,10 @@ public class VolunteersRepository : IVolunteersRepository
                         FROM 
                             volunteers v
                         left join 
-                            pets p on v.id = p.volunteer_id
+                            pets p on v.id = p.volunteer_id AND p.is_deleted = false
                        """;
 
-        var conditions = new List<string>(["v.is_deleted = false and p.is_deleted = false"]);
+        var conditions = new List<string>(["v.is_deleted = false"]);
         var param = new DynamicParameters();
 
         if (query.VolunteerIds is { Length: > 0 })

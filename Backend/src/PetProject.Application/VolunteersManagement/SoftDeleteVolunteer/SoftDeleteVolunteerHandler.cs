@@ -1,23 +1,29 @@
 ﻿using CSharpFunctionalExtensions;
 using MediatR;
 using Microsoft.Extensions.Logging;
+using PetProject.Application.Abstractions;
 using PetProject.Domain.Shared;
 using PetProject.Domain.Shared.EntityIds;
 
-namespace PetProject.Application.VolunteersManagement.DeleteVolunteer;
+namespace PetProject.Application.VolunteersManagement.SoftDeleteVolunteer;
 
-public class DeleteVolunteerHandler : IRequestHandler<DeleteVolunteerCommand, UnitResult<ErrorList>>
+public class SoftDeleteVolunteerHandler : IRequestHandler<SoftDeleteVolunteerCommand, UnitResult<ErrorList>>
 {
     private readonly IVolunteersRepository _repository;
-    private readonly ILogger<DeleteVolunteerHandler> _logger;
+    private readonly IUnitOfWork _unitOfWork;
+    private readonly ILogger<SoftDeleteVolunteerHandler> _logger;
 
-    public DeleteVolunteerHandler(IVolunteersRepository repository, ILogger<DeleteVolunteerHandler> logger)
+    public SoftDeleteVolunteerHandler(
+        IVolunteersRepository repository, 
+        IUnitOfWork unitOfWork,
+        ILogger<SoftDeleteVolunteerHandler> logger)
     {
         _repository = repository;
+        _unitOfWork = unitOfWork;
         _logger = logger;
     }
 
-    public async Task<UnitResult<ErrorList>> Handle(DeleteVolunteerCommand command,
+    public async Task<UnitResult<ErrorList>> Handle(SoftDeleteVolunteerCommand command,
         CancellationToken cancellationToken = default)
     {
         var volunteerId = VolunteerId.Create(command.VolunteerId);
@@ -26,10 +32,8 @@ public class DeleteVolunteerHandler : IRequestHandler<DeleteVolunteerCommand, Un
             return volunteerResult.Error.ToErrorList();
 
         volunteerResult.Value.Deactivate();
-        
-        var result = await _repository.Delete(volunteerResult.Value, cancellationToken);
-        if (result.IsFailure)
-            return volunteerResult.Error.ToErrorList();
+
+        await _unitOfWork.SaveChangesAsync(cancellationToken);
         
         _logger.Log(LogLevel.Information, "Volunteer deleted with Id {volunteerId}", volunteerId);
         

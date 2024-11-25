@@ -4,8 +4,9 @@ using PetProject.API.Controllers.Volunteers.Requests;
 using PetProject.API.Extensions;
 using PetProject.Application.Dto;
 using PetProject.Application.VolunteersManagement.AddPetPhoto;
-using PetProject.Application.VolunteersManagement.DeleteVolunteer;
 using PetProject.Application.VolunteersManagement.GetVolunteer;
+using PetProject.Application.VolunteersManagement.SoftDeletePet;
+using PetProject.Application.VolunteersManagement.SoftDeleteVolunteer;
 using PetProject.Domain.Shared.EntityIds;
 using PetProject.Domain.Shared.ValueObjects;
 using PetProject.Domain.VolunteerManagement;
@@ -27,7 +28,7 @@ public class VolunteersController : ApplicationController
         [FromRoute] Guid volunteerId,
         CancellationToken cancellationToken)
     {
-        var query = new GetVolunteerQuery{ VolunteerId = volunteerId };
+        var query = new GetVolunteerQuery { VolunteerId = volunteerId };
 
         var result = await _mediator.Send(query, cancellationToken);
 
@@ -36,7 +37,7 @@ public class VolunteersController : ApplicationController
 
         return Ok(result.Value);
     }
-    
+
     [HttpGet("list")]
     public async Task<ActionResult<List<VolunteerDto>>> GetList(
         [FromQuery] GetVolunteersListRequest request,
@@ -58,9 +59,9 @@ public class VolunteersController : ApplicationController
         CancellationToken cancellationToken)
     {
         var command = request.ToCommand();
-        
+
         var result = await _mediator.Send(command, cancellationToken);
-        
+
         if (result.IsFailure)
             return result.Error.ToResponse();
 
@@ -74,7 +75,7 @@ public class VolunteersController : ApplicationController
         CancellationToken cancellationToken)
     {
         var command = request.ToCommand(volunteerId);
-        
+
         var result = await _mediator.Send(command, cancellationToken);
 
         if (result.IsFailure)
@@ -92,7 +93,7 @@ public class VolunteersController : ApplicationController
         var command = request.ToCommand(volunteerId);
 
         var result = await _mediator.Send(command, cancellationToken);
-        
+
         if (result.IsFailure)
             return result.Error.ToResponse();
 
@@ -106,9 +107,9 @@ public class VolunteersController : ApplicationController
         CancellationToken cancellationToken)
     {
         var command = request.ToCommand(volunteerId);
-        
+
         var result = await _mediator.Send(command, cancellationToken);
-        
+
         if (result.IsFailure)
             return result.Error.ToResponse();
 
@@ -120,13 +121,13 @@ public class VolunteersController : ApplicationController
         [FromRoute] Guid volunteerId,
         CancellationToken cancellationToken)
     {
-        var command = new DeleteVolunteerCommand
+        var command = new SoftDeleteVolunteerCommand
         {
             VolunteerId = volunteerId
         };
-        
+
         var result = await _mediator.Send(command, cancellationToken);
-        
+
         if (result.IsFailure)
             return result.Error.ToResponse();
 
@@ -140,9 +141,9 @@ public class VolunteersController : ApplicationController
         CancellationToken cancellationToken)
     {
         var command = request.ToCommand(volunteerId);
-        
+
         var result = await _mediator.Send(command, cancellationToken);
-        
+
         if (result.IsFailure)
             return result.Error.ToResponse();
 
@@ -157,9 +158,9 @@ public class VolunteersController : ApplicationController
         CancellationToken cancellationToken)
     {
         var command = request.ToCommand(volunteerId, petId);
-        
+
         var result = await _mediator.Send(command, cancellationToken);
-        
+
         if (result.IsFailure)
             return result.Error.ToResponse();
 
@@ -175,14 +176,14 @@ public class VolunteersController : ApplicationController
     {
         await using var fileProcessor = new FormFileProcessor();
         var filesDto = fileProcessor.Process(photos);
-        
+
         var command = new AddPetPhotoCommand
         {
             VolunteerId = volunteerId,
             PetId = petId,
             Photos = filesDto
         };
-        
+
         var result = await _mediator.Send(command, cancellationToken);
 
         if (result.IsFailure)
@@ -199,12 +200,33 @@ public class VolunteersController : ApplicationController
         CancellationToken cancellationToken)
     {
         var command = request.ToCommand(volunteerId, petId);
-        
+
         var result = await _mediator.Send(command, cancellationToken);
-        
+
         if (result.IsFailure)
             return result.Error.ToResponse();
 
         return Ok("Success");
+    }
+
+    [HttpDelete("{volunteerId:guid}/pet/{petId:guid}")]
+    public async Task<ActionResult> DeletePet(
+        [FromRoute] Guid volunteerId,
+        [FromRoute] Guid petId,
+        CancellationToken cancellationToken)
+    {
+        var command = new SoftDeletePetCommand()
+        {
+            VolunteerId = volunteerId,
+
+            PetId = petId
+        };
+
+        var result = await _mediator.Send(command, cancellationToken);
+
+        if (result.IsFailure)
+            return result.Error.ToResponse();
+
+        return Ok();
     }
 }

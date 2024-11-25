@@ -5,7 +5,7 @@ using PetProject.Application.SpeciesManagement;
 using PetProject.Application.VolunteersManagement;
 using PetProject.Application.VolunteersManagement.AddPetPhoto;
 using PetProject.Application.VolunteersManagement.CreateVolunteer;
-using PetProject.Application.VolunteersManagement.DeleteVolunteer;
+using PetProject.Application.VolunteersManagement.SoftDeleteVolunteer;
 using PetProject.Application.VolunteersManagement.UpdateRequisites;
 using PetProject.Application.VolunteersManagement.UpdateSocialLinks;
 using PetProject.Application.VolunteersManagement.UpdateVolunteer;
@@ -24,11 +24,12 @@ public static class StubFactory
         => new(
             new Mock<IVolunteersRepository>(),
             new Mock<ILogger<CreateVolunteerHandler>>());
-    
-    public static DeleteVolunteerHandlerStub CreateDeleteVolunteerHandlerStub() 
+
+    public static SoftDeleteVolunteerHandlerStub CreateDeleteVolunteerHandlerStub()
         => new(
             new Mock<IVolunteersRepository>(),
-            new Mock<ILogger<DeleteVolunteerHandler>>());
+            new Mock<IUnitOfWork>(),
+            new Mock<ILogger<SoftDeleteVolunteerHandler>>());
     
     public static UpdateVolunteerHandlerStub CreateUpdateVolunteerHandlerStub() 
         => new(
@@ -66,6 +67,10 @@ public static class StubFactory
             new Mock<IUnitOfWork>());
     
     public static ChangePetStatusHandlerStub CreateChangePetStatusHandlerStub()
+        => new(new Mock<IVolunteersRepository>(),
+            new Mock<IUnitOfWork>());
+    
+    public static SoftDeletePetHandlerStub CreateSoftDeletePetHandlerStub()
         => new(new Mock<IVolunteersRepository>(),
             new Mock<IUnitOfWork>());
 
