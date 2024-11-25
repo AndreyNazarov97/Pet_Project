@@ -5,27 +5,28 @@ using PetProject.Application.Tests.Stubs;
 using PetProject.Application.VolunteersManagement.GetVolunteer;
 using PetProject.Domain.Shared;
 using PetProject.Domain.Shared.EntityIds;
+using PetProject.SharedTestData;
 
 namespace PetProject.Application.Tests.VolunteerManagement;
 
 public class GetVolunteerHandlerTest
 {
+    private static GetVolunteerQuery Query => new()
+    {
+        VolunteerId = Guid.NewGuid()
+    };
+    
     [Fact]
     public async Task Handle_ShouldReturnError_WhenVolunteerNotFound()
     {
         //Arrange
-        var volunteerId = Guid.NewGuid();
-        var query = new GetVolunteerQuery
-        {
-            VolunteerId = volunteerId
-        };
-
+        var query = Query;
         var handler = StubFactory.CreateGetVolunteerHandlerStub();
     
         //Act
         handler.VolunteersRepositoryMock.SetupGetById(
-            VolunteerId.Create(volunteerId),
-            Errors.General.NotFound(volunteerId));
+            VolunteerId.Create(query.VolunteerId),
+            Errors.General.NotFound(query.VolunteerId));
         var result = await handler.Handle(query);
     
         //Assert
@@ -41,10 +42,7 @@ public class GetVolunteerHandlerTest
     {
         //Arrange
         var volunteer = TestData.Volunteer;
-        var query = new GetVolunteerQuery
-        {
-            VolunteerId = volunteer.Id.Id
-        };
+        var query = Query with {VolunteerId = volunteer.Id.Id};
 
         var handler = StubFactory.CreateGetVolunteerHandlerStub();
     

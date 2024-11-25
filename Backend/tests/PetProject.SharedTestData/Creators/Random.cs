@@ -2,7 +2,7 @@ using Bogus;
 using Bogus.DataSets;
 using PetProject.Domain.VolunteerManagement.Enums;
 
-namespace PetProject.Application.Tests.Creators;
+namespace PetProject.SharedTestData.Creators;
 
 public static class Random
 {

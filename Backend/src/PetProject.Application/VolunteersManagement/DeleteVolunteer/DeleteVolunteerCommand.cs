@@ -6,5 +6,5 @@ namespace PetProject.Application.VolunteersManagement.DeleteVolunteer;
 
 public record DeleteVolunteerCommand() : IRequest<UnitResult<ErrorList>>
 {
-    public required Guid Id { get; init; } 
+    public required Guid VolunteerId { get; init; } 
 }

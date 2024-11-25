@@ -1,9 +1,7 @@
 ﻿using Bogus;
 using PetProject.Application.Dto;
-using PetProject.Domain.Shared.ValueObjects;
-using PetProject.Domain.VolunteerManagement;
 
-namespace PetProject.Application.Tests.Creators;
+namespace PetProject.SharedTestData.Creators;
 
 public class VolunteerCreator
 {

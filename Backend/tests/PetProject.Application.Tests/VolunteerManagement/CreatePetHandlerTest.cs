@@ -1,19 +1,20 @@
 ﻿using FluentAssertions;
 using Moq;
 using PetProject.Application.Models;
-using PetProject.Application.Tests.Creators;
 using PetProject.Application.Tests.Extensions;
 using PetProject.Application.Tests.Stubs;
 using PetProject.Application.VolunteersManagement.CreatePet;
 using PetProject.Domain.Shared;
 using PetProject.Domain.Shared.EntityIds;
-using Random = PetProject.Application.Tests.Creators.Random;
+using PetProject.SharedTestData;
+using PetProject.SharedTestData.Creators;
+using Random = PetProject.SharedTestData.Creators.Random;
 
 namespace PetProject.Application.Tests.VolunteerManagement;
 
 public class CreatePetHandlerTest
 {
-    private readonly CreatePetCommand _createPetCommand = new()
+    private static CreatePetCommand CreatePetCommand => new()
     {
         VolunteerId = Guid.NewGuid(),
         Name = Random.Name,
@@ -34,14 +35,13 @@ public class CreatePetHandlerTest
     public async Task Handle_ShouldReturnError_WhenVolunteerNotFound()
     {
         // Arrange
-        var volunteerId = Guid.NewGuid();
-        var command = _createPetCommand with {VolunteerId = volunteerId};
+        var command = CreatePetCommand;
         var handler = StubFactory.CreateCreatePetHandlerStub();
 
         // Act
         handler.VolunteersRepositoryMock.SetupGetById(
-            VolunteerId.Create(volunteerId),
-            Errors.General.NotFound(volunteerId));
+            VolunteerId.Create(command.VolunteerId),
+            Errors.General.NotFound(command.VolunteerId));
         var result = await handler.Handle(command, CancellationToken.None);
 
         //Assert
@@ -57,7 +57,7 @@ public class CreatePetHandlerTest
     {
         // Arrange
         var volunteer = TestData.Volunteer;
-        var command = _createPetCommand with { VolunteerId = volunteer.Id };
+        var command = CreatePetCommand with { VolunteerId = volunteer.Id };
         
         var handler = StubFactory.CreateCreatePetHandlerStub();
 
@@ -82,7 +82,7 @@ public class CreatePetHandlerTest
     {
         // Arrange
         var volunteer = TestData.Volunteer;
-        var command = _createPetCommand with { VolunteerId = volunteer.Id, BreedName = "WrongBreedName" };
+        var command = CreatePetCommand with { VolunteerId = volunteer.Id, BreedName = "WrongBreedName" };
 
         var speciesDto = TestData.SpeciesDto;
         
@@ -109,7 +109,7 @@ public class CreatePetHandlerTest
     {
         // Arrange
         var volunteer = TestData.Volunteer;
-        var command = _createPetCommand with { VolunteerId = volunteer.Id };
+        var command = CreatePetCommand with { VolunteerId = volunteer.Id };
 
         var speciesDto = TestData.SpeciesDto;
         

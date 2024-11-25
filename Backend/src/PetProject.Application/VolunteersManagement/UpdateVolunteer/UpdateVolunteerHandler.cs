@@ -28,7 +28,7 @@ public class UpdateVolunteerHandler : IRequestHandler<UpdateVolunteerCommand, Re
         UpdateVolunteerCommand command, 
         CancellationToken cancellationToken = default)
     {
-        var volunteerId = VolunteerId.Create(command.IdVolunteer);
+        var volunteerId = VolunteerId.Create(command.VolunteerId);
 
         var volunteer = await _repository.GetById(volunteerId, cancellationToken);
 

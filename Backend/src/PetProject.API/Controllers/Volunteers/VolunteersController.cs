@@ -122,7 +122,7 @@ public class VolunteersController : ApplicationController
     {
         var command = new DeleteVolunteerCommand
         {
-            Id = volunteerId
+            VolunteerId = volunteerId
         };
         
         var result = await _mediator.Send(command, cancellationToken);

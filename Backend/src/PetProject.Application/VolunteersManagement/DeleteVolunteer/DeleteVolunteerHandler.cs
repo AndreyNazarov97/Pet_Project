@@ -20,7 +20,7 @@ public class DeleteVolunteerHandler : IRequestHandler<DeleteVolunteerCommand, Un
     public async Task<UnitResult<ErrorList>> Handle(DeleteVolunteerCommand command,
         CancellationToken cancellationToken = default)
     {
-        var volunteerId = VolunteerId.Create(command.Id);
+        var volunteerId = VolunteerId.Create(command.VolunteerId);
         var volunteerResult = await _repository.GetById(volunteerId, cancellationToken);
         if (volunteerResult.IsFailure)
             return volunteerResult.Error.ToErrorList();

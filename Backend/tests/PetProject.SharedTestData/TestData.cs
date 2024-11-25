@@ -1,15 +1,15 @@
 ﻿using Bogus;
 using PetProject.Application.Dto;
-using PetProject.Application.Tests.Creators;
 using PetProject.Domain.Shared.EntityIds;
 using PetProject.Domain.Shared.ValueObjects;
 using PetProject.Domain.SpeciesManagement.ValueObjects;
 using PetProject.Domain.VolunteerManagement;
 using PetProject.Domain.VolunteerManagement.Enums;
 using PetProject.Domain.VolunteerManagement.ValueObjects;
-using Random = PetProject.Application.Tests.Creators.Random;
+using PetProject.SharedTestData.Creators;
+using Random = PetProject.SharedTestData.Creators.Random;
 
-namespace PetProject.Application.Tests.Extensions;
+namespace PetProject.SharedTestData;
 
 public class TestData
 {

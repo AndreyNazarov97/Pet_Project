@@ -7,12 +7,13 @@ using PetProject.Application.VolunteersManagement.AddPetPhoto;
 using PetProject.Domain.Shared;
 using PetProject.Domain.Shared.EntityIds;
 using PetProject.Domain.Shared.ValueObjects;
+using PetProject.SharedTestData;
 
 namespace PetProject.Application.Tests.VolunteerManagement;
 
 public class AddPetPhotoHandlerTest
 {
-    private readonly AddPetPhotoCommand _addPetPhotoCommand = new AddPetPhotoCommand
+    private static AddPetPhotoCommand AddPetPhotoCommand => new AddPetPhotoCommand
     {
         VolunteerId = Guid.NewGuid(),
         PetId = Guid.NewGuid(),
@@ -27,7 +28,7 @@ public class AddPetPhotoHandlerTest
     public async Task Handle_ShouldReturnError_WhenVolunteerDoesNotExist()
     {
         // Arrange
-        var command = _addPetPhotoCommand;
+        var command = AddPetPhotoCommand;
 
         var handler = StubFactory.CreateAddPetPhotoHandlerStub();
 
@@ -67,7 +68,7 @@ public class AddPetPhotoHandlerTest
     {
         // Arrange
         var volunteer = TestData.Volunteer;
-        var command = _addPetPhotoCommand with
+        var command = AddPetPhotoCommand with
         {
             VolunteerId = volunteer.Id.Id,
         };
@@ -110,7 +111,7 @@ public class AddPetPhotoHandlerTest
         var volunteer = TestData.Volunteer;
         var pet = TestData.Pet;
         volunteer.AddPet(pet);
-        var command = _addPetPhotoCommand with
+        var command = AddPetPhotoCommand with
         {
             VolunteerId = volunteer.Id.Id,
             PetId = pet.Id.Id
@@ -154,7 +155,7 @@ public class AddPetPhotoHandlerTest
         var volunteer = TestData.Volunteer;
         var pet = TestData.Pet;
         volunteer.AddPet(pet);
-        var command = _addPetPhotoCommand with
+        var command = AddPetPhotoCommand with
         {
             VolunteerId = volunteer.Id.Id,
             PetId = pet.Id.Id
