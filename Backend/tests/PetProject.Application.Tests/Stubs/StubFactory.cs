@@ -59,5 +59,10 @@ public static class StubFactory
             new Mock<IFileProvider>(),
             new Mock<IUnitOfWork>(),
             new Mock<ILogger<AddPetPhotoHandler>>());
-    
+
+    public static UpdatePetHandlerStub CreateUpdatePetHandlerStub()
+        => new(new Mock<IVolunteersRepository>(),
+            new Mock<ISpeciesRepository>(),
+            new Mock<IUnitOfWork>());
+
 }
