@@ -36,11 +36,14 @@ jobs:
       # Восстановление зависимостей
       - name: Restore dependencies
         run: dotnet restore
+        working-directory: ./Backend
 
       # Сборка проекта
       - name: Build
         run: dotnet build --no-restore --configuration Release
+        working-directory: ./Backend
 
       # Запуск тестов
       - name: Test
         run: dotnet test --no-build --configuration Release --verbosity minimal
+        working-directory: ./Backend
