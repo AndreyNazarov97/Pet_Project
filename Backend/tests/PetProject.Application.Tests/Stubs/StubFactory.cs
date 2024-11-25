@@ -64,5 +64,9 @@ public static class StubFactory
         => new(new Mock<IVolunteersRepository>(),
             new Mock<ISpeciesRepository>(),
             new Mock<IUnitOfWork>());
+    
+    public static ChangePetStatusHandlerStub CreateChangePetStatusHandlerStub()
+        => new(new Mock<IVolunteersRepository>(),
+            new Mock<IUnitOfWork>());
 
 }

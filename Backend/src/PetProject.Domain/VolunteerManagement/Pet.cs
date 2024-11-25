@@ -100,6 +100,11 @@ public class Pet : Shared.Common.Entity<PetId>, ISoftDeletable
         Position = position;
     }
     
+    public void ChangeStatus(HelpStatus status)
+    {
+        HelpStatus = status;
+    }
+    
     public void Activate()
     {
         _isDeleted = false;
