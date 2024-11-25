@@ -27,7 +27,7 @@ public class UpdateRequisitesHandler : IRequestHandler<UpdateRequisitesCommand, 
     public async Task<Result<Guid, ErrorList>> Handle(UpdateRequisitesCommand command,
         CancellationToken cancellationToken = default)
     {
-        var volunteerId = VolunteerId.Create(command.Id);
+        var volunteerId = VolunteerId.Create(command.VolunteerId);
 
         var volunteer = await _repository.GetById(volunteerId, cancellationToken);
 

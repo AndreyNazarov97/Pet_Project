@@ -2,10 +2,12 @@
 using Microsoft.AspNetCore.Mvc;
 using PetProject.API.Controllers.Volunteers.Requests;
 using PetProject.API.Extensions;
+using PetProject.Application.Dto;
 using PetProject.Application.VolunteersManagement.AddPetPhoto;
 using PetProject.Application.VolunteersManagement.DeleteVolunteer;
 using PetProject.Application.VolunteersManagement.GetVolunteer;
 using PetProject.Domain.Shared.EntityIds;
+using PetProject.Domain.Shared.ValueObjects;
 using PetProject.Domain.VolunteerManagement;
 using PetProject.Infrastructure.Postgres.Processors;
 
@@ -36,7 +38,7 @@ public class VolunteersController : ApplicationController
     }
     
     [HttpGet("list")]
-    public async Task<ActionResult<List<Volunteer>>> GetList(
+    public async Task<ActionResult<List<VolunteerDto>>> GetList(
         [FromQuery] GetVolunteersListRequest request,
         CancellationToken cancellationToken)
     {
@@ -120,7 +122,7 @@ public class VolunteersController : ApplicationController
     {
         var command = new DeleteVolunteerCommand
         {
-            Id = volunteerId
+            VolunteerId = volunteerId
         };
         
         var result = await _mediator.Send(command, cancellationToken);
@@ -148,7 +150,7 @@ public class VolunteersController : ApplicationController
     }
 
     [HttpPost("{volunteerId:guid}/pet/{petId:guid}/photo")]
-    public async Task<ActionResult> AddPetPhoto(
+    public async Task<ActionResult<List<FilePath>>> AddPetPhoto(
         [FromRoute] Guid volunteerId,
         [FromRoute] Guid petId,
         [FromForm] IFormFileCollection photos,

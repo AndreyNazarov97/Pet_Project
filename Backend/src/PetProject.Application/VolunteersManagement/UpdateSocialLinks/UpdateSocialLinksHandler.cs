@@ -27,7 +27,7 @@ public class UpdateSocialLinksHandler : IRequestHandler<UpdateSocialLinksCommand
     public async Task<Result<Guid, ErrorList>> Handle(UpdateSocialLinksCommand command,
         CancellationToken cancellationToken = default)
     {
-        var volunteerId = VolunteerId.Create(command.Id);
+        var volunteerId = VolunteerId.Create(command.VolunteerId);
 
         var volunteer = await _repository.GetById(volunteerId, cancellationToken);
 

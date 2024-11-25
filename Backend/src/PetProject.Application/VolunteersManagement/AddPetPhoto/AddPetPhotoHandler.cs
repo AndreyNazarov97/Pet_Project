@@ -5,11 +5,12 @@ using PetProject.Application.Abstractions;
 using PetProject.Application.Dto;
 using PetProject.Domain.Shared;
 using PetProject.Domain.Shared.EntityIds;
+using PetProject.Domain.Shared.ValueObjects;
 using PetProject.Domain.VolunteerManagement.ValueObjects;
 
 namespace PetProject.Application.VolunteersManagement.AddPetPhoto;
 
-public class AddPetPhotoHandler : IRequestHandler<AddPetPhotoCommand, Result<string, ErrorList>>
+public class AddPetPhotoHandler : IRequestHandler<AddPetPhotoCommand, Result<FilePath[], ErrorList>>
 {
     private const string BucketName = "pet-project";
 
@@ -30,42 +31,41 @@ public class AddPetPhotoHandler : IRequestHandler<AddPetPhotoCommand, Result<str
         _logger = logger;
     }
 
-    public async Task<Result<string, ErrorList>> Handle(AddPetPhotoCommand command,
+    public async Task<Result<FilePath[], ErrorList>> Handle(AddPetPhotoCommand command,
         CancellationToken cancellationToken = default)
     {
         using var transaction = await _unitOfWork.BeginTransactionAsync(cancellationToken);
         try
         {
-            var filesData = command.Photos
-                .Select(photo => new FileDataDto(photo.Content, photo.FileName, BucketName))
-                .ToList();
-
-            var uploadResult = await _fileProvider.UploadFiles(filesData, cancellationToken);
-            if (uploadResult.IsFailure) 
-                return uploadResult.Error;
-        
-            var petPhotos = uploadResult.Value
-                .Select(p => new PetPhoto(p))
-                .ToList();
-        
             var volunteerId = VolunteerId.Create(command.VolunteerId);
             var volunteerResult = await _volunteersRepository.GetById(volunteerId, cancellationToken);
             if (volunteerResult.IsFailure)
                 return volunteerResult.Error.ToErrorList();
-        
+
             var volunteer = volunteerResult.Value;
 
             var petId = PetId.Create(command.PetId);
             var pet = volunteer.GetById(petId);
             if (pet is null)
                 return Errors.General.NotFound(command.PetId).ToErrorList();
-        
+
+            var filesData = command.Photos
+                .Select(photo => new FileDataDto(photo.Content, photo.FileName, BucketName))
+                .ToList();
+
+            var uploadResult = await _fileProvider.UploadFiles(filesData, cancellationToken);
+            if (uploadResult.IsFailure)
+                return uploadResult.Error;
+
+            var petPhotos = uploadResult.Value
+                .Select(p => new PetPhoto(p))
+                .ToList();
+
             pet.AddPhotos(petPhotos);
             await _unitOfWork.SaveChangesAsync(cancellationToken);
 
             transaction.Commit();
-            return "Success";
-
+            return uploadResult.Value.ToArray();
         }
         catch (Exception e)
         {
@@ -75,6 +75,5 @@ public class AddPetPhotoHandler : IRequestHandler<AddPetPhotoCommand, Result<str
                 .Failure("could.not.add.pet.photo", "Could not add pet photo")
                 .ToErrorList();
         }
-        
     }
 }

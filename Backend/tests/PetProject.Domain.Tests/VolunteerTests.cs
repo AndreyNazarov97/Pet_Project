@@ -2,6 +2,7 @@ using FluentAssertions;
 using PetProject.Domain.Shared;
 using PetProject.Domain.VolunteerManagement;
 using PetProject.Domain.VolunteerManagement.ValueObjects;
+using PetProject.SharedTestData;
 
 namespace PetProject.Domain.Tests;
 
