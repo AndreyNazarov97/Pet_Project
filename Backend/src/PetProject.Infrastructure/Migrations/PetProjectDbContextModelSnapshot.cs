@@ -33,6 +33,10 @@ namespace PetProject.Infrastructure.Postgres.Migrations
                         .HasColumnType("uuid")
                         .HasColumnName("species_id");
 
+                    b.Property<bool>("_isDeleted")
+                        .HasColumnType("boolean")
+                        .HasColumnName("is_deleted");
+
                     b.ComplexProperty<Dictionary<string, object>>("BreedName", "PetProject.Domain.SpeciesManagement.Breed.BreedName#BreedName", b1 =>
                         {
                             b1.IsRequired();
@@ -58,6 +62,10 @@ namespace PetProject.Infrastructure.Postgres.Migrations
                     b.Property<Guid>("Id")
                         .HasColumnType("uuid")
                         .HasColumnName("id");
+
+                    b.Property<bool>("_isDeleted")
+                        .HasColumnType("boolean")
+                        .HasColumnName("is_deleted");
 
                     b.ComplexProperty<Dictionary<string, object>>("Name", "PetProject.Domain.SpeciesManagement.Species.Name#SpeciesName", b1 =>
                         {

@@ -64,6 +64,32 @@ public class Pet : Shared.Common.Entity<PetId>, ISoftDeletable
         DateCreated = DateTimeOffset.UtcNow;
     }
 
+    public void UpdatePet(
+        PetName? petName,
+        Description? generalDescription,
+        Description? healthInformation,
+        AnimalType? animalType,
+        Address? address,
+        PetPhysicalAttributes? attributes,
+        DateOnly? birthDate,
+        bool? isCastrated,
+        bool? isVaccinated,
+        HelpStatus? helpStatus,
+        RequisitesList? requisites)
+    {
+        PetName = petName ?? PetName;
+        GeneralDescription = generalDescription ?? GeneralDescription;
+        HealthInformation = healthInformation ?? HealthInformation;
+        AnimalType = animalType ?? AnimalType;
+        Address = address ?? Address;
+        PhysicalAttributes = attributes ?? PhysicalAttributes;
+        BirthDate = birthDate ?? BirthDate;
+        IsCastrated = isCastrated ?? IsCastrated;
+        IsVaccinated = isVaccinated ?? IsVaccinated;
+        HelpStatus = helpStatus ?? HelpStatus;
+        RequisitesList = requisites ?? RequisitesList;
+    }
+
     public void AddPhotos(IEnumerable<PetPhoto> petPhotos)
     {
         PetPhotosList.AddPhotos(petPhotos);

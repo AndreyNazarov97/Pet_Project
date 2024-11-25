@@ -95,6 +95,41 @@ public class Volunteer : AggregateRoot<VolunteerId>, ISoftDeletable
 
     public Pet? GetById(PetId id) => _pets.FirstOrDefault(x => x.Id == id);
 
+    public UnitResult<Error> UpdatePet(
+        PetId petId,
+        PetName? petName,
+        Description? generalDescription,
+        Description? healthInformation,
+        AnimalType? animalType,
+        Address? address,
+        PetPhysicalAttributes? attributes,
+        DateOnly? birthDate,
+        bool? isCastrated,
+        bool? isVaccinated,
+        HelpStatus? helpStatus,
+        RequisitesList? requisites
+    )
+    {
+        var pet = GetById(petId);
+        if (pet == null)
+            return Errors.General.NotFound(petId.Id);
+        
+        pet.UpdatePet(
+            petName, 
+            generalDescription, 
+            healthInformation, 
+            animalType, 
+            address, 
+            attributes, 
+            birthDate, 
+            isCastrated,
+            isVaccinated,
+            helpStatus,
+            requisites);
+
+        return Result.Success<Error>();
+    }
+
     public UnitResult<Error> ChangePetPosition(Pet pet, Position newPosition)
     {
         if(_pets.Contains(pet) == false)
