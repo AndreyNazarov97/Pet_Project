@@ -93,7 +93,7 @@ public class VolunteersRepository : IVolunteersRepository
                             pets p on v.id = p.volunteer_id
                        """;
 
-        var conditions = new List<string>(["1=1"]);
+        var conditions = new List<string>(["p.is_deleted = false"]);
         var param = new DynamicParameters();
 
         if (query.VolunteerIds is { Length: > 0 })
