@@ -246,4 +246,21 @@ public class VolunteersController : ApplicationController
 
         return Ok();
     }
+
+    [HttpDelete("{volunteerId:guid}/pet/{petId:guid}/photo/")]
+    public async Task<ActionResult> DeletePetPhoto(
+        [FromRoute] Guid volunteerId,
+        [FromRoute] Guid petId,
+        [FromBody] DeletePetPhotoRequest request,
+        CancellationToken cancellationToken)
+    {
+        var command = request.ToCommand(volunteerId, petId);
+        
+        var result = await _mediator.Send(command, cancellationToken);
+
+        if (result.IsFailure)
+            return result.Error.ToResponse();    
+
+        return Ok();
+    }
 }

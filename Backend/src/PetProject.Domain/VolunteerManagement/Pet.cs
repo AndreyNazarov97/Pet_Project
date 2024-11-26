@@ -11,6 +11,7 @@ namespace PetProject.Domain.VolunteerManagement;
 public class Pet : Shared.Common.Entity<PetId>, ISoftDeletable
 {
     private bool _isDeleted = false;
+    private List<PetPhoto> _PetPhotoList = [];
 
     protected Pet(PetId id) : base(id)
     {
@@ -29,7 +30,7 @@ public class Pet : Shared.Common.Entity<PetId>, ISoftDeletable
     public HelpStatus HelpStatus { get; private set; }
     public Position Position { get; private set; }
     public DateTimeOffset DateCreated { get; }
-    public IReadOnlyList<PetPhoto> PetPhotoList { get; private set; }
+    public IReadOnlyList<PetPhoto> PetPhotoList => _PetPhotoList.AsReadOnly();
     public IReadOnlyList<Requisite> Requisites { get; private set; }
 
 
@@ -60,7 +61,7 @@ public class Pet : Shared.Common.Entity<PetId>, ISoftDeletable
         IsVaccinated = isVaccinated;
         HelpStatus = helpStatus;
         Requisites = requisite;
-        PetPhotoList = petPhoto;
+        _PetPhotoList = petPhoto;
         DateCreated = DateTimeOffset.UtcNow;
     }
 
@@ -92,33 +93,48 @@ public class Pet : Shared.Common.Entity<PetId>, ISoftDeletable
 
     public void AddPhotos(IEnumerable<PetPhoto> petPhotos)
     {
-        PetPhotoList = petPhotos.Concat(PetPhotoList).ToList();
+        _PetPhotoList.AddRange(petPhotos);
     }
-    
+
     public void SetPosition(Position position)
     {
         Position = position;
     }
-    
+
     public void ChangeStatus(HelpStatus status)
     {
         HelpStatus = status;
     }
-    
+
     public UnitResult<Error> SetMainPhoto(PetPhoto petPhoto)
     {
         var isPhotoExist = PetPhotoList.FirstOrDefault(p => p.Path == petPhoto.Path);
         if (isPhotoExist is null)
             return Errors.General.NotFound();
 
-        PetPhotoList = PetPhotoList
-            .Select(photo => new PetPhoto(photo.Path){ IsMain = photo.Path == petPhoto.Path })
+        _PetPhotoList = PetPhotoList
+            .Select(photo => new PetPhoto(photo.Path) { IsMain = photo.Path == petPhoto.Path })
             .OrderByDescending(p => p.IsMain)
             .ToList();
 
         return UnitResult.Success<Error>();
     }
-    
+
+    public UnitResult<Error> DeletePhoto(FilePath filePath)
+    {
+        var isPhotoExist = PetPhotoList.FirstOrDefault(p => p.Path == filePath);
+        if (isPhotoExist is null)
+            return Errors.General.NotFound();
+
+        _PetPhotoList.Remove(isPhotoExist);
+        if (isPhotoExist.IsMain && _PetPhotoList.Count > 0)
+        {
+            _PetPhotoList[0] = new PetPhoto(_PetPhotoList[0].Path) { IsMain = true };
+        }
+
+        return UnitResult.Success<Error>();
+    }
+
     public void Activate()
     {
         _isDeleted = false;
