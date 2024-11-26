@@ -35,8 +35,8 @@ public class GetVolunteerHandler : IRequestHandler<GetVolunteerQuery, Result<Vol
             GeneralDescription = volunteer.GeneralDescription.Value,
             PhoneNumber = volunteer.PhoneNumber.Value,
             AgeExperience = volunteer.Experience.Years,
-            Requisites = volunteer.RequisitesList.ToDto(),
-            SocialLinks = volunteer.SocialLinksList.ToDto()
+            Requisites = volunteer.Requisites.Select(r => r.ToDto()).ToArray(),
+            SocialLinks = volunteer.SocialLinks.Select(s => s.ToDto()).ToArray()
         };
 
         return volunteerDto;

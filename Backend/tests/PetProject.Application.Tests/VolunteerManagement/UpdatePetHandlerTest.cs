@@ -174,5 +174,17 @@ public class UpdatePetHandlerTest
             Times.Once);
 
         result.Value.Should().Be(command.PetId);
+        pet.PetName.Value.Should().Be(command.PetInfo.PetName);
+        pet.AnimalType.BreedName.Value.Should().Be(command.PetInfo.BreedName);
+        pet.AnimalType.SpeciesName.Value.Should().Be(command.PetInfo.SpeciesName);
+        pet.Address.Country.Should().Be(command.PetInfo.Address!.Country);
+        pet.Address.City.Should().Be(command.PetInfo.Address!.City);
+        pet.Address.Street.Should().Be(command.PetInfo.Address!.Street);
+        pet.Address.House.Should().Be(command.PetInfo.Address!.House);
+        pet.Address.Flat.Should().Be(command.PetInfo.Address!.Flat);
+        pet.GeneralDescription.Value.Should().Be(command.PetInfo.GeneralDescription);
+        pet.HealthInformation.Value.Should().Be(command.PetInfo.HealthInformation);
+        pet.IsCastrated.Should().Be((bool)command.PetInfo.IsCastrated!);
+        pet.IsVaccinated.Should().Be((bool)command.PetInfo.IsVaccinated!);
     }
 }

@@ -165,10 +165,10 @@ public class VolunteersRepository : IVolunteersRepository
                 var requisitesJson = reader.GetString(6);
                 var socialLinksJson = reader.GetString(7);
 
-                var requisites = JsonSerializer.Deserialize<RequisitesListDto>(requisitesJson)
-                                 ?? new RequisitesListDto() { Requisites = [] };
-                var socialLinks = JsonSerializer.Deserialize<SocialLinksListDto>(socialLinksJson)
-                                  ?? new SocialLinksListDto() { SocialLinks = [] };
+                var requisites = JsonSerializer.Deserialize<IEnumerable<RequisiteDto>>(requisitesJson)
+                                 ?? [];
+                var socialLinks = JsonSerializer.Deserialize<IEnumerable<SocialLinkDto>>(socialLinksJson)
+                                  ?? [];
 
                 volunteer = new VolunteerDto
                 {
@@ -176,8 +176,8 @@ public class VolunteersRepository : IVolunteersRepository
                     GeneralDescription = reader.GetString(3),
                     PhoneNumber = phoneNumber,
                     AgeExperience = reader.GetInt32(5),
-                    Requisites = requisites.Requisites.ToArray(),
-                    SocialLinks = socialLinks.SocialLinks.ToArray(),
+                    Requisites = requisites.ToArray(),
+                    SocialLinks = socialLinks.ToArray(),
                 };
                 volunteers.Add(volunteer);
             }

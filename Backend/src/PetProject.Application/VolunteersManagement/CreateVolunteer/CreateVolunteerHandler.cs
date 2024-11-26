@@ -49,12 +49,12 @@ public class CreateVolunteerHandler : IRequestHandler<CreateVolunteerCommand, Re
         var phoneNumber = PhoneNumber.Create(command.PhoneNumber).Value;
 
         var socialLinks = command.SocialLinks
-            .Select(x => SocialLink.Create(x.Title, x.Url).Value);
-        var socialLinksList = new SocialLinksList(socialLinks);
+            .Select(x => SocialLink.Create(x.Title, x.Url).Value)
+            .ToList();
 
         var requisites = command.Requisites
-            .Select(x => Requisite.Create(x.Title, x.Description).Value);
-        var requisitesList = new RequisitesList(requisites);
+            .Select(x => Requisite.Create(x.Title, x.Description).Value)
+            .ToList();
 
         var volunteer = new Volunteer(
             volunteerId,
@@ -62,8 +62,8 @@ public class CreateVolunteerHandler : IRequestHandler<CreateVolunteerCommand, Re
             description,
             ageExperience, 
             phoneNumber, 
-            socialLinksList, 
-            requisitesList);
+            socialLinks, 
+            requisites);
 
         await _repository.Add(volunteer, token);
         

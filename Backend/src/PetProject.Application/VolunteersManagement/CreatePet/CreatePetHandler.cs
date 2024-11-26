@@ -39,7 +39,7 @@ public class CreatePetHandler : IRequestHandler<CreatePetCommand, Result<Guid, E
             return volunteerResult.Error.ToErrorList();
         
         var volunteer = volunteerResult.Value;
-        var petResult = await CreatePet(command, volunteer.PhoneNumber, cancellationToken);
+        var petResult = await CreatePet(command, volunteer, cancellationToken);
         if (petResult.IsFailure)
             return petResult.Error.ToErrorList();
         
@@ -53,7 +53,7 @@ public class CreatePetHandler : IRequestHandler<CreatePetCommand, Result<Guid, E
 
     private async Task<Result<Pet, Error>> CreatePet(
         CreatePetCommand command,
-        PhoneNumber phoneNumber,
+        Volunteer volunteer,
         CancellationToken cancellationToken)
     {
         var petId = PetId.NewId();
@@ -79,12 +79,12 @@ public class CreatePetHandler : IRequestHandler<CreatePetCommand, Result<Guid, E
             animalType,
             address,
             petPhysicalAttributes,
-            phoneNumber,
+            volunteer.PhoneNumber,
             command.BirthDate,
             command.IsCastrated,
             command.IsVaccinated,
             command.HelpStatus,
-            new RequisitesList([Requisite.Create("test", "test").Value]),
+            volunteer.Requisites.ToList(),
             []
         );
 

@@ -62,6 +62,6 @@ public class UpdateRequisitesHandlerTest
         result.IsSuccess.Should().BeTrue();
         handler.UnitOfWorkMock.Verify(uow => uow.SaveChangesAsync(It.IsAny<CancellationToken>()), Times.Once);
 
-        volunteer.RequisitesList.Requisites.Count.Should().Be(2);
+        volunteer.Requisites.Count.Should().Be(2);
     }
 }

@@ -6,7 +6,7 @@ using Microsoft.EntityFrameworkCore.Migrations;
 namespace PetProject.Infrastructure.Postgres.Migrations
 {
     /// <inheritdoc />
-    public partial class Initital_Pets : Migration
+    public partial class Initial_VolunteerManagement : Migration
     {
         /// <inheritdoc />
         protected override void Up(MigrationBuilder migrationBuilder)
@@ -29,15 +29,15 @@ namespace PetProject.Infrastructure.Postgres.Migrations
                 columns: table => new
                 {
                     id = table.Column<Guid>(type: "uuid", nullable: false),
+                    social_links = table.Column<string>(type: "jsonb", nullable: false),
+                    requisites = table.Column<string>(type: "jsonb", nullable: false),
                     is_deleted = table.Column<bool>(type: "boolean", nullable: false),
                     age_experience = table.Column<int>(type: "integer", nullable: false),
                     name = table.Column<string>(type: "character varying(50)", maxLength: 50, nullable: false),
                     patronymic = table.Column<string>(type: "character varying(50)", maxLength: 50, nullable: false),
                     surname = table.Column<string>(type: "character varying(50)", maxLength: 50, nullable: false),
                     general_description = table.Column<string>(type: "character varying(500)", maxLength: 500, nullable: false),
-                    phone_number = table.Column<string>(type: "text", nullable: false),
-                    requisites = table.Column<string>(type: "jsonb", nullable: false),
-                    social_links = table.Column<string>(type: "jsonb", nullable: false)
+                    phone_number = table.Column<string>(type: "text", nullable: false)
                 },
                 constraints: table =>
                 {
@@ -75,6 +75,7 @@ namespace PetProject.Infrastructure.Postgres.Migrations
                     help_status = table.Column<int>(type: "integer", nullable: false),
                     date_created = table.Column<DateTimeOffset>(type: "timestamp with time zone", nullable: false),
                     pet_photos = table.Column<string>(type: "jsonb", nullable: false),
+                    requisites = table.Column<string>(type: "jsonb", nullable: false),
                     is_deleted = table.Column<bool>(type: "boolean", nullable: false),
                     volunteer_id = table.Column<Guid>(type: "uuid", nullable: true),
                     city = table.Column<string>(type: "character varying(50)", maxLength: 50, nullable: false),
@@ -90,8 +91,7 @@ namespace PetProject.Infrastructure.Postgres.Migrations
                     phone_number = table.Column<string>(type: "text", nullable: false),
                     height = table.Column<double>(type: "double precision", nullable: false),
                     weight = table.Column<double>(type: "double precision", nullable: false),
-                    position = table.Column<int>(type: "integer", nullable: false),
-                    requisites = table.Column<string>(type: "jsonb", nullable: false)
+                    position = table.Column<int>(type: "integer", nullable: false)
                 },
                 constraints: table =>
                 {

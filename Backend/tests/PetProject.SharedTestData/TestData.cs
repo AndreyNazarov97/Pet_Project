@@ -21,8 +21,8 @@ public class TestData
         Description.Create(Random.LoremParagraph).Value,
         Experience.Create(Random.Experience).Value,
         PhoneNumber.Create(Random.PhoneNumber).Value,
-        new SocialLinksList([]),
-        new RequisitesList([])
+       [],
+        []
     );
 
     public static Pet Pet => new(
@@ -47,7 +47,7 @@ public class TestData
         true,
         true,
         HelpStatus.NeedsHelp,
-        new RequisitesList([]),
+        [],
         []
     );
 

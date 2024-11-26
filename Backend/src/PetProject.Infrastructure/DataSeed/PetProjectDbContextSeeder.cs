@@ -76,33 +76,32 @@ public static class PetProjectDbContextSeeder
         PetProjectDbContext context,
         CancellationToken cancellationToken)
     {
+        var socialLink = SocialLink.Create("telegram", "https://t.me/andrey_nazarov").Value;
+        var requisite = Requisite.Create("Сбербанк", "8 951 101 62 53").Value;
+        
         var firstVolunteer = new Volunteer(
             VolunteerId.NewId(),
             FullName.Create("Андрей", "Назаров", "Владиславович").Value,
             Description.Create("Самый первый волонтер").Value,
             Experience.Create(3).Value,
             PhoneNumber.Create("79511016253").Value,
-            new SocialLinksList([
-                SocialLink.Create("telegram", "https://t.me/andrey_nazarov").Value
-            ]),
-            new RequisitesList([
-                Requisite.Create("Сбербанк", "8 951 101 62 53").Value
-            ])
+            [socialLink],
+            [requisite]
         );
 
+        var secondSocialLink = SocialLink.Create("telegram", "https://t.me/suvorov").Value;
+        var secondRequisite = Requisite.Create("Банк Екатерины Великой", "Попросить Потемкина").Value;
+        
         var secondVolunteer = new Volunteer(
             VolunteerId.NewId(),
             FullName.Create("Александр", "Суворов", "Васильевич").Value,
             Description.Create("Великий полководец").Value,
             Experience.Create(33).Value,
             PhoneNumber.Create("78005553535").Value,
-            new SocialLinksList([
-                SocialLink.Create("телеграф", "https://t.me/suvorov").Value
-            ]),
-            new RequisitesList([
-                Requisite.Create("Банк Екатерины Великой", "Попросить Потемкина").Value
-            ])
+            [secondSocialLink],
+            [secondRequisite]
         );
+        
 
         await context.Volunteers.AddRangeAsync([firstVolunteer, secondVolunteer], cancellationToken);
         
@@ -120,7 +119,7 @@ public static class PetProjectDbContextSeeder
             true,
             true,
             HelpStatus.LookingForHome,
-            firstVolunteer.RequisitesList,
+            [requisite],
             []
         );
         

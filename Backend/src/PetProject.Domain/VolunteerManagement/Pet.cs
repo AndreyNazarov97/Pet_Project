@@ -30,7 +30,7 @@ public class Pet : Shared.Common.Entity<PetId>, ISoftDeletable
     public Position Position { get; private set; }
     public DateTimeOffset DateCreated { get; }
     public IReadOnlyList<PetPhoto> PetPhotoList { get; private set; }
-    public RequisitesList RequisitesList { get; private set; }
+    public IReadOnlyList<Requisite> Requisites { get; private set; }
 
 
     public Pet(PetId id,
@@ -45,7 +45,7 @@ public class Pet : Shared.Common.Entity<PetId>, ISoftDeletable
         bool isCastrated,
         bool isVaccinated,
         HelpStatus helpStatus,
-        RequisitesList requisites,
+        List<Requisite> requisite,
         List<PetPhoto> petPhoto) : base(id)
     {
         PetName = petName;
@@ -59,7 +59,7 @@ public class Pet : Shared.Common.Entity<PetId>, ISoftDeletable
         IsCastrated = isCastrated;
         IsVaccinated = isVaccinated;
         HelpStatus = helpStatus;
-        RequisitesList = requisites;
+        Requisites = requisite;
         PetPhotoList = petPhoto;
         DateCreated = DateTimeOffset.UtcNow;
     }
@@ -75,7 +75,7 @@ public class Pet : Shared.Common.Entity<PetId>, ISoftDeletable
         bool? isCastrated,
         bool? isVaccinated,
         HelpStatus? helpStatus,
-        RequisitesList? requisites)
+        List<Requisite>? requisites)
     {
         PetName = petName ?? PetName;
         GeneralDescription = generalDescription ?? GeneralDescription;
@@ -87,7 +87,7 @@ public class Pet : Shared.Common.Entity<PetId>, ISoftDeletable
         IsCastrated = isCastrated ?? IsCastrated;
         IsVaccinated = isVaccinated ?? IsVaccinated;
         HelpStatus = helpStatus ?? HelpStatus;
-        RequisitesList = requisites ?? RequisitesList;
+        Requisites = requisites ?? Requisites;
     }
 
     public void AddPhotos(IEnumerable<PetPhoto> petPhotos)

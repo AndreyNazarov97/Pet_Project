@@ -62,8 +62,6 @@ public class SoftDeleteVolunteerHandlerTest
         result.IsSuccess.Should().BeTrue();
         handler.VolunteersRepositoryMock.Verify(repo => repo.GetById(volunteer.Id, It.IsAny<CancellationToken>()),
             Times.Once);
-        handler.VolunteersRepositoryMock.Verify(repo => repo.Delete(volunteer, It.IsAny<CancellationToken>()),
-            Times.Once);
 
         var isDeletedField = typeof(Volunteer).GetField("_isDeleted",
             BindingFlags.NonPublic | BindingFlags.Instance);

@@ -124,23 +124,11 @@ public class PetConfiguration : IEntityTypeConfiguration<Pet>
 
         builder.Property(p => p.DateCreated).IsRequired();
 
-        builder.OwnsOne(p => p.RequisitesList, rb =>
-        {
-            rb.ToJson("requisites");
-
-            rb.OwnsMany(v => v.Requisites, pbr =>
-            {
-                pbr.Property(r => r.Title)
-                    .IsRequired()
-                    .HasColumnName("name")
-                    .HasMaxLength(Constants.MIN_TEXT_LENGTH);
-
-                pbr.Property(r => r.Description)
-                    .IsRequired()
-                    .HasColumnName("description")
-                    .HasMaxLength(Constants.EXTRA_TEXT_LENGTH);
-            });
-        });
+        builder.Property(p => p.Requisites)
+            .HasValueObjectsJsonConversion(
+                input => new RequisiteDto(input.Title, input.Description) ,
+                output => Requisite.Create(output.Title, output.Description).Value)
+            .HasColumnName("requisites");
 
         builder.Property(v => v.PetPhotoList)
             .HasValueObjectsJsonConversion(
