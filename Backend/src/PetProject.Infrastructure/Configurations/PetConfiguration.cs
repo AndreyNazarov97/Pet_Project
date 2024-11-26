@@ -1,9 +1,15 @@
-﻿using Microsoft.EntityFrameworkCore;
+﻿using System.Text.Json;
+using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Metadata.Builders;
 using PetProject.Domain.Shared;
 using PetProject.Domain.Shared.EntityIds;
+using PetProject.Domain.Shared.ValueObjects;
 using PetProject.Domain.SpeciesManagement.ValueObjects;
 using PetProject.Domain.VolunteerManagement;
+using Microsoft.EntityFrameworkCore.Metadata.Builders;
+using PetProject.Application.Dto;
+using PetProject.Domain.VolunteerManagement.ValueObjects;
+using PetProject.Infrastructure.Postgres.Extensions;
 
 namespace PetProject.Infrastructure.Postgres.Configurations;
 
@@ -34,7 +40,7 @@ public class PetConfiguration : IEntityTypeConfiguration<Pet>
                 .HasColumnName("general_description")
                 .IsRequired();
         });
-        
+
         builder.ComplexProperty(p => p.HealthInformation, vb =>
         {
             vb.Property(d => d.Value)
@@ -42,7 +48,7 @@ public class PetConfiguration : IEntityTypeConfiguration<Pet>
                 .HasColumnName("health_information")
                 .IsRequired(false);
         });
-        
+
         builder.ComplexProperty(p => p.AnimalType, at =>
         {
             at.IsRequired();
@@ -68,7 +74,7 @@ public class PetConfiguration : IEntityTypeConfiguration<Pet>
                 .IsRequired()
                 .HasMaxLength(Constants.MIN_TEXT_LENGTH)
                 .HasColumnName("city");
-            
+
             pb.Property(p => p.Street)
                 .IsRequired()
                 .HasMaxLength(Constants.MIN_TEXT_LENGTH)
@@ -78,7 +84,7 @@ public class PetConfiguration : IEntityTypeConfiguration<Pet>
                 .IsRequired()
                 .HasMaxLength(Constants.MIN_TEXT_LENGTH)
                 .HasColumnName("house");
-            
+
             pb.Property(p => p.Flat)
                 .IsRequired()
                 .HasMaxLength(Constants.MIN_TEXT_LENGTH)
@@ -135,26 +141,12 @@ public class PetConfiguration : IEntityTypeConfiguration<Pet>
                     .HasMaxLength(Constants.EXTRA_TEXT_LENGTH);
             });
         });
-        
-        builder.OwnsOne(p => p.PetPhotosList, plb =>
-        {
-            plb.ToJson("pet_photos");
 
-            plb.OwnsMany(pl => pl.PetPhotos, ppb =>
-            {
-                ppb.OwnsOne(petPhoto => petPhoto.Path, filePathBuilder =>
-                {
-                    filePathBuilder.Property(p => p.Path)
-                        .IsRequired()
-                        .HasColumnName("path")
-                        .HasMaxLength(Constants.MAX_TEXT_LENGTH);
-                });
-
-                ppb.Property(p => p.IsMain)
-                    .IsRequired()
-                    .HasColumnName("is_main");
-            });
-        });
+        builder.Property(v => v.PetPhotoList)
+            .HasValueObjectsJsonConversion(
+                input => new PetPhotoDto() { Path = input.Path.Path , IsMain = input.IsMain},
+                output => new PetPhoto(FilePath.Create(output.Path).Value){IsMain = output.IsMain})
+            .HasColumnName("pet_photos");
 
         builder.Property<bool>("_isDeleted")
             .UsePropertyAccessMode(PropertyAccessMode.Field)

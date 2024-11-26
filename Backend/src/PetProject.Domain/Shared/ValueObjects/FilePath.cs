@@ -5,6 +5,8 @@ namespace PetProject.Domain.Shared.ValueObjects;
 public record FilePath
 {
     public string Path { get; }
+    
+    private FilePath() {}
 
     private FilePath(string path)
     {
@@ -22,5 +24,13 @@ public record FilePath
         var fullPath = path + extension; 
         
         return new FilePath(fullPath);
+    }
+    
+    public static Result<FilePath, Error> Create(string fullPath)
+    {
+        var extension = System.IO.Path.GetExtension(fullPath);
+        var fileName = System.IO.Path.GetFileNameWithoutExtension(fullPath);
+
+        return Create(fileName, extension);
     }
 }

@@ -121,7 +121,7 @@ public static class PetProjectDbContextSeeder
             true,
             HelpStatus.LookingForHome,
             firstVolunteer.RequisitesList,
-            new PetPhotosList([])
+            []
         );
         
         firstVolunteer.AddPet(pet);

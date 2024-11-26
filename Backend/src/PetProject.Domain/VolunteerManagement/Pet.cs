@@ -29,7 +29,7 @@ public class Pet : Shared.Common.Entity<PetId>, ISoftDeletable
     public HelpStatus HelpStatus { get; private set; }
     public Position Position { get; private set; }
     public DateTimeOffset DateCreated { get; }
-    public PetPhotosList PetPhotosList { get; private set; }
+    public IReadOnlyList<PetPhoto> PetPhotoList { get; private set; }
     public RequisitesList RequisitesList { get; private set; }
 
 
@@ -46,7 +46,7 @@ public class Pet : Shared.Common.Entity<PetId>, ISoftDeletable
         bool isVaccinated,
         HelpStatus helpStatus,
         RequisitesList requisites,
-        PetPhotosList petPhotos) : base(id)
+        List<PetPhoto> petPhoto) : base(id)
     {
         PetName = petName;
         GeneralDescription = generalDescription;
@@ -60,7 +60,7 @@ public class Pet : Shared.Common.Entity<PetId>, ISoftDeletable
         IsVaccinated = isVaccinated;
         HelpStatus = helpStatus;
         RequisitesList = requisites;
-        PetPhotosList = petPhotos;
+        PetPhotoList = petPhoto;
         DateCreated = DateTimeOffset.UtcNow;
     }
 
@@ -92,7 +92,7 @@ public class Pet : Shared.Common.Entity<PetId>, ISoftDeletable
 
     public void AddPhotos(IEnumerable<PetPhoto> petPhotos)
     {
-        PetPhotosList.AddPhotos(petPhotos);
+        PetPhotoList = petPhotos.Concat(PetPhotoList).ToList();
     }
     
     public void SetPosition(Position position)
@@ -107,8 +107,16 @@ public class Pet : Shared.Common.Entity<PetId>, ISoftDeletable
     
     public UnitResult<Error> SetMainPhoto(PetPhoto petPhoto)
     {
-        var result = PetPhotosList.SetMainPhoto(petPhoto);
-       return result;
+        var isPhotoExist = PetPhotoList.FirstOrDefault(p => p.Path == petPhoto.Path);
+        if (isPhotoExist is null)
+            return Errors.General.NotFound();
+
+        PetPhotoList = PetPhotoList
+            .Select(photo => new PetPhoto(photo.Path){ IsMain = photo.Path == petPhoto.Path })
+            .OrderByDescending(p => p.IsMain)
+            .ToList();
+
+        return UnitResult.Success<Error>();
     }
     
     public void Activate()

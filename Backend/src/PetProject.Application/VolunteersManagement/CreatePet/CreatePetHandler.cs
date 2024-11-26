@@ -85,7 +85,7 @@ public class CreatePetHandler : IRequestHandler<CreatePetCommand, Result<Guid, E
             command.IsVaccinated,
             command.HelpStatus,
             new RequisitesList([Requisite.Create("test", "test").Value]),
-            new PetPhotosList([])
+            []
         );
 
         return pet;

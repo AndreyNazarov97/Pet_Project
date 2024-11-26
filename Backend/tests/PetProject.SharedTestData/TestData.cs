@@ -48,7 +48,7 @@ public class TestData
         true,
         HelpStatus.NeedsHelp,
         new RequisitesList([]),
-        new PetPhotosList([])
+        []
     );
 
     public static VolunteerDto VolunteerDto => new()

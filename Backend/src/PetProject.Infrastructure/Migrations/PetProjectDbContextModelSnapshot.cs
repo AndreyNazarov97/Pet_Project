@@ -110,6 +110,11 @@ namespace PetProject.Infrastructure.Postgres.Migrations
                         .HasColumnType("boolean")
                         .HasColumnName("is_vaccinated");
 
+                    b.Property<string>("PetPhotoList")
+                        .IsRequired()
+                        .HasColumnType("jsonb")
+                        .HasColumnName("pet_photos");
+
                     b.Property<bool>("_isDeleted")
                         .HasColumnType("boolean")
                         .HasColumnName("is_deleted");
@@ -378,80 +383,6 @@ namespace PetProject.Infrastructure.Postgres.Migrations
 
                             b1.Navigation("Requisites");
                         });
-
-                    b.OwnsOne("PetProject.Domain.VolunteerManagement.ValueObjects.PetPhotosList", "PetPhotosList", b1 =>
-                        {
-                            b1.Property<Guid>("PetId")
-                                .HasColumnType("uuid");
-
-                            b1.HasKey("PetId");
-
-                            b1.ToTable("pets");
-
-                            b1.ToJson("pet_photos");
-
-                            b1.WithOwner()
-                                .HasForeignKey("PetId")
-                                .HasConstraintName("fk_pets_pets_id");
-
-                            b1.OwnsMany("PetProject.Domain.VolunteerManagement.ValueObjects.PetPhoto", "PetPhotos", b2 =>
-                                {
-                                    b2.Property<Guid>("PetPhotosListPetId")
-                                        .HasColumnType("uuid");
-
-                                    b2.Property<int>("Id")
-                                        .ValueGeneratedOnAdd()
-                                        .HasColumnType("integer");
-
-                                    b2.Property<bool>("IsMain")
-                                        .HasColumnType("boolean")
-                                        .HasColumnName("is_main");
-
-                                    b2.HasKey("PetPhotosListPetId", "Id");
-
-                                    b2.ToTable("pets");
-
-                                    b2.ToJson("pet_photos");
-
-                                    b2.WithOwner()
-                                        .HasForeignKey("PetPhotosListPetId")
-                                        .HasConstraintName("fk_pets_pets_pet_photos_list_pet_id");
-
-                                    b2.OwnsOne("PetProject.Domain.Shared.ValueObjects.FilePath", "Path", b3 =>
-                                        {
-                                            b3.Property<Guid>("PetPhotosListPetId")
-                                                .HasColumnType("uuid");
-
-                                            b3.Property<int>("PetPhotoId")
-                                                .HasColumnType("integer");
-
-                                            b3.Property<string>("Path")
-                                                .IsRequired()
-                                                .HasMaxLength(500)
-                                                .HasColumnType("character varying(500)")
-                                                .HasColumnName("path");
-
-                                            b3.HasKey("PetPhotosListPetId", "PetPhotoId")
-                                                .HasName("pk_pets");
-
-                                            b3.ToTable("pets");
-
-                                            b3.ToJson("pet_photos");
-
-                                            b3.WithOwner()
-                                                .HasForeignKey("PetPhotosListPetId", "PetPhotoId")
-                                                .HasConstraintName("fk_pets_pets_pet_photos_list_pet_id_pet_photo_id");
-                                        });
-
-                                    b2.Navigation("Path")
-                                        .IsRequired();
-                                });
-
-                            b1.Navigation("PetPhotos");
-                        });
-
-                    b.Navigation("PetPhotosList")
-                        .IsRequired();
 
                     b.Navigation("RequisitesList")
                         .IsRequired();
