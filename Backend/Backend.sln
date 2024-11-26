@@ -28,6 +28,8 @@ Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "PetProject.Application.Test
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "PetProject.SharedTestData", "tests\PetProject.SharedTestData\PetProject.SharedTestData.csproj", "{6A4060BC-30C8-4679-85BD-A9DDD2FBB561}"
 EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "PetProject.Infrastructure.Tests", "tests\PetProject.Infrastructure.Tests\PetProject.Infrastructure.Tests.csproj", "{7E33FC6E-744C-4D05-9B74-C17E68484223}"
+EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
 		Debug|Any CPU = Debug|Any CPU
@@ -69,10 +71,15 @@ Global
 		{6A4060BC-30C8-4679-85BD-A9DDD2FBB561}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{6A4060BC-30C8-4679-85BD-A9DDD2FBB561}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{6A4060BC-30C8-4679-85BD-A9DDD2FBB561}.Release|Any CPU.Build.0 = Release|Any CPU
+		{7E33FC6E-744C-4D05-9B74-C17E68484223}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{7E33FC6E-744C-4D05-9B74-C17E68484223}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{7E33FC6E-744C-4D05-9B74-C17E68484223}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{7E33FC6E-744C-4D05-9B74-C17E68484223}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(NestedProjects) = preSolution
 		{CA69524A-A75F-42BD-8055-2D20F6DA3B77} = {0E11ADB2-2524-40EE-97AE-AB2DE84AAB35}
 		{470263C5-4914-4450-AABD-BB49989014F6} = {0E11ADB2-2524-40EE-97AE-AB2DE84AAB35}
 		{6A4060BC-30C8-4679-85BD-A9DDD2FBB561} = {0E11ADB2-2524-40EE-97AE-AB2DE84AAB35}
+		{7E33FC6E-744C-4D05-9B74-C17E68484223} = {0E11ADB2-2524-40EE-97AE-AB2DE84AAB35}
 	EndGlobalSection
 EndGlobal

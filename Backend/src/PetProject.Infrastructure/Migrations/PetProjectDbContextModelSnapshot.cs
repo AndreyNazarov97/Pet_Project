@@ -291,7 +291,6 @@ namespace PetProject.Infrastructure.Postgres.Migrations
                                 .HasColumnName("name");
 
                             b1.Property<string>("Patronymic")
-                                .IsRequired()
                                 .HasMaxLength(50)
                                 .HasColumnType("character varying(50)")
                                 .HasColumnName("patronymic");

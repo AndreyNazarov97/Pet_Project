@@ -35,7 +35,6 @@ public class VolunteerConfiguration : IEntityTypeConfiguration<Volunteer>
                 .HasColumnName("surname");
 
             vb.Property(v => v.Patronymic)
-                .IsRequired()
                 .HasMaxLength(Constants.MIN_TEXT_LENGTH)
                 .HasColumnName("patronymic");
         });

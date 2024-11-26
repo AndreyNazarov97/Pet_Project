@@ -40,7 +40,7 @@ public class DeleteBreedHandler : IRequestHandler<DeleteBreedCommand, UnitResult
 
         var volunteerQuery = new VolunteerQueryModel()
         {
-            BreedIds = [existedBreed.Id]
+            BreedNames = [request.BreedName]
         };
         var volunteers = await _volunteersRepository.Query(volunteerQuery, cancellationToken);
         if (volunteers.Length > 0)
