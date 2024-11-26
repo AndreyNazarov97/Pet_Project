@@ -37,16 +37,22 @@ public class SpeciesRepository : ISpeciesRepository
                        from 
                            species as s 
                        left join 
-                           breeds as b on b.species_id = s.id
+                           breeds as b on b.species_id = s.id AND b.is_deleted = false
                        """;
 
-        var conditions = new List<string>(["1=1"]);
+        var conditions = new List<string>(["s.is_deleted = false"]);
         var param = new DynamicParameters();
 
         if (string.IsNullOrEmpty(query.SpeciesName) == false)
         {
             conditions.Add("s.species_name = @SpeciesName");
             param.Add("SpeciesName", query.SpeciesName);
+        }
+        
+        if (string.IsNullOrEmpty(query.BreedName) == false)
+        {
+            conditions.Add("b.breed_name = @BreedName");
+            param.Add("BreedName", query.BreedName);
         }
 
         if (query.SpeciesIds is { Length: > 0 })

@@ -44,6 +44,7 @@ public class VolunteersRepository : IVolunteersRepository
             return Errors.General.NotFound();
 
         _context.Volunteers.Remove(existedVolunteer);
+        await _context.SaveChangesAsync(cancellationToken);
         return volunteer.Id.Id;
     }
 
@@ -90,10 +91,10 @@ public class VolunteersRepository : IVolunteersRepository
                         FROM 
                             volunteers v
                         left join 
-                            pets p on v.id = p.volunteer_id
+                            pets p on v.id = p.volunteer_id AND p.is_deleted = false
                        """;
 
-        var conditions = new List<string>(["1=1"]);
+        var conditions = new List<string>(["v.is_deleted = false"]);
         var param = new DynamicParameters();
 
         if (query.VolunteerIds is { Length: > 0 })
@@ -164,10 +165,10 @@ public class VolunteersRepository : IVolunteersRepository
                 var requisitesJson = reader.GetString(6);
                 var socialLinksJson = reader.GetString(7);
 
-                var requisites = JsonSerializer.Deserialize<RequisitesListDto>(requisitesJson)
-                                 ?? new RequisitesListDto() { Requisites = [] };
-                var socialLinks = JsonSerializer.Deserialize<SocialLinksListDto>(socialLinksJson)
-                                  ?? new SocialLinksListDto() { SocialLinks = [] };
+                var requisites = JsonSerializer.Deserialize<IEnumerable<RequisiteDto>>(requisitesJson)
+                                 ?? [];
+                var socialLinks = JsonSerializer.Deserialize<IEnumerable<SocialLinkDto>>(socialLinksJson)
+                                  ?? [];
 
                 volunteer = new VolunteerDto
                 {
@@ -175,8 +176,8 @@ public class VolunteersRepository : IVolunteersRepository
                     GeneralDescription = reader.GetString(3),
                     PhoneNumber = phoneNumber,
                     AgeExperience = reader.GetInt32(5),
-                    Requisites = requisites.Requisites.ToArray(),
-                    SocialLinks = socialLinks.SocialLinks.ToArray(),
+                    Requisites = requisites.ToArray(),
+                    SocialLinks = socialLinks.ToArray(),
                 };
                 volunteers.Add(volunteer);
             }

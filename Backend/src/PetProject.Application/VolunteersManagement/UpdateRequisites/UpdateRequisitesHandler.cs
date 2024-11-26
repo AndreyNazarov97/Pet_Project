@@ -35,10 +35,10 @@ public class UpdateRequisitesHandler : IRequestHandler<UpdateRequisitesCommand, 
             return volunteer.Error.ToErrorList();
 
         var requisites = command.Requisites
-            .Select(x => Requisite.Create(x.Title, x.Description).Value);
-        var requisitesList = new RequisitesList(requisites);
+            .Select(x => Requisite.Create(x.Title, x.Description).Value)
+            .ToList();
 
-        volunteer.Value.UpdateRequisites(requisitesList);
+        volunteer.Value.UpdateRequisites(requisites);
         
         await _unitOfWork.SaveChangesAsync(cancellationToken);
 

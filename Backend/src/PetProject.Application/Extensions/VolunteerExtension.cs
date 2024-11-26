@@ -20,18 +20,8 @@ public static class VolunteerExtension
     {
         return new RequisiteDto(requisite.Title, requisite.Description);
     }
-    
-    public static RequisiteDto[] ToDto(this RequisitesList requisitesList)
-    {
-        return requisitesList.Requisites.Select(x => x.ToDto()).ToArray();
-    }
     public static SocialLinkDto ToDto(this SocialLink socialLink)
     {
         return new SocialLinkDto(socialLink.Title, socialLink.Url);
-    }
-    
-    public static SocialLinkDto[] ToDto(this SocialLinksList socialLinksList)
-    {
-        return socialLinksList.SocialLinks.Select(x => x.ToDto()).ToArray();
     }
 }

@@ -21,8 +21,8 @@ public class TestData
         Description.Create(Random.LoremParagraph).Value,
         Experience.Create(Random.Experience).Value,
         PhoneNumber.Create(Random.PhoneNumber).Value,
-        new SocialLinksList([]),
-        new RequisitesList([])
+       [],
+        []
     );
 
     public static Pet Pet => new(
@@ -31,8 +31,8 @@ public class TestData
         Description.Create(Random.LoremParagraph).Value,
         Description.Create(Random.LoremParagraph).Value,
         new AnimalType(
-            SpeciesName.Create("Test species").Value,
-            BreedName.Create("Test breed").Value),
+            SpeciesName.Create("Dog").Value,
+            BreedName.Create("Bulldog").Value),
         Address.Create(
                 Random.Address.Country(),
                 Random.Address.City(),
@@ -47,8 +47,8 @@ public class TestData
         true,
         true,
         HelpStatus.NeedsHelp,
-        new RequisitesList([]),
-        new PetPhotosList([])
+        [],
+        []
     );
 
     public static VolunteerDto VolunteerDto => new()
@@ -59,6 +59,23 @@ public class TestData
         PhoneNumber = Random.PhoneNumber,
         Requisites = [],
         SocialLinks = []
+    };
+    
+    public static PetDto PetDto => new()
+    {
+        PetName = Random.Name,
+        GeneralDescription = Random.LoremParagraph,
+        HealthInformation = Random.LoremParagraph,
+        SpeciesName = "Dog",
+        BreedName = "Bulldog",
+        Address = VolunteerCreator.CreateAddressDto(),
+        Weight = Random.Double,
+        Height = Random.Double,
+        PhoneNumber = Random.PhoneNumber,
+        BirthDate = new DateTime(Random.DateOnly, TimeOnly.MinValue, DateTimeKind.Utc),
+        IsCastrated = Random.Bool,
+        IsVaccinated = Random.Bool,
+        HelpStatus = Random.HelpStatus,
     };
 
     public static SpeciesDto SpeciesDto => new(

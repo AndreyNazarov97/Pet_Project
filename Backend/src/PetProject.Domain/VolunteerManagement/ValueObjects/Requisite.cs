@@ -7,6 +7,8 @@ public record Requisite
 {
     public string Title { get; }
     public string Description { get; }
+    
+    private Requisite() { }
 
     private Requisite(string title, string description)
     {

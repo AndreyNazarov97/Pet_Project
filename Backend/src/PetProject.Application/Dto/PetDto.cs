@@ -4,18 +4,18 @@ namespace PetProject.Application.Dto;
 
 public record PetDto
 {
-    public required string PetName { get; init; }
-    public required string GeneralDescription { get; init; }
-    public required string HealthInformation { get; init; }
-    public required string SpeciesName { get; init; }
-    public required string BreedName { get; init; }
-    public required AddressDto Address { get; init; }
-    public required double Weight { get; init; }
-    public required double Height { get; init; }
-    public required string PhoneNumber { get; init; }
-    public required DateTime BirthDate { get; init; }
-    public required bool IsCastrated { get; init; }
-    public required bool IsVaccinated { get; init; }
-    public required HelpStatus HelpStatus { get; init; }
+    public string? PetName { get; init; }
+    public string? GeneralDescription { get; init; }
+    public string? HealthInformation { get; init; }
+    public string? SpeciesName { get; init; }
+    public string? BreedName { get; init; }
+    public AddressDto? Address { get; init; }
+    public double? Weight { get; init; }
+    public double? Height { get; init; }
+    public string? PhoneNumber { get; init; }
+    public DateTime? BirthDate { get; init; }
+    public bool? IsCastrated { get; init; }
+    public bool? IsVaccinated { get; init; }
+    public HelpStatus? HelpStatus { get; init; }
    }
 

@@ -2,11 +2,11 @@
 using PetProject.Application.Validation;
 using PetProject.Domain.Shared;
 
-namespace PetProject.Application.VolunteersManagement.DeleteVolunteer;
+namespace PetProject.Application.VolunteersManagement.SoftDeleteVolunteer;
 
-public class DeleteVolunteerCommandValidator : AbstractValidator<DeleteVolunteerCommand>
+public class SoftDeleteVolunteerCommandValidator : AbstractValidator<SoftDeleteVolunteerCommand>
 {
-    public DeleteVolunteerCommandValidator()
+    public SoftDeleteVolunteerCommandValidator()
     {
         RuleFor(d => d.VolunteerId)
             .NotEmpty()

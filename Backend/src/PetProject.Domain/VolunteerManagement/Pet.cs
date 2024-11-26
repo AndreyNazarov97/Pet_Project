@@ -11,6 +11,7 @@ namespace PetProject.Domain.VolunteerManagement;
 public class Pet : Shared.Common.Entity<PetId>, ISoftDeletable
 {
     private bool _isDeleted = false;
+    private List<PetPhoto> _PetPhotoList = [];
 
     protected Pet(PetId id) : base(id)
     {
@@ -29,8 +30,8 @@ public class Pet : Shared.Common.Entity<PetId>, ISoftDeletable
     public HelpStatus HelpStatus { get; private set; }
     public Position Position { get; private set; }
     public DateTimeOffset DateCreated { get; }
-    public PetPhotosList PetPhotosList { get; private set; }
-    public RequisitesList RequisitesList { get; private set; }
+    public IReadOnlyList<PetPhoto> PetPhotoList => _PetPhotoList.AsReadOnly();
+    public IReadOnlyList<Requisite> Requisites { get; private set; }
 
 
     public Pet(PetId id,
@@ -45,8 +46,8 @@ public class Pet : Shared.Common.Entity<PetId>, ISoftDeletable
         bool isCastrated,
         bool isVaccinated,
         HelpStatus helpStatus,
-        RequisitesList requisites,
-        PetPhotosList petPhotos) : base(id)
+        List<Requisite> requisite,
+        List<PetPhoto> petPhoto) : base(id)
     {
         PetName = petName;
         GeneralDescription = generalDescription;
@@ -59,21 +60,81 @@ public class Pet : Shared.Common.Entity<PetId>, ISoftDeletable
         IsCastrated = isCastrated;
         IsVaccinated = isVaccinated;
         HelpStatus = helpStatus;
-        RequisitesList = requisites;
-        PetPhotosList = petPhotos;
+        Requisites = requisite;
+        _PetPhotoList = petPhoto;
         DateCreated = DateTimeOffset.UtcNow;
+    }
+
+    public void UpdatePet(
+        PetName? petName,
+        Description? generalDescription,
+        Description? healthInformation,
+        AnimalType? animalType,
+        Address? address,
+        PetPhysicalAttributes? attributes,
+        DateOnly? birthDate,
+        bool? isCastrated,
+        bool? isVaccinated,
+        HelpStatus? helpStatus,
+        List<Requisite>? requisites)
+    {
+        PetName = petName ?? PetName;
+        GeneralDescription = generalDescription ?? GeneralDescription;
+        HealthInformation = healthInformation ?? HealthInformation;
+        AnimalType = animalType ?? AnimalType;
+        Address = address ?? Address;
+        PhysicalAttributes = attributes ?? PhysicalAttributes;
+        BirthDate = birthDate ?? BirthDate;
+        IsCastrated = isCastrated ?? IsCastrated;
+        IsVaccinated = isVaccinated ?? IsVaccinated;
+        HelpStatus = helpStatus ?? HelpStatus;
+        Requisites = requisites ?? Requisites;
     }
 
     public void AddPhotos(IEnumerable<PetPhoto> petPhotos)
     {
-        PetPhotosList.AddPhotos(petPhotos);
+        _PetPhotoList.AddRange(petPhotos);
     }
-    
+
     public void SetPosition(Position position)
     {
         Position = position;
     }
-    
+
+    public void ChangeStatus(HelpStatus status)
+    {
+        HelpStatus = status;
+    }
+
+    public UnitResult<Error> SetMainPhoto(PetPhoto petPhoto)
+    {
+        var isPhotoExist = PetPhotoList.FirstOrDefault(p => p.Path == petPhoto.Path);
+        if (isPhotoExist is null)
+            return Errors.General.NotFound();
+
+        _PetPhotoList = PetPhotoList
+            .Select(photo => new PetPhoto(photo.Path) { IsMain = photo.Path == petPhoto.Path })
+            .OrderByDescending(p => p.IsMain)
+            .ToList();
+
+        return UnitResult.Success<Error>();
+    }
+
+    public UnitResult<Error> DeletePhoto(FilePath filePath)
+    {
+        var isPhotoExist = PetPhotoList.FirstOrDefault(p => p.Path == filePath);
+        if (isPhotoExist is null)
+            return Errors.General.NotFound();
+
+        _PetPhotoList.Remove(isPhotoExist);
+        if (isPhotoExist.IsMain && _PetPhotoList.Count > 0)
+        {
+            _PetPhotoList[0] = new PetPhoto(_PetPhotoList[0].Path) { IsMain = true };
+        }
+
+        return UnitResult.Success<Error>();
+    }
+
     public void Activate()
     {
         _isDeleted = false;
