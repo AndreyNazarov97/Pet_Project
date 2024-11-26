@@ -34,7 +34,7 @@ namespace PetProject.Infrastructure.Postgres.Migrations
                     is_deleted = table.Column<bool>(type: "boolean", nullable: false),
                     age_experience = table.Column<int>(type: "integer", nullable: false),
                     name = table.Column<string>(type: "character varying(50)", maxLength: 50, nullable: false),
-                    patronymic = table.Column<string>(type: "character varying(50)", maxLength: 50, nullable: false),
+                    patronymic = table.Column<string>(type: "character varying(50)", maxLength: 50, nullable: true),
                     surname = table.Column<string>(type: "character varying(50)", maxLength: 50, nullable: false),
                     general_description = table.Column<string>(type: "character varying(500)", maxLength: 500, nullable: false),
                     phone_number = table.Column<string>(type: "text", nullable: false)

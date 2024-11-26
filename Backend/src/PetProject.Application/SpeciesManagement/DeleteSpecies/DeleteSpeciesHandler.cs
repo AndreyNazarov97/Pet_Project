@@ -33,7 +33,7 @@ public class DeleteSpeciesHandler : IRequestHandler<DeleteSpeciesCommand, UnitRe
 
         var volunteerQuery = new VolunteerQueryModel()
         {
-            SpeciesIds = [species.Id]
+            SpeciesNames = [request.SpeciesName]
         };
         var volunteers = await _volunteersRepository.Query(volunteerQuery, cancellationToken);
         if (volunteers.Length > 0)
