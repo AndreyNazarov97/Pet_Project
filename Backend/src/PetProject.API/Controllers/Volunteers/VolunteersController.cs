@@ -4,6 +4,7 @@ using PetProject.API.Controllers.Volunteers.Requests;
 using PetProject.API.Extensions;
 using PetProject.Application.Dto;
 using PetProject.Application.VolunteersManagement.AddPetPhoto;
+using PetProject.Application.VolunteersManagement.GetPetById;
 using PetProject.Application.VolunteersManagement.GetVolunteer;
 using PetProject.Application.VolunteersManagement.SoftDeletePet;
 using PetProject.Application.VolunteersManagement.SoftDeleteVolunteer;
@@ -148,8 +149,26 @@ public class VolunteersController : ApplicationController
 
         return Ok(result.Value);
     }
+    
+    [HttpGet("pets/{petId:guid}")]
+    public async Task<ActionResult<PetDto>> GetPet(
+        [FromRoute] Guid petId,
+        CancellationToken cancellationToken)
+    {
+        var query = new GetPetByIdQuery
+        {
+            PetId = petId
+        };
 
-    [HttpPost("{volunteerId:guid}/pet")]
+        var result = await _mediator.Send(query, cancellationToken);
+
+        if (result.IsFailure)
+            return result.Error.ToResponse();    
+
+        return Ok(result.Value);
+    }
+
+    [HttpPost("{volunteerId:guid}/pets")]
     public async Task<ActionResult<PetId>> CreatePet(
         [FromRoute] Guid volunteerId,
         [FromForm] CreatePetRequest request,
@@ -165,7 +184,7 @@ public class VolunteersController : ApplicationController
         return Ok(result.Value);
     }
 
-    [HttpPut("{volunteerId:guid}/pet/{petId:guid}")]
+    [HttpPut("{volunteerId:guid}/pets/{petId:guid}")]
     public async Task<ActionResult<Guid>> UpdatePet(
         [FromRoute] Guid volunteerId,
         [FromRoute] Guid petId,
@@ -182,7 +201,7 @@ public class VolunteersController : ApplicationController
         return Ok(result.Value);
     }
 
-    [HttpPost("{volunteerId:guid}/pet/{petId:guid}/photo")]
+    [HttpPost("{volunteerId:guid}/pets/{petId:guid}/photo")]
     public async Task<ActionResult<List<FilePath>>> AddPetPhoto(
         [FromRoute] Guid volunteerId,
         [FromRoute] Guid petId,
@@ -207,7 +226,7 @@ public class VolunteersController : ApplicationController
         return Ok(result.Value);
     }
 
-    [HttpPut("{volunteerId:guid}/pet/{petId:guid}/photo")]
+    [HttpPut("{volunteerId:guid}/pets/{petId:guid}/photo")]
     public async Task<ActionResult> SetMainPetPhoto(
         [FromRoute] Guid volunteerId,
         [FromRoute] Guid petId,
@@ -224,7 +243,7 @@ public class VolunteersController : ApplicationController
         return Ok("Success");
     }
 
-    [HttpPut("{volunteerId:guid}/pet/{petId:guid}/status")]
+    [HttpPut("{volunteerId:guid}/pets/{petId:guid}/status")]
     public async Task<ActionResult> ChangePetStatus(
         [FromRoute] Guid volunteerId,
         [FromRoute] Guid petId,
@@ -241,7 +260,7 @@ public class VolunteersController : ApplicationController
         return Ok("Success");
     }
 
-    [HttpDelete("{volunteerId:guid}/pet/{petId:guid}")]
+    [HttpDelete("{volunteerId:guid}/pets/{petId:guid}")]
     public async Task<ActionResult> DeletePet(
         [FromRoute] Guid volunteerId,
         [FromRoute] Guid petId,
@@ -262,7 +281,7 @@ public class VolunteersController : ApplicationController
         return Ok();
     }
 
-    [HttpDelete("{volunteerId:guid}/pet/{petId:guid}/photo/")]
+    [HttpDelete("{volunteerId:guid}/pets/{petId:guid}/photo/")]
     public async Task<ActionResult> DeletePetPhoto(
         [FromRoute] Guid volunteerId,
         [FromRoute] Guid petId,

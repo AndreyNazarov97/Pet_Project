@@ -4,6 +4,7 @@ namespace PetProject.Application.Models;
 
 public class PetQueryModel
 {
+    public Guid? PetId { get; init; }
     public Guid? VolunteerId{ get; init; } 
     public string? Name { get; init; }
     public int? MinAge { get; init; }

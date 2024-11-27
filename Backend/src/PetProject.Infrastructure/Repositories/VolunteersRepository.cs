@@ -249,6 +249,12 @@ public class VolunteersRepository : IVolunteersRepository
         var parameters = new DynamicParameters();
 
         // Фильтрация
+        if (query.PetId is not null)
+        {
+            conditions.Add("p.id = @PetId");
+            parameters.Add("PetId", query.PetId);
+        }
+        
         if (query.VolunteerId is not null)
         {
             conditions.Add("p.volunteer_id = ANY(@VolunteerId)");
