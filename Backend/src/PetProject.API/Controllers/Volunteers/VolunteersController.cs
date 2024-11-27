@@ -134,6 +134,21 @@ public class VolunteersController : ApplicationController
         return Ok();
     }
 
+    [HttpGet("pets")]
+    public async Task<ActionResult<PetDto[]>> GetPets(
+        [FromQuery] GetPetsRequest request,
+        CancellationToken cancellationToken)
+    {
+        var query = request.ToQuery();
+
+        var result = await _mediator.Send(query, cancellationToken);
+
+        if (result.IsFailure)
+            return result.Error.ToResponse();
+
+        return Ok(result.Value);
+    }
+
     [HttpPost("{volunteerId:guid}/pet")]
     public async Task<ActionResult<PetId>> CreatePet(
         [FromRoute] Guid volunteerId,

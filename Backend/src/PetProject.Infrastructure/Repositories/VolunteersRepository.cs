@@ -59,6 +59,7 @@ public class VolunteersRepository : IVolunteersRepository
 
         return volunteer;
     }
+
     public async Task<VolunteerDto[]> Query(VolunteerQueryModel query,
         CancellationToken cancellationToken = default)
     {
@@ -108,19 +109,19 @@ public class VolunteersRepository : IVolunteersRepository
             conditions.Add("p.id = any(@PetIds)");
             param.Add("PetIds", query.PetIds);
         }
-        
+
         if (query.SpeciesNames is { Length: > 0 })
         {
             conditions.Add("p.species_name = any(@SpeciesNames)");
             param.Add("SpeciesNames", query.SpeciesNames);
         }
-        
+
         if (query.BreedNames is { Length: > 0 })
         {
             conditions.Add("p.breed_name = any(@BreedNames)");
             param.Add("BreedNames", query.BreedNames);
         }
-        
+
         if (string.IsNullOrEmpty(query.PhoneNumber) == false)
         {
             conditions.Add("v.phone_number = @PhoneNumber");
@@ -161,7 +162,7 @@ public class VolunteersRepository : IVolunteersRepository
                     Surname = reader.GetString(1),
                     Patronymic = reader.IsDBNull(2) ? null : reader.GetString(2)
                 };
-                    
+
                 var requisitesJson = reader.GetString(6);
                 var socialLinksJson = reader.GetString(7);
 
@@ -215,5 +216,145 @@ public class VolunteersRepository : IVolunteersRepository
         }
 
         return volunteers.ToArray();
+    }
+
+    public async Task<PetDto[]> QueryPets(PetQueryModel query, CancellationToken cancellationToken = default)
+    {
+        var sqlQuery = """
+                       SELECT 
+                            p.pet_name,
+                            p.general_description,
+                            p.health_information,
+                            p.species_name,
+                            p.breed_name,
+                            p.country,
+                            p.city,
+                            p.street,
+                            p.house,
+                            p.flat,
+                            p.weight,
+                            p.height,
+                            p.birth_date,
+                            p.is_castrated,
+                            p.is_vaccinated,
+                            p.help_status,
+                            v.phone_number
+                       FROM 
+                           pets AS p
+                       LEFT JOIN 
+                           volunteers AS v ON v.id = p.volunteer_id
+                       """;
+
+        var conditions = new List<string>(["p.is_deleted = false"]);
+        var parameters = new DynamicParameters();
+
+        // Фильтрация
+        if (query.VolunteerId is not null)
+        {
+            conditions.Add("p.volunteer_id = ANY(@VolunteerId)");
+            parameters.Add("VolunteerId", query.VolunteerId);
+        }
+
+        if (!string.IsNullOrEmpty(query.Name))
+        {
+            conditions.Add("p.pet_name ILIKE @Name");
+            parameters.Add("Name", $"%{query.Name}%");
+        }
+
+        if (query.MinAge.HasValue)
+        {
+            conditions.Add("EXTRACT(YEAR FROM AGE(CURRENT_DATE, p.birth_date)) >= @MinAge");
+            parameters.Add("MinAge", query.MinAge);
+        }
+
+        if (!string.IsNullOrEmpty(query.Breed))
+        {
+            conditions.Add("p.breed_name ILIKE @Breed");
+            parameters.Add("Breed", $"%{query.Breed}%");
+        }
+
+        if (!string.IsNullOrEmpty(query.Species))
+        {
+            conditions.Add("p.species_name ILIKE @Species");
+            parameters.Add("Species", $"%{query.Species}%");
+        }
+
+        if (query.HelpStatus.HasValue)
+        {
+            conditions.Add("p.help_status = @HelpStatus");
+            parameters.Add("HelpStatus", query.HelpStatus);
+        }
+
+        sqlQuery += " WHERE " + string.Join(" AND ", conditions);
+
+        // Сортировка
+        if (!string.IsNullOrEmpty(query.SortBy))
+        {
+            var sortField = query.SortBy switch
+            {
+                "Name" => "p.pet_name",
+                "MinAge" => "p.birth_date",
+                "Breed" => "p.breed_name",
+                "Species" => "p.species_name",
+                "HelpStatus" => "p.help_status",
+                "Volunteer" => "p.volunteer_id",
+                _ => "p.pet_name"
+            };
+            sqlQuery += $" ORDER BY {sortField} {(query.SortDescending ? "DESC" : "ASC")}";
+        }
+
+        // Пагинация
+        if (query.Limit > 0)
+        {
+            sqlQuery += " limit @Limit ";
+            parameters.Add("Limit", query.Limit);
+        }
+
+        if (query.Offset > 0)
+        {
+            sqlQuery += " offset @Offset ";
+            parameters.Add("Offset", query.Offset);
+        }
+
+        var command = new CommandDefinition(sqlQuery, parameters, cancellationToken: cancellationToken);
+
+        await using var connection = _connectionFactory.GetConnection();
+
+        await using var reader = await connection.ExecuteReaderAsync(command);
+
+        var pets = new List<PetDto>();
+        while (await reader.ReadAsync(cancellationToken))
+        {
+            var addressDto = new AddressDto
+            {
+                Country = reader.GetString(5),
+                City = reader.GetString(6),
+                Street = reader.GetString(7),
+                House = reader.GetString(8),
+                Flat = reader.GetString(9)
+            };
+
+
+            var pet = new PetDto
+            {
+                PetName = reader.GetString(0),
+                GeneralDescription = reader.GetString(1),
+                HealthInformation = reader.GetString(2),
+                SpeciesName = reader.GetString(3),
+                BreedName = reader.GetString(4),
+                Address = addressDto,
+                Weight = reader.GetDouble(10),
+                Height = reader.GetDouble(11),
+                BirthDate = reader.GetDateTime(12),
+                IsCastrated = reader.GetBoolean(13),
+                IsVaccinated = reader.GetBoolean(14),
+                HelpStatus = (HelpStatus)reader.GetInt32(15),
+                PhoneNumber = reader.GetString(16)
+            };
+
+            pets.Add(pet);
+        }
+        
+        return pets.ToArray();
     }
 }

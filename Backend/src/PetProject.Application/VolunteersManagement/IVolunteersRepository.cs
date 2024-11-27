@@ -21,4 +21,6 @@ public interface IVolunteersRepository
 
     Task<VolunteerDto[]> Query(
         VolunteerQueryModel query, CancellationToken cancellationToken = default);
+    
+    Task<PetDto[]> QueryPets(PetQueryModel query, CancellationToken cancellationToken = default);
 }
