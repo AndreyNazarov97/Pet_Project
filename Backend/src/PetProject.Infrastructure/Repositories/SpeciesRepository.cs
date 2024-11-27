@@ -87,7 +87,7 @@ public class SpeciesRepository : ISpeciesRepository
 
         await using var reader = await connection.ExecuteReaderAsync(command);
 
-        var speciesSet = new HashSet<SpeciesDto>();
+        var speciesList = new List<SpeciesDto>();
         while (await reader.ReadAsync(cancellationToken))
         {
             var speciesId = reader.GetGuid(0);
@@ -95,12 +95,12 @@ public class SpeciesRepository : ISpeciesRepository
             var breedId = reader.GetGuid(2);
             var breedName = reader.GetString(3);
 
-            var species = speciesSet.FirstOrDefault(s => s.Name == speciesName);
+            var species = speciesList.FirstOrDefault(s => s.Name == speciesName);
             if (species == null)
             {
                 species = new SpeciesDto(speciesId, speciesName, []);
 
-                speciesSet.Add(species);
+                speciesList.Add(species);
             }
 
             var breedDto = new BreedDto(breedId, breedName);
@@ -108,7 +108,7 @@ public class SpeciesRepository : ISpeciesRepository
             species.Breeds.Add(breedDto);
         }
 
-        return speciesSet.ToArray();
+        return speciesList.ToArray();
     }
     
     public async Task<Result<SpeciesId, Error>> Add(Species species, CancellationToken cancellationToken = default)

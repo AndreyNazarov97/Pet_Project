@@ -2,6 +2,7 @@
 using PetProject.Application.Dto;
 using PetProject.Domain.Shared.EntityIds;
 using PetProject.Domain.Shared.ValueObjects;
+using PetProject.Domain.SpeciesManagement;
 using PetProject.Domain.SpeciesManagement.ValueObjects;
 using PetProject.Domain.VolunteerManagement;
 using PetProject.Domain.VolunteerManagement.Enums;
@@ -49,6 +50,17 @@ public class TestData
         HelpStatus.NeedsHelp,
         [],
         []
+    );
+
+    public static Species Species => new(
+        SpeciesId.NewId(),
+        SpeciesName.Create("Dog").Value,
+        new List<Breed>()
+        {
+            new(BreedId.NewId(), BreedName.Create("Labrador").Value),
+            new(BreedId.NewId(), BreedName.Create("Golden Retriever").Value),
+            new(BreedId.NewId(), BreedName.Create("Bulldog").Value)
+        }
     );
 
     public static VolunteerDto VolunteerDto => new()
