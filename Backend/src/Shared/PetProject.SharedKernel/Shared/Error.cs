@@ -1,4 +1,4 @@
-﻿namespace PetProject.Domain.Shared;
+﻿namespace PetProject.SharedKernel.Shared;
 
 public record Error
 {

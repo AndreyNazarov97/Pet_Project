@@ -1,9 +1,10 @@
-﻿using PetProject.Domain.Shared.EntityIds;
-using PetProject.Domain.SpeciesManagement.ValueObjects;
+﻿using PetProject.SharedKernel.Shared.Common;
+using PetProject.SharedKernel.Shared.EntityIds;
+using PetProject.SharedKernel.Shared.ValueObjects;
 
-namespace PetProject.Domain.SpeciesManagement;
+namespace PetProject.Species.Domain.Entities;
 
-public class Breed : Shared.Common.Entity<BreedId>
+public class Breed : Entity<BreedId>
 {
     private bool _isDeleted;
     public BreedName BreedName { get; } = null!;
