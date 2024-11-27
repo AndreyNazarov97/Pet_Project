@@ -18,28 +18,37 @@ public class BaseTestFixture : IAsyncLifetime
 
     public virtual async Task InitializeAsync()
     {
-       await _postgresSqlContainer.StartAsync();
-       
-       var connectionString = _postgresSqlContainer.GetConnectionString();
-       if (string.IsNullOrEmpty(connectionString) || !connectionString.Contains("Host"))
-       {
-           throw new InvalidOperationException("Host can't be null in the connection string.");
-       }
-       
-       _configuration = new ConfigurationBuilder()
-           .AddInMemoryCollection(new Dictionary<string, string>
-           {
-               { "ConnectionStrings:Postgres", _postgresSqlContainer.GetConnectionString() }
-           }!)
-           .Build();
-       
-       var dbContext = GetDbContext();
-       await dbContext.Database.MigrateAsync();
+        await _postgresSqlContainer.StartAsync();
+
+        var connectionString = _postgresSqlContainer.GetConnectionString();
+        if (string.IsNullOrEmpty(connectionString) || !connectionString.Contains("Host"))
+        {
+            throw new InvalidOperationException("Host can't be null in the connection string.");
+        }
+
+        _configuration = new ConfigurationBuilder()
+            .AddInMemoryCollection(new Dictionary<string, string>
+            {
+                { "ConnectionStrings:Postgres", _postgresSqlContainer.GetConnectionString() }
+            }!)
+            .Build();
+
+        var dbContext = GetDbContext();
+        await dbContext.Database.MigrateAsync();
     }
-    
+
     public virtual async Task DisposeAsync()
     {
         await _postgresSqlContainer.StopAsync();
         await _postgresSqlContainer.DisposeAsync();
+    }
+
+    public async Task ClearDatabaseAsync(params string[] tables)
+    {
+        await using var dbContext = GetDbContext();
+        foreach (var table in tables)
+        {
+            await dbContext.Database.ExecuteSqlRawAsync($"TRUNCATE TABLE {table} CASCADE;");
+        }
     }
 }

@@ -12,5 +12,6 @@ public partial class SpeciesRepositoryTest : IClassFixture<BaseTestFixture>
     {
         _fixture = fixture;
         _sut = new SpeciesRepository(fixture.GetDbContext(), fixture.GetConnectionFactory());
+        _fixture.ClearDatabaseAsync("species", "breeds").Wait(); 
     }
 }

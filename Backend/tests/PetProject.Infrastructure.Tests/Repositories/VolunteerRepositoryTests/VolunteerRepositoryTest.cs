@@ -12,7 +12,10 @@ public partial class VolunteerRepositoryTest : IClassFixture<BaseTestFixture>
     {
         _fixture = fixture;
         _sut = new VolunteersRepository(fixture.GetDbContext(), fixture.GetConnectionFactory());
+        _fixture.ClearDatabaseAsync("volunteers", "pets").Wait(); 
     }
+    
+    
     
 }
 

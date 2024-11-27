@@ -92,8 +92,7 @@ public class SpeciesRepository : ISpeciesRepository
         {
             var speciesId = reader.GetGuid(0);
             var speciesName = reader.GetString(1);
-            var breedId = reader.GetGuid(2);
-            var breedName = reader.GetString(3);
+            
 
             var species = speciesList.FirstOrDefault(s => s.Name == speciesName);
             if (species == null)
@@ -102,6 +101,11 @@ public class SpeciesRepository : ISpeciesRepository
 
                 speciesList.Add(species);
             }
+            
+            if(reader.IsDBNull(2))
+                continue;
+            var breedId =  reader.GetGuid(2);
+            var breedName = reader.GetString(3);
 
             var breedDto = new BreedDto(breedId, breedName);
 
