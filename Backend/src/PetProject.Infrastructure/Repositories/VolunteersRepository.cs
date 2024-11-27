@@ -109,16 +109,16 @@ public class VolunteersRepository : IVolunteersRepository
             param.Add("PetIds", query.PetIds);
         }
         
-        if (query.SpeciesIds is { Length: > 0 })
+        if (query.SpeciesNames is { Length: > 0 })
         {
-            conditions.Add("p.species_id = any(@SpeciesIds)");
-            param.Add("SpeciesIds", query.SpeciesIds);
+            conditions.Add("p.species_name = any(@SpeciesNames)");
+            param.Add("SpeciesNames", query.SpeciesNames);
         }
         
-        if (query.BreedIds is { Length: > 0 })
+        if (query.BreedNames is { Length: > 0 })
         {
-            conditions.Add("p.breed_id = any(@BreedIds)");
-            param.Add("BreedIds", query.BreedIds);
+            conditions.Add("p.breed_name = any(@BreedNames)");
+            param.Add("BreedNames", query.BreedNames);
         }
         
         if (string.IsNullOrEmpty(query.PhoneNumber) == false)
@@ -159,7 +159,7 @@ public class VolunteersRepository : IVolunteersRepository
                 {
                     Name = reader.GetString(0),
                     Surname = reader.GetString(1),
-                    Patronymic = reader.GetString(2)
+                    Patronymic = reader.IsDBNull(2) ? null : reader.GetString(2)
                 };
                     
                 var requisitesJson = reader.GetString(6);

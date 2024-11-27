@@ -13,7 +13,7 @@ using PetProject.Infrastructure.Postgres;
 namespace PetProject.Infrastructure.Postgres.Migrations
 {
     [DbContext(typeof(PetProjectDbContext))]
-    [Migration("20241126122623_Initial_VolunteerManagement")]
+    [Migration("20241126190944_Initial_VolunteerManagement")]
     partial class Initial_VolunteerManagement
     {
         /// <inheritdoc />
@@ -294,7 +294,6 @@ namespace PetProject.Infrastructure.Postgres.Migrations
                                 .HasColumnName("name");
 
                             b1.Property<string>("Patronymic")
-                                .IsRequired()
                                 .HasMaxLength(50)
                                 .HasColumnType("character varying(50)")
                                 .HasColumnName("patronymic");
