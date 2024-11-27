@@ -28,12 +28,12 @@ public class TestData
 
     public static Pet Pet => new(
         PetId.NewId(),
-        PetName.Create(Faker.Name.FirstName()).Value,
+        PetName.Create(Random.Name).Value,
         Description.Create(Random.LoremParagraph).Value,
         Description.Create(Random.LoremParagraph).Value,
         new AnimalType(
-            SpeciesName.Create("Dog").Value,
-            BreedName.Create("Bulldog").Value),
+            SpeciesName.Create(Random.Name).Value,
+            BreedName.Create(Random.Name).Value),
         Address.Create(
                 Random.Address.Country(),
                 Random.Address.City(),

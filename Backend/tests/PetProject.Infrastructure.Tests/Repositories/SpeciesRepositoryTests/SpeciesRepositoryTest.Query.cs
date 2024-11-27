@@ -90,15 +90,13 @@ public partial class SpeciesRepositoryTest
     [Fact]
     public async Task ShouldReturnVolunteersWithLimitAndOffset()
     {
-        var species1 = TestData.Species;
-        var species2 = new Species(SpeciesId.Create(Guid.NewGuid()), SpeciesName.Create("Cat").Value, []);
+        var species1 = new Species(SpeciesId.Create(Guid.NewGuid()), SpeciesName.Create("Cat").Value, []);
+        var species2 = new Species(SpeciesId.Create(Guid.NewGuid()), SpeciesName.Create("Dog").Value, []);
         var species3 = new Species(SpeciesId.Create(Guid.NewGuid()), SpeciesName.Create("testSpecies").Value, []);
         await _sut.Add(species1, CancellationToken.None);
         await _sut.Add(species2, CancellationToken.None);
         await _sut.Add(species3, CancellationToken.None);
         
-        var speciesInDb = _fixture.GetDbContext().Species.ToList();
-
         var query = new SpeciesQueryModel()
         {
             Limit = 2,
