@@ -6,7 +6,7 @@ namespace PetProject.Domain.SpeciesManagement;
 public class Breed : Shared.Common.Entity<BreedId>
 {
     private bool _isDeleted;
-    public BreedName BreedName { get; }
+    public BreedName BreedName { get; } = null!;
 
     protected Breed(BreedId id) : base(id) { }
 
