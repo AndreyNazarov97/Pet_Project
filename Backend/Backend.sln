@@ -3,12 +3,22 @@ Microsoft Visual Studio Solution File, Format Version 12.00
 # Visual Studio Version 17
 VisualStudioVersion = 17.0.31903.59
 MinimumVisualStudioVersion = 10.0.40219.1
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "PetProject.API", "src\PetProject.API\PetProject.API.csproj", "{06957747-BE0A-4ADB-BF3E-322DCD36B3A4}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "PetProject.Domain", "src\PetProject.Domain\PetProject.Domain.csproj", "{FBC80086-2BCF-4B92-9929-2D4A55D8A469}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "PetProject.Application", "src\PetProject.Application\PetProject.Application.csproj", "{D85FC581-E013-4353-B4EE-BA0E44BFC328}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "PetProject.Infrastructure", "src\PetProject.Infrastructure\PetProject.Infrastructure.csproj", "{40137719-73FC-446C-B5AB-BED6D0AE652A}"
+EndProject
 Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "Solution-items", "Solution-items", "{F78BD72A-D634-44AA-8F11-E88B132BD247}"
 	ProjectSection(SolutionItems) = preProject
 		docker-compose.yml = docker-compose.yml
 		nginx.conf = nginx.conf
 		..\.github\workflows\github-ci.yml = ..\.github\workflows\github-ci.yml
 	EndProjectSection
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "PetProject.Infrastructure.Authorization", "src\PetProject.Infrastructure.Authorization\PetProject.Infrastructure.Authorization.csproj", "{C68D7B75-9CBF-454E-A05D-E125465316AE}"
 EndProject
 Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "tests", "tests", "{0E11ADB2-2524-40EE-97AE-AB2DE84AAB35}"
 EndProject
@@ -61,6 +71,26 @@ Global
 		HideSolutionNode = FALSE
 	EndGlobalSection
 	GlobalSection(ProjectConfigurationPlatforms) = postSolution
+		{06957747-BE0A-4ADB-BF3E-322DCD36B3A4}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{06957747-BE0A-4ADB-BF3E-322DCD36B3A4}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{06957747-BE0A-4ADB-BF3E-322DCD36B3A4}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{06957747-BE0A-4ADB-BF3E-322DCD36B3A4}.Release|Any CPU.Build.0 = Release|Any CPU
+		{FBC80086-2BCF-4B92-9929-2D4A55D8A469}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{FBC80086-2BCF-4B92-9929-2D4A55D8A469}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{FBC80086-2BCF-4B92-9929-2D4A55D8A469}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{FBC80086-2BCF-4B92-9929-2D4A55D8A469}.Release|Any CPU.Build.0 = Release|Any CPU
+		{D85FC581-E013-4353-B4EE-BA0E44BFC328}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{D85FC581-E013-4353-B4EE-BA0E44BFC328}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{D85FC581-E013-4353-B4EE-BA0E44BFC328}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{D85FC581-E013-4353-B4EE-BA0E44BFC328}.Release|Any CPU.Build.0 = Release|Any CPU
+		{40137719-73FC-446C-B5AB-BED6D0AE652A}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{40137719-73FC-446C-B5AB-BED6D0AE652A}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{40137719-73FC-446C-B5AB-BED6D0AE652A}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{40137719-73FC-446C-B5AB-BED6D0AE652A}.Release|Any CPU.Build.0 = Release|Any CPU
+		{C68D7B75-9CBF-454E-A05D-E125465316AE}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{C68D7B75-9CBF-454E-A05D-E125465316AE}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{C68D7B75-9CBF-454E-A05D-E125465316AE}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{C68D7B75-9CBF-454E-A05D-E125465316AE}.Release|Any CPU.Build.0 = Release|Any CPU
 		{CA69524A-A75F-42BD-8055-2D20F6DA3B77}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
 		{CA69524A-A75F-42BD-8055-2D20F6DA3B77}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{CA69524A-A75F-42BD-8055-2D20F6DA3B77}.Release|Any CPU.ActiveCfg = Release|Any CPU

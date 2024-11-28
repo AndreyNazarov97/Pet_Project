@@ -23,6 +23,7 @@
     </ItemGroup>
 
     <ItemGroup>
+      <ProjectReference Include="..\..\src\PetProject.Application\PetProject.Application.csproj" />
       <ProjectReference Include="..\PetProject.SharedTestData\PetProject.SharedTestData.csproj" />
     </ItemGroup>
 

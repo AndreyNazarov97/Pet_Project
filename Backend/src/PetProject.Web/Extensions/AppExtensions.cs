@@ -1,4 +1,7 @@
 ﻿using Microsoft.EntityFrameworkCore;
+using PetProject.Infrastructure.Authorization;
+using PetProject.Infrastructure.Postgres;
+using PetProject.Infrastructure.Postgres.DataSeed;
 using PetProject.SpeciesManagement.Infrastructure.DataSeed;
 using PetProject.SpeciesManagement.Infrastructure.DbContexts;
 using PetProject.VolunteerManagement.Infrastructure.DataSeed;
