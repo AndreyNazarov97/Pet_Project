@@ -1,4 +1,4 @@
-﻿using PetProject.Infrastructure.Postgres.Repositories;
+﻿using PetProject.VolunteerManagement.Infrastructure.Repositories;
 
 namespace PetProject.Infrastructure.Tests.Repositories.VolunteerRepositoryTests;
 [Collection(nameof(BaseTestFixture))]
@@ -11,7 +11,7 @@ public partial class VolunteerRepositoryTest : IClassFixture<BaseTestFixture>
     public VolunteerRepositoryTest(BaseTestFixture fixture)
     {
         _fixture = fixture;
-        _sut = new VolunteersRepository(fixture.GetDbContext(), fixture.GetConnectionFactory());
+        _sut = new VolunteersRepository(fixture.GetVolunteerDbContext());
         _fixture.ClearDatabaseAsync("volunteers", "pets").Wait(); 
     }
     

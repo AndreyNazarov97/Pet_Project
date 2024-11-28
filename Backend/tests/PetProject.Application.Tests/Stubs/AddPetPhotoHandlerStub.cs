@@ -1,9 +1,9 @@
 ﻿using Microsoft.Extensions.Logging;
 using Moq;
-using PetProject.Application.Abstractions;
-using PetProject.Application.VolunteersManagement;
-using PetProject.Application.VolunteersManagement.AddPetPhoto;
-using PetProject.Application.VolunteersManagement.UpdateRequisites;
+using PetProject.Core.Database;
+using PetProject.VolunteerManagement.Application.Providers;
+using PetProject.VolunteerManagement.Application.Repository;
+using PetProject.VolunteerManagement.Application.VolunteersManagement.AddPetPhoto;
 
 namespace PetProject.Application.Tests.Stubs;
 

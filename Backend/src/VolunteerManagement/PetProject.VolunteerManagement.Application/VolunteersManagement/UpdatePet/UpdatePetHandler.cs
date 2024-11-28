@@ -41,7 +41,7 @@ public class UpdatePetHandler : IRequestHandler<UpdatePetCommand, Result<Guid, E
             SpeciesName = command.PetInfo.SpeciesName ?? string.Empty,
             BreedName = command.PetInfo.BreedName ?? string.Empty
         };
-        var speciesResult = await _readRepository.Query(speciesQuery, cancellationToken);
+        var speciesResult = await _readRepository.QuerySpecies(speciesQuery, cancellationToken);
         if (speciesResult.Length == 0)
         {
             return Errors.General.NotFound().ToErrorList();

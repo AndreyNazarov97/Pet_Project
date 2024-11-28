@@ -1,9 +1,8 @@
 ﻿using Microsoft.Extensions.Logging;
 using Moq;
-using PetProject.Application.Abstractions;
-using PetProject.Application.VolunteersManagement;
-using PetProject.Application.VolunteersManagement.CreateVolunteer;
-using PetProject.Application.VolunteersManagement.SoftDeleteVolunteer;
+using PetProject.Core.Database;
+using PetProject.VolunteerManagement.Application.Repository;
+using PetProject.VolunteerManagement.Application.VolunteersManagement.SoftDeleteVolunteer;
 
 namespace PetProject.Application.Tests.Stubs;
 

@@ -1,5 +1,5 @@
 ﻿using Npgsql;
-using PetProject.Infrastructure.Postgres.Abstractions;
+using PetProject.Core.Database;
 using Testcontainers.PostgreSql;
 
 namespace PetProject.Infrastructure.Tests;

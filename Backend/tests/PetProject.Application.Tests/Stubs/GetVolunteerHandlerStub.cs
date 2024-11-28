@@ -1,6 +1,6 @@
 ﻿using Moq;
-using PetProject.Application.VolunteersManagement;
-using PetProject.Application.VolunteersManagement.GetVolunteer;
+using PetProject.VolunteerManagement.Application.Repository;
+using PetProject.VolunteerManagement.Application.VolunteersManagement.GetVolunteer;
 
 namespace PetProject.Application.Tests.Stubs;
 

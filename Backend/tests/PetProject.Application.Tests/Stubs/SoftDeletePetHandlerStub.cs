@@ -1,7 +1,7 @@
 ﻿using Moq;
-using PetProject.Application.Abstractions;
-using PetProject.Application.VolunteersManagement;
-using PetProject.Application.VolunteersManagement.SoftDeletePet;
+using PetProject.Core.Database;
+using PetProject.VolunteerManagement.Application.Repository;
+using PetProject.VolunteerManagement.Application.VolunteersManagement.SoftDeletePet;
 
 namespace PetProject.Application.Tests.Stubs;
 

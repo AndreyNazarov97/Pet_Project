@@ -1,4 +1,4 @@
-﻿using PetProject.Infrastructure.Postgres.Repositories;
+﻿using PetProject.SpeciesManagement.Infrastructure.Repositories;
 
 namespace PetProject.Infrastructure.Tests.Repositories.SpeciesRepositoryTests;
 [Collection(nameof(BaseTestFixture))]
@@ -11,7 +11,7 @@ public partial class SpeciesRepositoryTest : IClassFixture<BaseTestFixture>
     public SpeciesRepositoryTest(BaseTestFixture fixture)
     {
         _fixture = fixture;
-        _sut = new SpeciesRepository(fixture.GetDbContext(), fixture.GetConnectionFactory());
+        _sut = new SpeciesRepository(fixture.GetSpeciesDbContext());
         _fixture.ClearDatabaseAsync("species", "breeds").Wait(); 
     }
 }

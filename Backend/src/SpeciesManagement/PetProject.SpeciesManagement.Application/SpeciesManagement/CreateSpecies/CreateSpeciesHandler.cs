@@ -2,6 +2,7 @@
 using MediatR;
 using Microsoft.Extensions.Logging;
 using PetProject.Core.Database.Models;
+using PetProject.Core.Database.Repository;
 using PetProject.SharedKernel.Shared;
 using PetProject.SharedKernel.Shared.EntityIds;
 using PetProject.SharedKernel.Shared.ValueObjects;
@@ -13,12 +14,16 @@ namespace PetProject.SpeciesManagement.Application.SpeciesManagement.CreateSpeci
 public class CreateSpeciesHandler : IRequestHandler<CreateSpeciesCommand, Result<Guid, ErrorList>>
 {
     private readonly ISpeciesRepository _repository;
+    private readonly IReadRepository _readRepository;
     private readonly ILogger<CreateSpeciesHandler> _logger;
 
-    public CreateSpeciesHandler(ISpeciesRepository repository,
+    public CreateSpeciesHandler(
+        ISpeciesRepository repository,
+        IReadRepository readRepository,
         ILogger<CreateSpeciesHandler> logger)
     {
         _repository = repository;
+        _readRepository = readRepository;
         _logger = logger;
     }
 
@@ -29,7 +34,7 @@ public class CreateSpeciesHandler : IRequestHandler<CreateSpeciesCommand, Result
         {
             SpeciesName = command.Name
         };
-        var species = (await _repository.Query(speciesQuery, cancellationToken)).SingleOrDefault();
+        var species = (await _readRepository.QuerySpecies(speciesQuery, cancellationToken)).SingleOrDefault();
         if (species != null)
             return Errors.General.AlreadyExist("Species").ToErrorList();
         

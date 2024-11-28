@@ -3,6 +3,7 @@ using MediatR;
 using Microsoft.Extensions.Logging;
 using PetProject.Core.Database;
 using PetProject.Core.Database.Models;
+using PetProject.Core.Database.Repository;
 using PetProject.SharedKernel.Shared;
 using PetProject.SharedKernel.Shared.EntityIds;
 using PetProject.SharedKernel.Shared.ValueObjects;
@@ -15,14 +16,17 @@ namespace PetProject.SpeciesManagement.Application.SpeciesManagement.CreateBreed
 public class CreateBreedHandler : IRequestHandler<CreateBreedCommand, Result<Guid, ErrorList>>
 {
     private readonly ISpeciesRepository _speciesRepository;
+    private readonly IReadRepository _readRepository;
     private readonly IUnitOfWork _unitOfWork;
     private readonly ILogger<CreateBreedHandler> _logger;
 
     public CreateBreedHandler(ISpeciesRepository speciesRepository, 
+        IReadRepository readRepository,
         IUnitOfWork unitOfWork,
         ILogger<CreateBreedHandler> logger)
     {
         _speciesRepository = speciesRepository;
+        _readRepository = readRepository;
         _unitOfWork = unitOfWork;
         _logger = logger;
     }
@@ -33,7 +37,7 @@ public class CreateBreedHandler : IRequestHandler<CreateBreedCommand, Result<Gui
         {
             SpeciesName = command.SpeciesName
         };
-        var species = (await _speciesRepository.Query(speciesQuery, cancellationToken)).SingleOrDefault();
+        var species = (await _readRepository.QuerySpecies(speciesQuery, cancellationToken)).SingleOrDefault();
         if (species == null)
             return Errors.General.NotFound().ToErrorList();
 

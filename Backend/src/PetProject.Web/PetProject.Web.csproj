@@ -11,6 +11,10 @@
     <ItemGroup>
         <PackageReference Include="Microsoft.AspNetCore.Authentication.JwtBearer" Version="8.0.4" NoWarn="NU1605"/>
         <PackageReference Include="Microsoft.AspNetCore.Authentication.OpenIdConnect" Version="8.0.4" NoWarn="NU1605"/>
+        <PackageReference Include="Microsoft.EntityFrameworkCore.Design" Version="8.0.7">
+            <PrivateAssets>all</PrivateAssets>
+            <IncludeAssets>runtime; build; native; contentfiles; analyzers; buildtransitive</IncludeAssets>
+        </PackageReference>
         <PackageReference Include="Microsoft.Extensions.Configuration" Version="8.0.0" />
         <PackageReference Include="Serilog.AspNetCore" Version="8.0.2" />
         <PackageReference Include="Serilog.Enrichers.Environment" Version="3.0.1" />
@@ -21,9 +25,8 @@
     </ItemGroup>
 
     <ItemGroup>
-      <ProjectReference Include="..\PetProject.Accounts.Infrastructure\PetProject.Accounts.Infrastructure.csproj" />
-      <ProjectReference Include="..\PetProject.Accounts.Presentation\PetProject.Accounts.Presentation.csproj" />
-      <ProjectReference Include="..\PetProject.Infrastructure.Authorization\PetProject.Infrastructure.Authorization.csproj" />
+      <ProjectReference Include="..\Accounts\PetProject.Accounts.Infrastructure\PetProject.Accounts.Infrastructure.csproj" />
+      <ProjectReference Include="..\Accounts\PetProject.Accounts.Presentation\PetProject.Accounts.Presentation.csproj" />
       <ProjectReference Include="..\SpeciesManagement\PetProject.SpeciesManagement.Infrastructure\PetProject.SpeciesManagement.Infrastructure.csproj" />
       <ProjectReference Include="..\SpeciesManagement\PetProject.SpeciesManagement.Presentation\PetProject.SpeciesManagement.Presentation.csproj" />
       <ProjectReference Include="..\VolunteerManagement\PetProject.VolunteerManagement.Infrastructure\PetProject.VolunteerManagement.Infrastructure.csproj" />

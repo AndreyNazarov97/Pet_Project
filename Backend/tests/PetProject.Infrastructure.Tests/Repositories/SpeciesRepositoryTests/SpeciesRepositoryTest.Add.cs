@@ -13,7 +13,7 @@ public partial class SpeciesRepositoryTest
 
         var result = await _sut.Add(species, CancellationToken.None);
         
-        await using var dbContext = _fixture.GetDbContext();
+        await using var dbContext = _fixture.GetSpeciesDbContext();
         var volunteersPhones = await dbContext.Species
             .Where(s => s.Id == species.Id)
             .Select(s => s.Name.Value)

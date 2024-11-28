@@ -11,8 +11,8 @@
     </ItemGroup>
 
     <ItemGroup>
-      <ProjectReference Include="..\..\src\PetProject.Application\PetProject.Application.csproj" />
-      <ProjectReference Include="..\..\src\PetProject.Domain\PetProject.Domain.csproj" />
+      <ProjectReference Include="..\..\src\SpeciesManagement\PetProject.SpeciesManagement.Application\PetProject.SpeciesManagement.Application.csproj" />
+      <ProjectReference Include="..\..\src\VolunteerManagement\PetProject.VolunteerManagement.Application\PetProject.VolunteerManagement.Application.csproj" />
     </ItemGroup>
 
 </Project>

@@ -1,10 +1,11 @@
 ﻿using CSharpFunctionalExtensions;
 using MediatR;
 using Microsoft.Extensions.Logging;
+using PetProject.Core.Database.Models;
+using PetProject.Core.Database.Repository;
 using PetProject.SharedKernel.Shared;
 using PetProject.SharedKernel.Shared.EntityIds;
 using PetProject.SharedKernel.Shared.ValueObjects;
-using PetProject.VolunteerManagement.Application.Models;
 using PetProject.VolunteerManagement.Application.Repository;
 using PetProject.VolunteerManagement.Domain.Aggregate;
 
@@ -13,13 +14,16 @@ namespace PetProject.VolunteerManagement.Application.VolunteersManagement.Create
 public class CreateVolunteerHandler : IRequestHandler<CreateVolunteerCommand, Result<Guid, ErrorList>>
 {
     private readonly IVolunteersRepository _repository;
+    private readonly IReadRepository _readRepository;
     private readonly ILogger<CreateVolunteerHandler> _logger;
 
     public CreateVolunteerHandler(
         IVolunteersRepository repository,
+        IReadRepository readRepository,
         ILogger<CreateVolunteerHandler> logger)
     {
         _repository = repository;
+        _readRepository = readRepository;
         _logger = logger;
     }
 
@@ -32,7 +36,7 @@ public class CreateVolunteerHandler : IRequestHandler<CreateVolunteerCommand, Re
             PhoneNumber = command.PhoneNumber
         };
 
-        var existedVolunteer = await _repository.Query(volunteerQuery, token);
+        var existedVolunteer = await _readRepository.QueryVolunteers(volunteerQuery, token);
         if (existedVolunteer.Length > 0)
         {
             return Errors.General.AlreadyExist("Volunteer").ToErrorList();

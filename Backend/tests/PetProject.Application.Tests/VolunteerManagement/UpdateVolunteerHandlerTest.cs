@@ -2,11 +2,11 @@
 using Moq;
 using PetProject.Application.Tests.Extensions;
 using PetProject.Application.Tests.Stubs;
-using PetProject.Application.VolunteersManagement.UpdateVolunteer;
-using PetProject.Domain.Shared;
-using PetProject.Domain.Shared.EntityIds;
+using PetProject.SharedKernel.Shared;
+using PetProject.SharedKernel.Shared.EntityIds;
 using PetProject.SharedTestData;
 using PetProject.SharedTestData.Creators;
+using PetProject.VolunteerManagement.Application.VolunteersManagement.UpdateVolunteer;
 using Random = PetProject.SharedTestData.Creators.Random;
 
 namespace PetProject.Application.Tests.VolunteerManagement;
@@ -17,7 +17,7 @@ public class UpdateVolunteerHandlerTest
     {
         VolunteerId = Guid.NewGuid(),
         FullName = VolunteerCreator.CreateFullNameDto(),
-        Description = Random.LoremParagraph,
+        Description = Random.Words,
         AgeExperience = Random.Experience,
         PhoneNumber = Random.PhoneNumber
     };

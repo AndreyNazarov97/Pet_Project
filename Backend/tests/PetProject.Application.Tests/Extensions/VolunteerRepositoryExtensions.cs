@@ -1,11 +1,12 @@
 ﻿using CSharpFunctionalExtensions;
 using Moq;
-using PetProject.Application.Dto;
-using PetProject.Application.Models;
-using PetProject.Application.VolunteersManagement;
-using PetProject.Domain.Shared;
-using PetProject.Domain.Shared.EntityIds;
-using PetProject.Domain.VolunteerManagement;
+using PetProject.Core.Database.Models;
+using PetProject.Core.Database.Repository;
+using PetProject.Core.Dtos;
+using PetProject.SharedKernel.Shared;
+using PetProject.SharedKernel.Shared.EntityIds;
+using PetProject.VolunteerManagement.Application.Repository;
+using PetProject.VolunteerManagement.Domain.Aggregate;
 
 namespace PetProject.Application.Tests.Extensions;
 
@@ -23,11 +24,11 @@ public static class VolunteerRepositoryExtensions
             .ReturnsAsync(result);
     }
     
-    public static Mock<IVolunteersRepository> SetupQuery(
-        this Mock<IVolunteersRepository> mock,
+    public static Mock<IReadRepository> SetupQueryVolunteer(
+        this Mock<IReadRepository> mock,
         VolunteerDto[] result)
     {
-        mock.Setup(vr => vr.Query(
+        mock.Setup(vr => vr.QueryVolunteers(
                 It.IsAny<VolunteerQueryModel>(),
                 It.IsAny<CancellationToken>()
             ))

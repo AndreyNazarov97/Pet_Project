@@ -1,7 +1,8 @@
 ﻿using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.Configuration;
-using PetProject.Infrastructure.Postgres;
-using PetProject.Infrastructure.Postgres.Abstractions;
+using PetProject.Core.Database;
+using PetProject.SpeciesManagement.Infrastructure.DbContexts;
+using PetProject.VolunteerManagement.Infrastructure.DbContexts;
 using Testcontainers.PostgreSql;
 
 namespace PetProject.Infrastructure.Tests;
@@ -11,7 +12,8 @@ public class BaseTestFixture : IAsyncLifetime
     private readonly PostgreSqlContainer _postgresSqlContainer = new PostgreSqlBuilder().Build();
     private IConfiguration _configuration;
 
-    public PetProjectDbContext GetDbContext() => new(_configuration);
+    public VolunteerDbContext GetVolunteerDbContext() => new(_configuration);
+    public SpeciesDbContext GetSpeciesDbContext() => new(_configuration);
 
     public IPostgresConnectionFactory GetConnectionFactory() =>
         new TestPostgresConnectionFactory(_postgresSqlContainer);
@@ -33,8 +35,11 @@ public class BaseTestFixture : IAsyncLifetime
             }!)
             .Build();
 
-        var dbContext = GetDbContext();
-        await dbContext.Database.MigrateAsync();
+        var volunteerDbContext = GetVolunteerDbContext();
+        await volunteerDbContext.Database.MigrateAsync();
+        
+        var speciesDbContext = GetSpeciesDbContext();
+        await speciesDbContext.Database.MigrateAsync();
     }
 
     public virtual async Task DisposeAsync()
@@ -45,7 +50,7 @@ public class BaseTestFixture : IAsyncLifetime
 
     public async Task ClearDatabaseAsync(params string[] tables)
     {
-        await using var dbContext = GetDbContext();
+        await using var dbContext = GetVolunteerDbContext();
         foreach (var table in tables)
         {
             await dbContext.Database.ExecuteSqlRawAsync($"TRUNCATE TABLE {table} CASCADE;");

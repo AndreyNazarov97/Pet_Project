@@ -1,7 +1,6 @@
 using Microsoft.OpenApi.Models;
 using PetProject.Accounts.Application;
 using PetProject.Accounts.Infrastructure;
-using PetProject.Infrastructure.Authorization;
 using PetProject.SpeciesManagement.Application;
 using PetProject.SpeciesManagement.Infrastructure;
 using PetProject.VolunteerManagement.Application;

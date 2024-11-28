@@ -1,6 +1,7 @@
 ﻿using CSharpFunctionalExtensions;
 using MediatR;
 using PetProject.Core.Database.Models;
+using PetProject.Core.Database.Repository;
 using PetProject.Core.Dtos;
 using PetProject.SharedKernel.Shared;
 using PetProject.SpeciesManagement.Application.Repository;
@@ -9,12 +10,12 @@ namespace PetProject.SpeciesManagement.Application.SpeciesManagement.GetSpeciesL
 
 public class GetSpeciesListQueryHandler : IRequestHandler<GetSpeciesListQuery, Result<SpeciesDto[], ErrorList>>
 {
-    private readonly ISpeciesRepository _speciesRepository;
+    private readonly IReadRepository _readRepository;
 
     public GetSpeciesListQueryHandler(
-        ISpeciesRepository speciesRepository)
+        IReadRepository readRepository)
     {
-        _speciesRepository = speciesRepository;
+        _readRepository = readRepository;
     }
 
     public async Task<Result<SpeciesDto[], ErrorList>> Handle(GetSpeciesListQuery request,
@@ -25,7 +26,7 @@ public class GetSpeciesListQueryHandler : IRequestHandler<GetSpeciesListQuery, R
             Offset = request.Offset,
             Limit = request.Limit
         };
-        var species = await _speciesRepository.Query(speciesQuery, cancellationToken);
+        var species = await _readRepository.QuerySpecies(speciesQuery, cancellationToken);
         
         return species;
     }

@@ -99,7 +99,7 @@ public class CreatePetHandler : IRequestHandler<CreatePetCommand, Result<Guid, E
         {
             SpeciesName = command.SpeciesName
         };
-        var species = (await _readRepository.Query(speciesQuery, cancellationToken)).SingleOrDefault();
+        var species = (await _readRepository.QuerySpecies(speciesQuery, cancellationToken)).SingleOrDefault();
         if (species == null)
             return Errors.General.NotFound();
         

@@ -5,9 +5,9 @@ namespace PetProject.Core.Database.Repository;
 
 public interface IReadRepository
 {
-    Task<SpeciesDto[]> Query(SpeciesQueryModel query, CancellationToken cancellationToken = default);
+    Task<SpeciesDto[]> QuerySpecies(SpeciesQueryModel query, CancellationToken cancellationToken = default);
     
-    Task<VolunteerDto[]> Query(VolunteerQueryModel query, CancellationToken cancellationToken = default);
+    Task<VolunteerDto[]> QueryVolunteers(VolunteerQueryModel query, CancellationToken cancellationToken = default);
     
-    Task<PetDto[]> Query(PetQueryModel query, CancellationToken cancellationToken = default);
+    Task<PetDto[]> QueryPets(PetQueryModel query, CancellationToken cancellationToken = default);
 }

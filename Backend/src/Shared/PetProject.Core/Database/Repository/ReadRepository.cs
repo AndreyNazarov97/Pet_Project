@@ -14,7 +14,7 @@ public class ReadRepository : IReadRepository
         _connectionFactory = connectionFactory;
     }
 
-    public async Task<SpeciesDto[]> Query(SpeciesQueryModel query, CancellationToken cancellationToken = default)
+    public async Task<SpeciesDto[]> QuerySpecies(SpeciesQueryModel query, CancellationToken cancellationToken = default)
     {
         var sqlQuery = """
                        select 
@@ -56,6 +56,18 @@ public class ReadRepository : IReadRepository
         }
 
         sqlQuery += " where " + string.Join(" and ", conditions);
+        
+        // Сортировка
+        if (!string.IsNullOrEmpty(query.SortBy))
+        {
+            var sortField = query.SortBy switch
+            {
+                "SpeciesName" => "s.species_name",
+                "BreedName" => "b.breed_name",
+                _ => "s.species_name"
+            };
+            sqlQuery += $" ORDER BY {sortField} {(query.SortDescending ? "DESC" : "ASC")}";
+        }
 
         if (query.Limit > 0)
         {
@@ -103,7 +115,7 @@ public class ReadRepository : IReadRepository
         return speciesList.ToArray();
     }
 
-    public async Task<VolunteerDto[]> Query(VolunteerQueryModel query, CancellationToken cancellationToken = default)
+    public async Task<VolunteerDto[]> QueryVolunteers(VolunteerQueryModel query, CancellationToken cancellationToken = default)
     {
         var sqlQuery = """
                         SELECT 
@@ -171,6 +183,19 @@ public class ReadRepository : IReadRepository
         }
 
         sqlQuery += " where " + string.Join(" and ", conditions);
+        
+        // Сортировка
+        if (!string.IsNullOrEmpty(query.SortBy))
+        {
+            var sortField = query.SortBy switch
+            {
+                "Name" => "v.surname",
+                "Age" => "v.age_experience",
+                "PhoneNumber" => "v.phone_number",
+                _ => "v.surname"
+            };
+            sqlQuery += $" ORDER BY {sortField} {(query.SortDescending ? "DESC" : "ASC")}";
+        }
 
         if (query.Limit > 0)
         {
@@ -260,7 +285,7 @@ public class ReadRepository : IReadRepository
         return volunteers.ToArray();
     }
 
-    public async Task<PetDto[]> Query(PetQueryModel query, CancellationToken cancellationToken = default)
+    public async Task<PetDto[]> QueryPets(PetQueryModel query, CancellationToken cancellationToken = default)
     {
         var sqlQuery = """
                        SELECT 

@@ -1,21 +1,18 @@
-﻿using CSharpFunctionalExtensions;
-using Moq;
-using PetProject.Application.Dto;
-using PetProject.Application.Models;
-using PetProject.Application.SpeciesManagement;
-using PetProject.Application.VolunteersManagement;
-using PetProject.Domain.Shared.EntityIds;
-using PetProject.Domain.VolunteerManagement;
+﻿using Moq;
+using PetProject.Core.Database.Models;
+using PetProject.Core.Database.Repository;
+using PetProject.Core.Dtos;
+using PetProject.SpeciesManagement.Application.Repository;
 
 namespace PetProject.Application.Tests.Extensions;
 
 public static class SpeciesRepositoryExtension
 {
-    public static void SetupQuery(
-        this Mock<ISpeciesRepository> mock,
+    public static void SetupQuerySpecies(
+        this Mock<IReadRepository> mock,
         SpeciesDto[] speciesDto)
     {
-        mock.Setup(sr => sr.Query(
+        mock.Setup(sr => sr.QuerySpecies(
                 It.IsAny<SpeciesQueryModel>(),
                 It.IsAny<CancellationToken>()
             ))

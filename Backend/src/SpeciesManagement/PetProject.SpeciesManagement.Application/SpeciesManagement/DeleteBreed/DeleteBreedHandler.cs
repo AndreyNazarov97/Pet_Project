@@ -31,7 +31,7 @@ public class DeleteBreedHandler : IRequestHandler<DeleteBreedCommand, UnitResult
         {
             SpeciesName = request.SpeciesName
         };
-        var species = (await _speciesRepository.Query(speciesQuery, cancellationToken)).SingleOrDefault();
+        var species = (await _readRepository.QuerySpecies(speciesQuery, cancellationToken)).SingleOrDefault();
         if (species == null)
             return Errors.General.NotFound().ToErrorList();
 
@@ -43,7 +43,7 @@ public class DeleteBreedHandler : IRequestHandler<DeleteBreedCommand, UnitResult
         {
             BreedNames = [request.BreedName]
         };
-        var volunteers = await _readRepository.Query(volunteerQuery, cancellationToken);
+        var volunteers = await _readRepository.QueryVolunteers(volunteerQuery, cancellationToken);
         if (volunteers.Length > 0)
             return Error.Conflict("species.is.used.by.volunteers", "Species is used by volunteers").ToErrorList();
 
