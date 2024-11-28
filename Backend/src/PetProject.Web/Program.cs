@@ -1,4 +1,6 @@
 using Microsoft.OpenApi.Models;
+using PetProject.Accounts.Application;
+using PetProject.Accounts.Infrastructure;
 using PetProject.Infrastructure.Authorization;
 using PetProject.SpeciesManagement.Application;
 using PetProject.SpeciesManagement.Infrastructure;
@@ -57,7 +59,9 @@ builder.Services
     .AddSpeciesManagementInfrastructure();
 
 
-builder.Services.AddAuthorizationInfrastructure(builder.Configuration);
+builder.Services
+    .AddAccountsManagementApplication()
+    .AddAccountsInfrastructure(builder.Configuration);
 
 
 var app = builder.Build();

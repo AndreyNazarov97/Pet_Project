@@ -21,6 +21,8 @@
     </ItemGroup>
 
     <ItemGroup>
+      <ProjectReference Include="..\PetProject.Accounts.Infrastructure\PetProject.Accounts.Infrastructure.csproj" />
+      <ProjectReference Include="..\PetProject.Accounts.Presentation\PetProject.Accounts.Presentation.csproj" />
       <ProjectReference Include="..\PetProject.Infrastructure.Authorization\PetProject.Infrastructure.Authorization.csproj" />
       <ProjectReference Include="..\SpeciesManagement\PetProject.SpeciesManagement.Infrastructure\PetProject.SpeciesManagement.Infrastructure.csproj" />
       <ProjectReference Include="..\SpeciesManagement\PetProject.SpeciesManagement.Presentation\PetProject.SpeciesManagement.Presentation.csproj" />
