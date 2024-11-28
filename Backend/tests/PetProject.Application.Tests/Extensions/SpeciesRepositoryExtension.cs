@@ -4,8 +4,6 @@ using PetProject.Application.Dto;
 using PetProject.Application.Models;
 using PetProject.Application.SpeciesManagement;
 using PetProject.Application.VolunteersManagement;
-using PetProject.Domain.Shared.EntityIds;
-using PetProject.Domain.VolunteerManagement;
 
 namespace PetProject.Application.Tests.Extensions;
 

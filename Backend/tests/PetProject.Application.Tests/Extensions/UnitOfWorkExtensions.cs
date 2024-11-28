@@ -3,7 +3,6 @@ using CSharpFunctionalExtensions;
 using MediatR;
 using Moq;
 using PetProject.Application.Abstractions;
-using PetProject.Domain.Shared;
 
 namespace PetProject.Application.Tests.Extensions;
 
