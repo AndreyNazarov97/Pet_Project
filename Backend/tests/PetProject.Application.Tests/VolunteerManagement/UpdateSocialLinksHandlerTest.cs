@@ -1,12 +1,12 @@
 ﻿using FluentAssertions;
 using Moq;
-using PetProject.Application.Dto;
 using PetProject.Application.Tests.Extensions;
 using PetProject.Application.Tests.Stubs;
-using PetProject.Application.VolunteersManagement.UpdateSocialLinks;
-using PetProject.Domain.Shared;
-using PetProject.Domain.Shared.EntityIds;
+using PetProject.Core.Dtos;
+using PetProject.SharedKernel.Shared;
+using PetProject.SharedKernel.Shared.EntityIds;
 using PetProject.SharedTestData;
+using PetProject.VolunteerManagement.Application.VolunteersManagement.UpdateSocialLinks;
 
 namespace PetProject.Application.Tests.VolunteerManagement;
 
@@ -17,8 +17,8 @@ public class UpdateSocialLinksHandlerTest
         VolunteerId = Guid.NewGuid(),
         SocialLinks = new List<SocialLinkDto>()
         {
-            new("Title 1", "http://example.com"),
-            new("Title 2", "http://example2.com")
+            new(){Title = "Title 1", Url = "http://example1.com"},
+            new(){Title = "Title 2", Url = "http://example2.com"},
         }
     };
 

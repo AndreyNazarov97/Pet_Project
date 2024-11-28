@@ -1,13 +1,13 @@
 ﻿using FluentAssertions;
 using Moq;
-using PetProject.Application.Dto;
 using PetProject.Application.Tests.Extensions;
 using PetProject.Application.Tests.Stubs;
-using PetProject.Application.VolunteersManagement.AddPetPhoto;
-using PetProject.Domain.Shared;
-using PetProject.Domain.Shared.EntityIds;
-using PetProject.Domain.Shared.ValueObjects;
+using PetProject.Core.Dtos;
+using PetProject.SharedKernel.Shared;
+using PetProject.SharedKernel.Shared.EntityIds;
+using PetProject.SharedKernel.Shared.ValueObjects;
 using PetProject.SharedTestData;
+using PetProject.VolunteerManagement.Application.VolunteersManagement.AddPetPhoto;
 
 namespace PetProject.Application.Tests.VolunteerManagement;
 

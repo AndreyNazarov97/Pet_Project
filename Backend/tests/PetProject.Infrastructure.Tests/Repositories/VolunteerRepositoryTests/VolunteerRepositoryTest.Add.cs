@@ -15,7 +15,7 @@ public partial class VolunteerRepositoryTest
         
         var addedVolunteer = await _sut.GetById(volunteer.Id, CancellationToken.None);
         
-        await using var dbContext = _fixture.GetDbContext();
+        await using var dbContext = _fixture.GetVolunteerDbContext();
         var volunteersPhones = await dbContext.Volunteers
             .Where(v => v.Id == volunteer.Id)
             .Select(v => v.PhoneNumber.Value)

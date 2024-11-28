@@ -15,7 +15,7 @@ public partial class SpeciesRepositoryTest
 
         var result = await _sut.Delete(species.Id, CancellationToken.None);
         
-        await using var dbContext = _fixture.GetDbContext();
+        await using var dbContext = _fixture.GetSpeciesDbContext();
         var speciesInDatabase = await dbContext.Species
             .Where(s => s.Id == species.Id)
             .Select(s => s.Name.Value)

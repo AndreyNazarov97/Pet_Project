@@ -1,5 +1,5 @@
 ﻿using Bogus;
-using PetProject.Application.Dto;
+using PetProject.Core.Dtos;
 
 namespace PetProject.SharedTestData.Creators;
 

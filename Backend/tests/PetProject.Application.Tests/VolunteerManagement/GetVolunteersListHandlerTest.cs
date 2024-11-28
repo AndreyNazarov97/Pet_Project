@@ -1,9 +1,9 @@
 ﻿using FluentAssertions;
-using PetProject.Application.Dto;
 using PetProject.Application.Tests.Extensions;
 using PetProject.Application.Tests.Stubs;
-using PetProject.Application.VolunteersManagement.GetVolunteersList;
+using PetProject.Core.Dtos;
 using PetProject.SharedTestData;
+using PetProject.VolunteerManagement.Application.VolunteersManagement.GetVolunteersList;
 
 namespace PetProject.Application.Tests.VolunteerManagement;
 
@@ -23,7 +23,7 @@ public class GetVolunteersListHandlerTest
         var handler = StubFactory.CreateGetVolunteersListHandlerStub();
 
         //Act
-        handler.VolunteersRepositoryMock.SetupQuery([]);
+        handler.ReadRepositoryMock.SetupQueryVolunteer([]);
         var result = await handler.Handle(query, CancellationToken.None);
 
         //Assert
@@ -44,7 +44,7 @@ public class GetVolunteersListHandlerTest
         };
 
         //Act
-        handler.VolunteersRepositoryMock.SetupQuery(volunteers.ToArray());
+        handler.ReadRepositoryMock.SetupQueryVolunteer(volunteers.ToArray());
         var result = await handler.Handle(query, CancellationToken.None);
 
         //Assert

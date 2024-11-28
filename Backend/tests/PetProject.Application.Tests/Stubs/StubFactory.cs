@@ -1,14 +1,16 @@
 ﻿using Microsoft.Extensions.Logging;
 using Moq;
-using PetProject.Application.Abstractions;
-using PetProject.Application.SpeciesManagement;
-using PetProject.Application.VolunteersManagement;
-using PetProject.Application.VolunteersManagement.AddPetPhoto;
-using PetProject.Application.VolunteersManagement.CreateVolunteer;
-using PetProject.Application.VolunteersManagement.SoftDeleteVolunteer;
-using PetProject.Application.VolunteersManagement.UpdateRequisites;
-using PetProject.Application.VolunteersManagement.UpdateSocialLinks;
-using PetProject.Application.VolunteersManagement.UpdateVolunteer;
+using PetProject.Core.Database;
+using PetProject.Core.Database.Repository;
+using PetProject.SpeciesManagement.Application.Repository;
+using PetProject.VolunteerManagement.Application.Providers;
+using PetProject.VolunteerManagement.Application.Repository;
+using PetProject.VolunteerManagement.Application.VolunteersManagement.AddPetPhoto;
+using PetProject.VolunteerManagement.Application.VolunteersManagement.CreateVolunteer;
+using PetProject.VolunteerManagement.Application.VolunteersManagement.SoftDeleteVolunteer;
+using PetProject.VolunteerManagement.Application.VolunteersManagement.UpdateRequisites;
+using PetProject.VolunteerManagement.Application.VolunteersManagement.UpdateSocialLinks;
+using PetProject.VolunteerManagement.Application.VolunteersManagement.UpdateVolunteer;
 
 namespace PetProject.Application.Tests.Stubs;
 
@@ -18,11 +20,12 @@ public static class StubFactory
         => new(new Mock<IVolunteersRepository>());
     
     public static GetVolunteersListHandlerStub CreateGetVolunteersListHandlerStub() 
-        => new(new Mock<IVolunteersRepository>());
+        => new(new Mock<IReadRepository>());
     
     public static CreateVolunteerHandlerStub CreateVolunteerHandlerStub() 
         => new(
             new Mock<IVolunteersRepository>(),
+            new Mock<IReadRepository>(),
             new Mock<ILogger<CreateVolunteerHandler>>());
 
     public static SoftDeleteVolunteerHandlerStub CreateDeleteVolunteerHandlerStub()
@@ -53,7 +56,7 @@ public static class StubFactory
         => new(
             new Mock<IVolunteersRepository>(),
             new Mock<IUnitOfWork>(),
-            new Mock<ISpeciesRepository>());
+            new Mock<IReadRepository>());
     
     public static AddPetPhotoHandlerStub CreateAddPetPhotoHandlerStub() 
         => new(new Mock<IVolunteersRepository>(),
@@ -63,7 +66,7 @@ public static class StubFactory
 
     public static UpdatePetHandlerStub CreateUpdatePetHandlerStub()
         => new(new Mock<IVolunteersRepository>(),
-            new Mock<ISpeciesRepository>(),
+            new Mock<IReadRepository>(),
             new Mock<IUnitOfWork>());
     
     public static ChangePetStatusHandlerStub CreateChangePetStatusHandlerStub()

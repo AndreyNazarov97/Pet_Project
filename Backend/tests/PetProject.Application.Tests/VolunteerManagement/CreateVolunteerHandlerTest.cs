@@ -1,12 +1,12 @@
 ﻿using FluentAssertions;
 using Moq;
-using PetProject.Application.Dto;
-using PetProject.Application.Models;
 using PetProject.Application.Tests.Extensions;
 using PetProject.Application.Tests.Stubs;
-using PetProject.Application.VolunteersManagement.CreateVolunteer;
+using PetProject.Core.Database.Models;
+using PetProject.Core.Dtos;
 using PetProject.SharedTestData;
 using PetProject.SharedTestData.Creators;
+using PetProject.VolunteerManagement.Application.VolunteersManagement.CreateVolunteer;
 using Random = PetProject.SharedTestData.Creators.Random;
 
 namespace PetProject.Application.Tests.VolunteerManagement;
@@ -17,7 +17,7 @@ public class CreateVolunteerHandlerTest
     {
         PhoneNumber = Random.PhoneNumber,
         FullName = VolunteerCreator.CreateFullNameDto(),
-        Description = Random.LoremParagraph,
+        Description = Random.Words,
         AgeExperience = Random.Experience,
         SocialLinks = new List<SocialLinkDto>(),
         Requisites = new List<RequisiteDto>()
@@ -35,7 +35,7 @@ public class CreateVolunteerHandlerTest
         var handler = StubFactory.CreateVolunteerHandlerStub();
         
         // Act
-        handler.VolunteersRepositoryMock.SetupQuery(dtos);
+        handler.ReadRepositoryMock.SetupQueryVolunteer(dtos);
         var result = await handler.Handle(command, CancellationToken.None);
 
         // Assert
@@ -55,7 +55,7 @@ public class CreateVolunteerHandlerTest
         var result = await handler.Handle(command, CancellationToken.None);
 
         result.IsSuccess.Should().BeTrue();
-        handler.VolunteersRepositoryMock.Verify(repo => repo.Query(
+        handler.ReadRepositoryMock.Verify(repo => repo.QueryVolunteers(
             It.IsAny<VolunteerQueryModel>(), It.IsAny<CancellationToken>()),
             Times.Once);
     }

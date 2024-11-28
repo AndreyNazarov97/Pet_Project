@@ -1,13 +1,13 @@
 ﻿using FluentAssertions;
 using Moq;
-using PetProject.Application.Models;
 using PetProject.Application.Tests.Extensions;
 using PetProject.Application.Tests.Stubs;
-using PetProject.Application.VolunteersManagement.CreatePet;
-using PetProject.Domain.Shared;
-using PetProject.Domain.Shared.EntityIds;
+using PetProject.Core.Database.Models;
+using PetProject.SharedKernel.Shared;
+using PetProject.SharedKernel.Shared.EntityIds;
 using PetProject.SharedTestData;
 using PetProject.SharedTestData.Creators;
+using PetProject.VolunteerManagement.Application.VolunteersManagement.CreatePet;
 using Random = PetProject.SharedTestData.Creators.Random;
 
 namespace PetProject.Application.Tests.VolunteerManagement;
@@ -18,8 +18,8 @@ public class CreatePetHandlerTest
     {
         VolunteerId = Guid.NewGuid(),
         Name = Random.Name,
-        GeneralDescription = Random.LoremParagraph,
-        HealthInformation = Random.LoremParagraph,
+        GeneralDescription = Random.Words,
+        HealthInformation = Random.Words,
         SpeciesName = "Dog",
         BreedName = "Bulldog",
         Address = VolunteerCreator.CreateAddressDto(),
@@ -63,7 +63,7 @@ public class CreatePetHandlerTest
 
         // Act
         handler.VolunteersRepositoryMock.SetupGetById(volunteer.Id, volunteer);
-        handler.SpeciesRepositoryMock.SetupQuery([]);
+        handler.ReadRepositoryMock.SetupQueryVolunteer([]);
         var result = await handler.Handle(command, CancellationToken.None);
 
         // Assert
@@ -72,7 +72,7 @@ public class CreatePetHandlerTest
         handler.VolunteersRepositoryMock.Verify(repo => repo.GetById(
                 It.IsAny<VolunteerId>(), It.IsAny<CancellationToken>()),
             Times.Once);
-        handler.SpeciesRepositoryMock.Verify(repo => repo.Query(
+        handler.ReadRepositoryMock.Verify(repo => repo.QuerySpecies(
                 It.IsAny<SpeciesQueryModel>(), It.IsAny<CancellationToken>()),
             Times.Once);
     }
@@ -90,7 +90,7 @@ public class CreatePetHandlerTest
 
         // Act
         handler.VolunteersRepositoryMock.SetupGetById(volunteer.Id, volunteer);
-        handler.SpeciesRepositoryMock.SetupQuery([speciesDto]);
+        handler.ReadRepositoryMock.SetupQuerySpecies([speciesDto]);
         var result = await handler.Handle(command, CancellationToken.None);
 
         // Assert
@@ -99,7 +99,7 @@ public class CreatePetHandlerTest
         handler.VolunteersRepositoryMock.Verify(repo => repo.GetById(
                 It.IsAny<VolunteerId>(), It.IsAny<CancellationToken>()),
             Times.Once);
-        handler.SpeciesRepositoryMock.Verify(repo => repo.Query(
+        handler.ReadRepositoryMock.Verify(repo => repo.QuerySpecies(
                 It.IsAny<SpeciesQueryModel>(), It.IsAny<CancellationToken>()),
             Times.Once);
     }
@@ -117,7 +117,7 @@ public class CreatePetHandlerTest
 
         // Act
         handler.VolunteersRepositoryMock.SetupGetById(volunteer.Id, volunteer);
-        handler.SpeciesRepositoryMock.SetupQuery([speciesDto]);
+        handler.ReadRepositoryMock.SetupQuerySpecies([speciesDto]);
         var result = await handler.Handle(command, CancellationToken.None);
 
         // Assert
@@ -128,7 +128,7 @@ public class CreatePetHandlerTest
         handler.UnitOfWorkMock.Verify(u => u.SaveChangesAsync(
                 It.IsAny<CancellationToken>()),
             Times.Once);
-        handler.SpeciesRepositoryMock.Verify(repo => repo.Query(
+        handler.ReadRepositoryMock.Verify(repo => repo.QuerySpecies(
                 It.IsAny<SpeciesQueryModel>(), It.IsAny<CancellationToken>()),
             Times.Once);
     }

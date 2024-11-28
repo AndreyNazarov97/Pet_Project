@@ -1,9 +1,9 @@
 ﻿using CSharpFunctionalExtensions;
 using Moq;
-using PetProject.Application.Abstractions;
-using PetProject.Application.Dto;
-using PetProject.Domain.Shared;
-using PetProject.Domain.Shared.ValueObjects;
+using PetProject.Core.Dtos;
+using PetProject.SharedKernel.Shared;
+using PetProject.SharedKernel.Shared.ValueObjects;
+using PetProject.VolunteerManagement.Application.Providers;
 
 namespace PetProject.Application.Tests.Extensions;
 

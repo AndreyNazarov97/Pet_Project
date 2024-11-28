@@ -1,17 +1,18 @@
 ﻿using Moq;
-using PetProject.Application.VolunteersManagement;
-using PetProject.Application.VolunteersManagement.GetVolunteersList;
+using PetProject.Core.Database.Repository;
+using PetProject.VolunteerManagement.Application.Repository;
+using PetProject.VolunteerManagement.Application.VolunteersManagement.GetVolunteersList;
 
 namespace PetProject.Application.Tests.Stubs;
 
 public class GetVolunteersListHandlerStub : GetVolunteersListHandler
 {
-    internal Mock<IVolunteersRepository> VolunteersRepositoryMock { get; }
+    internal Mock<IReadRepository> ReadRepositoryMock { get; }
 
     public GetVolunteersListHandlerStub(
-        Mock<IVolunteersRepository> volunteersRepositoryMock) : 
-        base(volunteersRepositoryMock.Object)
+        Mock<IReadRepository> readRepositoryMock) : 
+        base(readRepositoryMock.Object)
     {
-        VolunteersRepositoryMock = volunteersRepositoryMock;
+        ReadRepositoryMock = readRepositoryMock;
     }
 }

@@ -4,11 +4,11 @@ using Microsoft.Extensions.Logging;
 using Moq;
 using PetProject.Application.Tests.Extensions;
 using PetProject.Application.Tests.Stubs;
-using PetProject.Application.VolunteersManagement.SoftDeleteVolunteer;
-using PetProject.Domain.Shared;
-using PetProject.Domain.Shared.EntityIds;
-using PetProject.Domain.VolunteerManagement;
+using PetProject.SharedKernel.Shared;
+using PetProject.SharedKernel.Shared.EntityIds;
 using PetProject.SharedTestData;
+using PetProject.VolunteerManagement.Application.VolunteersManagement.SoftDeleteVolunteer;
+using PetProject.VolunteerManagement.Domain.Aggregate;
 
 namespace PetProject.Application.Tests.VolunteerManagement;
 

@@ -1,9 +1,6 @@
 ﻿using System.Data;
-using CSharpFunctionalExtensions;
-using MediatR;
 using Moq;
-using PetProject.Application.Abstractions;
-using PetProject.Domain.Shared;
+using PetProject.Core.Database;
 
 namespace PetProject.Application.Tests.Extensions;
 

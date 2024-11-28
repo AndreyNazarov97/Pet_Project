@@ -1,8 +1,9 @@
 using FluentAssertions;
-using PetProject.Domain.Shared;
-using PetProject.Domain.VolunteerManagement;
-using PetProject.Domain.VolunteerManagement.ValueObjects;
+using PetProject.SharedKernel.Shared;
 using PetProject.SharedTestData;
+using PetProject.VolunteerManagement.Domain.Aggregate;
+using PetProject.VolunteerManagement.Domain.Entities;
+using PetProject.VolunteerManagement.Domain.ValueObjects;
 
 namespace PetProject.Domain.Tests;
 

@@ -2,10 +2,10 @@
 using Moq;
 using PetProject.Application.Tests.Extensions;
 using PetProject.Application.Tests.Stubs;
-using PetProject.Application.VolunteersManagement.GetVolunteer;
-using PetProject.Domain.Shared;
-using PetProject.Domain.Shared.EntityIds;
+using PetProject.SharedKernel.Shared;
+using PetProject.SharedKernel.Shared.EntityIds;
 using PetProject.SharedTestData;
+using PetProject.VolunteerManagement.Application.VolunteersManagement.GetVolunteer;
 
 namespace PetProject.Application.Tests.VolunteerManagement;
 

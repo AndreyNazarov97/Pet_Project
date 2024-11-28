@@ -1,12 +1,12 @@
 ﻿using FluentAssertions;
 using Moq;
-using PetProject.Application.Dto;
 using PetProject.Application.Tests.Extensions;
 using PetProject.Application.Tests.Stubs;
-using PetProject.Application.VolunteersManagement.UpdateRequisites;
-using PetProject.Domain.Shared;
-using PetProject.Domain.Shared.EntityIds;
+using PetProject.Core.Dtos;
+using PetProject.SharedKernel.Shared;
+using PetProject.SharedKernel.Shared.EntityIds;
 using PetProject.SharedTestData;
+using PetProject.VolunteerManagement.Application.VolunteersManagement.UpdateRequisites;
 
 namespace PetProject.Application.Tests.VolunteerManagement;
 
@@ -17,8 +17,8 @@ public class UpdateRequisitesHandlerTest
         VolunteerId = Guid.NewGuid(),
         Requisites = new List<RequisiteDto>
         {
-            new("Title 1", "Description 1"),
-            new("Title 2", "Description 2")
+            new(){Title ="Title 1", Description = "Description 1"},
+            new(){Title ="Title 2", Description = "Description 2"}
         }
     };
 
