@@ -39,7 +39,7 @@ namespace PetProject.VolunteerManagement.Infrastructure.Migrations
                     birth_date = table.Column<DateOnly>(type: "date", nullable: false),
                     is_castrated = table.Column<bool>(type: "boolean", nullable: false),
                     is_vaccinated = table.Column<bool>(type: "boolean", nullable: false),
-                    help_status = table.Column<int>(type: "integer", nullable: false),
+                    help_status = table.Column<string>(type: "text", nullable: false),
                     date_created = table.Column<DateTimeOffset>(type: "timestamp with time zone", nullable: false),
                     pet_photos = table.Column<string>(type: "jsonb", nullable: false),
                     requisites = table.Column<string>(type: "jsonb", nullable: false),
