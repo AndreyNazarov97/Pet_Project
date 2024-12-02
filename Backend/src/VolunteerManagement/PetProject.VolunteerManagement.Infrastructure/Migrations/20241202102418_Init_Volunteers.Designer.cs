@@ -13,7 +13,7 @@ using PetProject.VolunteerManagement.Infrastructure.DbContexts;
 namespace PetProject.VolunteerManagement.Infrastructure.Migrations
 {
     [DbContext(typeof(VolunteerDbContext))]
-    [Migration("20241128150308_Init_Volunteers")]
+    [Migration("20241202102418_Init_Volunteers")]
     partial class Init_Volunteers
     {
         /// <inheritdoc />
@@ -118,8 +118,9 @@ namespace PetProject.VolunteerManagement.Infrastructure.Migrations
                         .HasColumnType("timestamp with time zone")
                         .HasColumnName("date_created");
 
-                    b.Property<int>("HelpStatus")
-                        .HasColumnType("integer")
+                    b.Property<string>("HelpStatus")
+                        .IsRequired()
+                        .HasColumnType("text")
                         .HasColumnName("help_status");
 
                     b.Property<bool>("IsCastrated")

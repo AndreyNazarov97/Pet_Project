@@ -89,7 +89,7 @@ public class TestData
         BirthDate = new DateTime(Random.DateOnly, TimeOnly.MinValue, DateTimeKind.Utc),
         IsCastrated = Random.Bool,
         IsVaccinated = Random.Bool,
-        HelpStatus = (int?)Random.HelpStatus,
+        HelpStatus = Random.HelpStatus.ToString(),
     };
 
     public static SpeciesDto SpeciesDto => new()

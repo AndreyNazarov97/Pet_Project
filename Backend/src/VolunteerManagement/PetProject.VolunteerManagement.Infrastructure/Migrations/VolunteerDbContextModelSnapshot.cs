@@ -115,8 +115,9 @@ namespace PetProject.VolunteerManagement.Infrastructure.Migrations
                         .HasColumnType("timestamp with time zone")
                         .HasColumnName("date_created");
 
-                    b.Property<int>("HelpStatus")
-                        .HasColumnType("integer")
+                    b.Property<string>("HelpStatus")
+                        .IsRequired()
+                        .HasColumnType("text")
                         .HasColumnName("help_status");
 
                     b.Property<bool>("IsCastrated")

@@ -61,5 +61,6 @@ public static class SpeciesDbContextSeeder
         );
 
         await context.Species.AddRangeAsync([dogSpecies, catSpecies], cancellationToken);
+        await context.SaveChangesAsync(cancellationToken);
     }
 }
