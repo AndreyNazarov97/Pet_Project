@@ -67,9 +67,7 @@ public class TestData
         FullName = VolunteerCreator.CreateFullNameDto(),
         GeneralDescription = Random.Words,
         AgeExperience = Random.Experience,
-        PhoneNumber = Random.PhoneNumber,
-        Requisites = [],
-        SocialLinks = []
+        PhoneNumber = Random.PhoneNumber
     };
 
     public static PetDto PetDto => new()

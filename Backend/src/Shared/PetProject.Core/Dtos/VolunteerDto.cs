@@ -6,8 +6,6 @@ public record VolunteerDto
     public required string GeneralDescription { get; init; }
     public required int AgeExperience { get; init; }
     public required string PhoneNumber { get; init; } 
-    public RequisiteDto[] Requisites { get; init; } = [];
-    public SocialNetworkDto[] SocialLinks { get; init; } = [];
     public PetDto[] Pets { get; private set; } = [];
     
     public void AddPet(PetDto pet)
