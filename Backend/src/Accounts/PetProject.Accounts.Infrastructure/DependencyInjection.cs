@@ -23,13 +23,7 @@ public static class DependencyInjection
         
         services.AddScoped<AuthorizationDbContext>();
         
-        services
-            .AddIdentity<User, Role>(options =>
-            {
-                options.User.RequireUniqueEmail = true;
-            })
-            .AddEntityFrameworkStores<AuthorizationDbContext>()
-            .AddDefaultTokenProviders();
+        services.RegisterIdentity();
 
         services
             .AddAuthentication(options =>
@@ -61,5 +55,16 @@ public static class DependencyInjection
         services.AddSingleton<IAuthorizationPolicyProvider, PermissionPolicyProvider>();
 
         return services;
+    }
+
+    private static void RegisterIdentity(this IServiceCollection services)
+    {
+        services
+            .AddIdentity<User, Role>(options =>
+            {
+                options.User.RequireUniqueEmail = true;
+            })
+            .AddEntityFrameworkStores<AuthorizationDbContext>()
+            .AddDefaultTokenProviders();
     }
 }

@@ -6,13 +6,17 @@ using Microsoft.EntityFrameworkCore.Migrations;
 namespace PetProject.SpeciesManagement.Infrastructure.Migrations
 {
     /// <inheritdoc />
-    public partial class Init_Species : Migration
+    public partial class Species_Init : Migration
     {
         /// <inheritdoc />
         protected override void Up(MigrationBuilder migrationBuilder)
         {
+            migrationBuilder.EnsureSchema(
+                name: "species");
+
             migrationBuilder.CreateTable(
                 name: "species",
+                schema: "species",
                 columns: table => new
                 {
                     id = table.Column<Guid>(type: "uuid", nullable: false),
@@ -26,6 +30,7 @@ namespace PetProject.SpeciesManagement.Infrastructure.Migrations
 
             migrationBuilder.CreateTable(
                 name: "breeds",
+                schema: "species",
                 columns: table => new
                 {
                     id = table.Column<Guid>(type: "uuid", nullable: false),
@@ -39,6 +44,7 @@ namespace PetProject.SpeciesManagement.Infrastructure.Migrations
                     table.ForeignKey(
                         name: "fk_breeds_species_species_id",
                         column: x => x.species_id,
+                        principalSchema: "species",
                         principalTable: "species",
                         principalColumn: "id",
                         onDelete: ReferentialAction.Cascade);
@@ -46,6 +52,7 @@ namespace PetProject.SpeciesManagement.Infrastructure.Migrations
 
             migrationBuilder.CreateIndex(
                 name: "ix_breeds_species_id",
+                schema: "species",
                 table: "breeds",
                 column: "species_id");
         }
@@ -54,10 +61,12 @@ namespace PetProject.SpeciesManagement.Infrastructure.Migrations
         protected override void Down(MigrationBuilder migrationBuilder)
         {
             migrationBuilder.DropTable(
-                name: "breeds");
+                name: "breeds",
+                schema: "species");
 
             migrationBuilder.DropTable(
-                name: "species");
+                name: "species",
+                schema: "species");
         }
     }
 }

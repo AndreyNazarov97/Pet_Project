@@ -94,7 +94,7 @@ public class AuthorizationDbContext
         modelBuilder.Entity<IdentityUserRole<long>>()
             .ToTable("user_roles");
         
-        
+        modelBuilder.HasDefaultSchema("accounts");
     }
 
     private static ILoggerFactory CreateLoggerFactory()

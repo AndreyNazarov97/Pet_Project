@@ -17,6 +17,7 @@ namespace PetProject.Accounts.Infrastructure.Migrations
         {
 #pragma warning disable 612, 618
             modelBuilder
+                .HasDefaultSchema("accounts")
                 .HasAnnotation("ProductVersion", "8.0.10")
                 .HasAnnotation("Relational:MaxIdentifierLength", 63);
 
@@ -49,7 +50,7 @@ namespace PetProject.Accounts.Infrastructure.Migrations
                     b.HasIndex("RoleId")
                         .HasDatabaseName("ix_role_claims_role_id");
 
-                    b.ToTable("role_claims", (string)null);
+                    b.ToTable("role_claims", "accounts");
                 });
 
             modelBuilder.Entity("Microsoft.AspNetCore.Identity.IdentityUserClaim<long>", b =>
@@ -79,7 +80,7 @@ namespace PetProject.Accounts.Infrastructure.Migrations
                     b.HasIndex("UserId")
                         .HasDatabaseName("ix_user_claims_user_id");
 
-                    b.ToTable("user_claims", (string)null);
+                    b.ToTable("user_claims", "accounts");
                 });
 
             modelBuilder.Entity("Microsoft.AspNetCore.Identity.IdentityUserLogin<long>", b =>
@@ -106,7 +107,7 @@ namespace PetProject.Accounts.Infrastructure.Migrations
                     b.HasIndex("UserId")
                         .HasDatabaseName("ix_user_logins_user_id");
 
-                    b.ToTable("user_logins", (string)null);
+                    b.ToTable("user_logins", "accounts");
                 });
 
             modelBuilder.Entity("Microsoft.AspNetCore.Identity.IdentityUserRole<long>", b =>
@@ -125,7 +126,7 @@ namespace PetProject.Accounts.Infrastructure.Migrations
                     b.HasIndex("RoleId")
                         .HasDatabaseName("ix_user_roles_role_id");
 
-                    b.ToTable("user_roles", (string)null);
+                    b.ToTable("user_roles", "accounts");
                 });
 
             modelBuilder.Entity("Microsoft.AspNetCore.Identity.IdentityUserToken<long>", b =>
@@ -149,7 +150,7 @@ namespace PetProject.Accounts.Infrastructure.Migrations
                     b.HasKey("UserId", "LoginProvider", "Name")
                         .HasName("pk_user_tokens");
 
-                    b.ToTable("user_tokens", (string)null);
+                    b.ToTable("user_tokens", "accounts");
                 });
 
             modelBuilder.Entity("PetProject.Accounts.Domain.Permission", b =>
@@ -179,7 +180,7 @@ namespace PetProject.Accounts.Infrastructure.Migrations
                         .IsUnique()
                         .HasDatabaseName("ix_permissions_code");
 
-                    b.ToTable("permissions", (string)null);
+                    b.ToTable("permissions", "accounts");
                 });
 
             modelBuilder.Entity("PetProject.Accounts.Domain.Role", b =>
@@ -213,7 +214,7 @@ namespace PetProject.Accounts.Infrastructure.Migrations
                         .IsUnique()
                         .HasDatabaseName("RoleNameIndex");
 
-                    b.ToTable("roles", (string)null);
+                    b.ToTable("roles", "accounts");
                 });
 
             modelBuilder.Entity("PetProject.Accounts.Domain.RolePermission", b =>
@@ -242,7 +243,7 @@ namespace PetProject.Accounts.Infrastructure.Migrations
                     b.HasIndex("RoleId")
                         .HasDatabaseName("ix_role_permissions_role_id");
 
-                    b.ToTable("role_permissions", (string)null);
+                    b.ToTable("role_permissions", "accounts");
                 });
 
             modelBuilder.Entity("PetProject.Accounts.Domain.User", b =>
@@ -330,7 +331,7 @@ namespace PetProject.Accounts.Infrastructure.Migrations
                         .IsUnique()
                         .HasDatabaseName("UserNameIndex");
 
-                    b.ToTable("users", (string)null);
+                    b.ToTable("users", "accounts");
                 });
 
             modelBuilder.Entity("Microsoft.AspNetCore.Identity.IdentityRoleClaim<long>", b =>
