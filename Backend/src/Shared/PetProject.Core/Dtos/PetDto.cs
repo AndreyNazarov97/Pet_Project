@@ -14,6 +14,6 @@ public record PetDto
     public DateTime? BirthDate { get; init; }
     public bool? IsCastrated { get; init; }
     public bool? IsVaccinated { get; init; }
-    public int? HelpStatus { get; init; }
+    public string? HelpStatus { get; init; }
    }
 

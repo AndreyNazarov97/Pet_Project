@@ -409,7 +409,7 @@ public class ReadRepository : IReadRepository
                 BirthDate = reader.GetDateTime(12),
                 IsCastrated = reader.GetBoolean(13),
                 IsVaccinated = reader.GetBoolean(14),
-                HelpStatus = reader.GetInt32(15),
+                HelpStatus = reader.GetString(15),
                 PhoneNumber = reader.GetString(16)
             };
 

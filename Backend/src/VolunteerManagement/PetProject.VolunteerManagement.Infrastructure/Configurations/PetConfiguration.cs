@@ -1,5 +1,6 @@
 ﻿using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Metadata.Builders;
+using Microsoft.EntityFrameworkCore.Storage.ValueConversion.Internal;
 using PetProject.Core.Dtos;
 using PetProject.Core.Extensions;
 using PetProject.SharedKernel.Constants;
@@ -114,6 +115,10 @@ public class PetConfiguration : IEntityTypeConfiguration<Pet>
         });
 
         builder.Property(p => p.BirthDate).IsRequired();
+
+        builder.Property(p => p.HelpStatus)
+            .HasConversion<string>()
+            .IsRequired();
 
         builder.Property(p => p.IsCastrated).IsRequired();
 

@@ -94,6 +94,11 @@ public class UpdatePetHandler : IRequestHandler<UpdatePetCommand, Result<Guid, E
             ? (DateOnly?)null
             : DateOnly.FromDateTime(command.PetInfo.BirthDate.Value);
 
+        var isStatusExists  = Enum.TryParse<HelpStatus>(command.PetInfo.HelpStatus, out var parsedStatus);
+        var helpStatus = isStatusExists 
+            ? parsedStatus 
+            : (HelpStatus?)null;
+
         var result = volunteer.UpdatePet(
             petId,
             petName,
@@ -105,7 +110,7 @@ public class UpdatePetHandler : IRequestHandler<UpdatePetCommand, Result<Guid, E
             birthDate,
             command.PetInfo.IsCastrated,
             command.PetInfo.IsVaccinated,
-            (HelpStatus?)command.PetInfo.HelpStatus,
+            helpStatus,
             null);
         
         return result;
