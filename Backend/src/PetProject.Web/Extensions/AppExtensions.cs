@@ -1,5 +1,6 @@
 ﻿using Microsoft.EntityFrameworkCore;
 using PetProject.Accounts.Infrastructure;
+using PetProject.Accounts.Infrastructure.DataSeed;
 using PetProject.SpeciesManagement.Infrastructure.DataSeed;
 using PetProject.SpeciesManagement.Infrastructure.DbContexts;
 using PetProject.VolunteerManagement.Infrastructure.DataSeed;
@@ -20,8 +21,8 @@ public static class AppExtensions
         await speciesDbContext.Database.MigrateAsync();
 
 
-        var authDbContext = scope.ServiceProvider.GetRequiredService<AuthorizationDbContext>();
-        await authDbContext.Database.MigrateAsync();
+        var accountsDbContext = scope.ServiceProvider.GetRequiredService<AccountsDbContext>();
+        await accountsDbContext.Database.MigrateAsync();
     }
 
     public static async Task SeedDatabases(this WebApplication app)
@@ -33,5 +34,8 @@ public static class AppExtensions
 
         var speciesDbContext = scope.ServiceProvider.GetRequiredService<SpeciesDbContext>();
         await SpeciesDbContextSeeder.SeedAsync(speciesDbContext);
+        
+        var accountSeeder = scope.ServiceProvider.GetRequiredService<AccountsSeeder>();
+        await accountSeeder.SeedAsync();
     }
 }

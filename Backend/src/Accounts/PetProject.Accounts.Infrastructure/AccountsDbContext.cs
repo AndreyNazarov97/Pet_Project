@@ -12,12 +12,16 @@ using Constants = PetProject.SharedKernel.Constants.Constants;
 
 namespace PetProject.Accounts.Infrastructure;
 
-public class AuthorizationDbContext
+public class AccountsDbContext
     : IdentityDbContext<User, Role, long>
 {
     private readonly IConfiguration _configuration;
     
-    public AuthorizationDbContext(IConfiguration configuration)
+    public override DbSet<Role> Roles { get; set; } 
+    public DbSet<Permission> Permissions { get; set; }
+    public DbSet<RolePermission> RolePermissions { get; set; }
+    
+    public AccountsDbContext(IConfiguration configuration)
     {
         _configuration = configuration;
     }
@@ -58,10 +62,6 @@ public class AuthorizationDbContext
         modelBuilder.Entity<Permission>()
             .HasIndex(p => p.Code)
             .IsUnique();
-        
-        modelBuilder.Entity<Permission>()
-            .Property(p => p.Description)
-            .HasMaxLength(Constants.MIDDLE_TEXT_LENGTH);
         
         modelBuilder.Entity<RolePermission>()
             .ToTable("role_permissions");

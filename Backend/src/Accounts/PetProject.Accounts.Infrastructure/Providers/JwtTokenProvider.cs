@@ -5,8 +5,9 @@ using Microsoft.Extensions.Options;
 using Microsoft.IdentityModel.Tokens;
 using PetProject.Accounts.Application;
 using PetProject.Accounts.Domain;
+using PetProject.Accounts.Infrastructure.Options;
 
-namespace PetProject.Accounts.Infrastructure;
+namespace PetProject.Accounts.Infrastructure.Providers;
 
 public class JwtTokenProvider : ITokenProvider
 {

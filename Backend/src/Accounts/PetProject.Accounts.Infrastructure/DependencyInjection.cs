@@ -7,6 +7,10 @@ using Microsoft.Extensions.DependencyInjection;
 using Microsoft.IdentityModel.Tokens;
 using PetProject.Accounts.Application;
 using PetProject.Accounts.Domain;
+using PetProject.Accounts.Infrastructure.DataSeed;
+using PetProject.Accounts.Infrastructure.IdentityManagers;
+using PetProject.Accounts.Infrastructure.Options;
+using PetProject.Accounts.Infrastructure.Providers;
 using PetProject.Framework.Authorization;
 
 namespace PetProject.Accounts.Infrastructure;
@@ -21,10 +25,13 @@ public static class DependencyInjection
         
         services.AddTransient<ITokenProvider, JwtTokenProvider>();
         
-        services.AddScoped<AuthorizationDbContext>();
+        services.AddScoped<AccountsDbContext>();
         
         services.RegisterIdentity();
 
+        
+        services.AddSingleton<AccountsSeeder>();
+        
         services
             .AddAuthentication(options =>
             {
@@ -64,7 +71,13 @@ public static class DependencyInjection
             {
                 options.User.RequireUniqueEmail = true;
             })
-            .AddEntityFrameworkStores<AuthorizationDbContext>()
+            .AddEntityFrameworkStores<AccountsDbContext>()
             .AddDefaultTokenProviders();
+        
+        
+        services.AddScoped<PermissionManager>();
+        services.AddScoped<RolePermissionManager>();
+        
+        services.AddScoped<AccountsSeedService>();
     }
 }
