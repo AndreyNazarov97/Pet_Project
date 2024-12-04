@@ -20,11 +20,5 @@ public class CreateVolunteerCommandValidator : AbstractValidator<CreateVolunteer
 
         RuleFor(c => c.PhoneNumber)
             .MustBeValueObject(PhoneNumber.Create);
-
-        RuleForEach(c => c.Requisites)
-            .SetValidator(new RequisiteDtoValidator()); 
-
-        RuleForEach(c => c.SocialLinks)
-            .SetValidator(new SocialLinkDtoValidator());
     }
 }

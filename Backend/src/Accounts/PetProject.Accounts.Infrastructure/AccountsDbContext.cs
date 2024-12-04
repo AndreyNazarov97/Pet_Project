@@ -7,6 +7,8 @@ using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.Logging;
 using Microsoft.VisualBasic;
 using PetProject.Accounts.Domain;
+using PetProject.Core.Dtos;
+using PetProject.Core.Extensions;
 using PetProject.SharedKernel.Shared.ValueObjects;
 using Constants = PetProject.SharedKernel.Constants.Constants;
 
@@ -50,8 +52,17 @@ public class AccountsDbContext
                 new ValueComparer<List<SocialNetwork>>(
                     (c1, c2) => c1.SequenceEqual(c2),
                     c => c.Aggregate(0, (a, v) => HashCode.Combine(a, v.GetHashCode())),
-                    c => c.ToList())) 
-            ;
+                    c => c.ToList()));
+        
+        modelBuilder.Entity<User>()
+            .Property(v => v.Requisites)
+            .HasConversion(
+                v => JsonSerializer.Serialize(v,  JsonSerializerOptions.Default),
+                json => JsonSerializer.Deserialize<List<Requisite>>(json, JsonSerializerOptions.Default)!,
+                new ValueComparer<List<Requisite>>(
+                    (c1, c2) => c1.SequenceEqual(c2),
+                    c => c.Aggregate(0, (a, v) => HashCode.Combine(a, v.GetHashCode())),
+                    c => c.ToList()));
 
         modelBuilder.Entity<Role>()
             .ToTable("roles");

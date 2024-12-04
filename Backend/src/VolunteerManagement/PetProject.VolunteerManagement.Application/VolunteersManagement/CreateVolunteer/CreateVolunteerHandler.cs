@@ -52,22 +52,12 @@ public class CreateVolunteerHandler : IRequestHandler<CreateVolunteerCommand, Re
         var ageExperience = Experience.Create(command.AgeExperience).Value;
         var phoneNumber = PhoneNumber.Create(command.PhoneNumber).Value;
 
-        var socialLinks = command.SocialLinks
-            .Select(x => SocialNetwork.Create(x.Title, x.Url).Value)
-            .ToList();
-
-        var requisites = command.Requisites
-            .Select(x => Requisite.Create(x.Title, x.Description).Value)
-            .ToList();
-
         var volunteer = new Volunteer(
             volunteerId,
             fullName, 
             description,
             ageExperience, 
-            phoneNumber, 
-            socialLinks, 
-            requisites);
+            phoneNumber);
 
         await _repository.Add(volunteer, token);
         

@@ -13,7 +13,7 @@ using PetProject.VolunteerManagement.Infrastructure.DbContexts;
 namespace PetProject.VolunteerManagement.Infrastructure.Migrations
 {
     [DbContext(typeof(VolunteerDbContext))]
-    [Migration("20241204142207_Volunteers_Init")]
+    [Migration("20241204200437_Volunteers_Init")]
     partial class Volunteers_Init
     {
         /// <inheritdoc />
@@ -32,16 +32,6 @@ namespace PetProject.VolunteerManagement.Infrastructure.Migrations
                     b.Property<Guid>("Id")
                         .HasColumnType("uuid")
                         .HasColumnName("id");
-
-                    b.Property<string>("Requisites")
-                        .IsRequired()
-                        .HasColumnType("jsonb")
-                        .HasColumnName("requisites");
-
-                    b.Property<string>("SocialLinks")
-                        .IsRequired()
-                        .HasColumnType("jsonb")
-                        .HasColumnName("social_links");
 
                     b.Property<bool>("_isDeleted")
                         .HasColumnType("boolean")
@@ -135,11 +125,6 @@ namespace PetProject.VolunteerManagement.Infrastructure.Migrations
                         .IsRequired()
                         .HasColumnType("jsonb")
                         .HasColumnName("pet_photos");
-
-                    b.Property<string>("Requisites")
-                        .IsRequired()
-                        .HasColumnType("jsonb")
-                        .HasColumnName("requisites");
 
                     b.Property<bool>("_isDeleted")
                         .HasColumnType("boolean")

@@ -23,9 +23,7 @@ public class TestData
         FullName.Create(Faker.Name.FirstName(), Faker.Name.LastName()).Value,
         Description.Create(Random.Words).Value,
         Experience.Create(Random.Experience).Value,
-        PhoneNumber.Create(Random.PhoneNumber).Value,
-        [],
-        []
+        PhoneNumber.Create(Random.PhoneNumber).Value
     );
 
     public static Pet Pet => new(
@@ -50,7 +48,6 @@ public class TestData
         true,
         true,
         HelpStatus.NeedsHelp,
-        [],
         []
     );
 

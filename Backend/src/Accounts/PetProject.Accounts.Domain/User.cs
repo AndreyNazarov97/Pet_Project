@@ -6,6 +6,7 @@ namespace PetProject.Accounts.Domain;
 public class User : IdentityUser<long>
 {
     public List<SocialNetwork> SocialNetworks { get; set; } = [];
+    public List<Requisite> Requisites { get; set; } = [];
 }
 
 public static class Permissions

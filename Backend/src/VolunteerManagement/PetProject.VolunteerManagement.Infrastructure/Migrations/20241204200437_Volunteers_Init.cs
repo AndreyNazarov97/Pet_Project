@@ -20,8 +20,6 @@ namespace PetProject.VolunteerManagement.Infrastructure.Migrations
                 columns: table => new
                 {
                     id = table.Column<Guid>(type: "uuid", nullable: false),
-                    social_links = table.Column<string>(type: "jsonb", nullable: false),
-                    requisites = table.Column<string>(type: "jsonb", nullable: false),
                     is_deleted = table.Column<bool>(type: "boolean", nullable: false),
                     age_experience = table.Column<int>(type: "integer", nullable: false),
                     name = table.Column<string>(type: "character varying(50)", maxLength: 50, nullable: false),
@@ -47,7 +45,6 @@ namespace PetProject.VolunteerManagement.Infrastructure.Migrations
                     help_status = table.Column<int>(type: "integer", nullable: false),
                     date_created = table.Column<DateTimeOffset>(type: "timestamp with time zone", nullable: false),
                     pet_photos = table.Column<string>(type: "jsonb", nullable: false),
-                    requisites = table.Column<string>(type: "jsonb", nullable: false),
                     is_deleted = table.Column<bool>(type: "boolean", nullable: false),
                     volunteer_id = table.Column<Guid>(type: "uuid", nullable: true),
                     city = table.Column<string>(type: "character varying(50)", maxLength: 50, nullable: false),

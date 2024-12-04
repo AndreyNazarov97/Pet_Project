@@ -121,12 +121,6 @@ public class PetConfiguration : IEntityTypeConfiguration<Pet>
 
         builder.Property(p => p.DateCreated).IsRequired();
 
-        builder.Property(p => p.Requisites)
-            .HasValueObjectsJsonConversion(
-                input => new RequisiteDto { Title = input.Title, Description = input.Description },
-                output => Requisite.Create(output.Title, output.Description).Value)
-            .HasColumnName("requisites");
-
         builder.Property(v => v.PetPhotoList)
             .HasValueObjectsJsonConversion(
                 input => new PetPhotoDto() { Path = input.Path.Path , IsMain = input.IsMain},

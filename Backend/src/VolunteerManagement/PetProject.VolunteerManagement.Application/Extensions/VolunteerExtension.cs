@@ -11,9 +11,7 @@ public static class VolunteerExtension
         FullName = volunteer.FullName.ToDto(),
         GeneralDescription = volunteer.GeneralDescription.Value,
         AgeExperience = volunteer.Experience.Years,
-        PhoneNumber = volunteer.PhoneNumber.Value,
-        Requisites = volunteer.Requisites.Select(x => x.ToDto()).ToArray(),
-        SocialLinks = volunteer.SocialLinks.Select(x => x.ToDto()).ToArray()
+        PhoneNumber = volunteer.PhoneNumber.Value
     };
     
     public static FullNameDto ToDto(this FullName fullName)

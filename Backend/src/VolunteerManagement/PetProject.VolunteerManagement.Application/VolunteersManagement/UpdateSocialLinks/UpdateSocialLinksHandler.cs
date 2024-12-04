@@ -40,7 +40,8 @@ public class UpdateSocialLinksHandler : IRequestHandler<UpdateSocialLinksCommand
             .Select(x => SocialNetwork.Create(x.Title, x.Url).Value)
             .ToList();
 
-        volunteer.Value.UpdateSocialLinks(socialLinks);
+        //TODO: переместить хендлер в аккаунты
+        //volunteer.Value.UpdateSocialLinks(socialLinks);
         
         await _unitOfWork.SaveChangesAsync(cancellationToken);
         
