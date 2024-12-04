@@ -18,36 +18,7 @@ builder.Services.AddSerilog();
 
 builder.Services.AddControllers();
 builder.Services.AddEndpointsApiExplorer();
-builder.Services.AddSwaggerGen(options =>
-{
-    options.SwaggerDoc("v1", new()
-    {
-        Title = "PetProject.API",
-        Version = "v1"
-    });
-
-    options.AddSecurityDefinition("Bearer", new()
-    {
-        In = ParameterLocation.Header,
-        Description = "Please insert JWT with Bearer into field",
-        Name = "Authorization",
-        Type = SecuritySchemeType.ApiKey
-    });
-    options.AddSecurityRequirement(new OpenApiSecurityRequirement()
-    {
-        {
-            new OpenApiSecurityScheme
-            {
-                Reference = new OpenApiReference
-                {
-                    Type = ReferenceType.SecurityScheme,
-                    Id = "Bearer"
-                }
-            },
-            []
-        }
-    });
-});
+builder.Services.AddSwagger();
 
 builder.Services
     .AddVolunteerManagementApplication()
@@ -86,8 +57,7 @@ if (app.Environment.IsDevelopment()
 
         await next();
     });
-
-
+    
     await app.ApplyMigrations();
     await app.SeedDatabases();
 }
@@ -97,6 +67,12 @@ app.UseHttpsRedirection();
 app.UseAuthentication();
 app.UseAuthorization();
 
+app.UseCors(policyBuilder =>
+{
+    policyBuilder.AllowAnyHeader();
+    policyBuilder.AllowAnyMethod();
+    policyBuilder.AllowAnyOrigin();
+});
 app.MapControllers();
 
 app.Run();

@@ -15,7 +15,7 @@ public class Volunteer : AggregateRoot<VolunteerId>, ISoftDeletable
     private bool _isDeleted;
     private readonly List<Pet> _pets = [];
     private List<Requisite> _requisites = [];
-    private List<SocialLink> _socialLinks = [];
+    private List<SocialNetwork> _socialLinks = [];
 
     private Volunteer(VolunteerId id) : base(id)
     {
@@ -27,7 +27,7 @@ public class Volunteer : AggregateRoot<VolunteerId>, ISoftDeletable
         Description generalDescription,
         Experience experience,
         PhoneNumber number,
-        List<SocialLink> socialLinks,
+        List<SocialNetwork> socialLinks,
         List<Requisite> requisites) : base(id)
     {
         FullName = fullName;
@@ -44,7 +44,7 @@ public class Volunteer : AggregateRoot<VolunteerId>, ISoftDeletable
     public Experience Experience { get; private set; }
     public PhoneNumber PhoneNumber { get; private set; }
     public IReadOnlyList<Pet> Pets => _pets.AsReadOnly();
-    public IReadOnlyList<SocialLink> SocialLinks => _socialLinks.AsReadOnly();
+    public IReadOnlyList<SocialNetwork> SocialLinks => _socialLinks.AsReadOnly();
     public IReadOnlyList<Requisite> Requisites => _requisites.AsReadOnly();
 
     public void AddPet(Pet pet)
@@ -91,7 +91,7 @@ public class Volunteer : AggregateRoot<VolunteerId>, ISoftDeletable
         PhoneNumber = number;
     }
 
-    public void UpdateSocialLinks(List<SocialLink> list) =>
+    public void UpdateSocialLinks(List<SocialNetwork> list) =>
         _socialLinks = list;
 
     public void UpdateRequisites(List<Requisite> list) =>

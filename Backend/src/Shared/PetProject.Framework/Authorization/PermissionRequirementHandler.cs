@@ -1,6 +1,6 @@
 ﻿using Microsoft.AspNetCore.Authorization;
 
-namespace PetProject.Accounts.Infrastructure;
+namespace PetProject.Framework.Authorization;
 
 public class PermissionRequirementHandler : AuthorizationHandler<PermissionAttribute>
 {
@@ -19,4 +19,4 @@ public class PermissionRequirementHandler : AuthorizationHandler<PermissionAttri
             context.Succeed(permission);
         }
     }
-}
+} 

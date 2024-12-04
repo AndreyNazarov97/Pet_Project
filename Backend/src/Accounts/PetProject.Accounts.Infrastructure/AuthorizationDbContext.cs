@@ -1,14 +1,19 @@
-﻿using Microsoft.AspNetCore.Identity;
+﻿using System.Text.Json;
+using Microsoft.AspNetCore.Identity;
 using Microsoft.AspNetCore.Identity.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore;
+using Microsoft.EntityFrameworkCore.ChangeTracking;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.Logging;
+using Microsoft.VisualBasic;
 using PetProject.Accounts.Domain;
+using PetProject.SharedKernel.Shared.ValueObjects;
+using Constants = PetProject.SharedKernel.Constants.Constants;
 
 namespace PetProject.Accounts.Infrastructure;
 
 public class AuthorizationDbContext
-    : IdentityDbContext<User, Role, Guid>
+    : IdentityDbContext<User, Role, long>
 {
     private readonly IConfiguration _configuration;
     
@@ -32,24 +37,64 @@ public class AuthorizationDbContext
         
         modelBuilder.Entity<User>()
             .ToTable("users");
+        
+        modelBuilder.Entity<User>()
+            .Property(u => u.SocialNetworks)
+            .HasConversion(
+                v => JsonSerializer.Serialize(v,  JsonSerializerOptions.Default),
+                json => JsonSerializer.Deserialize<List<SocialNetwork>>(json, JsonSerializerOptions.Default)!,
+                new ValueComparer<List<SocialNetwork>>(
+                    (c1, c2) => c1.SequenceEqual(c2),
+                    c => c.Aggregate(0, (a, v) => HashCode.Combine(a, v.GetHashCode())),
+                    c => c.ToList())) 
+            ;
 
         modelBuilder.Entity<Role>()
             .ToTable("roles");
         
-        modelBuilder.Entity<IdentityUserClaim<Guid>>()
+        modelBuilder.Entity<Permission>()
+            .ToTable("permissions");
+        
+        modelBuilder.Entity<Permission>()
+            .HasIndex(p => p.Code)
+            .IsUnique();
+        
+        modelBuilder.Entity<Permission>()
+            .Property(p => p.Description)
+            .HasMaxLength(Constants.MIDDLE_TEXT_LENGTH);
+        
+        modelBuilder.Entity<RolePermission>()
+            .ToTable("role_permissions");
+        
+        modelBuilder.Entity<RolePermission>()
+            .HasKey(rp => rp.Id);
+
+        modelBuilder.Entity<RolePermission>()
+            .HasOne(rp => rp.Permission)
+            .WithMany()
+            .HasForeignKey(rp => rp.PermissionId);
+        
+        modelBuilder.Entity<RolePermission>()
+            .HasOne(rp => rp.Role)
+            .WithMany(r => r.RolePermissions)
+            .HasForeignKey(rp => rp.RoleId);
+        
+        modelBuilder.Entity<IdentityUserClaim<long>>()
             .ToTable("user_claims");
 
-        modelBuilder.Entity<IdentityUserToken<Guid>>()
+        modelBuilder.Entity<IdentityUserToken<long>>()
             .ToTable("user_tokens");
 
-        modelBuilder.Entity<IdentityUserLogin<Guid>>()
+        modelBuilder.Entity<IdentityUserLogin<long>>()
             .ToTable("user_logins");
 
-        modelBuilder.Entity<IdentityRoleClaim<Guid>>()
+        modelBuilder.Entity<IdentityRoleClaim<long>>()
             .ToTable("role_claims");
 
-        modelBuilder.Entity<IdentityUserRole<Guid>>()
+        modelBuilder.Entity<IdentityUserRole<long>>()
             .ToTable("user_roles");
+        
+        
     }
 
     private static ILoggerFactory CreateLoggerFactory()

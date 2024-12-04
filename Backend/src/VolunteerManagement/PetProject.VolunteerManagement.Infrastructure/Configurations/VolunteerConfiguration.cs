@@ -63,7 +63,7 @@ public class VolunteerConfiguration : IEntityTypeConfiguration<Volunteer>
         builder.Property(v => v.SocialLinks)
             .HasValueObjectsJsonConversion(
                 input => new SocialLinkDto { Title = input.Title, Url = input.Url },
-                output => SocialLink.Create(output.Title, output.Url).Value)
+                output => SocialNetwork.Create(output.Title, output.Url).Value)
             .HasColumnName("social_links");
 
         builder.Property(v => v.Requisites)

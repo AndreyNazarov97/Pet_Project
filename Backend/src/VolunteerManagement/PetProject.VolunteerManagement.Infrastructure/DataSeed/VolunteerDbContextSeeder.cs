@@ -24,7 +24,7 @@ public static class VolunteerDbContextSeeder
         VolunteerDbContext context,
         CancellationToken cancellationToken)
     {
-        var socialLink = SocialLink.Create("telegram", "https://t.me/andrey_nazarov").Value;
+        var socialLink = SocialNetwork.Create("telegram", "https://t.me/andrey_nazarov").Value;
         var requisite = Requisite.Create("Сбербанк", "8 951 101 62 53").Value;
         
         var firstVolunteer = new Volunteer(
@@ -37,7 +37,7 @@ public static class VolunteerDbContextSeeder
             [requisite]
         );
 
-        var secondSocialLink = SocialLink.Create("telegram", "https://t.me/suvorov").Value;
+        var secondSocialLink = SocialNetwork.Create("telegram", "https://t.me/suvorov").Value;
         var secondRequisite = Requisite.Create("Банк Екатерины Великой", "Попросить Потемкина").Value;
         
         var secondVolunteer = new Volunteer(

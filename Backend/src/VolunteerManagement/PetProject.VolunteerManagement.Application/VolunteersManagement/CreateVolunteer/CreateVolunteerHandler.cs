@@ -53,7 +53,7 @@ public class CreateVolunteerHandler : IRequestHandler<CreateVolunteerCommand, Re
         var phoneNumber = PhoneNumber.Create(command.PhoneNumber).Value;
 
         var socialLinks = command.SocialLinks
-            .Select(x => SocialLink.Create(x.Title, x.Url).Value)
+            .Select(x => SocialNetwork.Create(x.Title, x.Url).Value)
             .ToList();
 
         var requisites = command.Requisites

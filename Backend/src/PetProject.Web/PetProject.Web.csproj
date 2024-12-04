@@ -33,4 +33,10 @@
       <ProjectReference Include="..\VolunteerManagement\PetProject.VolunteerManagement.Presentation\PetProject.VolunteerManagement.Presentation.csproj" />
     </ItemGroup>
 
+    <ItemGroup>
+      <Content Include="..\..\.dockerignore">
+        <Link>.dockerignore</Link>
+      </Content>
+    </ItemGroup>
+
 </Project>

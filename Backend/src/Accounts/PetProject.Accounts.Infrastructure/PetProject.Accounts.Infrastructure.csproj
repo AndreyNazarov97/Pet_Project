@@ -12,6 +12,7 @@
     </ItemGroup>
 
     <ItemGroup>
+      <ProjectReference Include="..\..\Shared\PetProject.Framework\PetProject.Framework.csproj" />
       <ProjectReference Include="..\PetProject.Accounts.Application\PetProject.Accounts.Application.csproj" />
     </ItemGroup>
     

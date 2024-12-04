@@ -37,7 +37,7 @@ public class UpdateSocialLinksHandler : IRequestHandler<UpdateSocialLinksCommand
             return volunteer.Error.ToErrorList();
 
         var socialLinks = command.SocialLinks
-            .Select(x => SocialLink.Create(x.Title, x.Url).Value)
+            .Select(x => SocialNetwork.Create(x.Title, x.Url).Value)
             .ToList();
 
         volunteer.Value.UpdateSocialLinks(socialLinks);

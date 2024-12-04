@@ -34,12 +34,12 @@ public static class VolunteerExtension
             Description = requisite.Description
         };
     }
-    public static SocialLinkDto ToDto(this SocialLink socialLink)
+    public static SocialLinkDto ToDto(this SocialNetwork socialNetwork)
     {
         return new SocialLinkDto
         {
-            Title = socialLink.Title,
-            Url = socialLink.Url
+            Title = socialNetwork.Title,
+            Url = socialNetwork.Url
         };
     }
 }
