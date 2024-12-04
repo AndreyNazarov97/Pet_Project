@@ -264,7 +264,7 @@ public class ReadRepository : IReadRepository
                 BirthDate = reader.GetDateTime(18),
                 IsCastrated = reader.GetBoolean(19),
                 IsVaccinated = reader.GetBoolean(20),
-                HelpStatus = reader.GetInt32(21)
+                HelpStatus = reader.GetString(21)
             };
 
             volunteer.AddPet(pet);
