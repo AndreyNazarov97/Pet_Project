@@ -1,16 +1,9 @@
-﻿using System.Text.Json;
-using Microsoft.AspNetCore.Identity;
+﻿using Microsoft.AspNetCore.Identity;
 using Microsoft.AspNetCore.Identity.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore;
-using Microsoft.EntityFrameworkCore.ChangeTracking;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.Logging;
-using Microsoft.VisualBasic;
 using PetProject.Accounts.Domain;
-using PetProject.Core.Dtos;
-using PetProject.Core.Extensions;
-using PetProject.SharedKernel.Shared.ValueObjects;
-using Constants = PetProject.SharedKernel.Constants.Constants;
 
 namespace PetProject.Accounts.Infrastructure;
 
@@ -19,6 +12,10 @@ public class AccountsDbContext
 {
     private readonly IConfiguration _configuration;
     
+    
+    public DbSet<AdminAccount> AdminAccounts { get; set; }
+    public DbSet<VolunteerAccount> VolunteerAccounts { get; set; }
+    public DbSet<ParticipantAccount> ParticipantAccounts { get; set; }
     public override DbSet<Role> Roles { get; set; } 
     public DbSet<Permission> Permissions { get; set; }
     public DbSet<RolePermission> RolePermissions { get; set; }
@@ -41,29 +38,6 @@ public class AccountsDbContext
     {
         base.OnModelCreating(modelBuilder);
         
-        modelBuilder.Entity<User>()
-            .ToTable("users");
-        
-        modelBuilder.Entity<User>()
-            .Property(u => u.SocialNetworks)
-            .HasConversion(
-                v => JsonSerializer.Serialize(v,  JsonSerializerOptions.Default),
-                json => JsonSerializer.Deserialize<List<SocialNetwork>>(json, JsonSerializerOptions.Default)!,
-                new ValueComparer<List<SocialNetwork>>(
-                    (c1, c2) => c1.SequenceEqual(c2),
-                    c => c.Aggregate(0, (a, v) => HashCode.Combine(a, v.GetHashCode())),
-                    c => c.ToList()));
-        
-        modelBuilder.Entity<User>()
-            .Property(v => v.Requisites)
-            .HasConversion(
-                v => JsonSerializer.Serialize(v,  JsonSerializerOptions.Default),
-                json => JsonSerializer.Deserialize<List<Requisite>>(json, JsonSerializerOptions.Default)!,
-                new ValueComparer<List<Requisite>>(
-                    (c1, c2) => c1.SequenceEqual(c2),
-                    c => c.Aggregate(0, (a, v) => HashCode.Combine(a, v.GetHashCode())),
-                    c => c.ToList()));
-
         modelBuilder.Entity<Role>()
             .ToTable("roles");
         
@@ -73,22 +47,6 @@ public class AccountsDbContext
         modelBuilder.Entity<Permission>()
             .HasIndex(p => p.Code)
             .IsUnique();
-        
-        modelBuilder.Entity<RolePermission>()
-            .ToTable("role_permissions");
-        
-        modelBuilder.Entity<RolePermission>()
-            .HasKey(rp => rp.Id);
-
-        modelBuilder.Entity<RolePermission>()
-            .HasOne(rp => rp.Permission)
-            .WithMany()
-            .HasForeignKey(rp => rp.PermissionId);
-        
-        modelBuilder.Entity<RolePermission>()
-            .HasOne(rp => rp.Role)
-            .WithMany(r => r.RolePermissions)
-            .HasForeignKey(rp => rp.RoleId);
         
         modelBuilder.Entity<IdentityUserClaim<long>>()
             .ToTable("user_claims");
@@ -106,6 +64,7 @@ public class AccountsDbContext
             .ToTable("user_roles");
         
         modelBuilder.HasDefaultSchema("accounts");
+        modelBuilder.ApplyConfigurationsFromAssembly(typeof(AccountsDbContext).Assembly);
     }
 
     private static ILoggerFactory CreateLoggerFactory()

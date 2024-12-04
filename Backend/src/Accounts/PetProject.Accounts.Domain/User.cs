@@ -5,17 +5,22 @@ namespace PetProject.Accounts.Domain;
 
 public class User : IdentityUser<long>
 {
-    public List<SocialNetwork> SocialNetworks { get; set; } = [];
-    public List<Requisite> Requisites { get; set; } = [];
-}
-
-public static class Permissions
-{
-    public static class Volunteer
-    {
-        public const string Create = "volunteers.create";
-        public const string Read = "volunteers.read";
-        public const string Update = "volunteers.update";
-        public const string Delete = "volunteers.delete";
-    }
+    private List<SocialNetwork> _socialNetworks = [];
+    private List<Photo> _photos = [];
+    
+    public long? AdminAccountId { get; set; }
+    public AdminAccount? AdminAccount { get; set; }
+    
+    public long? ParticipantAccountId { get; set; }
+    public ParticipantAccount? ParticipantAccount { get; set; }
+    
+    public long? VolunteerAccountId { get; set; }
+    public VolunteerAccount? VolunteerAccount { get; set; }
+    
+    public FullName FullName { get; set; }
+    
+    public List<Role> Roles { get; set; } = [];
+    public IReadOnlyList<SocialNetwork> SocialNetworks => _socialNetworks.AsReadOnly();
+    public IReadOnlyList<Photo> Photos => _photos.AsReadOnly();
+   
 }

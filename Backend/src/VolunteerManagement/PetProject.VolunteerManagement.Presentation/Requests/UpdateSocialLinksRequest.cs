@@ -3,7 +3,7 @@ using PetProject.VolunteerManagement.Application.VolunteersManagement.UpdateSoci
 
 namespace PetProject.VolunteerManagement.Presentation.Requests;
 
-public record UpdateSocialLinksRequest(IEnumerable<SocialLinkDto> SocialLinks)
+public record UpdateSocialLinksRequest(IEnumerable<SocialNetworkDto> SocialLinks)
 {
     public UpdateSocialLinksCommand ToCommand(Guid volunteerId) => new()
     {

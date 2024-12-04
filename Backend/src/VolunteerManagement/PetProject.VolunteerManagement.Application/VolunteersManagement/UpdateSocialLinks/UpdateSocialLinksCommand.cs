@@ -8,5 +8,5 @@ namespace PetProject.VolunteerManagement.Application.VolunteersManagement.Update
 public record UpdateSocialLinksCommand : IRequest<Result<Guid, ErrorList>>
 {
     public required Guid VolunteerId { get; init; } 
-    public required IEnumerable<SocialLinkDto> SocialLinks { get; init; } 
+    public required IEnumerable<SocialNetworkDto> SocialLinks { get; init; } 
 }

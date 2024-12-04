@@ -32,9 +32,9 @@ public static class VolunteerExtension
             Description = requisite.Description
         };
     }
-    public static SocialLinkDto ToDto(this SocialNetwork socialNetwork)
+    public static SocialNetworkDto ToDto(this SocialNetwork socialNetwork)
     {
-        return new SocialLinkDto
+        return new SocialNetworkDto
         {
             Title = socialNetwork.Title,
             Url = socialNetwork.Url

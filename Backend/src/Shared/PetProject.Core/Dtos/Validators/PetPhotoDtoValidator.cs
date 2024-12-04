@@ -4,7 +4,7 @@ using PetProject.SharedKernel.Shared.ValueObjects;
 
 namespace PetProject.Core.Dtos.Validators;
 
-public class PetPhotoDtoValidator : AbstractValidator<PetPhotoDto>
+public class PetPhotoDtoValidator : AbstractValidator<PhotoDto>
 {
     public PetPhotoDtoValidator()
     {

@@ -2,11 +2,12 @@
 
 namespace PetProject.Accounts.Domain;
 
-public class ParticipantAccount
+public class AdminAccount
 {
-    private ParticipantAccount() {}
+    private AdminAccount() {}
     
-    public ParticipantAccount(User user)
+    public AdminAccount(
+        User user)
     {
         User = user;
         UserId = user.Id;

@@ -52,7 +52,14 @@ namespace PetProject.Accounts.Infrastructure.Migrations
                 {
                     id = table.Column<long>(type: "bigint", nullable: false)
                         .Annotation("Npgsql:ValueGenerationStrategy", NpgsqlValueGenerationStrategy.IdentityByDefaultColumn),
-                    social_networks = table.Column<string>(type: "text", nullable: false),
+                    admin_account_id = table.Column<long>(type: "bigint", nullable: true),
+                    participant_account_id = table.Column<long>(type: "bigint", nullable: true),
+                    volunteer_account_id = table.Column<long>(type: "bigint", nullable: true),
+                    social_networks = table.Column<string>(type: "jsonb", nullable: false),
+                    photos = table.Column<string>(type: "jsonb", nullable: false),
+                    name = table.Column<string>(type: "character varying(50)", maxLength: 50, nullable: false),
+                    patronymic = table.Column<string>(type: "character varying(50)", maxLength: 50, nullable: true),
+                    surname = table.Column<string>(type: "character varying(50)", maxLength: 50, nullable: false),
                     user_name = table.Column<string>(type: "character varying(256)", maxLength: 256, nullable: true),
                     normalized_user_name = table.Column<string>(type: "character varying(256)", maxLength: 256, nullable: true),
                     email = table.Column<string>(type: "character varying(256)", maxLength: 256, nullable: true),
@@ -126,6 +133,75 @@ namespace PetProject.Accounts.Infrastructure.Migrations
                 });
 
             migrationBuilder.CreateTable(
+                name: "admin_accounts",
+                schema: "accounts",
+                columns: table => new
+                {
+                    id = table.Column<long>(type: "bigint", nullable: false)
+                        .Annotation("Npgsql:ValueGenerationStrategy", NpgsqlValueGenerationStrategy.IdentityByDefaultColumn),
+                    user_id = table.Column<long>(type: "bigint", nullable: false)
+                },
+                constraints: table =>
+                {
+                    table.PrimaryKey("pk_admin_accounts", x => x.id);
+                    table.ForeignKey(
+                        name: "fk_admin_accounts_asp_net_users_user_id",
+                        column: x => x.user_id,
+                        principalSchema: "accounts",
+                        principalTable: "users",
+                        principalColumn: "id",
+                        onDelete: ReferentialAction.Cascade);
+                });
+
+            migrationBuilder.CreateTable(
+                name: "participant_accounts",
+                schema: "accounts",
+                columns: table => new
+                {
+                    id = table.Column<long>(type: "bigint", nullable: false)
+                        .Annotation("Npgsql:ValueGenerationStrategy", NpgsqlValueGenerationStrategy.IdentityByDefaultColumn),
+                    user_id = table.Column<long>(type: "bigint", nullable: false)
+                },
+                constraints: table =>
+                {
+                    table.PrimaryKey("pk_participant_accounts", x => x.id);
+                    table.ForeignKey(
+                        name: "fk_participant_accounts_asp_net_users_user_id",
+                        column: x => x.user_id,
+                        principalSchema: "accounts",
+                        principalTable: "users",
+                        principalColumn: "id",
+                        onDelete: ReferentialAction.Cascade);
+                });
+
+            migrationBuilder.CreateTable(
+                name: "role_user",
+                schema: "accounts",
+                columns: table => new
+                {
+                    roles_id = table.Column<long>(type: "bigint", nullable: false),
+                    user_id = table.Column<long>(type: "bigint", nullable: false)
+                },
+                constraints: table =>
+                {
+                    table.PrimaryKey("pk_role_user", x => new { x.roles_id, x.user_id });
+                    table.ForeignKey(
+                        name: "fk_role_user_roles_roles_id",
+                        column: x => x.roles_id,
+                        principalSchema: "accounts",
+                        principalTable: "roles",
+                        principalColumn: "id",
+                        onDelete: ReferentialAction.Cascade);
+                    table.ForeignKey(
+                        name: "fk_role_user_users_user_id",
+                        column: x => x.user_id,
+                        principalSchema: "accounts",
+                        principalTable: "users",
+                        principalColumn: "id",
+                        onDelete: ReferentialAction.Cascade);
+                });
+
+            migrationBuilder.CreateTable(
                 name: "user_claims",
                 schema: "accounts",
                 columns: table => new
@@ -140,7 +216,7 @@ namespace PetProject.Accounts.Infrastructure.Migrations
                 {
                     table.PrimaryKey("pk_user_claims", x => x.id);
                     table.ForeignKey(
-                        name: "fk_user_claims_users_user_id",
+                        name: "fk_user_claims_asp_net_users_user_id",
                         column: x => x.user_id,
                         principalSchema: "accounts",
                         principalTable: "users",
@@ -162,7 +238,7 @@ namespace PetProject.Accounts.Infrastructure.Migrations
                 {
                     table.PrimaryKey("pk_user_logins", x => new { x.login_provider, x.provider_key });
                     table.ForeignKey(
-                        name: "fk_user_logins_users_user_id",
+                        name: "fk_user_logins_asp_net_users_user_id",
                         column: x => x.user_id,
                         principalSchema: "accounts",
                         principalTable: "users",
@@ -182,17 +258,17 @@ namespace PetProject.Accounts.Infrastructure.Migrations
                 {
                     table.PrimaryKey("pk_user_roles", x => new { x.user_id, x.role_id });
                     table.ForeignKey(
+                        name: "fk_user_roles_asp_net_users_user_id",
+                        column: x => x.user_id,
+                        principalSchema: "accounts",
+                        principalTable: "users",
+                        principalColumn: "id",
+                        onDelete: ReferentialAction.Cascade);
+                    table.ForeignKey(
                         name: "fk_user_roles_roles_role_id",
                         column: x => x.role_id,
                         principalSchema: "accounts",
                         principalTable: "roles",
-                        principalColumn: "id",
-                        onDelete: ReferentialAction.Cascade);
-                    table.ForeignKey(
-                        name: "fk_user_roles_users_user_id",
-                        column: x => x.user_id,
-                        principalSchema: "accounts",
-                        principalTable: "users",
                         principalColumn: "id",
                         onDelete: ReferentialAction.Cascade);
                 });
@@ -211,13 +287,51 @@ namespace PetProject.Accounts.Infrastructure.Migrations
                 {
                     table.PrimaryKey("pk_user_tokens", x => new { x.user_id, x.login_provider, x.name });
                     table.ForeignKey(
-                        name: "fk_user_tokens_users_user_id",
+                        name: "fk_user_tokens_asp_net_users_user_id",
                         column: x => x.user_id,
                         principalSchema: "accounts",
                         principalTable: "users",
                         principalColumn: "id",
                         onDelete: ReferentialAction.Cascade);
                 });
+
+            migrationBuilder.CreateTable(
+                name: "volunteer_accounts",
+                schema: "accounts",
+                columns: table => new
+                {
+                    id = table.Column<long>(type: "bigint", nullable: false)
+                        .Annotation("Npgsql:ValueGenerationStrategy", NpgsqlValueGenerationStrategy.IdentityByDefaultColumn),
+                    user_id = table.Column<long>(type: "bigint", nullable: false),
+                    requisites = table.Column<string>(type: "jsonb", nullable: false),
+                    certificates = table.Column<string>(type: "text", nullable: false),
+                    experience = table.Column<int>(type: "integer", nullable: false)
+                },
+                constraints: table =>
+                {
+                    table.PrimaryKey("pk_volunteer_accounts", x => x.id);
+                    table.ForeignKey(
+                        name: "fk_volunteer_accounts_users_user_id",
+                        column: x => x.user_id,
+                        principalSchema: "accounts",
+                        principalTable: "users",
+                        principalColumn: "id",
+                        onDelete: ReferentialAction.Cascade);
+                });
+
+            migrationBuilder.CreateIndex(
+                name: "ix_admin_accounts_user_id",
+                schema: "accounts",
+                table: "admin_accounts",
+                column: "user_id",
+                unique: true);
+
+            migrationBuilder.CreateIndex(
+                name: "ix_participant_accounts_user_id",
+                schema: "accounts",
+                table: "participant_accounts",
+                column: "user_id",
+                unique: true);
 
             migrationBuilder.CreateIndex(
                 name: "ix_permissions_code",
@@ -243,6 +357,12 @@ namespace PetProject.Accounts.Infrastructure.Migrations
                 schema: "accounts",
                 table: "role_permissions",
                 column: "role_id");
+
+            migrationBuilder.CreateIndex(
+                name: "ix_role_user_user_id",
+                schema: "accounts",
+                table: "role_user",
+                column: "user_id");
 
             migrationBuilder.CreateIndex(
                 name: "RoleNameIndex",
@@ -281,17 +401,36 @@ namespace PetProject.Accounts.Infrastructure.Migrations
                 table: "users",
                 column: "normalized_user_name",
                 unique: true);
+
+            migrationBuilder.CreateIndex(
+                name: "ix_volunteer_accounts_user_id",
+                schema: "accounts",
+                table: "volunteer_accounts",
+                column: "user_id",
+                unique: true);
         }
 
         /// <inheritdoc />
         protected override void Down(MigrationBuilder migrationBuilder)
         {
             migrationBuilder.DropTable(
+                name: "admin_accounts",
+                schema: "accounts");
+
+            migrationBuilder.DropTable(
+                name: "participant_accounts",
+                schema: "accounts");
+
+            migrationBuilder.DropTable(
                 name: "role_claims",
                 schema: "accounts");
 
             migrationBuilder.DropTable(
                 name: "role_permissions",
+                schema: "accounts");
+
+            migrationBuilder.DropTable(
+                name: "role_user",
                 schema: "accounts");
 
             migrationBuilder.DropTable(
@@ -308,6 +447,10 @@ namespace PetProject.Accounts.Infrastructure.Migrations
 
             migrationBuilder.DropTable(
                 name: "user_tokens",
+                schema: "accounts");
+
+            migrationBuilder.DropTable(
+                name: "volunteer_accounts",
                 schema: "accounts");
 
             migrationBuilder.DropTable(

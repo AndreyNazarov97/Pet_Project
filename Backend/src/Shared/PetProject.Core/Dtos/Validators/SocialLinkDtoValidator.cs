@@ -4,7 +4,7 @@ using PetProject.SharedKernel.Shared.ValueObjects;
 
 namespace PetProject.Core.Dtos.Validators;
 
-public class SocialLinkDtoValidator : AbstractValidator<SocialLinkDto>
+public class SocialLinkDtoValidator : AbstractValidator<SocialNetworkDto>
 {
     public SocialLinkDtoValidator()
     {

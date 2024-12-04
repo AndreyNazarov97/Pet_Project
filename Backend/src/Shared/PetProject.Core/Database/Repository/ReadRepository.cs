@@ -235,7 +235,7 @@ public class ReadRepository : IReadRepository
 
                 var requisites = JsonSerializer.Deserialize<IEnumerable<RequisiteDto>>(requisitesJson)
                                  ?? [];
-                var socialLinks = JsonSerializer.Deserialize<IEnumerable<SocialLinkDto>>(socialLinksJson)
+                var socialLinks = JsonSerializer.Deserialize<IEnumerable<SocialNetworkDto>>(socialLinksJson)
                                   ?? [];
 
                 volunteer = new VolunteerDto
