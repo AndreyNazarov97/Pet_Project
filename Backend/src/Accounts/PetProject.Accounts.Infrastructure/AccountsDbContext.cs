@@ -7,12 +7,20 @@ using PetProject.Accounts.Domain;
 
 namespace PetProject.Accounts.Infrastructure;
 
-public class AuthorizationDbContext
-    : IdentityDbContext<User, Role, Guid>
+public class AccountsDbContext
+    : IdentityDbContext<User, Role, long>
 {
     private readonly IConfiguration _configuration;
     
-    public AuthorizationDbContext(IConfiguration configuration)
+    
+    public DbSet<AdminAccount> AdminAccounts { get; set; }
+    public DbSet<VolunteerAccount> VolunteerAccounts { get; set; }
+    public DbSet<ParticipantAccount> ParticipantAccounts { get; set; }
+    public override DbSet<Role> Roles { get; set; } 
+    public DbSet<Permission> Permissions { get; set; }
+    public DbSet<RolePermission> RolePermissions { get; set; }
+    
+    public AccountsDbContext(IConfiguration configuration)
     {
         _configuration = configuration;
     }
@@ -30,26 +38,33 @@ public class AuthorizationDbContext
     {
         base.OnModelCreating(modelBuilder);
         
-        modelBuilder.Entity<User>()
-            .ToTable("users");
-
         modelBuilder.Entity<Role>()
             .ToTable("roles");
         
-        modelBuilder.Entity<IdentityUserClaim<Guid>>()
+        modelBuilder.Entity<Permission>()
+            .ToTable("permissions");
+        
+        modelBuilder.Entity<Permission>()
+            .HasIndex(p => p.Code)
+            .IsUnique();
+        
+        modelBuilder.Entity<IdentityUserClaim<long>>()
             .ToTable("user_claims");
 
-        modelBuilder.Entity<IdentityUserToken<Guid>>()
+        modelBuilder.Entity<IdentityUserToken<long>>()
             .ToTable("user_tokens");
 
-        modelBuilder.Entity<IdentityUserLogin<Guid>>()
+        modelBuilder.Entity<IdentityUserLogin<long>>()
             .ToTable("user_logins");
 
-        modelBuilder.Entity<IdentityRoleClaim<Guid>>()
+        modelBuilder.Entity<IdentityRoleClaim<long>>()
             .ToTable("role_claims");
 
-        modelBuilder.Entity<IdentityUserRole<Guid>>()
+        modelBuilder.Entity<IdentityUserRole<long>>()
             .ToTable("user_roles");
+        
+        modelBuilder.HasDefaultSchema("accounts");
+        modelBuilder.ApplyConfigurationsFromAssembly(typeof(AccountsDbContext).Assembly);
     }
 
     private static ILoggerFactory CreateLoggerFactory()

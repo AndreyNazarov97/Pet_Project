@@ -13,6 +13,7 @@ public partial class ReadRepositoryTest :  IClassFixture<BaseTestFixture>
     {
         _fixture = fixture;
         _sut = new ReadRepository(fixture.GetConnectionFactory());
-        _fixture.ClearDatabaseAsync("volunteers", "pets" ,"species", "breeds").Wait(); 
+        _fixture.ClearDatabaseAsync( "volunteers","volunteers", "pets").Wait(); 
+        _fixture.ClearDatabaseAsync( "species" ,"species", "breeds").Wait(); 
     }
 }

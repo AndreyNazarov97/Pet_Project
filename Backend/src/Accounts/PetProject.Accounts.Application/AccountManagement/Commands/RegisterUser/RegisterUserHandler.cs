@@ -36,6 +36,8 @@ public class RegisterUserHandler : IRequestHandler<RegisterUserCommand, UnitResu
             _logger.LogInformation("User {username} was registered", user.UserName);
             return UnitResult.Success<ErrorList>();
         }
+        
+        await _userManager.AddToRolesAsync(user, [ParticipantAccount.Participant]);
 
         var errors = result.Errors.Select(e =>
             Error.Failure(e.Code, e.Description)).ToList();

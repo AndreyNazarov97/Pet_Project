@@ -6,18 +6,20 @@ using Microsoft.EntityFrameworkCore.Migrations;
 namespace PetProject.VolunteerManagement.Infrastructure.Migrations
 {
     /// <inheritdoc />
-    public partial class Init_Volunteers : Migration
+    public partial class Volunteers_Init : Migration
     {
         /// <inheritdoc />
         protected override void Up(MigrationBuilder migrationBuilder)
         {
+            migrationBuilder.EnsureSchema(
+                name: "volunteers");
+
             migrationBuilder.CreateTable(
                 name: "volunteers",
+                schema: "volunteers",
                 columns: table => new
                 {
                     id = table.Column<Guid>(type: "uuid", nullable: false),
-                    social_links = table.Column<string>(type: "jsonb", nullable: false),
-                    requisites = table.Column<string>(type: "jsonb", nullable: false),
                     is_deleted = table.Column<bool>(type: "boolean", nullable: false),
                     age_experience = table.Column<int>(type: "integer", nullable: false),
                     name = table.Column<string>(type: "character varying(50)", maxLength: 50, nullable: false),
@@ -33,6 +35,7 @@ namespace PetProject.VolunteerManagement.Infrastructure.Migrations
 
             migrationBuilder.CreateTable(
                 name: "pets",
+                schema: "volunteers",
                 columns: table => new
                 {
                     id = table.Column<Guid>(type: "uuid", nullable: false),
@@ -42,7 +45,6 @@ namespace PetProject.VolunteerManagement.Infrastructure.Migrations
                     help_status = table.Column<string>(type: "text", nullable: false),
                     date_created = table.Column<DateTimeOffset>(type: "timestamp with time zone", nullable: false),
                     pet_photos = table.Column<string>(type: "jsonb", nullable: false),
-                    requisites = table.Column<string>(type: "jsonb", nullable: false),
                     is_deleted = table.Column<bool>(type: "boolean", nullable: false),
                     volunteer_id = table.Column<Guid>(type: "uuid", nullable: true),
                     city = table.Column<string>(type: "character varying(50)", maxLength: 50, nullable: false),
@@ -66,6 +68,7 @@ namespace PetProject.VolunteerManagement.Infrastructure.Migrations
                     table.ForeignKey(
                         name: "fk_pets_volunteers_volunteer_id",
                         column: x => x.volunteer_id,
+                        principalSchema: "volunteers",
                         principalTable: "volunteers",
                         principalColumn: "id",
                         onDelete: ReferentialAction.Cascade);
@@ -73,6 +76,7 @@ namespace PetProject.VolunteerManagement.Infrastructure.Migrations
 
             migrationBuilder.CreateIndex(
                 name: "ix_pets_volunteer_id",
+                schema: "volunteers",
                 table: "pets",
                 column: "volunteer_id");
         }
@@ -81,10 +85,12 @@ namespace PetProject.VolunteerManagement.Infrastructure.Migrations
         protected override void Down(MigrationBuilder migrationBuilder)
         {
             migrationBuilder.DropTable(
-                name: "pets");
+                name: "pets",
+                schema: "volunteers");
 
             migrationBuilder.DropTable(
-                name: "volunteers");
+                name: "volunteers",
+                schema: "volunteers");
         }
     }
 }

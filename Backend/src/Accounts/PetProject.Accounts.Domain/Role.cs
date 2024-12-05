@@ -2,7 +2,7 @@
 
 namespace PetProject.Accounts.Domain;
 
-public class Role : IdentityRole<Guid>
+public class Role : IdentityRole<long>
 {
-    
+    public List<RolePermission> RolePermissions { get; set; }
 }

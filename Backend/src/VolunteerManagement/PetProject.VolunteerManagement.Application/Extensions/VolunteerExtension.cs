@@ -11,9 +11,7 @@ public static class VolunteerExtension
         FullName = volunteer.FullName.ToDto(),
         GeneralDescription = volunteer.GeneralDescription.Value,
         AgeExperience = volunteer.Experience.Years,
-        PhoneNumber = volunteer.PhoneNumber.Value,
-        Requisites = volunteer.Requisites.Select(x => x.ToDto()).ToArray(),
-        SocialLinks = volunteer.SocialLinks.Select(x => x.ToDto()).ToArray()
+        PhoneNumber = volunteer.PhoneNumber.Value
     };
     
     public static FullNameDto ToDto(this FullName fullName)
@@ -34,12 +32,12 @@ public static class VolunteerExtension
             Description = requisite.Description
         };
     }
-    public static SocialLinkDto ToDto(this SocialLink socialLink)
+    public static SocialNetworkDto ToDto(this SocialNetwork socialNetwork)
     {
-        return new SocialLinkDto
+        return new SocialNetworkDto
         {
-            Title = socialLink.Title,
-            Url = socialLink.Url
+            Title = socialNetwork.Title,
+            Url = socialNetwork.Url
         };
     }
 }

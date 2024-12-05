@@ -18,6 +18,7 @@ namespace PetProject.SpeciesManagement.Infrastructure.Migrations
         {
 #pragma warning disable 612, 618
             modelBuilder
+                .HasDefaultSchema("species")
                 .HasAnnotation("ProductVersion", "8.0.10")
                 .HasAnnotation("Relational:MaxIdentifierLength", 63);
 
@@ -47,7 +48,7 @@ namespace PetProject.SpeciesManagement.Infrastructure.Migrations
                     b.HasKey("Id")
                         .HasName("pk_species");
 
-                    b.ToTable("species", (string)null);
+                    b.ToTable("species", "species");
                 });
 
             modelBuilder.Entity("PetProject.SpeciesManagement.Domain.Entities.Breed", b =>
@@ -81,7 +82,7 @@ namespace PetProject.SpeciesManagement.Infrastructure.Migrations
                     b.HasIndex("SpeciesId")
                         .HasDatabaseName("ix_breeds_species_id");
 
-                    b.ToTable("breeds", (string)null);
+                    b.ToTable("breeds", "species");
                 });
 
             modelBuilder.Entity("PetProject.SpeciesManagement.Domain.Entities.Breed", b =>

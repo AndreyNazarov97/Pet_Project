@@ -23,9 +23,9 @@ public class ReadRepository : IReadRepository
                            b.id,
                            b.breed_name
                        from 
-                           species as s 
+                           species.species as s 
                        left join 
-                           breeds as b on b.species_id = s.id AND b.is_deleted = false
+                           species.breeds as b on b.species_id = s.id AND b.is_deleted = false
                        """;
 
         var conditions = new List<string>(["s.is_deleted = false"]);
@@ -125,8 +125,6 @@ public class ReadRepository : IReadRepository
                             v.general_description, 
                             v.phone_number, 
                             v.age_experience,
-                            v.requisites,
-                            v.social_links,
                             p.pet_name,
                             p.general_description,
                             p.health_information,
@@ -144,9 +142,9 @@ public class ReadRepository : IReadRepository
                             p.is_vaccinated,
                             p.help_status
                         FROM 
-                            volunteers v
+                            volunteers.volunteers v
                         left join 
-                            pets p on v.id = p.volunteer_id AND p.is_deleted = false
+                            volunteers.pets p on v.id = p.volunteer_id AND p.is_deleted = false
                        """;
 
         var conditions = new List<string>(["v.is_deleted = false"]);
@@ -230,53 +228,43 @@ public class ReadRepository : IReadRepository
                     Patronymic = reader.IsDBNull(2) ? null : reader.GetString(2)
                 };
 
-                var requisitesJson = reader.GetString(6);
-                var socialLinksJson = reader.GetString(7);
-
-                var requisites = JsonSerializer.Deserialize<IEnumerable<RequisiteDto>>(requisitesJson)
-                                 ?? [];
-                var socialLinks = JsonSerializer.Deserialize<IEnumerable<SocialLinkDto>>(socialLinksJson)
-                                  ?? [];
-
                 volunteer = new VolunteerDto
                 {
                     FullName = fullNameDto,
                     GeneralDescription = reader.GetString(3),
                     PhoneNumber = phoneNumber,
-                    AgeExperience = reader.GetInt32(5),
-                    Requisites = requisites.ToArray(),
-                    SocialLinks = socialLinks.ToArray(),
+                    AgeExperience = reader.GetInt32(5)
                 };
                 volunteers.Add(volunteer);
             }
 
-            var country = reader.IsDBNull(13) ? null : reader.GetString(13);
+            var country = reader.IsDBNull(11) ? null : reader.GetString(11);
             if (country is null) continue;
             var addressDto = new AddressDto
             {
-                Country = reader.GetString(13),
-                City = reader.GetString(14),
-                Street = reader.GetString(15),
-                House = reader.GetString(16),
-                Flat = reader.GetString(17)
+                Country = reader.GetString(11),
+                City = reader.GetString(12),
+                Street = reader.GetString(13),
+                House = reader.GetString(14),
+                Flat = reader.GetString(15)
             };
 
 
             var pet = new PetDto
             {
-                PetName = reader.GetString(8),
-                GeneralDescription = reader.GetString(9),
-                HealthInformation = reader.GetString(10),
-                SpeciesName = reader.GetString(11),
-                BreedName = reader.GetString(12),
+                PetName = reader.GetString(6),
+                GeneralDescription = reader.GetString(7),
+                HealthInformation = reader.GetString(8),
+                SpeciesName = reader.GetString(9),
+                BreedName = reader.GetString(10),
                 Address = addressDto,
-                Weight = reader.GetDouble(18),
-                Height = reader.GetDouble(19),
+                Weight = reader.GetDouble(16),
+                Height = reader.GetDouble(17),
                 PhoneNumber = phoneNumber,
-                BirthDate = reader.GetDateTime(20),
-                IsCastrated = reader.GetBoolean(21),
-                IsVaccinated = reader.GetBoolean(22),
-                HelpStatus = reader.GetString(23)
+                BirthDate = reader.GetDateTime(18),
+                IsCastrated = reader.GetBoolean(19),
+                IsVaccinated = reader.GetBoolean(20),
+                HelpStatus = reader.GetString(21)
             };
 
             volunteer.AddPet(pet);
@@ -307,9 +295,9 @@ public class ReadRepository : IReadRepository
                             p.help_status,
                             v.phone_number
                        FROM 
-                           pets AS p
+                           volunteers.pets AS p
                        LEFT JOIN 
-                           volunteers AS v ON v.id = p.volunteer_id
+                           volunteers.volunteers AS v ON v.id = p.volunteer_id
                        """;
 
         var conditions = new List<string>(["p.is_deleted = false"]);

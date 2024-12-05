@@ -31,7 +31,6 @@ public class Pet : SharedKernel.Shared.Common.Entity<PetId>, ISoftDeletable
     public Position Position { get; private set; }
     public DateTimeOffset DateCreated { get; }
     public IReadOnlyList<PetPhoto> PetPhotoList => _PetPhotoList.AsReadOnly();
-    public IReadOnlyList<Requisite> Requisites { get; private set; }
 
 
     public Pet(PetId id,
@@ -46,7 +45,6 @@ public class Pet : SharedKernel.Shared.Common.Entity<PetId>, ISoftDeletable
         bool isCastrated,
         bool isVaccinated,
         HelpStatus helpStatus,
-        List<Requisite> requisite,
         List<PetPhoto> petPhoto) : base(id)
     {
         PetName = petName;
@@ -60,7 +58,6 @@ public class Pet : SharedKernel.Shared.Common.Entity<PetId>, ISoftDeletable
         IsCastrated = isCastrated;
         IsVaccinated = isVaccinated;
         HelpStatus = helpStatus;
-        Requisites = requisite;
         _PetPhotoList = petPhoto;
         DateCreated = DateTimeOffset.UtcNow;
     }
@@ -88,7 +85,6 @@ public class Pet : SharedKernel.Shared.Common.Entity<PetId>, ISoftDeletable
         IsCastrated = isCastrated ?? IsCastrated;
         IsVaccinated = isVaccinated ?? IsVaccinated;
         HelpStatus = helpStatus ?? HelpStatus;
-        Requisites = requisites ?? Requisites;
     }
 
     public void AddPhotos(IEnumerable<PetPhoto> petPhotos)

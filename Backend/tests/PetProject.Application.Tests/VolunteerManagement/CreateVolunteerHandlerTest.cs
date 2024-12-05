@@ -18,9 +18,7 @@ public class CreateVolunteerHandlerTest
         PhoneNumber = Random.PhoneNumber,
         FullName = VolunteerCreator.CreateFullNameDto(),
         Description = Random.Words,
-        AgeExperience = Random.Experience,
-        SocialLinks = new List<SocialLinkDto>(),
-        Requisites = new List<RequisiteDto>()
+        AgeExperience = Random.Experience
     };
     
     [Fact]

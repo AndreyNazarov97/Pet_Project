@@ -1,4 +1,4 @@
-﻿namespace PetProject.Accounts.Infrastructure;
+﻿namespace PetProject.Accounts.Infrastructure.Options;
 
 public class JwtOptions
 {

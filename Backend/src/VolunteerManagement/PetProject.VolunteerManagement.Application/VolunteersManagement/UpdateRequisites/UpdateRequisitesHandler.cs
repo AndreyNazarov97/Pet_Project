@@ -40,8 +40,9 @@ public class UpdateRequisitesHandler : IRequestHandler<UpdateRequisitesCommand, 
             .Select(x => Requisite.Create(x.Title, x.Description).Value)
             .ToList();
 
-        volunteer.Value.UpdateRequisites(requisites);
-        
+        //TODO: переместить хендлер в аккаунты
+        //volunteer.Value.UpdateRequisites(requisites);
+
         await _unitOfWork.SaveChangesAsync(cancellationToken);
 
         _logger.Log(LogLevel.Information, "Volunteer {volunteerId} was updated requisites", volunteerId);

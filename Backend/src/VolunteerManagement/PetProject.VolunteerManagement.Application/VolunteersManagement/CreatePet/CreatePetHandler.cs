@@ -85,7 +85,6 @@ public class CreatePetHandler : IRequestHandler<CreatePetCommand, Result<Guid, E
             command.IsCastrated,
             command.IsVaccinated,
             command.HelpStatus,
-            volunteer.Requisites.ToList(),
             []
         );
 

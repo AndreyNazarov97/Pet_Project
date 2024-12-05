@@ -13,14 +13,15 @@ using PetProject.VolunteerManagement.Infrastructure.DbContexts;
 namespace PetProject.VolunteerManagement.Infrastructure.Migrations
 {
     [DbContext(typeof(VolunteerDbContext))]
-    [Migration("20241202102418_Init_Volunteers")]
-    partial class Init_Volunteers
+    [Migration("20241204212658_Volunteers_Init")]
+    partial class Volunteers_Init
     {
         /// <inheritdoc />
         protected override void BuildTargetModel(ModelBuilder modelBuilder)
         {
 #pragma warning disable 612, 618
             modelBuilder
+                .HasDefaultSchema("volunteers")
                 .HasAnnotation("ProductVersion", "8.0.10")
                 .HasAnnotation("Relational:MaxIdentifierLength", 63);
 
@@ -31,16 +32,6 @@ namespace PetProject.VolunteerManagement.Infrastructure.Migrations
                     b.Property<Guid>("Id")
                         .HasColumnType("uuid")
                         .HasColumnName("id");
-
-                    b.Property<string>("Requisites")
-                        .IsRequired()
-                        .HasColumnType("jsonb")
-                        .HasColumnName("requisites");
-
-                    b.Property<string>("SocialLinks")
-                        .IsRequired()
-                        .HasColumnType("jsonb")
-                        .HasColumnName("social_links");
 
                     b.Property<bool>("_isDeleted")
                         .HasColumnType("boolean")
@@ -101,7 +92,7 @@ namespace PetProject.VolunteerManagement.Infrastructure.Migrations
                     b.HasKey("Id")
                         .HasName("pk_volunteers");
 
-                    b.ToTable("volunteers", (string)null);
+                    b.ToTable("volunteers", "volunteers");
                 });
 
             modelBuilder.Entity("PetProject.VolunteerManagement.Domain.Entities.Pet", b =>
@@ -135,11 +126,6 @@ namespace PetProject.VolunteerManagement.Infrastructure.Migrations
                         .IsRequired()
                         .HasColumnType("jsonb")
                         .HasColumnName("pet_photos");
-
-                    b.Property<string>("Requisites")
-                        .IsRequired()
-                        .HasColumnType("jsonb")
-                        .HasColumnName("requisites");
 
                     b.Property<bool>("_isDeleted")
                         .HasColumnType("boolean")
@@ -269,7 +255,7 @@ namespace PetProject.VolunteerManagement.Infrastructure.Migrations
                     b.HasIndex("volunteer_id")
                         .HasDatabaseName("ix_pets_volunteer_id");
 
-                    b.ToTable("pets", (string)null);
+                    b.ToTable("pets", "volunteers");
                 });
 
             modelBuilder.Entity("PetProject.VolunteerManagement.Domain.Entities.Pet", b =>

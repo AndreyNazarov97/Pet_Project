@@ -29,6 +29,8 @@ public class SpeciesDbContext : DbContext
 
     protected override void OnModelCreating(ModelBuilder modelBuilder)
     {
+        modelBuilder.HasDefaultSchema("species");
+        
         modelBuilder.ApplyConfigurationsFromAssembly(typeof(SpeciesDbContext).Assembly);
     }
     private static ILoggerFactory CreateLoggerFactory()

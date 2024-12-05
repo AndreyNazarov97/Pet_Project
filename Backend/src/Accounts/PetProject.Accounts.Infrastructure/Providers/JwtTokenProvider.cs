@@ -5,8 +5,9 @@ using Microsoft.Extensions.Options;
 using Microsoft.IdentityModel.Tokens;
 using PetProject.Accounts.Application;
 using PetProject.Accounts.Domain;
+using PetProject.Accounts.Infrastructure.Options;
 
-namespace PetProject.Accounts.Infrastructure;
+namespace PetProject.Accounts.Infrastructure.Providers;
 
 public class JwtTokenProvider : ITokenProvider
 {
@@ -24,10 +25,12 @@ public class JwtTokenProvider : ITokenProvider
         
         var claims = new[]
         {
-            new Claim(CustomClaims.Sub, user.Id.ToString()),
-            new Claim(CustomClaims.Email, user.Email ?? ""),
-            new Claim("Permission", "volunteer.read"),
-            new Claim("Permission", "volunteer.create"),
+            new Claim(JwtRegisteredClaimNames.Sub, user.Id.ToString()),
+            new Claim(JwtRegisteredClaimNames.Email, user.Email ?? ""),
+            new Claim("Permission", "volunteers.create"),
+            new Claim("Permission", "volunteers.read"),
+            new Claim("Permission", "volunteers.update"),
+            new Claim("Permission", "volunteers.delete"),
         };
         
         var jwtToken = new JwtSecurityToken(

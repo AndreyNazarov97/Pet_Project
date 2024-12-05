@@ -29,6 +29,7 @@ public class VolunteerDbContext : DbContext
 
     protected override void OnModelCreating(ModelBuilder modelBuilder)
     {
+        modelBuilder.HasDefaultSchema("volunteers");
         modelBuilder.ApplyConfigurationsFromAssembly(typeof(VolunteerDbContext).Assembly);
     }
     private static ILoggerFactory CreateLoggerFactory()

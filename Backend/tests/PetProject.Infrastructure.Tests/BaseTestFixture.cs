@@ -48,12 +48,12 @@ public class BaseTestFixture : IAsyncLifetime
         await _postgresSqlContainer.DisposeAsync();
     }
 
-    public async Task ClearDatabaseAsync(params string[] tables)
+    public async Task ClearDatabaseAsync(string schema ,params string[] tables)
     {
         await using var dbContext = GetVolunteerDbContext();
         foreach (var table in tables)
         {
-            await dbContext.Database.ExecuteSqlRawAsync($"TRUNCATE TABLE {table} CASCADE;");
+            await dbContext.Database.ExecuteSqlRawAsync($"TRUNCATE TABLE {schema}.{table} CASCADE;");
         }
     }
 }

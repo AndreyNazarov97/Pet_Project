@@ -60,18 +60,6 @@ public class VolunteerConfiguration : IEntityTypeConfiguration<Volunteer>
                 .IsRequired();
         });
 
-        builder.Property(v => v.SocialLinks)
-            .HasValueObjectsJsonConversion(
-                input => new SocialLinkDto { Title = input.Title, Url = input.Url },
-                output => SocialLink.Create(output.Title, output.Url).Value)
-            .HasColumnName("social_links");
-
-        builder.Property(v => v.Requisites)
-            .HasValueObjectsJsonConversion(
-                input => new RequisiteDto { Title = input.Title, Description = input.Description },
-                output => Requisite.Create(output.Title, output.Description).Value)
-            .HasColumnName("requisites");
-
         builder.Property<bool>("_isDeleted")
             .UsePropertyAccessMode(PropertyAccessMode.Field)
             .HasColumnName("is_deleted");
