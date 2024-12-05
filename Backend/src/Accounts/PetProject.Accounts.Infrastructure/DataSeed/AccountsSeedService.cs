@@ -5,6 +5,7 @@ using PetProject.Accounts.Application.Managers;
 using PetProject.Accounts.Domain;
 using PetProject.Accounts.Infrastructure.IdentityManagers;
 using PetProject.Accounts.Infrastructure.Options;
+using PetProject.Core.Database;
 using PetProject.SharedKernel.Shared.ValueObjects;
 
 namespace PetProject.Accounts.Infrastructure.DataSeed;
@@ -16,6 +17,7 @@ public class AccountsSeedService
     private readonly PermissionManager _permissionManager;
     private readonly RolePermissionManager _rolePermissionManager;
     private readonly IAccountManager _accountManager;
+    private readonly IUnitOfWork _unitOfWork;
     private readonly AdminOptions _adminOptions;
 
     public AccountsSeedService(
@@ -24,13 +26,15 @@ public class AccountsSeedService
         PermissionManager permissionManager,
         RolePermissionManager rolePermissionManager,
         IOptions<AdminOptions> adminOptions,
-        IAccountManager accountManager)
+        IAccountManager accountManager,
+        IUnitOfWork unitOfWork)
     {
         _userManager = userManager;
         _roleManager = roleManager;
         _permissionManager = permissionManager;
         _rolePermissionManager = rolePermissionManager;
         _accountManager = accountManager;
+        _unitOfWork = unitOfWork;
         _adminOptions = adminOptions.Value;
     }
 
@@ -59,21 +63,29 @@ public class AccountsSeedService
         if (isAdminExist != null)
             return;
         
-        var adminRole = await _roleManager.FindByNameAsync(AdminAccount.Admin)
-                        ?? throw new ApplicationException("Admin role is not found");
+        var transaction = await _unitOfWork.BeginTransactionAsync();
+        try
+        {
+            var adminRole = await _roleManager.FindByNameAsync(AdminAccount.Admin)
+                            ?? throw new ApplicationException("Admin role is not found");
 
-        var adminName = FullName.Create(_adminOptions.UserName, _adminOptions.UserName).Value;
-        var adminUser = User.CreateAdmin(adminName, _adminOptions.UserName, _adminOptions.Email, adminRole);
-        await _userManager.CreateAsync(adminUser, _adminOptions.Password);
+            var adminName = FullName.Create(_adminOptions.UserName, _adminOptions.UserName).Value;
+            var adminUser = User.CreateAdmin(adminName, _adminOptions.UserName, _adminOptions.Email, adminRole);
+            await _userManager.CreateAsync(adminUser, _adminOptions.Password);
         
-        var adminAccount = new AdminAccount(adminUser);
+            var adminAccount = new AdminAccount(adminUser);
 
-        await _accountManager.CreateAdminAccount(adminAccount);
+            await _accountManager.CreateAdminAccount(adminAccount);
         
-        adminUser.AdminAccount = adminAccount;
-        adminUser.AdminAccountId = adminAccount.Id;
+            adminUser.AdminAccount = adminAccount;
+            adminUser.AdminAccountId = adminAccount.Id;
         
-        await _userManager.UpdateAsync(adminUser);
+            await _userManager.UpdateAsync(adminUser);
+        }
+        catch (Exception e)
+        {
+            Console.WriteLine(e.Message);
+        }
     }
 
     private async Task SeedRolePermissions(RolePermissionOptions seedData, CancellationToken cancellationToken)

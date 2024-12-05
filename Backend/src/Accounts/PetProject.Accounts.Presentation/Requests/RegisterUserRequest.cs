@@ -1,13 +1,15 @@
 ﻿using PetProject.Accounts.Application.AccountManagement.Commands.RegisterUser;
+using PetProject.Core.Dtos;
 
 namespace PetProject.Accounts.Presentation.Requests;
 
-public record RegisterUserRequest(string Email, string Username ,string Password)
+public record RegisterUserRequest(FullNameDto FullName ,string Email, string UserName ,string Password)
 {
     public RegisterUserCommand ToCommand() => new()
     {
+        FullName = FullName,
         Email = Email,
-        Username = Username,
+        UserName = UserName,
         Password = Password
     };
 }
