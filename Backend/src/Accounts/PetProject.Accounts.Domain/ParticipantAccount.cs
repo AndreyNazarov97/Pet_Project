@@ -5,6 +5,7 @@ namespace PetProject.Accounts.Domain;
 public class ParticipantAccount
 {
     public const string Participant = nameof(Participant);
+    
     private ParticipantAccount() {}
     
     public ParticipantAccount(User user)
