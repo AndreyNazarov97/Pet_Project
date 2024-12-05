@@ -3,6 +3,7 @@ using Microsoft.AspNetCore.Authorization;
 using Microsoft.Extensions.DependencyInjection;
 using PetProject.Accounts.Contracts;
 using PetProject.Accounts.Domain;
+using PetProject.Core.Models;
 
 namespace PetProject.Framework.Authorization;
 
@@ -20,31 +21,23 @@ public class PermissionRequirementHandler : AuthorizationHandler<PermissionAttri
         AuthorizationHandlerContext context,
         PermissionAttribute permission)
     {
-        using var scope = _scopeFactory.CreateScope();
-
-        var accountContract = scope.ServiceProvider.GetRequiredService<IAccountsContract>();
-
-        var userIdString = context.User.Claims
-            .FirstOrDefault(claim => claim.Type == JwtRegisteredClaimNames.Sub)?.Value;
-        if (int.TryParse(userIdString, out var userId) == false)
+        if (context.User.Identity is null || !context.User.Identity.IsAuthenticated)
         {
             context.Fail();
             return;
         }
 
-        var permissionsResult = await accountContract.GetUserPermissions(userId);
-        if (permissionsResult.IsFailure)
-            return;
+        var permissions = context.User.Claims
+            .Where(c => c.Type == CustomClaims.Permission)
+            .Select(c => c.Value)
+            .ToList();
 
-        var permissions = permissionsResult.Value!;
-
-        if (permissions
-            .Select(p => p.Code)
-            .Contains(permission.Code))
+        if (permissions.Contains(permission.Code))
         {
             context.Succeed(permission);
+            return;
         }
-        
+
         context.Fail();
     }
 }

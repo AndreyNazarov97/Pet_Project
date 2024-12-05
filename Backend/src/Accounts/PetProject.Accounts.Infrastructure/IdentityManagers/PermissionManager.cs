@@ -38,12 +38,18 @@ public class PermissionManager : IPermissionManager
     public async Task<IReadOnlyList<Permission>> GetUserPermissionsAsync(long userId,
         CancellationToken cancellationToken)
     {
-       var permissions = await _context.RolePermissions
-            .Where(rp => _context.UserRoles
-                .Any(ur => ur.RoleId == rp.RoleId && ur.UserId == userId))
-            .Select(rp => rp.Permission)
-            .Distinct()
-            .ToListAsync(cancellationToken);
+        var user = await _context.Users
+            .Include(u => u.Roles)
+                .ThenInclude(r => r.RolePermissions)
+                    .ThenInclude(rolePermission => rolePermission.Permission)
+            .FirstOrDefaultAsync(u => u.Id == userId, cancellationToken);
+
+        if (user is null)
+            return Array.Empty<Permission>();
+        
+        var permissions = user.Roles
+            .SelectMany(r => r.RolePermissions.Select(rp => rp.Permission)).ToList();
+
         
         return permissions.AsReadOnly();
     }
