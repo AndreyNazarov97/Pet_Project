@@ -6,28 +6,27 @@ using Microsoft.Extensions.Logging;
 using PetProject.Accounts.Domain;
 using PetProject.Core.Database;
 using PetProject.SharedKernel.Shared;
-using PetProject.SharedKernel.Shared.EntityIds;
 using PetProject.SharedKernel.Shared.ValueObjects;
 
-namespace PetProject.Accounts.Application.AccountManagement.Commands.UpdateSocialLinks;
+namespace PetProject.Accounts.Application.AccountManagement.Commands.UpdateSocialNetworks;
 
-public class UpdateSocialLinksHandler : IRequestHandler<UpdateSocialLinksCommand, Result<long, ErrorList>>
+public class UpdateSocialNetworksHandler : IRequestHandler<UpdateSocialNetworksCommand, Result<long, ErrorList>>
 {
     private readonly UserManager<User> _userManager;
     private readonly IUnitOfWork _unitOfWork;
-    private readonly ILogger<UpdateSocialLinksHandler> _logger;
+    private readonly ILogger<UpdateSocialNetworksHandler> _logger;
 
-    public UpdateSocialLinksHandler(
+    public UpdateSocialNetworksHandler(
         UserManager<User> userManager,
         IUnitOfWork unitOfWork,
-        ILogger<UpdateSocialLinksHandler> logger)
+        ILogger<UpdateSocialNetworksHandler> logger)
     {
         _userManager = userManager;
         _unitOfWork = unitOfWork;
         _logger = logger;
     }
 
-    public async Task<Result<long, ErrorList>> Handle(UpdateSocialLinksCommand command,
+    public async Task<Result<long, ErrorList>> Handle(UpdateSocialNetworksCommand command,
         CancellationToken cancellationToken = default)
     {
         var user = await _userManager.Users.FirstOrDefaultAsync(x => x.Id == command.UserId, cancellationToken);
@@ -39,7 +38,8 @@ public class UpdateSocialLinksHandler : IRequestHandler<UpdateSocialLinksCommand
             .Select(x => SocialNetwork.Create(x.Title, x.Url).Value);
         
         user.AddSocialNetworks(socialNetworks);
-        
+
+        await _userManager.UpdateAsync(user); // unitOfWork is not working
         await _unitOfWork.SaveChangesAsync(cancellationToken);
         
         _logger.Log(LogLevel.Information, "User {user.Id} was updated social links", user.Id);

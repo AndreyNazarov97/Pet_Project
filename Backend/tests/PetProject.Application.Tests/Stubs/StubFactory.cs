@@ -2,14 +2,11 @@
 using Moq;
 using PetProject.Core.Database;
 using PetProject.Core.Database.Repository;
-using PetProject.SpeciesManagement.Application.Repository;
 using PetProject.VolunteerManagement.Application.Providers;
 using PetProject.VolunteerManagement.Application.Repository;
 using PetProject.VolunteerManagement.Application.VolunteersManagement.AddPetPhoto;
 using PetProject.VolunteerManagement.Application.VolunteersManagement.CreateVolunteer;
 using PetProject.VolunteerManagement.Application.VolunteersManagement.SoftDeleteVolunteer;
-using PetProject.VolunteerManagement.Application.VolunteersManagement.UpdateRequisites;
-using PetProject.VolunteerManagement.Application.VolunteersManagement.UpdateSocialLinks;
 using PetProject.VolunteerManagement.Application.VolunteersManagement.UpdateVolunteer;
 
 namespace PetProject.Application.Tests.Stubs;
@@ -39,18 +36,19 @@ public static class StubFactory
             new Mock<IVolunteersRepository>(),
             new Mock<IUnitOfWork>(),
             new Mock<ILogger<UpdateVolunteerHandler>>());
-    
-    public static UpdateRequisitesHandlerStub CreateUpdateRequisitesHandlerStub() 
-        => new(
-            new Mock<IVolunteersRepository>(),
-            new Mock<IUnitOfWork>(),
-            new Mock<ILogger<UpdateRequisitesHandler>>());
-    
-    public static UpdateSocialLinksHandlerStub CreateUpdateSocialLinksHandlerStub() 
-        => new(
-            new Mock<IVolunteersRepository>(),
-            new Mock<IUnitOfWork>(),
-            new Mock<ILogger<UpdateSocialLinksHandler>>());
+
+    // public static UpdateRequisitesHandlerStub CreateUpdateRequisitesHandlerStub()
+    //     => new(
+    //         new UserManager<User>(),
+    //         new Mock<IAccountManager>(),
+    //         new Mock<IUnitOfWork>(),
+    //         new Mock<ILogger<UpdateRequisitesHandler>>());
+    //
+    // public static UpdateSocialNetworksHandlerStub CreateUpdateSocialLinksHandlerStub() 
+    //     => new(
+    //         new UserManager<User>(),
+    //         new Mock<IUnitOfWork>(),
+    //         new Mock<ILogger<UpdateSocialNetworksHandler>>());
     
     public static CreatePetHandlerStub CreateCreatePetHandlerStub() 
         => new(

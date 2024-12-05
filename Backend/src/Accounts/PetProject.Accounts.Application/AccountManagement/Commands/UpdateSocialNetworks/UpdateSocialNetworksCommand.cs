@@ -3,9 +3,9 @@ using MediatR;
 using PetProject.Core.Dtos;
 using PetProject.SharedKernel.Shared;
 
-namespace PetProject.Accounts.Application.AccountManagement.Commands.UpdateSocialLinks;
+namespace PetProject.Accounts.Application.AccountManagement.Commands.UpdateSocialNetworks;
 
-public record UpdateSocialLinksCommand : IRequest<Result<long, ErrorList>>
+public record UpdateSocialNetworksCommand : IRequest<Result<long, ErrorList>>
 {
     public required long UserId { get; init; } 
     public required IEnumerable<SocialNetworkDto> SocialLinks { get; init; } 

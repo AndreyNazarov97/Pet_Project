@@ -63,6 +63,8 @@ public class RegisterUserHandler : IRequestHandler<RegisterUserCommand, UnitResu
             user.ParticipantAccount = participantAccount;
             user.ParticipantAccountId = participantAccount.Id;
 
+            await _userManager.UpdateAsync(user);
+
             await _unitOfWork.SaveChangesAsync(cancellationToken);
             transaction.Commit();
 

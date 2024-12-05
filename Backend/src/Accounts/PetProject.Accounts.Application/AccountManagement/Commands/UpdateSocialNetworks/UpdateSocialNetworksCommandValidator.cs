@@ -3,11 +3,11 @@ using PetProject.Core.Dtos.Validators;
 using PetProject.Core.Validation;
 using PetProject.SharedKernel.Shared;
 
-namespace PetProject.Accounts.Application.AccountManagement.Commands.UpdateSocialLinks;
+namespace PetProject.Accounts.Application.AccountManagement.Commands.UpdateSocialNetworks;
 
-public class UpdateSocialLinksCommandValidator : AbstractValidator<UpdateSocialLinksCommand>
+public class UpdateSocialNetworksCommandValidator : AbstractValidator<UpdateSocialNetworksCommand>
 {
-    public UpdateSocialLinksCommandValidator()
+    public UpdateSocialNetworksCommandValidator()
     {
         RuleFor(x => x.UserId)
             .GreaterThan(0)
