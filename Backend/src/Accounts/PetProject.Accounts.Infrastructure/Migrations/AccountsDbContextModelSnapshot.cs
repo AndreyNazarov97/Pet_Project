@@ -375,7 +375,7 @@ namespace PetProject.Accounts.Infrastructure.Migrations
                         .HasColumnType("character varying(256)")
                         .HasColumnName("user_name");
 
-                    b.Property<long?>("VolunteerAccountId")
+                    b.Property<long?>("UserId")
                         .HasColumnType("bigint")
                         .HasColumnName("volunteer_account_id");
 

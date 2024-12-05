@@ -91,40 +91,6 @@ public class VolunteersController : ApplicationController
         return Ok(result.Value);
     }
 
-    [Permission(Permissions.Volunteer.Update)]
-    [HttpPut("{volunteerId:guid}/requisites")]
-    public async Task<ActionResult> UpdateRequisites(
-        [FromRoute] Guid volunteerId,
-        [FromBody] UpdateRequisitesRequest request,
-        CancellationToken cancellationToken)
-    {
-        var command = request.ToCommand(volunteerId);
-
-        var result = await _mediator.Send(command, cancellationToken);
-
-        if (result.IsFailure)
-            return result.Error.ToResponse();
-
-        return Ok(result.Value);
-    }
-    
-    [Permission(Permissions.Volunteer.Update)]
-    [HttpPut("{volunteerId:guid}/social-networks")]
-    public async Task<ActionResult> UpdateSocialNetworks(
-        [FromRoute] Guid volunteerId,
-        [FromBody] UpdateSocialLinksRequest request,
-        CancellationToken cancellationToken)
-    {
-        var command = request.ToCommand(volunteerId);
-
-        var result = await _mediator.Send(command, cancellationToken);
-
-        if (result.IsFailure)
-            return result.Error.ToResponse();
-
-        return Ok(result.Value);
-    }
-
     [Permission(Permissions.Volunteer.Delete)]
     [HttpDelete("{volunteerId:guid}")]
     public async Task<ActionResult> DeleteVolunteer(

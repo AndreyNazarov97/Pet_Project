@@ -1,4 +1,5 @@
 ﻿using CSharpFunctionalExtensions;
+using Microsoft.EntityFrameworkCore;
 using PetProject.Accounts.Application.Managers;
 using PetProject.Accounts.Domain;
 using PetProject.SharedKernel.Shared;
@@ -28,6 +29,16 @@ public class AccountManager : IAccountManager
         }
     }
 
+    public async Task<Result<AdminAccount, Error>> GetAdminAccount(long id, CancellationToken cancellationToken = default)
+    {
+        var account = await _context.AdminAccounts.FirstOrDefaultAsync(x => x.Id == id, cancellationToken);
+
+        if (account is null)
+            return Errors.General.NotFound(id);
+
+        return account;
+    }
+
     public async Task<UnitResult<ErrorList>> CreateParticipantAccount(ParticipantAccount participantAccount,
         CancellationToken cancellationToken = default)
     {
@@ -43,6 +54,16 @@ public class AccountManager : IAccountManager
         }
     }
 
+    public async Task<Result<ParticipantAccount, Error>> GetParticipantAccount(long id, CancellationToken cancellationToken = default)
+    {
+        var account = await _context.ParticipantAccounts.FirstOrDefaultAsync(x => x.Id == id, cancellationToken);
+
+        if (account is null)
+            return Errors.General.NotFound(id);
+
+        return account;
+    }
+
     public async Task<UnitResult<ErrorList>> CreateVolunteerAccount(VolunteerAccount volunteerAccount,
         CancellationToken cancellationToken = default)
     {
@@ -56,5 +77,15 @@ public class AccountManager : IAccountManager
         {
             return Error.Failure("could.not.create.account", e.Message).ToErrorList();
         }
+    }
+
+    public async Task<Result<VolunteerAccount, Error>> GetVolunteerAccount(long id, CancellationToken cancellationToken = default)
+    {
+        var account = await _context.VolunteerAccounts.FirstOrDefaultAsync(x => x.Id == id, cancellationToken);
+
+        if (account is null)
+            return Errors.General.NotFound(id);
+
+        return account;
     }
 }

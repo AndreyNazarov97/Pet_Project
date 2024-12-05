@@ -17,13 +17,18 @@ public class User : IdentityUser<long>
     
     public long? VolunteerAccountId { get; set; }
     public VolunteerAccount? VolunteerAccount { get; set; }
-    
-    public FullName FullName { get; set; }
+
+    public FullName FullName { get; set; } = null!;
     
     public IReadOnlyList<Role> Roles => _roles.AsReadOnly();
     public IReadOnlyList<SocialNetwork> SocialNetworks => _socialNetworks.AsReadOnly();
     public IReadOnlyList<Photo> Photos => _photos.AsReadOnly();
 
+    public void AddSocialNetworks(IEnumerable<SocialNetwork> socialNetworks)
+    {
+        _socialNetworks.AddRange(socialNetworks);
+    }
+    
     public static User CreateAdmin(FullName fullName,
         string userName, string email, Role role)
     {
