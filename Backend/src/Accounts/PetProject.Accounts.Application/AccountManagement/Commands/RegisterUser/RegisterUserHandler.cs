@@ -37,7 +37,7 @@ public class RegisterUserHandler : IRequestHandler<RegisterUserCommand, UnitResu
             return UnitResult.Success<ErrorList>();
         }
         
-        await _userManager.AddToRolesAsync(user, ["Participant"]);
+        await _userManager.AddToRolesAsync(user, [ParticipantAccount.Participant]);
 
         var errors = result.Errors.Select(e =>
             Error.Failure(e.Code, e.Description)).ToList();
