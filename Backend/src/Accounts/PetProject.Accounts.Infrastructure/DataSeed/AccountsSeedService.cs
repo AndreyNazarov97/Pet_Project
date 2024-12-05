@@ -14,7 +14,7 @@ public class AccountsSeedService
 {
     private readonly UserManager<User> _userManager;
     private readonly RoleManager<Role> _roleManager;
-    private readonly PermissionManager _permissionManager;
+    private readonly IPermissionManager _permissionManager;
     private readonly RolePermissionManager _rolePermissionManager;
     private readonly IAccountManager _accountManager;
     private readonly IUnitOfWork _unitOfWork;
@@ -23,7 +23,7 @@ public class AccountsSeedService
     public AccountsSeedService(
         UserManager<User> userManager,
         RoleManager<Role> roleManager,
-        PermissionManager permissionManager,
+        IPermissionManager permissionManager,
         RolePermissionManager rolePermissionManager,
         IOptions<AdminOptions> adminOptions,
         IAccountManager accountManager,

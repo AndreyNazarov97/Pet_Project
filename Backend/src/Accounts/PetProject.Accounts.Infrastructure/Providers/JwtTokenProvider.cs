@@ -5,6 +5,7 @@ using Microsoft.Extensions.Options;
 using Microsoft.IdentityModel.Tokens;
 using PetProject.Accounts.Application;
 using PetProject.Accounts.Domain;
+using PetProject.Accounts.Infrastructure.Models;
 using PetProject.Accounts.Infrastructure.Options;
 
 namespace PetProject.Accounts.Infrastructure.Providers;
@@ -23,15 +24,16 @@ public class JwtTokenProvider : ITokenProvider
         var key = new SymmetricSecurityKey(Encoding.UTF8.GetBytes(_jwtOptions.SecretKey));
         var credentials = new SigningCredentials(key, SecurityAlgorithms.HmacSha256);
         
+        var roleClaims = user.Roles.Select(r => 
+            new Claim(CustomClaim.Role, r.Name ?? string.Empty));
+        
         var claims = new[]
         {
             new Claim(JwtRegisteredClaimNames.Sub, user.Id.ToString()),
-            new Claim(JwtRegisteredClaimNames.Email, user.Email ?? ""),
-            new Claim("Permission", "volunteers.create"),
-            new Claim("Permission", "volunteers.read"),
-            new Claim("Permission", "volunteers.update"),
-            new Claim("Permission", "volunteers.delete"),
-        };
+            new Claim(JwtRegisteredClaimNames.Email, user.Email ?? "")
+        }.ToList();
+        
+        claims.AddRange(roleClaims);
         
         var jwtToken = new JwtSecurityToken(
             issuer: _jwtOptions.Issuer,

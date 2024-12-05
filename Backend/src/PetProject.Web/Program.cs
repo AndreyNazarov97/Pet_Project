@@ -1,6 +1,7 @@
 using DotNetEnv;
 using PetProject.Accounts.Application;
 using PetProject.Accounts.Infrastructure;
+using PetProject.Accounts.Presentation;
 using PetProject.SpeciesManagement.Application;
 using PetProject.SpeciesManagement.Infrastructure;
 using PetProject.VolunteerManagement.Application;
@@ -31,7 +32,8 @@ builder.Services
 
 builder.Services
     .AddAccountsManagementApplication()
-    .AddAccountsInfrastructure(builder.Configuration);
+    .AddAccountsInfrastructure(builder.Configuration)
+    .AddAccountsPresentation();
 
 
 var app = builder.Build();

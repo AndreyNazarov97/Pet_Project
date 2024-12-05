@@ -48,8 +48,8 @@ public static class DependencyInjection
             })
             .AddEntityFrameworkStores<AccountsDbContext>()
             .AddDefaultTokenProviders();
-         
-        services.AddScoped<PermissionManager>();
+        
+        services.AddScoped<IPermissionManager, PermissionManager>();
         services.AddScoped<RolePermissionManager>();
         services.AddScoped<IAccountManager,AccountManager>();
     }
