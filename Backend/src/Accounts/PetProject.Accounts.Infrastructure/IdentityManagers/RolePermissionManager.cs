@@ -27,7 +27,7 @@ public class RolePermissionManager
                 .FirstOrDefaultAsync(p => p.Code == permissionCode, cancellationToken);
 
             if (permission == null)
-                continue;
+                throw new ArgumentException($"Permission code {permissionCode} is not found");
             
             var isRolePermissionExist = await _context.RolePermissions
                 .AnyAsync(rp => rp.RoleId == role!.Id

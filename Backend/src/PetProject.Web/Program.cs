@@ -1,4 +1,4 @@
-using Microsoft.OpenApi.Models;
+using DotNetEnv;
 using PetProject.Accounts.Application;
 using PetProject.Accounts.Infrastructure;
 using PetProject.SpeciesManagement.Application;
@@ -9,7 +9,7 @@ using PetProject.Web.Extensions;
 using PetProject.Web.Middlewares;
 using Serilog;
 
-
+Env.Load(); 
 var builder = WebApplication.CreateBuilder(args);
 
 builder.Services.AddLogger(builder.Configuration);

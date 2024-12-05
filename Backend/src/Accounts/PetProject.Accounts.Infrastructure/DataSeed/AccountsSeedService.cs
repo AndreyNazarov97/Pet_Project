@@ -1,25 +1,37 @@
 ﻿using System.Text.Json;
 using Microsoft.AspNetCore.Identity;
+using Microsoft.Extensions.Options;
+using PetProject.Accounts.Application.Managers;
 using PetProject.Accounts.Domain;
 using PetProject.Accounts.Infrastructure.IdentityManagers;
 using PetProject.Accounts.Infrastructure.Options;
+using PetProject.SharedKernel.Shared.ValueObjects;
 
 namespace PetProject.Accounts.Infrastructure.DataSeed;
 
 public class AccountsSeedService
 {
+    private readonly UserManager<User> _userManager;
     private readonly RoleManager<Role> _roleManager;
     private readonly PermissionManager _permissionManager;
     private readonly RolePermissionManager _rolePermissionManager;
+    private readonly IAccountManager _accountManager;
+    private readonly AdminOptions _adminOptions;
 
     public AccountsSeedService(
+        UserManager<User> userManager,
         RoleManager<Role> roleManager,
         PermissionManager permissionManager,
-        RolePermissionManager rolePermissionManager)
+        RolePermissionManager rolePermissionManager,
+        IOptions<AdminOptions> adminOptions,
+        IAccountManager accountManager)
     {
+        _userManager = userManager;
         _roleManager = roleManager;
         _permissionManager = permissionManager;
         _rolePermissionManager = rolePermissionManager;
+        _accountManager = accountManager;
+        _adminOptions = adminOptions.Value;
     }
 
     public async Task SeedAsync(CancellationToken cancellationToken = default)
@@ -36,6 +48,32 @@ public class AccountsSeedService
         await SeedRoles(seedData, cancellationToken);
 
         await SeedRolePermissions(seedData, cancellationToken);
+
+        await SeedAdmin();
+    }
+
+    private async Task SeedAdmin()
+    {
+        var isAdminExist = await _userManager.FindByNameAsync(_adminOptions.UserName);
+
+        if (isAdminExist != null)
+            return;
+        
+        var adminRole = await _roleManager.FindByNameAsync(AdminAccount.Admin)
+                        ?? throw new ApplicationException("Admin role is not found");
+
+        var adminName = FullName.Create(_adminOptions.UserName, _adminOptions.UserName).Value;
+        var adminUser = User.CreateAdmin(adminName, _adminOptions.UserName, _adminOptions.Email, adminRole);
+        await _userManager.CreateAsync(adminUser, _adminOptions.Password);
+        
+        var adminAccount = new AdminAccount(adminUser);
+
+        await _accountManager.CreateAdminAccount(adminAccount);
+        
+        adminUser.AdminAccount = adminAccount;
+        adminUser.AdminAccountId = adminAccount.Id;
+        
+        await _userManager.UpdateAsync(adminUser);
     }
 
     private async Task SeedRolePermissions(RolePermissionOptions seedData, CancellationToken cancellationToken)
@@ -58,7 +96,7 @@ public class AccountsSeedService
             if (existedRole == null)
                 await _roleManager.CreateAsync(new Role()
                 {
-                    Name = role, 
+                    Name = role,
                     ConcurrencyStamp = Guid.NewGuid().ToString()
                 });
         }
