@@ -1,4 +1,5 @@
 ﻿using MediatR;
+using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
 using PetProject.Accounts.Application.Mappers;
 using PetProject.Accounts.Contracts.Requests;
@@ -15,13 +16,14 @@ public class AccountController : ApplicationController
     {
         _mediator = mediator;
     }
+
     [HttpPost("register")]
     public async Task<IActionResult> Register(
         [FromBody] RegisterUserRequest request,
         CancellationToken cancellationToken)
     {
         var command = request.ToCommand();
-        
+
         var result = await _mediator.Send(command, cancellationToken);
 
         if (result.IsFailure)
@@ -29,37 +31,56 @@ public class AccountController : ApplicationController
 
         return Ok();
     }
-    
+
     [HttpPost("login")]
     public async Task<IActionResult> Login(
         [FromBody] LoginRequest request,
         CancellationToken cancellationToken)
     {
         var command = request.ToCommand();
-        
+
         var result = await _mediator.Send(command, cancellationToken);
+        
+        var refreshToken = result.Value.RefreshToken; 
+        var cookieOptions = new CookieOptions
+        {
+            HttpOnly = true, 
+            Secure = false, 
+            Expires = DateTime.UtcNow.AddDays(30)
+        };
+        HttpContext.Response.Cookies.Append("RefreshToken", refreshToken.ToString(), cookieOptions);
 
         if (result.IsFailure)
             return result.Error.ToResponse();
 
         return Ok(result.Value);
     }
-    
+
     [HttpPost("refresh")]
     public async Task<IActionResult> Refresh(
         [FromBody] RefreshTokenRequest request,
         CancellationToken cancellationToken)
     {
         var command = request.ToCommand();
-        
+
         var result = await _mediator.Send(command, cancellationToken);
+        
+        var refreshToken = result.Value.RefreshToken; 
+        var cookieOptions = new CookieOptions
+        {
+            HttpOnly = true, 
+            Secure = false, 
+            Expires = DateTime.UtcNow.AddDays(30)
+        };
+        HttpContext.Response.Cookies.Append("RefreshToken", refreshToken.ToString(), cookieOptions);
+
 
         if (result.IsFailure)
             return result.Error.ToResponse();
 
         return Ok(result.Value);
     }
-    
+
     [HttpPut("{userId:long}/social-networks")]
     public async Task<ActionResult> UpdateSocialNetworks(
         [FromRoute] long userId,
@@ -75,7 +96,7 @@ public class AccountController : ApplicationController
 
         return Ok(result.Value);
     }
-    
+
     [HttpPut("{userId:long}/requisites")]
     public async Task<ActionResult> UpdateRequisites(
         [FromRoute] long userId,
@@ -91,6 +112,4 @@ public class AccountController : ApplicationController
 
         return Ok(result.Value);
     }
-    
-    
 }
