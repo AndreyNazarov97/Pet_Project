@@ -41,7 +41,7 @@ public class UpdateSocialNetworksHandler : IRequestHandler<UpdateSocialNetworksC
         
         user.AddSocialNetworks(socialNetworks);
 
-        await _userManager.UpdateAsync(user); // unitOfWork is not working
+        //await _userManager.UpdateAsync(user); // unitOfWork is not working
         await _unitOfWork.SaveChangesAsync(cancellationToken);
         
         _logger.Log(LogLevel.Information, "User {user.Id} was updated social links", user.Id);

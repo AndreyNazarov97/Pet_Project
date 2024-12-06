@@ -34,7 +34,6 @@ public static class DependencyInjection
     private static IServiceCollection AddDbContext(this IServiceCollection services)
     {
         Dapper.DefaultTypeMap.MatchNamesWithUnderscores = true;
-        Dapper.SqlMapper.AddTypeHandler(new JsonTypeHandler<Requisite[]>());
         
         services
             .AddScoped<VolunteerDbContext>()
@@ -47,7 +46,8 @@ public static class DependencyInjection
     {
         services
             .AddSingleton<IPostgresConnectionFactory, PostgresConnectionFactory>()
-            .AddScoped<IMomentProvider, MomentProvider>()
+            .AddScoped<IDateTimeProvider, DateTimeProvider>()
+            .AddScoped<IUnitOfWork, UnitOfWork>()
             .AddKeyedScoped<IUnitOfWork, UnitOfWork>(Constants.Context.VolunteerManagement);
         
         return services;

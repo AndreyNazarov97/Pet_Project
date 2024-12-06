@@ -2,7 +2,7 @@
 
 namespace PetProject.Core.Common;
 
-public class MomentProvider : IMomentProvider
+public class DateTimeProvider : IDateTimeProvider
 {
     public DateTimeOffset Now => DateTimeOffset.UtcNow;
 }

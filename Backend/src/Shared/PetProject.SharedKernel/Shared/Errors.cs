@@ -15,10 +15,16 @@ public static class Errors
             var forId = id == null ? "" : $" for Id '{id}'";
             return Error.NotFound("record.not.found", $"record not found{forId}");
         }
-        
+
         public static Error NotFound(long id)
         {
             return Error.NotFound("record.not.found", $"record not found for Id {id}");
+        }
+        
+        public static Error Null(string? name = null)
+        {
+            var label = name ?? "value";
+            return Error.Null("Null.entity", $"{label} is null");
         }
 
         public static Error LengthIsInvalid(string? name = null)
@@ -26,22 +32,36 @@ public static class Errors
             var label = name == null ? "" : " " + name + " ";
             return Error.Validation("length.is.invalid", $"invalid{label}length");
         }
-        
+
         public static Error AlreadyExist(string? name = null)
         {
             var label = name ?? "entity";
             return Error.Validation($"{label.ToLower()}.already.exist", $"{label} already exist");
         }
     }
-    
-    
+
+    public static class Tokens
+    {
+        public static Error TokenExpired()
+        {
+            return Error.Failure("token.expired", "Token expired");
+        }
+
+        public static Error InvalidToken()
+        {
+            return Error.Failure("token.invalid", "Invalid token");
+        }
+    }
+
+
     public static class User
-    { 
+    {
         public static Error InvalidCredentials()
         {
             return Error.Validation("credentials.is.invalid", "Invalid credentials");
         }
     }
+
     public static class Minio
     {
         public static Error CouldNotDownloadFile()

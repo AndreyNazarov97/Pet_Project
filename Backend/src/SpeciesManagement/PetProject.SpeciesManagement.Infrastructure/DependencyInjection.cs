@@ -39,7 +39,7 @@ public static class DependencyInjection
     {
         services
             .AddSingleton<IPostgresConnectionFactory, PostgresConnectionFactory>()
-            .AddScoped<IMomentProvider, MomentProvider>()
+            .AddScoped<IDateTimeProvider, DateTimeProvider>()
             .AddKeyedScoped<IUnitOfWork, UnitOfWork>(Constants.Context.SpeciesManagement);
         
         return services;
