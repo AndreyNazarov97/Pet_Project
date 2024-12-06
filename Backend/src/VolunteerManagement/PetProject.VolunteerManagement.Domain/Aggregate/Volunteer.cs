@@ -138,7 +138,7 @@ public class Volunteer : AggregateRoot<VolunteerId>, ISoftDeletable
         AnimalType? animalType,
         Address? address,
         PetPhysicalAttributes? attributes,
-        DateTime? birthDate,
+        DateTimeOffset? birthDate,
         bool? isCastrated,
         bool? isVaccinated,
         HelpStatus? helpStatus

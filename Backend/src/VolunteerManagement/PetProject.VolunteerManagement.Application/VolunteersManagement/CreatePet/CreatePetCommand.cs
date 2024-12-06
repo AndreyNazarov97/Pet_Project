@@ -17,7 +17,7 @@ public record CreatePetCommand : IRequest<Result<Guid, ErrorList>>
     public required AddressDto Address { get; init; }
     public required double Weight { get; init; }
     public required double Height { get; init; }
-    public required DateTime BirthDate { get; init; }
+    public required DateTimeOffset BirthDate { get; init; }
     public required bool IsCastrated { get; init; }
     public required bool IsVaccinated { get; init; }
     public required HelpStatus HelpStatus { get; init; }

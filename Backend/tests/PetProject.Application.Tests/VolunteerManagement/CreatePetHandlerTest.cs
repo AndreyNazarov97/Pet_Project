@@ -25,7 +25,7 @@ public class CreatePetHandlerTest
         Address = VolunteerCreator.CreateAddressDto(),
         Weight = Random.Double,
         Height = Random.Double,
-        BirthDate = Random.DateTime,
+        BirthDate = Random.DateTimeOffset,
         IsCastrated = Random.Bool,
         IsVaccinated = Random.Bool,
         HelpStatus = Random.HelpStatus
