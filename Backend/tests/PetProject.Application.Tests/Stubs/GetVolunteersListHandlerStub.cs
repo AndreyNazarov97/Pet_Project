@@ -1,7 +1,7 @@
 ﻿using Moq;
 using PetProject.Core.Database.Repository;
 using PetProject.VolunteerManagement.Application.Repository;
-using PetProject.VolunteerManagement.Application.VolunteersManagement.GetVolunteersList;
+using PetProject.VolunteerManagement.Application.VolunteersManagement.Queries.GetVolunteersList;
 
 namespace PetProject.Application.Tests.Stubs;
 

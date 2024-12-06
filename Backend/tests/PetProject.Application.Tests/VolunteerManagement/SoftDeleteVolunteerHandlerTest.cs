@@ -7,7 +7,7 @@ using PetProject.Application.Tests.Stubs;
 using PetProject.SharedKernel.Shared;
 using PetProject.SharedKernel.Shared.EntityIds;
 using PetProject.SharedTestData;
-using PetProject.VolunteerManagement.Application.VolunteersManagement.SoftDeleteVolunteer;
+using PetProject.VolunteerManagement.Application.VolunteersManagement.Commands.SoftDeleteVolunteer;
 using PetProject.VolunteerManagement.Domain.Aggregate;
 
 namespace PetProject.Application.Tests.VolunteerManagement;

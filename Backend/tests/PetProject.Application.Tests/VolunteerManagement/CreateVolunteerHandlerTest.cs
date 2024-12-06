@@ -6,7 +6,7 @@ using PetProject.Core.Database.Models;
 using PetProject.Core.Dtos;
 using PetProject.SharedTestData;
 using PetProject.SharedTestData.Creators;
-using PetProject.VolunteerManagement.Application.VolunteersManagement.CreateVolunteer;
+using PetProject.VolunteerManagement.Application.VolunteersManagement.Commands.CreateVolunteer;
 using Random = PetProject.SharedTestData.Creators.Random;
 
 namespace PetProject.Application.Tests.VolunteerManagement;

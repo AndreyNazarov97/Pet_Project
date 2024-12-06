@@ -1,4 +1,4 @@
-﻿using PetProject.SpeciesManagement.Application.SpeciesManagement.GetBreedsList;
+﻿using PetProject.SpeciesManagement.Application.SpeciesManagement.Queries.GetBreedsList;
 
 namespace PetProject.SpeciesManagement.Presentation.Requests;
 

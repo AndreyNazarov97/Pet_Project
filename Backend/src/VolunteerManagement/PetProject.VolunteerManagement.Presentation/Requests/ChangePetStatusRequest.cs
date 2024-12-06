@@ -1,4 +1,4 @@
-﻿using PetProject.VolunteerManagement.Application.VolunteersManagement.ChangePetStatus;
+﻿using PetProject.VolunteerManagement.Application.VolunteersManagement.Commands.ChangePetStatus;
 using PetProject.VolunteerManagement.Domain.Enums;
 
 namespace PetProject.VolunteerManagement.Presentation.Requests;

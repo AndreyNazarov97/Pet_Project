@@ -6,7 +6,7 @@ using PetProject.Core.Database.Models;
 using PetProject.SharedKernel.Shared;
 using PetProject.SharedKernel.Shared.EntityIds;
 using PetProject.SharedTestData;
-using PetProject.VolunteerManagement.Application.VolunteersManagement.UpdatePet;
+using PetProject.VolunteerManagement.Application.VolunteersManagement.Commands.UpdatePet;
 
 namespace PetProject.Application.Tests.VolunteerManagement;
 

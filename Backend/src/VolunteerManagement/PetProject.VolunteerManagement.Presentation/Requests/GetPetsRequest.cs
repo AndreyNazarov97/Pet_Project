@@ -1,4 +1,4 @@
-﻿using PetProject.VolunteerManagement.Application.VolunteersManagement.GetPets;
+﻿using PetProject.VolunteerManagement.Application.VolunteersManagement.Queries.GetPets;
 using PetProject.VolunteerManagement.Domain.Enums;
 
 namespace PetProject.VolunteerManagement.Presentation.Requests;

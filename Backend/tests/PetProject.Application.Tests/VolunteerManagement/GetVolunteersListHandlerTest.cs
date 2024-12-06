@@ -3,7 +3,7 @@ using PetProject.Application.Tests.Extensions;
 using PetProject.Application.Tests.Stubs;
 using PetProject.Core.Dtos;
 using PetProject.SharedTestData;
-using PetProject.VolunteerManagement.Application.VolunteersManagement.GetVolunteersList;
+using PetProject.VolunteerManagement.Application.VolunteersManagement.Queries.GetVolunteersList;
 
 namespace PetProject.Application.Tests.VolunteerManagement;
 

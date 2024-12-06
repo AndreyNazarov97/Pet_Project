@@ -7,7 +7,7 @@ using PetProject.SharedKernel.Shared;
 using PetProject.SharedKernel.Shared.EntityIds;
 using PetProject.SharedTestData;
 using PetProject.SharedTestData.Creators;
-using PetProject.VolunteerManagement.Application.VolunteersManagement.CreatePet;
+using PetProject.VolunteerManagement.Application.VolunteersManagement.Commands.CreatePet;
 using Random = PetProject.SharedTestData.Creators.Random;
 
 namespace PetProject.Application.Tests.VolunteerManagement;

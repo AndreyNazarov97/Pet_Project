@@ -1,11 +1,13 @@
 ﻿using System.Text.Json;
 using Microsoft.AspNetCore.Identity;
+using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Options;
 using PetProject.Accounts.Application.Managers;
 using PetProject.Accounts.Domain;
 using PetProject.Accounts.Infrastructure.IdentityManagers;
 using PetProject.Accounts.Infrastructure.Options;
 using PetProject.Core.Database;
+using PetProject.SharedKernel.Constants;
 using PetProject.SharedKernel.Shared.ValueObjects;
 
 namespace PetProject.Accounts.Infrastructure.DataSeed;
@@ -27,7 +29,7 @@ public class AccountsSeedService
         RolePermissionManager rolePermissionManager,
         IOptions<AdminOptions> adminOptions,
         IAccountManager accountManager,
-        IUnitOfWork unitOfWork)
+        [FromKeyedServices(Constants.Context.Accounts)]IUnitOfWork unitOfWork)
     {
         _userManager = userManager;
         _roleManager = roleManager;

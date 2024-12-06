@@ -5,6 +5,7 @@ using PetProject.Core.Common;
 using PetProject.Core.Database;
 using PetProject.Core.Database.Dapper;
 using PetProject.Core.Database.Repository;
+using PetProject.SharedKernel.Constants;
 using PetProject.SharedKernel.Interfaces;
 using PetProject.SharedKernel.Shared.ValueObjects;
 using PetProject.VolunteerManagement.Application.Providers;
@@ -47,7 +48,7 @@ public static class DependencyInjection
         services
             .AddSingleton<IPostgresConnectionFactory, PostgresConnectionFactory>()
             .AddScoped<IMomentProvider, MomentProvider>()
-            .AddScoped<IUnitOfWork, UnitOfWork>();
+            .AddKeyedScoped<IUnitOfWork, UnitOfWork>(Constants.Context.VolunteerManagement);
         
         return services;
     }

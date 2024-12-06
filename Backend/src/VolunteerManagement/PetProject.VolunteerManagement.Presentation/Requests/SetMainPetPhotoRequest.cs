@@ -1,4 +1,4 @@
-﻿using PetProject.VolunteerManagement.Application.VolunteersManagement.SetMainPetPhoto;
+﻿using PetProject.VolunteerManagement.Application.VolunteersManagement.Commands.SetMainPetPhoto;
 
 namespace PetProject.VolunteerManagement.Presentation.Requests;
 

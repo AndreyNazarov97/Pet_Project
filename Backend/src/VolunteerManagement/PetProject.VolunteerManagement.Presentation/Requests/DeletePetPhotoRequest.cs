@@ -1,4 +1,4 @@
-﻿using PetProject.VolunteerManagement.Application.VolunteersManagement.DeletePetPhoto;
+﻿using PetProject.VolunteerManagement.Application.VolunteersManagement.Commands.DeletePetPhoto;
 
 namespace PetProject.VolunteerManagement.Presentation.Requests;
 

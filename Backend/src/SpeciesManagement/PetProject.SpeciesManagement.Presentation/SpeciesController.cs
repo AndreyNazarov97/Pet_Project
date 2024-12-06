@@ -3,7 +3,7 @@ using Microsoft.AspNetCore.Mvc;
 using PetProject.Core.Dtos;
 using PetProject.Framework;
 using PetProject.SharedKernel.Shared.EntityIds;
-using PetProject.SpeciesManagement.Application.SpeciesManagement.DeleteBreed;
+using PetProject.SpeciesManagement.Application.SpeciesManagement.Commands.DeleteBreed;
 using PetProject.SpeciesManagement.Presentation.Requests;
 
 namespace PetProject.SpeciesManagement.Presentation;

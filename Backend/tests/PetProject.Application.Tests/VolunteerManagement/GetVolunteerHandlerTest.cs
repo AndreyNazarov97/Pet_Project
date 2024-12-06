@@ -5,7 +5,7 @@ using PetProject.Application.Tests.Stubs;
 using PetProject.SharedKernel.Shared;
 using PetProject.SharedKernel.Shared.EntityIds;
 using PetProject.SharedTestData;
-using PetProject.VolunteerManagement.Application.VolunteersManagement.GetVolunteer;
+using PetProject.VolunteerManagement.Application.VolunteersManagement.Queries.GetVolunteer;
 
 namespace PetProject.Application.Tests.VolunteerManagement;
 

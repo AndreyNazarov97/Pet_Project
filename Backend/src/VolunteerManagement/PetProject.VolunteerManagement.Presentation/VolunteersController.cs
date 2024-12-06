@@ -7,11 +7,11 @@ using PetProject.Framework.Authorization;
 using PetProject.Framework.Processors;
 using PetProject.SharedKernel.Shared.EntityIds;
 using PetProject.SharedKernel.Shared.ValueObjects;
-using PetProject.VolunteerManagement.Application.VolunteersManagement.AddPetPhoto;
-using PetProject.VolunteerManagement.Application.VolunteersManagement.GetPetById;
-using PetProject.VolunteerManagement.Application.VolunteersManagement.GetVolunteer;
-using PetProject.VolunteerManagement.Application.VolunteersManagement.SoftDeletePet;
-using PetProject.VolunteerManagement.Application.VolunteersManagement.SoftDeleteVolunteer;
+using PetProject.VolunteerManagement.Application.VolunteersManagement.Commands.AddPetPhoto;
+using PetProject.VolunteerManagement.Application.VolunteersManagement.Commands.SoftDeletePet;
+using PetProject.VolunteerManagement.Application.VolunteersManagement.Commands.SoftDeleteVolunteer;
+using PetProject.VolunteerManagement.Application.VolunteersManagement.Queries.GetPetById;
+using PetProject.VolunteerManagement.Application.VolunteersManagement.Queries.GetVolunteer;
 using PetProject.VolunteerManagement.Domain.Aggregate;
 using PetProject.VolunteerManagement.Presentation.Requests;
 
