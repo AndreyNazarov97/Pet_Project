@@ -39,7 +39,7 @@ namespace PetProject.VolunteerManagement.Infrastructure.Migrations
                 columns: table => new
                 {
                     id = table.Column<Guid>(type: "uuid", nullable: false),
-                    birth_date = table.Column<DateOnly>(type: "date", nullable: false),
+                    birth_date = table.Column<DateTimeOffset>(type: "timestamp with time zone", nullable: false),
                     is_castrated = table.Column<bool>(type: "boolean", nullable: false),
                     is_vaccinated = table.Column<bool>(type: "boolean", nullable: false),
                     help_status = table.Column<string>(type: "text", nullable: false),
