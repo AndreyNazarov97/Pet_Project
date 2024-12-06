@@ -13,7 +13,7 @@ using PetProject.Accounts.Infrastructure;
 namespace PetProject.Accounts.Infrastructure.Migrations
 {
     [DbContext(typeof(AccountsDbContext))]
-    [Migration("20241204205958_Accounts_Init")]
+    [Migration("20241206233839_Accounts_Init")]
     partial class Accounts_Init
     {
         /// <inheritdoc />
@@ -225,6 +225,42 @@ namespace PetProject.Accounts.Infrastructure.Migrations
                         .HasDatabaseName("ix_permissions_code");
 
                     b.ToTable("permissions", "accounts");
+                });
+
+            modelBuilder.Entity("PetProject.Accounts.Domain.RefreshSession", b =>
+                {
+                    b.Property<Guid>("Id")
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("uuid")
+                        .HasColumnName("id");
+
+                    b.Property<DateTimeOffset>("CreatedAt")
+                        .HasColumnType("timestamp with time zone")
+                        .HasColumnName("created_at");
+
+                    b.Property<DateTimeOffset>("ExpiresAt")
+                        .HasColumnType("timestamp with time zone")
+                        .HasColumnName("expires_at");
+
+                    b.Property<Guid>("Jti")
+                        .HasColumnType("uuid")
+                        .HasColumnName("jti");
+
+                    b.Property<Guid>("RefreshToken")
+                        .HasColumnType("uuid")
+                        .HasColumnName("refresh_token");
+
+                    b.Property<long>("UserId")
+                        .HasColumnType("bigint")
+                        .HasColumnName("user_id");
+
+                    b.HasKey("Id")
+                        .HasName("pk_refresh_sessions");
+
+                    b.HasIndex("UserId")
+                        .HasDatabaseName("ix_refresh_sessions_user_id");
+
+                    b.ToTable("refresh_sessions", "accounts");
                 });
 
             modelBuilder.Entity("PetProject.Accounts.Domain.Role", b =>
@@ -555,6 +591,18 @@ namespace PetProject.Accounts.Infrastructure.Migrations
                         .OnDelete(DeleteBehavior.Cascade)
                         .IsRequired()
                         .HasConstraintName("fk_participant_accounts_asp_net_users_user_id");
+
+                    b.Navigation("User");
+                });
+
+            modelBuilder.Entity("PetProject.Accounts.Domain.RefreshSession", b =>
+                {
+                    b.HasOne("PetProject.Accounts.Domain.User", "User")
+                        .WithMany()
+                        .HasForeignKey("UserId")
+                        .OnDelete(DeleteBehavior.Cascade)
+                        .IsRequired()
+                        .HasConstraintName("fk_refresh_sessions_users_user_id");
 
                     b.Navigation("User");
                 });
