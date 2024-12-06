@@ -32,7 +32,7 @@ public class CreatePetCommandValidator : AbstractValidator<CreatePetCommand>
             .MustBeValueObject(x=> PetPhysicalAttributes.Create(x.Weight, x.Height));
         
         RuleFor(c => c.BirthDate)
-            .Must(birthDate => birthDate.ToDateTime(TimeOnly.MinValue) < DateTime.UtcNow)
+            .Must(birthDate => birthDate < DateTime.UtcNow)
             .WithMessage("Birth date must be in the past");
     }
 }

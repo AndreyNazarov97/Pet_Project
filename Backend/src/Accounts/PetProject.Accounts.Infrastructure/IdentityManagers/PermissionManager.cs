@@ -13,12 +13,6 @@ public class PermissionManager : IPermissionManager
         _context = context;
     }
 
-    public async Task<Permission?> FindByCodeAsync(string code, CancellationToken cancellationToken)
-    {
-        return await _context.Permissions
-            .FirstOrDefaultAsync(p => p.Code == code, cancellationToken);
-    }
-
     public async Task AddRangeIfExist(IEnumerable<string> permissions, CancellationToken cancellationToken)
     {
         foreach (var permissionCode in permissions)

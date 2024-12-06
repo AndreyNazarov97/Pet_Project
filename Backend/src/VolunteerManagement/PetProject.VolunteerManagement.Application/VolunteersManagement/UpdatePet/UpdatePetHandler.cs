@@ -90,9 +90,7 @@ public class UpdatePetHandler : IRequestHandler<UpdatePetCommand, Result<Guid, E
             ? null
             : PetPhysicalAttributes.Create(command.PetInfo.Weight.Value, command.PetInfo.Height.Value).Value;
         
-        var birthDate = command.PetInfo.BirthDate is null
-            ? (DateOnly?)null
-            : DateOnly.FromDateTime(command.PetInfo.BirthDate.Value);
+        var birthDate = command.PetInfo.BirthDate;
 
         var isStatusExists  = Enum.TryParse<HelpStatus>(command.PetInfo.HelpStatus, out var parsedStatus);
         var helpStatus = isStatusExists 
