@@ -11,7 +11,7 @@ public record PetDto
     public double? Weight { get; init; }
     public double? Height { get; init; }
     public string? PhoneNumber { get; init; }
-    public DateTime? BirthDate { get; init; }
+    public DateTimeOffset? BirthDate { get; init; }
     public bool? IsCastrated { get; init; }
     public bool? IsVaccinated { get; init; }
     public string? HelpStatus { get; init; }

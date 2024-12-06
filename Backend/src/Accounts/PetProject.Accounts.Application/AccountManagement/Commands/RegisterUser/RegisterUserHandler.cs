@@ -2,11 +2,13 @@
 using MediatR;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.EntityFrameworkCore;
+using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Logging;
 using PetProject.Accounts.Application.Managers;
 using PetProject.Accounts.Domain;
 using PetProject.Core.Database;
 using PetProject.Core.ObjectMappers;
+using PetProject.SharedKernel.Constants;
 using PetProject.SharedKernel.Shared;
 
 namespace PetProject.Accounts.Application.AccountManagement.Commands.RegisterUser;
@@ -23,7 +25,7 @@ public class RegisterUserHandler : IRequestHandler<RegisterUserCommand, UnitResu
         IAccountManager accountManager,
         UserManager<User> userManager,
         RoleManager<Role> roleManager,
-        IUnitOfWork unitOfWork,
+        [FromKeyedServices(Constants.Context.Accounts)]IUnitOfWork unitOfWork,
         ILogger<RegisterUserHandler> logger)
     {
         _accountManager = accountManager;

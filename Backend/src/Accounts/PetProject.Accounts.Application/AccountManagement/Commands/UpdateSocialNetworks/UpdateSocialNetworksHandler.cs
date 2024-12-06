@@ -2,9 +2,11 @@
 using MediatR;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.EntityFrameworkCore;
+using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Logging;
 using PetProject.Accounts.Domain;
 using PetProject.Core.Database;
+using PetProject.SharedKernel.Constants;
 using PetProject.SharedKernel.Shared;
 using PetProject.SharedKernel.Shared.ValueObjects;
 
@@ -18,7 +20,7 @@ public class UpdateSocialNetworksHandler : IRequestHandler<UpdateSocialNetworksC
 
     public UpdateSocialNetworksHandler(
         UserManager<User> userManager,
-        IUnitOfWork unitOfWork,
+        [FromKeyedServices(Constants.Context.Accounts)]IUnitOfWork unitOfWork,
         ILogger<UpdateSocialNetworksHandler> logger)
     {
         _userManager = userManager;
@@ -39,7 +41,7 @@ public class UpdateSocialNetworksHandler : IRequestHandler<UpdateSocialNetworksC
         
         user.AddSocialNetworks(socialNetworks);
 
-        await _userManager.UpdateAsync(user); // unitOfWork is not working
+        //await _userManager.UpdateAsync(user); // unitOfWork is not working
         await _unitOfWork.SaveChangesAsync(cancellationToken);
         
         _logger.Log(LogLevel.Information, "User {user.Id} was updated social links", user.Id);

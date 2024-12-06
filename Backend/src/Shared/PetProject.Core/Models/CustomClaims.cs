@@ -7,4 +7,5 @@ public static class CustomClaims
     public static string Email = nameof(Email);
     public static string Username = nameof(Username);
     public static string Permission = nameof(Permission);
+    public static string Jti = nameof(Jti);
 }

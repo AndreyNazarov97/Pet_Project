@@ -3,7 +3,7 @@ using PetProject.Core.Database;
 using PetProject.Core.Database.Repository;
 using PetProject.SpeciesManagement.Application.Repository;
 using PetProject.VolunteerManagement.Application.Repository;
-using PetProject.VolunteerManagement.Application.VolunteersManagement.CreatePet;
+using PetProject.VolunteerManagement.Application.VolunteersManagement.Commands.CreatePet;
 
 namespace PetProject.Application.Tests.Stubs;
 

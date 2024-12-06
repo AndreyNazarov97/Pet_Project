@@ -98,8 +98,8 @@ namespace PetProject.VolunteerManagement.Infrastructure.Migrations
                         .HasColumnType("uuid")
                         .HasColumnName("id");
 
-                    b.Property<DateOnly>("BirthDate")
-                        .HasColumnType("date")
+                    b.Property<DateTimeOffset>("BirthDate")
+                        .HasColumnType("timestamp with time zone")
                         .HasColumnName("birth_date");
 
                     b.Property<DateTimeOffset>("DateCreated")

@@ -10,6 +10,7 @@ Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "Solution-items", "Solution-
 		..\.github\workflows\github-ci.yml = ..\.github\workflows\github-ci.yml
 		.gitignore = .gitignore
 		.dockerignore = .dockerignore
+		migrations-update.cmd = migrations-update.cmd
 	EndProjectSection
 EndProject
 Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "tests", "tests", "{0E11ADB2-2524-40EE-97AE-AB2DE84AAB35}"

@@ -1,4 +1,4 @@
-﻿using PetProject.SpeciesManagement.Application.SpeciesManagement.GetSpeciesList;
+﻿using PetProject.SpeciesManagement.Application.SpeciesManagement.Queries.GetSpeciesList;
 
 namespace PetProject.SpeciesManagement.Presentation.Requests;
 

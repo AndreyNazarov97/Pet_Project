@@ -3,7 +3,7 @@ using Moq;
 using PetProject.Core.Database;
 using PetProject.VolunteerManagement.Application.Providers;
 using PetProject.VolunteerManagement.Application.Repository;
-using PetProject.VolunteerManagement.Application.VolunteersManagement.AddPetPhoto;
+using PetProject.VolunteerManagement.Application.VolunteersManagement.Commands.AddPetPhoto;
 
 namespace PetProject.Application.Tests.Stubs;
 

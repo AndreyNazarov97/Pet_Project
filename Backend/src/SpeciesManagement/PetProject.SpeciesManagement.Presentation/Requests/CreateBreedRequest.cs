@@ -1,4 +1,4 @@
-﻿using PetProject.SpeciesManagement.Application.SpeciesManagement.CreateBreed;
+﻿using PetProject.SpeciesManagement.Application.SpeciesManagement.Commands.CreateBreed;
 
 namespace PetProject.SpeciesManagement.Presentation.Requests;
 

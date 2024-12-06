@@ -36,6 +36,7 @@ public static class ResponseExtensions
 
     private static int GetStatusCode(ErrorType errorType) => errorType switch
     {
+        ErrorType.Null => StatusCodes.Status400BadRequest,
         ErrorType.Validation => StatusCodes.Status400BadRequest,
         ErrorType.NotFound => StatusCodes.Status404NotFound,
         ErrorType.Conflict => StatusCodes.Status409Conflict,

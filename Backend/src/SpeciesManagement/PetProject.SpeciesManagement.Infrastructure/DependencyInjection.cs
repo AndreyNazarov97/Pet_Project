@@ -3,6 +3,7 @@ using Microsoft.Extensions.DependencyInjection;
 using PetProject.Core.Common;
 using PetProject.Core.Database;
 using PetProject.Core.Database.Repository;
+using PetProject.SharedKernel.Constants;
 using PetProject.SharedKernel.Interfaces;
 using PetProject.SpeciesManagement.Application.Repository;
 using PetProject.SpeciesManagement.Infrastructure.Common;
@@ -38,8 +39,8 @@ public static class DependencyInjection
     {
         services
             .AddSingleton<IPostgresConnectionFactory, PostgresConnectionFactory>()
-            .AddScoped<IMomentProvider, MomentProvider>()
-            .AddScoped<IUnitOfWork, UnitOfWork>();
+            .AddScoped<IDateTimeProvider, DateTimeProvider>()
+            .AddKeyedScoped<IUnitOfWork, UnitOfWork>(Constants.Context.SpeciesManagement);
         
         return services;
     }

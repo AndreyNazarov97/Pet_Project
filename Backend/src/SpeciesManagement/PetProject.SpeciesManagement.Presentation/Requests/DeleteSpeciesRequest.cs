@@ -1,4 +1,4 @@
-﻿using PetProject.SpeciesManagement.Application.SpeciesManagement.DeleteSpecies;
+﻿using PetProject.SpeciesManagement.Application.SpeciesManagement.Commands.DeleteSpecies;
 
 namespace PetProject.SpeciesManagement.Presentation.Requests;
 

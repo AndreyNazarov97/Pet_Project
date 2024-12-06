@@ -11,4 +11,9 @@
       <ProjectReference Include="..\PetProject.SpeciesManagement.Domain\PetProject.SpeciesManagement.Domain.csproj" />
     </ItemGroup>
 
+    <ItemGroup>
+      <Folder Include="SpeciesManagement\Commands\" />
+      <Folder Include="SpeciesManagement\Queries\" />
+    </ItemGroup>
+
 </Project>

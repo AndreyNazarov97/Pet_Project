@@ -2,7 +2,7 @@
 using Moq;
 using PetProject.Core.Database;
 using PetProject.VolunteerManagement.Application.Repository;
-using PetProject.VolunteerManagement.Application.VolunteersManagement.SoftDeleteVolunteer;
+using PetProject.VolunteerManagement.Application.VolunteersManagement.Commands.SoftDeleteVolunteer;
 
 namespace PetProject.Application.Tests.Stubs;
 

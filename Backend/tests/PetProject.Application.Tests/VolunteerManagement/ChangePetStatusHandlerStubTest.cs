@@ -5,7 +5,7 @@ using PetProject.Application.Tests.Stubs;
 using PetProject.SharedKernel.Shared;
 using PetProject.SharedKernel.Shared.EntityIds;
 using PetProject.SharedTestData;
-using PetProject.VolunteerManagement.Application.VolunteersManagement.ChangePetStatus;
+using PetProject.VolunteerManagement.Application.VolunteersManagement.Commands.ChangePetStatus;
 using Random = PetProject.SharedTestData.Creators.Random;
 
 namespace PetProject.Application.Tests.VolunteerManagement;

@@ -24,7 +24,7 @@ public class Pet : SharedKernel.Shared.Common.Entity<PetId>, ISoftDeletable
     public Address Address { get; private set; }
     public PetPhysicalAttributes PhysicalAttributes { get; private set; }
     public PhoneNumber PhoneNumber { get; private set; }
-    public DateOnly BirthDate { get; private set; }
+    public DateTimeOffset BirthDate { get; private set; }
     public bool IsCastrated { get; private set; }
     public bool IsVaccinated { get; private set; }
     public HelpStatus HelpStatus { get; private set; }
@@ -41,7 +41,7 @@ public class Pet : SharedKernel.Shared.Common.Entity<PetId>, ISoftDeletable
         Address address,
         PetPhysicalAttributes attributes,
         PhoneNumber number,
-        DateOnly birthDate,
+        DateTimeOffset birthDate,
         bool isCastrated,
         bool isVaccinated,
         HelpStatus helpStatus,
@@ -62,18 +62,17 @@ public class Pet : SharedKernel.Shared.Common.Entity<PetId>, ISoftDeletable
         DateCreated = DateTimeOffset.UtcNow;
     }
 
-    public void UpdatePet(
+    internal void UpdatePet(
         PetName? petName,
         Description? generalDescription,
         Description? healthInformation,
         AnimalType? animalType,
         Address? address,
         PetPhysicalAttributes? attributes,
-        DateOnly? birthDate,
+        DateTimeOffset? birthDate,
         bool? isCastrated,
         bool? isVaccinated,
-        HelpStatus? helpStatus,
-        List<Requisite>? requisites)
+        HelpStatus? helpStatus)
     {
         PetName = petName ?? PetName;
         GeneralDescription = generalDescription ?? GeneralDescription;
@@ -87,22 +86,22 @@ public class Pet : SharedKernel.Shared.Common.Entity<PetId>, ISoftDeletable
         HelpStatus = helpStatus ?? HelpStatus;
     }
 
-    public void AddPhotos(IEnumerable<PetPhoto> petPhotos)
+    internal void AddPhotos(IEnumerable<PetPhoto> petPhotos)
     {
         _PetPhotoList.AddRange(petPhotos);
     }
 
-    public void SetPosition(Position position)
+    internal void SetPosition(Position position)
     {
         Position = position;
     }
 
-    public void ChangeStatus(HelpStatus status)
+    internal void ChangeStatus(HelpStatus status)
     {
         HelpStatus = status;
     }
 
-    public UnitResult<Error> SetMainPhoto(PetPhoto petPhoto)
+    internal UnitResult<Error> SetMainPhoto(PetPhoto petPhoto)
     {
         var isPhotoExist = PetPhotoList.FirstOrDefault(p => p.Path == petPhoto.Path);
         if (isPhotoExist is null)
@@ -116,7 +115,7 @@ public class Pet : SharedKernel.Shared.Common.Entity<PetId>, ISoftDeletable
         return UnitResult.Success<Error>();
     }
 
-    public UnitResult<Error> DeletePhoto(FilePath filePath)
+    internal UnitResult<Error> DeletePhoto(FilePath filePath)
     {
         var isPhotoExist = PetPhotoList.FirstOrDefault(p => p.Path == filePath);
         if (isPhotoExist is null)

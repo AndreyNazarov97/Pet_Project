@@ -224,6 +224,42 @@ namespace PetProject.Accounts.Infrastructure.Migrations
                     b.ToTable("permissions", "accounts");
                 });
 
+            modelBuilder.Entity("PetProject.Accounts.Domain.RefreshSession", b =>
+                {
+                    b.Property<Guid>("Id")
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("uuid")
+                        .HasColumnName("id");
+
+                    b.Property<DateTimeOffset>("CreatedAt")
+                        .HasColumnType("timestamp with time zone")
+                        .HasColumnName("created_at");
+
+                    b.Property<DateTimeOffset>("ExpiresAt")
+                        .HasColumnType("timestamp with time zone")
+                        .HasColumnName("expires_at");
+
+                    b.Property<Guid>("Jti")
+                        .HasColumnType("uuid")
+                        .HasColumnName("jti");
+
+                    b.Property<Guid>("RefreshToken")
+                        .HasColumnType("uuid")
+                        .HasColumnName("refresh_token");
+
+                    b.Property<long>("UserId")
+                        .HasColumnType("bigint")
+                        .HasColumnName("user_id");
+
+                    b.HasKey("Id")
+                        .HasName("pk_refresh_sessions");
+
+                    b.HasIndex("UserId")
+                        .HasDatabaseName("ix_refresh_sessions_user_id");
+
+                    b.ToTable("refresh_sessions", "accounts");
+                });
+
             modelBuilder.Entity("PetProject.Accounts.Domain.Role", b =>
                 {
                     b.Property<long>("Id")
@@ -375,7 +411,7 @@ namespace PetProject.Accounts.Infrastructure.Migrations
                         .HasColumnType("character varying(256)")
                         .HasColumnName("user_name");
 
-                    b.Property<long?>("UserId")
+                    b.Property<long?>("VolunteerAccountId")
                         .HasColumnType("bigint")
                         .HasColumnName("volunteer_account_id");
 
@@ -552,6 +588,18 @@ namespace PetProject.Accounts.Infrastructure.Migrations
                         .OnDelete(DeleteBehavior.Cascade)
                         .IsRequired()
                         .HasConstraintName("fk_participant_accounts_asp_net_users_user_id");
+
+                    b.Navigation("User");
+                });
+
+            modelBuilder.Entity("PetProject.Accounts.Domain.RefreshSession", b =>
+                {
+                    b.HasOne("PetProject.Accounts.Domain.User", "User")
+                        .WithMany()
+                        .HasForeignKey("UserId")
+                        .OnDelete(DeleteBehavior.Cascade)
+                        .IsRequired()
+                        .HasConstraintName("fk_refresh_sessions_users_user_id");
 
                     b.Navigation("User");
                 });
