@@ -1,4 +1,5 @@
 ﻿using PetProject.Accounts.Application.AccountManagement.Commands.LoginUser;
+using PetProject.Accounts.Application.AccountManagement.Commands.RefreshToken;
 using PetProject.Accounts.Application.AccountManagement.Commands.RegisterUser;
 using PetProject.Accounts.Application.AccountManagement.Commands.UpdateRequisites;
 using PetProject.Accounts.Application.AccountManagement.Commands.UpdateSocialNetworks;
@@ -32,5 +33,11 @@ public static class RequestMappers
     {
         UserId = userId,
         SocialLinks = request.SocialLinks
+    };
+
+    public static RefreshTokenCommand ToCommand(this RefreshTokenRequest request) => new()
+    {
+        RefreshToken = request.RefreshToken,
+        AccessToken = request.AccessToken
     };
 }

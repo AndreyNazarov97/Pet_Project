@@ -8,10 +8,12 @@ using Microsoft.IdentityModel.Tokens;
 using PetProject.Accounts.Application;
 using PetProject.Accounts.Application.Managers;
 using PetProject.Accounts.Domain;
+using PetProject.Accounts.Infrastructure.Common;
 using PetProject.Accounts.Infrastructure.DataSeed;
 using PetProject.Accounts.Infrastructure.IdentityManagers;
 using PetProject.Accounts.Infrastructure.Options;
 using PetProject.Accounts.Infrastructure.Providers;
+using PetProject.Core.Database;
 using PetProject.Framework.Authorization;
 
 namespace PetProject.Accounts.Infrastructure;
@@ -27,7 +29,8 @@ public static class DependencyInjection
         services.AddTransient<ITokenProvider, JwtTokenProvider>();
         
         services.AddScoped<AccountsDbContext>();
-        
+        services.AddScoped<IUnitOfWork, UnitOfWork>();
+            
         services.RegisterIdentity();
         
         services.AddSingleton<AccountsSeeder>();
@@ -50,8 +53,9 @@ public static class DependencyInjection
             .AddDefaultTokenProviders();
         
         services.AddScoped<IPermissionManager, PermissionManager>();
-        services.AddScoped<RolePermissionManager>();
         services.AddScoped<IAccountManager,AccountManager>();
+        services.AddScoped<IRefreshSessionManager, RefreshSessionManager>();
+        services.AddScoped<RolePermissionManager>();
     }
 
     private static void RegisterAuthorization(this IServiceCollection services)
@@ -76,17 +80,8 @@ public static class DependencyInjection
             {
                 var jwtOptions = configuration.GetSection(JwtOptions.Jwt).Get<JwtOptions>()
                                  ?? throw new ApplicationException("Missing jwt configuration");
-                
-                options.TokenValidationParameters = new()
-                {
-                    ValidateIssuer = true,
-                    ValidateAudience = true,
-                    ValidateLifetime = true,
-                    ValidateIssuerSigningKey = true,
-                    ValidIssuer = jwtOptions.Issuer,
-                    ValidAudience = jwtOptions.Audience,
-                    IssuerSigningKey = new SymmetricSecurityKey(Encoding.UTF8.GetBytes(jwtOptions.SecretKey))
-                };
+
+                options.TokenValidationParameters = TokenValidationParametersFactory.Create(jwtOptions);
             });
     }
 }

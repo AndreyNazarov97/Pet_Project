@@ -45,6 +45,21 @@ public class AccountController : ApplicationController
         return Ok(result.Value);
     }
     
+    [HttpPost("refresh")]
+    public async Task<IActionResult> Refresh(
+        [FromBody] RefreshTokenRequest request,
+        CancellationToken cancellationToken)
+    {
+        var command = request.ToCommand();
+        
+        var result = await _mediator.Send(command, cancellationToken);
+
+        if (result.IsFailure)
+            return result.Error.ToResponse();
+
+        return Ok(result.Value);
+    }
+    
     [HttpPut("{userId:long}/social-networks")]
     public async Task<ActionResult> UpdateSocialNetworks(
         [FromRoute] long userId,

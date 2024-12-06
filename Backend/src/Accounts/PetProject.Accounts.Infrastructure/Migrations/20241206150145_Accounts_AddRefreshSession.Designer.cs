@@ -3,6 +3,7 @@ using System;
 using System.Collections.Generic;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Infrastructure;
+using Microsoft.EntityFrameworkCore.Migrations;
 using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 using Npgsql.EntityFrameworkCore.PostgreSQL.Metadata;
 using PetProject.Accounts.Infrastructure;
@@ -12,9 +13,11 @@ using PetProject.Accounts.Infrastructure;
 namespace PetProject.Accounts.Infrastructure.Migrations
 {
     [DbContext(typeof(AccountsDbContext))]
-    partial class AccountsDbContextModelSnapshot : ModelSnapshot
+    [Migration("20241206150145_Accounts_AddRefreshSession")]
+    partial class Accounts_AddRefreshSession
     {
-        protected override void BuildModel(ModelBuilder modelBuilder)
+        /// <inheritdoc />
+        protected override void BuildTargetModel(ModelBuilder modelBuilder)
         {
 #pragma warning disable 612, 618
             modelBuilder

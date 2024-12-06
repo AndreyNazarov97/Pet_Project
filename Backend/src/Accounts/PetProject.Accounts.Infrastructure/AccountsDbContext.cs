@@ -12,7 +12,7 @@ public class AccountsDbContext
 {
     private readonly IConfiguration _configuration;
     
-    
+    public DbSet<RefreshSession> RefreshSessions { get; set; }
     public DbSet<AdminAccount> AdminAccounts { get; set; }
     public DbSet<VolunteerAccount> VolunteerAccounts { get; set; }
     public DbSet<ParticipantAccount> ParticipantAccounts { get; set; }
