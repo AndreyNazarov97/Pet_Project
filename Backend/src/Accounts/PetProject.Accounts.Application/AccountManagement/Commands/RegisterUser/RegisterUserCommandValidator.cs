@@ -1,4 +1,5 @@
 ﻿using FluentValidation;
+using PetProject.Core.Dtos.Validators;
 
 namespace PetProject.Accounts.Application.AccountManagement.Commands.RegisterUser;
 
@@ -6,6 +7,7 @@ public class RegisterUserCommandValidator : AbstractValidator<RegisterUserComman
 {
     public RegisterUserCommandValidator()
     {
-        
+        RuleFor(x => x.FullName)
+            .SetValidator(new FullNameDtoValidator());
     }
 }

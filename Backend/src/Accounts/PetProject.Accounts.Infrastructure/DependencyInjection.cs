@@ -6,6 +6,7 @@ using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.IdentityModel.Tokens;
 using PetProject.Accounts.Application;
+using PetProject.Accounts.Application.Managers;
 using PetProject.Accounts.Domain;
 using PetProject.Accounts.Infrastructure.DataSeed;
 using PetProject.Accounts.Infrastructure.IdentityManagers;
@@ -20,47 +21,21 @@ public static class DependencyInjection
     public static IServiceCollection AddAccountsInfrastructure(this IServiceCollection services,
         IConfiguration configuration)
     {
-        services.Configure<JwtOptions>( 
-            configuration.GetSection(JwtOptions.Jwt)); 
+        services.Configure<JwtOptions>(configuration.GetSection(JwtOptions.Jwt)); 
+        services.Configure<AdminOptions>(configuration.GetSection(AdminOptions.Admin)); 
         
         services.AddTransient<ITokenProvider, JwtTokenProvider>();
         
         services.AddScoped<AccountsDbContext>();
         
         services.RegisterIdentity();
-
         
         services.AddSingleton<AccountsSeeder>();
+        services.AddScoped<AccountsSeedService>();
         
-        services
-            .AddAuthentication(options =>
-            {
-                options.DefaultAuthenticateScheme = JwtBearerDefaults.AuthenticationScheme;
-                options.DefaultChallengeScheme = JwtBearerDefaults.AuthenticationScheme;
-                options.DefaultScheme = JwtBearerDefaults.AuthenticationScheme;
-            })
-            .AddJwtBearer(options =>
-            {
-                var jwtOptions = configuration.GetSection(JwtOptions.Jwt).Get<JwtOptions>()
-                    ?? throw new ApplicationException("Missing jwt configuration");
-                
-                options.TokenValidationParameters = new()
-                {
-                    ValidateIssuer = true,
-                    ValidateAudience = true,
-                    ValidateLifetime = true,
-                    ValidateIssuerSigningKey = true,
-                    ValidIssuer = jwtOptions.Issuer,
-                    ValidAudience = jwtOptions.Audience,
-                    IssuerSigningKey = new SymmetricSecurityKey(Encoding.UTF8.GetBytes(jwtOptions.SecretKey))
-                };
-            });
+        services.RegisterAuthentication(configuration);
+        services.RegisterAuthorization();
         
-        services.AddAuthorization();
-
-        services.AddSingleton<IAuthorizationHandler, PermissionRequirementHandler>();
-        services.AddSingleton<IAuthorizationPolicyProvider, PermissionPolicyProvider>();
-
         return services;
     }
 
@@ -74,10 +49,44 @@ public static class DependencyInjection
             .AddEntityFrameworkStores<AccountsDbContext>()
             .AddDefaultTokenProviders();
         
-        
-        services.AddScoped<PermissionManager>();
+        services.AddScoped<IPermissionManager, PermissionManager>();
         services.AddScoped<RolePermissionManager>();
-        
-        services.AddScoped<AccountsSeedService>();
+        services.AddScoped<IAccountManager,AccountManager>();
+    }
+
+    private static void RegisterAuthorization(this IServiceCollection services)
+    {
+        services.AddAuthorization();
+
+        services.AddSingleton<IAuthorizationHandler, PermissionRequirementHandler>();
+        services.AddSingleton<IAuthorizationPolicyProvider, PermissionPolicyProvider>();
+    }
+
+    private static void RegisterAuthentication(this IServiceCollection services,
+        IConfiguration configuration)
+    {
+        services
+            .AddAuthentication(options =>
+            {
+                options.DefaultAuthenticateScheme = JwtBearerDefaults.AuthenticationScheme;
+                options.DefaultChallengeScheme = JwtBearerDefaults.AuthenticationScheme;
+                options.DefaultScheme = JwtBearerDefaults.AuthenticationScheme;
+            })
+            .AddJwtBearer(options =>
+            {
+                var jwtOptions = configuration.GetSection(JwtOptions.Jwt).Get<JwtOptions>()
+                                 ?? throw new ApplicationException("Missing jwt configuration");
+                
+                options.TokenValidationParameters = new()
+                {
+                    ValidateIssuer = true,
+                    ValidateAudience = true,
+                    ValidateLifetime = true,
+                    ValidateIssuerSigningKey = true,
+                    ValidIssuer = jwtOptions.Issuer,
+                    ValidAudience = jwtOptions.Audience,
+                    IssuerSigningKey = new SymmetricSecurityKey(Encoding.UTF8.GetBytes(jwtOptions.SecretKey))
+                };
+            });
     }
 }

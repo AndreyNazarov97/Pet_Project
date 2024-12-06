@@ -41,7 +41,7 @@ public class LoginHandler : IRequestHandler<LoginUserCommand, Result<string,Erro
             return Errors.User.InvalidCredentials().ToErrorList();
         }
         
-        var token = _tokenProvider.GenerateAccessToken(user);
+        var token = await _tokenProvider.GenerateAccessToken(user);
         
         _logger.LogInformation("User {UserId} logged in", user.Id);
         

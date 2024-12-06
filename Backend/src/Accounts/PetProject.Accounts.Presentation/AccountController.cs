@@ -43,4 +43,38 @@ public class AccountController : ApplicationController
 
         return Ok(result.Value);
     }
+    
+    [HttpPut("{userId:long}/social-networks")]
+    public async Task<ActionResult> UpdateSocialNetworks(
+        [FromRoute] long userId,
+        [FromBody] UpdateSocialNetworksRequest request,
+        CancellationToken cancellationToken)
+    {
+        var command = request.ToCommand(userId);
+
+        var result = await _mediator.Send(command, cancellationToken);
+
+        if (result.IsFailure)
+            return result.Error.ToResponse();
+
+        return Ok(result.Value);
+    }
+    
+    [HttpPut("{userId:long}/requisites")]
+    public async Task<ActionResult> UpdateRequisites(
+        [FromRoute] long userId,
+        [FromBody] UpdateRequisitesRequest request,
+        CancellationToken cancellationToken)
+    {
+        var command = request.ToCommand(userId);
+
+        var result = await _mediator.Send(command, cancellationToken);
+
+        if (result.IsFailure)
+            return result.Error.ToResponse();
+
+        return Ok(result.Value);
+    }
+    
+    
 }

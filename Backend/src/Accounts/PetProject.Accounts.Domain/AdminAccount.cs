@@ -4,6 +4,7 @@ namespace PetProject.Accounts.Domain;
 
 public class AdminAccount
 {
+    public const string Admin = nameof(Admin);
     private AdminAccount() {}
     
     public AdminAccount(

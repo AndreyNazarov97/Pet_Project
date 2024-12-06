@@ -24,4 +24,9 @@ public class VolunteerAccount
     public User User { get; set; }
     public IReadOnlyList<Requisite> Requisites => _requisites.AsReadOnly();
     public List<Certificate> Certificates { get; set; } = [];
+
+    public void AddRequisites(IEnumerable<Requisite> requisites)
+    {
+        _requisites.AddRange(requisites);
+    }
 }

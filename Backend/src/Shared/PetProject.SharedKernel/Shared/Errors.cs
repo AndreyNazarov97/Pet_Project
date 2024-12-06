@@ -15,6 +15,11 @@ public static class Errors
             var forId = id == null ? "" : $" for Id '{id}'";
             return Error.NotFound("record.not.found", $"record not found{forId}");
         }
+        
+        public static Error NotFound(long id)
+        {
+            return Error.NotFound("record.not.found", $"record not found for Id {id}");
+        }
 
         public static Error LengthIsInvalid(string? name = null)
         {
@@ -28,6 +33,7 @@ public static class Errors
             return Error.Validation($"{label.ToLower()}.already.exist", $"{label} already exist");
         }
     }
+    
     
     public static class User
     { 

@@ -15,6 +15,7 @@ public static class Random
     public static string PhoneNumber => Faker.Phone.PhoneNumber("7##########");
     public static DateOnly DateOnly => Faker.Date.PastDateOnly(10, DateOnly.FromDateTime(DateTime.Now));
     public static double Double => Faker.Random.Double(1d, 100d);
+    public static long Long => Faker.Random.Long(1, 10_000);
     public static bool Bool => Faker.Random.Bool();
     public static HelpStatus HelpStatus => Faker.Random.Enum<HelpStatus>();
 
