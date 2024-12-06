@@ -45,12 +45,7 @@ public class AddPetPhotoHandler : IRequestHandler<AddPetPhotoCommand, Result<Fil
                 return volunteerResult.Error.ToErrorList();
 
             var volunteer = volunteerResult.Value;
-
-            var petId = PetId.Create(command.PetId);
-            var pet = volunteer.GetById(petId);
-            if (pet is null)
-                return Errors.General.NotFound(command.PetId).ToErrorList();
-
+            
             var filesData = command.Photos
                 .Select(photo => new FileDataDto
                 {
@@ -66,8 +61,12 @@ public class AddPetPhotoHandler : IRequestHandler<AddPetPhotoCommand, Result<Fil
             var petPhotos = uploadResult.Value
                 .Select(p => new PetPhoto(p))
                 .ToList();
-
-            pet.AddPhotos(petPhotos);
+            
+            var petId = PetId.Create(command.PetId);
+            var petPhotosResult = volunteer.AddPetPhoto(petId, petPhotos);
+            if (petPhotosResult.IsFailure)
+                return petPhotosResult.Error.ToErrorList();
+            
             await _unitOfWork.SaveChangesAsync(cancellationToken);
 
             transaction.Commit();

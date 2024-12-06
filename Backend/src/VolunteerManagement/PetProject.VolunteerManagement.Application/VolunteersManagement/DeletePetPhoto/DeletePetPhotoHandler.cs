@@ -40,15 +40,13 @@ public class DeletePetPhotoHandler : IRequestHandler<DeletePetPhotoCommand, Unit
             return volunteerResult.Error.ToErrorList();
 
         var volunteer = volunteerResult.Value;
-        var pet = volunteer.GetById(PetId.Create(command.PetId));
-        if (pet is null)
-            return Errors.General.NotFound(command.PetId).ToErrorList();
+        var petId = PetId.Create(command.PetId);
 
         using var transaction = await _unitOfWork.BeginTransactionAsync(cancellationToken);
         try
         {
             var filePath = FilePath.Create(command.FilePath).Value;
-            var result = pet.DeletePhoto(filePath);
+            var result = volunteer.DeletePetPhoto(petId, filePath);
             if (result.IsFailure)
                 return result.Error.ToErrorList();
 

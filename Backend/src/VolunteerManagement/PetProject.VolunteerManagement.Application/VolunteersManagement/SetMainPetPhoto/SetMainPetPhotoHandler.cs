@@ -30,15 +30,17 @@ public class SetMainPetPhotoHandler : IRequestHandler<SetMainPetPhotoCommand, Un
             return volunteerResult.Error.ToErrorList();
         
         var volunteer = volunteerResult.Value;
-        var pet = volunteer.GetById(PetId.Create(command.PetId));
-        if (pet is null)
-            return Errors.General.NotFound(command.PetId).ToErrorList();
+        var petId = PetId.Create(command.PetId);
 
         var extension = Path.GetExtension(command.Path);
         var path = Path.GetFileNameWithoutExtension(command.Path);
         var filePath = FilePath.Create(path, extension).Value;
         
-        pet.SetMainPhoto(new PetPhoto(filePath));
+        var result = volunteer.SetPetMainPhoto(petId, new PetPhoto(filePath));
+        if(result.IsFailure)
+            return result.Error.ToErrorList();
+        
+        
         await _unitOfWork.SaveChangesAsync(cancellationToken);
         
         return UnitResult.Success<ErrorList>();

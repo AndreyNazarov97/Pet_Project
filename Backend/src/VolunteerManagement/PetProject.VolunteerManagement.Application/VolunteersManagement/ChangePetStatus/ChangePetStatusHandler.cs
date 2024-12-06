@@ -27,11 +27,11 @@ public class ChangePetStatusHandler : IRequestHandler<ChangePetStatusCommand, Un
         if (volunteerResult.IsFailure)
             return volunteerResult.Error.ToErrorList();
 
-        var pet = volunteerResult.Value.GetById(PetId.Create(command.PetId));
-        if (pet is null)
-            return Errors.General.NotFound(command.PetId).ToErrorList();
+        var petId = PetId.Create(command.PetId);
         
-        pet.ChangeStatus(command.HelpStatus);
+        var result = volunteerResult.Value.ChangePetStatus(petId, command.HelpStatus);
+        if (result.IsFailure)
+            return result.Error.ToErrorList();
 
         await _unitOfWork.SaveChangesAsync(cancellationToken);
         

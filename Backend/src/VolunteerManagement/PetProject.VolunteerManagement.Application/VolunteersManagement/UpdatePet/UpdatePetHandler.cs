@@ -110,8 +110,7 @@ public class UpdatePetHandler : IRequestHandler<UpdatePetCommand, Result<Guid, E
             birthDate,
             command.PetInfo.IsCastrated,
             command.PetInfo.IsVaccinated,
-            helpStatus,
-            null);
+            helpStatus);
         
         return result;
     }
