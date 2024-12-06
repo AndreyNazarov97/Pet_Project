@@ -1,5 +1,4 @@
-﻿using System.Text.Json;
-using Dapper;
+﻿using Dapper;
 using PetProject.Core.Database.Models;
 using PetProject.Core.Dtos;
 
