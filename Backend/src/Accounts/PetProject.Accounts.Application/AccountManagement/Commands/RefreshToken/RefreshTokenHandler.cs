@@ -1,9 +1,11 @@
 ﻿using CSharpFunctionalExtensions;
 using MediatR;
+using Microsoft.Extensions.DependencyInjection;
 using PetProject.Accounts.Application.Managers;
 using PetProject.Accounts.Contracts.Responses;
 using PetProject.Core.Database;
 using PetProject.Core.Models;
+using PetProject.SharedKernel.Constants;
 using PetProject.SharedKernel.Interfaces;
 using PetProject.SharedKernel.Shared;
 
@@ -20,7 +22,7 @@ public class RefreshTokenHandler : IRequestHandler<RefreshTokenCommand, Result<L
         ITokenProvider tokenProvider,
         IRefreshSessionManager refreshSessionManager,
         IDateTimeProvider dateTimeProvider,
-        IUnitOfWork unitOfWork)
+        [FromKeyedServices(Constants.Context.Accounts)]IUnitOfWork unitOfWork)
     {
         _tokenProvider = tokenProvider;
         _refreshSessionManager = refreshSessionManager;

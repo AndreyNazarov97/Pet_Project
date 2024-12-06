@@ -15,6 +15,7 @@ using PetProject.Accounts.Infrastructure.Options;
 using PetProject.Accounts.Infrastructure.Providers;
 using PetProject.Core.Database;
 using PetProject.Framework.Authorization;
+using PetProject.SharedKernel.Constants;
 
 namespace PetProject.Accounts.Infrastructure;
 
@@ -23,37 +24,34 @@ public static class DependencyInjection
     public static IServiceCollection AddAccountsInfrastructure(this IServiceCollection services,
         IConfiguration configuration)
     {
-        services.Configure<JwtOptions>(configuration.GetSection(JwtOptions.Jwt)); 
-        services.Configure<AdminOptions>(configuration.GetSection(AdminOptions.Admin)); 
-        
+        services.Configure<JwtOptions>(configuration.GetSection(JwtOptions.Jwt));
+        services.Configure<AdminOptions>(configuration.GetSection(AdminOptions.Admin));
+
         services.AddTransient<ITokenProvider, JwtTokenProvider>();
-        
+
         services.AddScoped<AccountsDbContext>();
-        services.AddScoped<IUnitOfWork, UnitOfWork>();
-            
+        services.AddKeyedScoped<IUnitOfWork, UnitOfWork>(Constants.Context.Accounts);
+
         services.RegisterIdentity();
-        
+
         services.AddSingleton<AccountsSeeder>();
         services.AddScoped<AccountsSeedService>();
-        
+
         services.RegisterAuthentication(configuration);
         services.RegisterAuthorization();
-        
+
         return services;
     }
 
     private static void RegisterIdentity(this IServiceCollection services)
     {
         services
-            .AddIdentity<User, Role>(options =>
-            {
-                options.User.RequireUniqueEmail = true;
-            })
+            .AddIdentity<User, Role>(options => { options.User.RequireUniqueEmail = true; })
             .AddEntityFrameworkStores<AccountsDbContext>()
             .AddDefaultTokenProviders();
-        
+
         services.AddScoped<IPermissionManager, PermissionManager>();
-        services.AddScoped<IAccountManager,AccountManager>();
+        services.AddScoped<IAccountManager, AccountManager>();
         services.AddScoped<IRefreshSessionManager, RefreshSessionManager>();
         services.AddScoped<RolePermissionManager>();
     }

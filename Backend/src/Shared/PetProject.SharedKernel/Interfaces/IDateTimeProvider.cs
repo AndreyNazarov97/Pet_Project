@@ -1,6 +1,6 @@
 ﻿namespace PetProject.SharedKernel.Interfaces;
 
-public interface IMomentProvider
+public interface IDateTimeProvider
 {
     DateTimeOffset Now { get; }
 }
