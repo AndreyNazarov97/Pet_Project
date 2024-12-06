@@ -1,6 +1,7 @@
 ﻿using MediatR;
 using Microsoft.AspNetCore.Mvc;
-using PetProject.Accounts.Presentation.Requests;
+using PetProject.Accounts.Application.Mappers;
+using PetProject.Accounts.Contracts.Requests;
 using PetProject.Framework;
 
 namespace PetProject.Accounts.Presentation;

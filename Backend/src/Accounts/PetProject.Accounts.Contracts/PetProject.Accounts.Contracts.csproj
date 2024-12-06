@@ -12,4 +12,8 @@
       <ProjectReference Include="..\PetProject.Accounts.Domain\PetProject.Accounts.Domain.csproj" />
     </ItemGroup>
 
+    <ItemGroup>
+      <Folder Include="Responses\" />
+    </ItemGroup>
+
 </Project>
