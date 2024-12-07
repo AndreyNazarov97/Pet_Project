@@ -79,8 +79,8 @@ public class AccountsSeedService
         
             adminUser.AdminAccount = adminAccount;
             adminUser.AdminAccountId = adminAccount.Id;
-        
-            await _userManager.UpdateAsync(adminUser);
+
+            transaction.Commit();
         }
         catch (Exception e)
         {
