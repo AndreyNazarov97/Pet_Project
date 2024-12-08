@@ -26,8 +26,11 @@ services:
     build:
       context: src/
       dockerfile: PetProject.Web/Dockerfile
+    volumes:
+      - ./src/PetProject.Web/etc/accounts.json:/app/accounts.json
     environment:
         - ASPNETCORE_ENVIRONMENT=Docker
+        - ACCOUNTS_JSON_PATH=/app/accounts.json
     depends_on:
       - postgres
       - minio

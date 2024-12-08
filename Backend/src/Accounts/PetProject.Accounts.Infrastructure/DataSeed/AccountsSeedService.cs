@@ -42,9 +42,13 @@ public class AccountsSeedService
 
     public async Task SeedAsync(CancellationToken cancellationToken = default)
     {
-        var json = await File.ReadAllTextAsync(
-            "Properties/accounts.json",
-            cancellationToken);
+        var filePath = Environment.GetEnvironmentVariable("ACCOUNTS_JSON_PATH");
+        if (string.IsNullOrEmpty(filePath))
+        {
+            throw new InvalidOperationException("Accounts JSON path is not set.");
+        }
+        
+        var json = await File.ReadAllTextAsync(filePath, cancellationToken);
 
         var seedData = JsonSerializer.Deserialize<RolePermissionOptions>(json)
                        ?? throw new AggregateException("Missing seed data");
@@ -64,7 +68,7 @@ public class AccountsSeedService
 
         if (isAdminExist != null)
             return;
-        
+
         var transaction = await _unitOfWork.BeginTransactionAsync();
         try
         {
@@ -74,15 +78,15 @@ public class AccountsSeedService
             var adminName = FullName.Create(_adminOptions.UserName, _adminOptions.UserName).Value;
             var adminUser = User.CreateAdmin(adminName, _adminOptions.UserName, _adminOptions.Email, adminRole);
             await _userManager.CreateAsync(adminUser, _adminOptions.Password);
-        
+
             var adminAccount = new AdminAccount(adminUser);
 
             await _accountManager.CreateAdminAccount(adminAccount);
-        
+
             adminUser.AdminAccount = adminAccount;
             adminUser.AdminAccountId = adminAccount.Id;
-        
-            await _userManager.UpdateAsync(adminUser);
+
+            transaction.Commit();
         }
         catch (Exception e)
         {
