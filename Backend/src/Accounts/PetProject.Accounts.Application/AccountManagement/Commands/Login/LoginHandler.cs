@@ -6,7 +6,7 @@ using PetProject.Accounts.Contracts.Responses;
 using PetProject.Accounts.Domain;
 using PetProject.SharedKernel.Shared;
 
-namespace PetProject.Accounts.Application.AccountManagement.Commands.LoginUser;
+namespace PetProject.Accounts.Application.AccountManagement.Commands.Login;
 
 public class LoginHandler : IRequestHandler<LoginUserCommand, Result<LoginResponse, ErrorList>>
 {
@@ -47,6 +47,6 @@ public class LoginHandler : IRequestHandler<LoginUserCommand, Result<LoginRespon
 
         _logger.LogInformation("User {UserId} logged in", user.Id);
 
-        return new LoginResponse(tokenResult.AccessToken, refreshToken);
+        return new LoginResponse(tokenResult.AccessToken, refreshToken, user.Id, user.Email!);
     }
 }

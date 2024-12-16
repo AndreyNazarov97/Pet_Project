@@ -1,6 +1,6 @@
-﻿using PetProject.Accounts.Application.AccountManagement.Commands.LoginUser;
+﻿using PetProject.Accounts.Application.AccountManagement.Commands.Login;
 using PetProject.Accounts.Application.AccountManagement.Commands.RefreshToken;
-using PetProject.Accounts.Application.AccountManagement.Commands.RegisterUser;
+using PetProject.Accounts.Application.AccountManagement.Commands.Register;
 using PetProject.Accounts.Application.AccountManagement.Commands.UpdateRequisites;
 using PetProject.Accounts.Application.AccountManagement.Commands.UpdateSocialNetworks;
 using PetProject.Accounts.Contracts.Requests;
@@ -15,7 +15,7 @@ public static class RequestMappers
         Password = request.Password
     };
 
-    public static RegisterUserCommand ToCommand(this RegisterUserRequest request) => new()
+    public static RegisterCommand ToCommand(this RegisterUserRequest request) => new()
     {
         Email = request.Email,
         UserName = request.UserName,
@@ -33,11 +33,5 @@ public static class RequestMappers
     {
         UserId = userId,
         SocialLinks = request.SocialLinks
-    };
-
-    public static RefreshTokenCommand ToCommand(this RefreshTokenRequest request) => new()
-    {
-        RefreshToken = request.RefreshToken,
-        AccessToken = request.AccessToken
     };
 }
