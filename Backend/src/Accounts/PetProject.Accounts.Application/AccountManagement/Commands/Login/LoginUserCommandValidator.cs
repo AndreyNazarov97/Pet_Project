@@ -1,6 +1,6 @@
 ﻿using FluentValidation;
 
-namespace PetProject.Accounts.Application.AccountManagement.Commands.LoginUser;
+namespace PetProject.Accounts.Application.AccountManagement.Commands.Login;
 
 public class LoginUserCommandValidator : AbstractValidator<LoginUserCommand>
 {

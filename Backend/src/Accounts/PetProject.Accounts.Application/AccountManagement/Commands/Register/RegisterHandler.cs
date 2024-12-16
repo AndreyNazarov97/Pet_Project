@@ -9,22 +9,22 @@ using PetProject.Core.Database;
 using PetProject.Core.ObjectMappers;
 using PetProject.SharedKernel.Shared;
 
-namespace PetProject.Accounts.Application.AccountManagement.Commands.RegisterUser;
+namespace PetProject.Accounts.Application.AccountManagement.Commands.Register;
 
-public class RegisterUserHandler : IRequestHandler<RegisterUserCommand, UnitResult<ErrorList>>
+public class RegisterHandler : IRequestHandler<RegisterCommand, UnitResult<ErrorList>>
 {
     private readonly IAccountManager _accountManager;
     private readonly UserManager<User> _userManager;
     private readonly RoleManager<Role> _roleManager;
     private readonly IUnitOfWork _unitOfWork;
-    private readonly ILogger<RegisterUserHandler> _logger;
+    private readonly ILogger<RegisterHandler> _logger;
 
-    public RegisterUserHandler(
+    public RegisterHandler(
         IAccountManager accountManager,
         UserManager<User> userManager,
         RoleManager<Role> roleManager,
         IUnitOfWork unitOfWork,
-        ILogger<RegisterUserHandler> logger)
+        ILogger<RegisterHandler> logger)
     {
         _accountManager = accountManager;
         _userManager = userManager;
@@ -33,7 +33,7 @@ public class RegisterUserHandler : IRequestHandler<RegisterUserCommand, UnitResu
         _logger = logger;
     }
 
-    public async Task<UnitResult<ErrorList>> Handle(RegisterUserCommand command,
+    public async Task<UnitResult<ErrorList>> Handle(RegisterCommand command,
         CancellationToken cancellationToken = default)
     {
         var transaction = await _unitOfWork.BeginTransactionAsync(cancellationToken);

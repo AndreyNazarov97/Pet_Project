@@ -3,9 +3,9 @@ using MediatR;
 using PetProject.Core.Dtos;
 using PetProject.SharedKernel.Shared;
 
-namespace PetProject.Accounts.Application.AccountManagement.Commands.RegisterUser;
+namespace PetProject.Accounts.Application.AccountManagement.Commands.Register;
 
-public record RegisterUserCommand() : IRequest<UnitResult<ErrorList>>
+public record RegisterCommand() : IRequest<UnitResult<ErrorList>>
 {
     public required string Email { get; init; }
     public required string UserName { get; init; }

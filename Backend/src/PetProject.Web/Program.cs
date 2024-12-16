@@ -64,17 +64,20 @@ if (app.Environment.IsDevelopment()
     await app.SeedDatabases();
 }
 
-app.UseHttpsRedirection();
+app.UseCors(config =>
+{
+    config
+        .WithOrigins("http://localhost:5173")
+        .AllowCredentials()
+        .AllowAnyHeader()
+        .AllowAnyMethod();
+});
+
+//app.UseHttpsRedirection();
 
 app.UseAuthentication();
 app.UseAuthorization();
 
-app.UseCors(policyBuilder =>
-{
-    policyBuilder.AllowAnyHeader();
-    policyBuilder.AllowAnyMethod();
-    policyBuilder.AllowAnyOrigin();
-});
 app.MapControllers();
 
 app.Run();

@@ -41,28 +41,7 @@ public class RefreshTokenHandler : IRequestHandler<RefreshTokenCommand, Result<L
         {
             return Errors.Tokens.InvalidToken().ToErrorList();
         }
-
-        var userClaimsResult = await _tokenProvider
-            .GetUserClaimsFromJwtToken(command.AccessToken, cancellationToken);
-        if (userClaimsResult.IsFailure)
-            return userClaimsResult.Error.ToErrorList();
-
-        var userClaims = userClaimsResult.Value;
-
-        var userIdString = userClaims.FirstOrDefault(c => c.Type == CustomClaims.Id)?.Value;
-        if (!long.TryParse(userIdString, out var userId))
-            return Errors.General.Null().ToErrorList();
-
-        if (refreshSession.UserId != userId)
-            return Errors.Tokens.InvalidToken().ToErrorList();
-
-        var userJtiString = userClaims.FirstOrDefault(c => c.Type == CustomClaims.Jti)?.Value;
-        if (!Guid.TryParse(userJtiString, out var userJti))
-            return Errors.General.Null().ToErrorList();
-
-        if (userJti != refreshSession.Jti)
-            return Errors.Tokens.InvalidToken().ToErrorList();
-
+        
         _refreshSessionManager.Delete(refreshSession);
         await _unitOfWork.SaveChangesAsync(cancellationToken);
 
@@ -70,6 +49,6 @@ public class RefreshTokenHandler : IRequestHandler<RefreshTokenCommand, Result<L
         var refreshToken =
             await _tokenProvider.GenerateRefreshToken(refreshSession.User, jwtTokenResult.Jti, cancellationToken);
 
-        return new LoginResponse(jwtTokenResult.AccessToken, refreshToken);
+        return new LoginResponse(jwtTokenResult.AccessToken, refreshToken, refreshSession.User.Id, refreshSession.User.Email!);
     }
 }
