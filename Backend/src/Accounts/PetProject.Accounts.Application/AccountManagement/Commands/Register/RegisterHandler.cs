@@ -19,14 +19,13 @@ public class RegisterHandler : IRequestHandler<RegisterCommand, UnitResult<Error
     private readonly UserManager<User> _userManager;
     private readonly RoleManager<Role> _roleManager;
     private readonly IUnitOfWork _unitOfWork;
-    private readonly ILogger<RegisterUserHandler> _logger;
+    private readonly ILogger<RegisterHandler> _logger;
 
     public RegisterHandler(
         IAccountManager accountManager,
         UserManager<User> userManager,
         RoleManager<Role> roleManager,
         [FromKeyedServices(Constants.Context.Accounts)]IUnitOfWork unitOfWork,
-
         ILogger<RegisterHandler> logger)
     {
         _accountManager = accountManager;
