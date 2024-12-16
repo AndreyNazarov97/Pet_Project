@@ -1,6 +1,7 @@
 ﻿using MediatR;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
+using PetProject.Accounts.Application.AccountManagement.Commands.RefreshToken;
 using PetProject.Accounts.Application.Mappers;
 using PetProject.Accounts.Contracts.Requests;
 using PetProject.Framework;
@@ -40,46 +41,57 @@ public class AccountController : ApplicationController
         var command = request.ToCommand();
 
         var result = await _mediator.Send(command, cancellationToken);
-        
-        var refreshToken = result.Value.RefreshToken; 
-        var cookieOptions = new CookieOptions
-        {
-            HttpOnly = true, 
-            Secure = false, 
-            Expires = DateTime.UtcNow.AddDays(30)
-        };
-        HttpContext.Response.Cookies.Append("RefreshToken", refreshToken.ToString(), cookieOptions);
 
         if (result.IsFailure)
             return result.Error.ToResponse();
+
+        var refreshToken = result.Value.RefreshToken;
+        var cookieOptions = new CookieOptions
+        {
+            HttpOnly = true,
+            Secure = false,
+            Expires = DateTime.UtcNow.AddDays(30)
+        };
+        HttpContext.Response.Cookies.Append("RefreshToken", refreshToken.ToString(), cookieOptions);
 
         return Ok(result.Value);
     }
 
     [HttpPost("refresh")]
     public async Task<IActionResult> Refresh(
-        [FromBody] RefreshTokenRequest request,
         CancellationToken cancellationToken)
     {
-        var command = request.ToCommand();
+        if (!HttpContext.Request.Cookies.TryGetValue("RefreshToken", out var refreshToken))
+        {
+            return Unauthorized();
+        }
+
+        var command = new RefreshTokenCommand { RefreshToken = Guid.Parse(refreshToken!) };
 
         var result = await _mediator.Send(command, cancellationToken);
         
-        var refreshToken = result.Value.RefreshToken; 
-        var cookieOptions = new CookieOptions
-        {
-            HttpOnly = true, 
-            Secure = false, 
-            Expires = DateTime.UtcNow.AddDays(30)
-        };
-        HttpContext.Response.Cookies.Append("RefreshToken", refreshToken.ToString(), cookieOptions);
-
-
         if (result.IsFailure)
             return result.Error.ToResponse();
 
+        var cookieOptions = new CookieOptions
+        {
+            HttpOnly = true,
+            Secure = false,
+            Expires = DateTime.UtcNow.AddDays(30)
+        };
+        HttpContext.Response.Cookies.Append("RefreshToken", result.Value.RefreshToken.ToString(), cookieOptions);
+        
         return Ok(result.Value);
     }
+
+    [HttpPost("logout")]
+    public async Task<IActionResult> Logout(CancellationToken cancellationToken)
+    {
+        HttpContext.Response.Cookies.Delete("RefreshToken");
+        //TODO: delete refresh token from db
+        return Ok("Logout successful");
+    }
+    
 
     [HttpPut("{userId:long}/social-networks")]
     public async Task<ActionResult> UpdateSocialNetworks(

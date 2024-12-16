@@ -7,6 +7,5 @@ namespace PetProject.Accounts.Application.AccountManagement.Commands.RefreshToke
 
 public record RefreshTokenCommand : IRequest<Result<LoginResponse, ErrorList>>
 {
-    public required string AccessToken { get; init; }
     public required Guid RefreshToken { get; init; }
 }

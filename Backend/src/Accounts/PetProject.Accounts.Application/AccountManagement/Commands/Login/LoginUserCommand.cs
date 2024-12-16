@@ -3,7 +3,7 @@ using MediatR;
 using PetProject.Accounts.Contracts.Responses;
 using PetProject.SharedKernel.Shared;
 
-namespace PetProject.Accounts.Application.AccountManagement.Commands.LoginUser;
+namespace PetProject.Accounts.Application.AccountManagement.Commands.Login;
 
 public record LoginUserCommand() : IRequest<Result<LoginResponse,ErrorList>>
 {
