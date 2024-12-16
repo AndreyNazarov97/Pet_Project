@@ -1,5 +1,5 @@
 ﻿using PetProject.Core.Dtos;
-using PetProject.VolunteerManagement.Application.VolunteersManagement.UpdateVolunteer;
+using PetProject.VolunteerManagement.Application.VolunteersManagement.Commands.UpdateVolunteer;
 
 namespace PetProject.VolunteerManagement.Presentation.Requests;
 

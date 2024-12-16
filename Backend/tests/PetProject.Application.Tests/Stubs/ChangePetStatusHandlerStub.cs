@@ -1,7 +1,7 @@
 ﻿using Moq;
 using PetProject.Core.Database;
 using PetProject.VolunteerManagement.Application.Repository;
-using PetProject.VolunteerManagement.Application.VolunteersManagement.ChangePetStatus;
+using PetProject.VolunteerManagement.Application.VolunteersManagement.Commands.ChangePetStatus;
 
 namespace PetProject.Application.Tests.Stubs;
 

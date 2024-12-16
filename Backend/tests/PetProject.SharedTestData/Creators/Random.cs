@@ -13,7 +13,7 @@ public static class Random
     public static string Name => Faker.Name.FirstName();
     public static string Words => Faker.Lorem.Sentence(3);
     public static string PhoneNumber => Faker.Phone.PhoneNumber("7##########");
-    public static DateOnly DateOnly => Faker.Date.PastDateOnly(10, DateOnly.FromDateTime(DateTime.Now));
+    public static DateTimeOffset DateTimeOffset => Faker.Date.PastOffset(10, DateTimeOffset.UtcNow);
     public static double Double => Faker.Random.Double(1d, 100d);
     public static long Long => Faker.Random.Long(1, 10_000);
     public static bool Bool => Faker.Random.Bool();

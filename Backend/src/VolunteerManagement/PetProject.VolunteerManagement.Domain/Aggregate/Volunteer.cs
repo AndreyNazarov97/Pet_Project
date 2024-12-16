@@ -14,6 +14,7 @@ public class Volunteer : AggregateRoot<VolunteerId>, ISoftDeletable
 {
     private bool _isDeleted;
     private readonly List<Pet> _pets = [];
+
     private Volunteer(VolunteerId id) : base(id)
     {
     }
@@ -80,8 +81,54 @@ public class Volunteer : AggregateRoot<VolunteerId>, ISoftDeletable
         Experience = experience;
         PhoneNumber = number;
     }
-    
+
     public Pet? GetById(PetId id) => _pets.FirstOrDefault(x => x.Id == id);
+
+    public UnitResult<Error> AddPetPhoto(PetId petId, IEnumerable<PetPhoto> petPhotos)
+    {
+        var pet = GetById(petId);
+        if (pet == null)
+            return Errors.General.NotFound(petId.Id);
+
+        pet.AddPhotos(petPhotos);
+        return Result.Success<Error>();
+    }
+
+    public UnitResult<Error> DeletePetPhoto(PetId petId, FilePath filePath)
+    {
+        var pet = GetById(petId);
+        if (pet == null)
+            return Errors.General.NotFound(petId.Id);
+
+        var result = pet.DeletePhoto(filePath);
+        if (result.IsFailure)
+            return result.Error;
+
+        return Result.Success<Error>();
+    }
+
+    public UnitResult<Error> SetPetMainPhoto(PetId petId, PetPhoto petPhoto)
+    {
+        var pet = GetById(petId);
+        if (pet == null)
+            return Errors.General.NotFound(petId.Id);
+
+        var result = pet.SetMainPhoto(petPhoto);
+        if (result.IsFailure)
+            return result.Error;
+
+        return Result.Success<Error>();
+    }
+
+    public UnitResult<Error> ChangePetStatus(PetId petId, HelpStatus helpStatus)
+    {
+        var pet = GetById(petId);
+        if (pet == null)
+            return Errors.General.NotFound(petId.Id);
+
+        pet.ChangeStatus(helpStatus);
+        return Result.Success<Error>();
+    }
 
     public UnitResult<Error> UpdatePet(
         PetId petId,
@@ -91,11 +138,10 @@ public class Volunteer : AggregateRoot<VolunteerId>, ISoftDeletable
         AnimalType? animalType,
         Address? address,
         PetPhysicalAttributes? attributes,
-        DateOnly? birthDate,
+        DateTimeOffset? birthDate,
         bool? isCastrated,
         bool? isVaccinated,
-        HelpStatus? helpStatus,
-        List<Requisite>? requisites
+        HelpStatus? helpStatus
     )
     {
         var pet = GetById(petId);
@@ -112,8 +158,7 @@ public class Volunteer : AggregateRoot<VolunteerId>, ISoftDeletable
             birthDate,
             isCastrated,
             isVaccinated,
-            helpStatus,
-            requisites);
+            helpStatus);
 
         return Result.Success<Error>();
     }

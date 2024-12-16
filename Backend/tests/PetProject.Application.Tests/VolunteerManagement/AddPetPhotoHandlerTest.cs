@@ -7,7 +7,7 @@ using PetProject.SharedKernel.Shared;
 using PetProject.SharedKernel.Shared.EntityIds;
 using PetProject.SharedKernel.Shared.ValueObjects;
 using PetProject.SharedTestData;
-using PetProject.VolunteerManagement.Application.VolunteersManagement.AddPetPhoto;
+using PetProject.VolunteerManagement.Application.VolunteersManagement.Commands.AddPetPhoto;
 
 namespace PetProject.Application.Tests.VolunteerManagement;
 

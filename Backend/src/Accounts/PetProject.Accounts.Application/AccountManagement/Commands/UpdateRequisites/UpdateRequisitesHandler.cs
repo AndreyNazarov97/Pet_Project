@@ -2,10 +2,12 @@
 using MediatR;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.EntityFrameworkCore;
+using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Logging;
 using PetProject.Accounts.Application.Managers;
 using PetProject.Accounts.Domain;
 using PetProject.Core.Database;
+using PetProject.SharedKernel.Constants;
 using PetProject.SharedKernel.Shared;
 using PetProject.SharedKernel.Shared.ValueObjects;
 
@@ -21,7 +23,7 @@ public class UpdateRequisitesHandler : IRequestHandler<UpdateRequisitesCommand, 
     public UpdateRequisitesHandler(
         UserManager<User> userManager,
         IAccountManager accountManager,
-        IUnitOfWork unitOfWork,
+        [FromKeyedServices(Constants.Context.Accounts)]IUnitOfWork unitOfWork,
         ILogger<UpdateRequisitesHandler> logger)
     {
         _userManager = userManager;

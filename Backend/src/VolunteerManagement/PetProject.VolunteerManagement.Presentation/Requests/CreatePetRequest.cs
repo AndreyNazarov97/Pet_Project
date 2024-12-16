@@ -1,5 +1,5 @@
 ﻿using PetProject.Core.Dtos;
-using PetProject.VolunteerManagement.Application.VolunteersManagement.CreatePet;
+using PetProject.VolunteerManagement.Application.VolunteersManagement.Commands.CreatePet;
 using PetProject.VolunteerManagement.Domain.Enums;
 
 namespace PetProject.VolunteerManagement.Presentation.Requests;
@@ -34,7 +34,7 @@ public record CreatePetRequest
             Address = Address,
             Weight = Weight,
             Height = Height,
-            BirthDate = new DateOnly(BirthDateYear, BirthDateMonth, BirthDateDay),
+            BirthDate = new DateTime(BirthDateYear, BirthDateMonth, BirthDateDay),
             IsCastrated = IsCastrated,
             IsVaccinated = IsVaccinated,
             HelpStatus = HelpStatus

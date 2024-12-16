@@ -2,10 +2,7 @@ using DotNetEnv;
 using PetProject.Accounts.Application;
 using PetProject.Accounts.Infrastructure;
 using PetProject.Accounts.Presentation;
-using PetProject.SpeciesManagement.Application;
-using PetProject.SpeciesManagement.Infrastructure;
-using PetProject.VolunteerManagement.Application;
-using PetProject.VolunteerManagement.Infrastructure;
+using PetProject.Web;
 using PetProject.Web.Extensions;
 using PetProject.Web.Middlewares;
 using Serilog;
@@ -21,20 +18,7 @@ builder.Services.AddControllers();
 builder.Services.AddEndpointsApiExplorer();
 builder.Services.AddSwagger();
 
-builder.Services
-    .AddVolunteerManagementApplication()
-    .AddVolunteerPostgresInfrastructure(builder.Configuration);
-
-builder.Services
-    .AddSpeciesManagementApplication()
-    .AddSpeciesManagementInfrastructure();
-
-
-builder.Services
-    .AddAccountsManagementApplication()
-    .AddAccountsInfrastructure(builder.Configuration)
-    .AddAccountsPresentation();
-
+builder.Services.AddModules(builder.Configuration);
 
 var app = builder.Build();
 

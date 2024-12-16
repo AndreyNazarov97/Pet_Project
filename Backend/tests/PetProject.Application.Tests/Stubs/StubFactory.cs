@@ -4,10 +4,10 @@ using PetProject.Core.Database;
 using PetProject.Core.Database.Repository;
 using PetProject.VolunteerManagement.Application.Providers;
 using PetProject.VolunteerManagement.Application.Repository;
-using PetProject.VolunteerManagement.Application.VolunteersManagement.AddPetPhoto;
-using PetProject.VolunteerManagement.Application.VolunteersManagement.CreateVolunteer;
-using PetProject.VolunteerManagement.Application.VolunteersManagement.SoftDeleteVolunteer;
-using PetProject.VolunteerManagement.Application.VolunteersManagement.UpdateVolunteer;
+using PetProject.VolunteerManagement.Application.VolunteersManagement.Commands.AddPetPhoto;
+using PetProject.VolunteerManagement.Application.VolunteersManagement.Commands.CreateVolunteer;
+using PetProject.VolunteerManagement.Application.VolunteersManagement.Commands.SoftDeleteVolunteer;
+using PetProject.VolunteerManagement.Application.VolunteersManagement.Commands.UpdateVolunteer;
 
 namespace PetProject.Application.Tests.Stubs;
 

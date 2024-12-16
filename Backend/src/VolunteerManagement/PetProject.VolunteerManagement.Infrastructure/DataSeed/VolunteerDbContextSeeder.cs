@@ -53,7 +53,7 @@ public static class VolunteerDbContextSeeder
             Address.Create("Russia", "Moscow", "Lenina", "1", "1").Value,
             PetPhysicalAttributes.Create(10.5d, 55d).Value,
             firstVolunteer.PhoneNumber,
-            new DateOnly(2007, 09, 03),
+            new DateTime(2007, 09, 03),
             true,
             true,
             HelpStatus.LookingForHome,

@@ -2,7 +2,7 @@
 using Moq;
 using PetProject.Core.Database.Repository;
 using PetProject.VolunteerManagement.Application.Repository;
-using PetProject.VolunteerManagement.Application.VolunteersManagement.CreateVolunteer;
+using PetProject.VolunteerManagement.Application.VolunteersManagement.Commands.CreateVolunteer;
 
 namespace PetProject.Application.Tests.Stubs;
 

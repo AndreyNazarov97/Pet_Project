@@ -1,4 +1,4 @@
-﻿using PetProject.SpeciesManagement.Application.SpeciesManagement.CreateSpecies;
+﻿using PetProject.SpeciesManagement.Application.SpeciesManagement.Commands.CreateSpecies;
 
 namespace PetProject.SpeciesManagement.Presentation.Requests;
 
