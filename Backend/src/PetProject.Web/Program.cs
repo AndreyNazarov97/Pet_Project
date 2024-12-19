@@ -27,8 +27,7 @@ app.UseSerilogRequestLogging();
 app.UseExceptionHandling();
 
 // Configure the HTTP request pipeline.
-if (app.Environment.IsDevelopment()
-    || app.Environment.IsEnvironment("Docker"))
+if (app.Environment.IsDevelopment())
 {
     app.UseSwagger();
     app.UseSwaggerUI();
@@ -43,6 +42,15 @@ if (app.Environment.IsDevelopment()
 
         await next();
     });
+    
+    await app.ApplyMigrations();
+    await app.SeedDatabases();
+}
+
+if (app.Environment.IsEnvironment("Docker"))
+{
+    app.UseSwagger();
+    app.UseSwaggerUI();
     
     await app.ApplyMigrations();
     await app.SeedDatabases();
