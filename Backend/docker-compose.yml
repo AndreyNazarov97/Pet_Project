@@ -14,9 +14,9 @@ services:
     container_name: 'pet_nginx'
     image: 'nginx:stable-alpine'
     ports:
-      - 80:80
+      - '80:80'
     volumes:
-      - ./nginx.conf:/etc/nginx/nginx.conf
+      - ./nginx.conf:/etc/nginx/conf.d/default.conf
     depends_on:
       - backend
 
@@ -35,6 +35,8 @@ services:
       - postgres
       - minio
       - seq
+    ports:
+      - '5001:5001'
   
   
   postgres:
