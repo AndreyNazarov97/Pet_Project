@@ -2,6 +2,8 @@
 using Moq;
 using PetProject.Core.Database;
 using PetProject.Core.Database.Repository;
+using PetProject.Core.Dtos;
+using PetProject.Core.Messaging;
 using PetProject.VolunteerManagement.Application.Providers;
 using PetProject.VolunteerManagement.Application.Repository;
 using PetProject.VolunteerManagement.Application.VolunteersManagement.Commands.AddPetPhoto;
@@ -59,6 +61,7 @@ public static class StubFactory
     public static AddPetPhotoHandlerStub CreateAddPetPhotoHandlerStub() 
         => new(new Mock<IVolunteersRepository>(),
             new Mock<IFileProvider>(),
+            new Mock<IMessageQueue<IEnumerable<FileMetaDataDto>>>(),
             new Mock<IUnitOfWork>(),
             new Mock<ILogger<AddPetPhotoHandler>>());
 

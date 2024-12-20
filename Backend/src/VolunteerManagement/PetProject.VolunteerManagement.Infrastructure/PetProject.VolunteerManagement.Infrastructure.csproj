@@ -7,11 +7,12 @@
     </PropertyGroup>
 
     <ItemGroup>
-      <ProjectReference Include="..\PetProject.VolunteerManagement.Application\PetProject.VolunteerManagement.Application.csproj" />
+        <ProjectReference Include="..\PetProject.VolunteerManagement.Application\PetProject.VolunteerManagement.Application.csproj"/>
     </ItemGroup>
 
     <ItemGroup>
-      <PackageReference Include="Minio" Version="6.0.3" />
+        <PackageReference Include="Microsoft.Extensions.Hosting" Version="8.0.0"/>
+        <PackageReference Include="Minio" Version="6.0.3"/>
     </ItemGroup>
 
 </Project>
