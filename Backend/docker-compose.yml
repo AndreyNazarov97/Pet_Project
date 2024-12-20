@@ -23,9 +23,7 @@ services:
 
   backend:
     container_name: 'pet_backend'
-    build:
-      context: src/
-      dockerfile: PetProject.Web/Dockerfile
+    image: andnaz/pet-project:latest
     volumes:
       - ./src/PetProject.Web/etc/accounts.json:/app/accounts.json
     environment:

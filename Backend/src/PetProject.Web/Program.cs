@@ -65,7 +65,7 @@ app.UseCors(config =>
         .AllowAnyMethod();
 });
 
-//app.UseHttpsRedirection();
+app.UseHttpsRedirection();
 
 app.UseAuthentication();
 app.UseAuthorization();
