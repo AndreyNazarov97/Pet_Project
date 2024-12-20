@@ -37,7 +37,7 @@ public class MinioProvider : IFileProvider
             _logger.LogInformation("File {FileName} downloading from Minio", fileMetaData.ObjectName);
 
             var downloadUrl = await _minioClient.PresignedGetObjectAsync(getObjectArgs);
-            
+
             _logger.LogInformation(
                 "File {FileName} downloaded from Minio with url {DownloadUrl}",
                 fileMetaData.ObjectName,
@@ -53,30 +53,30 @@ public class MinioProvider : IFileProvider
         }
     }
 
-    public async Task<Result<IReadOnlyCollection<FilePath>,ErrorList>> UploadFiles(IEnumerable<FileDataDto> filesData,
+    public async Task<Result<IReadOnlyCollection<FilePath>, ErrorList>> UploadFiles(IEnumerable<FileDataDto> filesData,
         CancellationToken cancellationToken = default)
     {
         var fileList = filesData.ToList();
         var semaphoreSlim = new SemaphoreSlim(MaxDegreeOfParallelism);
 
         await EnsureBucketExistsAsync(fileList.Select(f => f.BucketName), cancellationToken);
-    
+
         var tasks = fileList.Select(async fileData => await PutObject(fileData, semaphoreSlim, cancellationToken));
         var results = await Task.WhenAll(tasks);
 
         var errors = results
             .Where(r => r.IsFailure)
             .Select(r => r.Error).ToList();
-        
-        if(errors.Count > 0)
+
+        if (errors.Count > 0)
             return new ErrorList(errors);
-        
+
         _logger.LogInformation("Files uploaded to Minio");
         return results.Select(r => r.Value).ToList();
     }
 
     [Obsolete("Obsolete")]
-    public async Task<Result<IReadOnlyCollection<string>,ErrorList>>  GetFiles(string bucketName)
+    public Result<IReadOnlyCollection<string>, ErrorList> GetFiles(string bucketName)
     {
         var listObjectsArgs = new ListObjectsArgs()
             .WithBucket(bucketName)
@@ -85,8 +85,8 @@ public class MinioProvider : IFileProvider
         var objects = _minioClient.ListObjectsAsync(listObjectsArgs);
 
         List<string> paths = [];
-        
-        var subscription = objects.Subscribe(
+
+        using var subscription = objects.Subscribe(
             (item) => paths.Add(item.Key),
             ex => _logger.LogError(ex, "Error occured while getting objects"),
             () => _logger.LogInformation("Successfully uploaded files"));
@@ -99,11 +99,22 @@ public class MinioProvider : IFileProvider
     {
         try
         {
+            await EnsureBucketExistsAsync([fileMetaData.BucketName], cancellationToken);
+            
+            var statArgs = new StatObjectArgs()
+                .WithBucket(fileMetaData.BucketName)
+                .WithObject(fileMetaData.ObjectName);
+            
+            var objectStat = await _minioClient.StatObjectAsync(statArgs, cancellationToken);
+            if (objectStat == null)
+            {
+                return UnitResult.Success<ErrorList>();
+            }
+            
             var removeObjectArgs = new RemoveObjectArgs()
                 .WithBucket(fileMetaData.BucketName)
                 .WithObject(fileMetaData.ObjectName);
 
-            _logger.LogInformation("File {FileName} deleting from Minio", fileMetaData.ObjectName);
 
             await _minioClient.RemoveObjectAsync(removeObjectArgs, cancellationToken);
 
@@ -138,24 +149,24 @@ public class MinioProvider : IFileProvider
         }
     }
 
-    private async Task<Result<FilePath,Error>> PutObject(
+    private async Task<Result<FilePath, Error>> PutObject(
         FileDataDto fileData,
         SemaphoreSlim semaphoreSlim,
         CancellationToken cancellationToken)
     {
         await semaphoreSlim.WaitAsync(cancellationToken);
-        
+
         var extension = Path.GetExtension(fileData.ObjectName);
         var filePath = FilePath.Create(Guid.NewGuid().ToString(), extension);
         if (filePath.IsFailure)
             return filePath.Error;
-        
+
         var putObjectArgs = new PutObjectArgs()
             .WithBucket(fileData.BucketName)
             .WithStreamData(fileData.Stream)
             .WithObjectSize(fileData.Stream.Length)
             .WithObject(filePath.Value.Path);
-        
+
         try
         {
             await _minioClient
