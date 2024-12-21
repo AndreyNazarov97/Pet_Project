@@ -37,7 +37,7 @@ public class DeleteBreedHandler : IRequestHandler<DeleteBreedCommand, UnitResult
         if (species == null)
             return Errors.General.NotFound().ToErrorList();
 
-        var existedBreed = species.Breeds.FirstOrDefault(x => x.Name == request.BreedName);
+        var existedBreed = species.Breeds.FirstOrDefault(x => x.BreedName == request.BreedName);
         if (existedBreed == null)
             return Errors.General.NotFound().ToErrorList();
 

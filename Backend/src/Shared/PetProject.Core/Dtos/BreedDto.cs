@@ -1,9 +1,7 @@
-﻿using PetProject.SharedKernel.Shared.EntityIds;
-
-namespace PetProject.Core.Dtos;
+﻿namespace PetProject.Core.Dtos;
 
 public record BreedDto()
 {
-    public required Guid Id { get; init; } 
-    public required string Name { get; init; }
+    public required Guid BreedId { get; init; } 
+    public required string BreedName { get; init; }
 };
