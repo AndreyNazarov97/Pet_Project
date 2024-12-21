@@ -1,6 +1,8 @@
-﻿using Dapper;
+﻿using System.Text.Json;
+using Dapper;
 using PetProject.Core.Database.Models;
 using PetProject.Core.Dtos;
+using Guid = System.Guid;
 
 namespace PetProject.Core.Database.Repository;
 
@@ -17,10 +19,10 @@ public class ReadRepository : IReadRepository
     {
         var sqlQuery = """
                        select 
-                           s.id,
-                           s.species_name,
-                           b.id,
-                           b.breed_name
+                          s.id as "SpeciesId",
+                          s.species_name,
+                          b.id as "BreedId",       
+                          b.breed_name 
                        from 
                            species.species as s 
                        left join 
@@ -55,7 +57,7 @@ public class ReadRepository : IReadRepository
         }
 
         sqlQuery += " where " + string.Join(" and ", conditions);
-        
+
         // Сортировка
         if (!string.IsNullOrEmpty(query.SortBy))
         {
@@ -80,41 +82,34 @@ public class ReadRepository : IReadRepository
             param.Add("Offset", query.Offset);
         }
 
-        var command = new CommandDefinition(sqlQuery, param, cancellationToken: cancellationToken);
+        var speciesDictionary = new Dictionary<Guid, SpeciesDto>();
 
         await using var connection = _connectionFactory.GetConnection();
 
-        await using var reader = await connection.ExecuteReaderAsync(command);
-
-        var speciesList = new List<SpeciesDto>();
-        while (await reader.ReadAsync(cancellationToken))
-        {
-            var speciesId = reader.GetGuid(0);
-            var speciesName = reader.GetString(1);
-
-
-            var species = speciesList.FirstOrDefault(s => s.Name == speciesName);
-            if (species == null)
+        await connection.QueryAsync<SpeciesDto, BreedDto, SpeciesDto>(
+            sqlQuery,
+            (speciesDto, breedDto) =>
             {
-                species = new SpeciesDto { Id = speciesId, Name = speciesName, Breeds = [] };
+                if (!speciesDictionary.TryGetValue(speciesDto.SpeciesId, out var existingSpecies))
+                {
+                    existingSpecies = speciesDto;
+                    speciesDictionary[speciesDto.SpeciesId] = existingSpecies;
+                }
 
-                speciesList.Add(species);
-            }
+                existingSpecies.Breeds.Add(breedDto);
 
-            if (reader.IsDBNull(2))
-                continue;
-            var breedId = reader.GetGuid(2);
-            var breedName = reader.GetString(3);
+                return existingSpecies;
+            },
+            splitOn: "BreedId",
+            param: param
+        );
 
-            var breedDto = new BreedDto { Id = breedId, Name = breedName };
 
-            species.Breeds.Add(breedDto);
-        }
-
-        return speciesList.ToArray();
+        return speciesDictionary.Values.ToArray();
     }
 
-    public async Task<VolunteerDto[]> QueryVolunteers(VolunteerQueryModel query, CancellationToken cancellationToken = default)
+    public async Task<VolunteerDto[]> QueryVolunteers(VolunteerQueryModel query,
+        CancellationToken cancellationToken = default)
     {
         var sqlQuery = """
                         SELECT 
@@ -129,17 +124,17 @@ public class ReadRepository : IReadRepository
                             p.health_information,
                             p.species_name,
                             p.breed_name,
-                            p.country,
-                            p.city,
-                            p.street,
-                            p.house,
-                            p.flat,
                             p.weight,
                             p.height,
                             p.birth_date,
                             p.is_castrated,
                             p.is_vaccinated,
-                            p.help_status
+                            p.help_status,
+                            p.country,
+                            p.city,
+                            p.street,
+                            p.house,
+                            p.flat
                         FROM 
                             volunteers.volunteers v
                         left join 
@@ -180,7 +175,7 @@ public class ReadRepository : IReadRepository
         }
 
         sqlQuery += " where " + string.Join(" and ", conditions);
-        
+
         // Сортировка
         if (!string.IsNullOrEmpty(query.SortBy))
         {
@@ -206,70 +201,39 @@ public class ReadRepository : IReadRepository
             param.Add("Offset", query.Offset);
         }
 
-        var command = new CommandDefinition(sqlQuery, param, cancellationToken: cancellationToken);
-
         await using var connection = _connectionFactory.GetConnection();
 
-        await using var reader = await connection.ExecuteReaderAsync(command);
+        var volunteersDictionary = new Dictionary<string, VolunteerDto>();
 
-        var volunteers = new HashSet<VolunteerDto>();
-        while (await reader.ReadAsync(cancellationToken))
-        {
-            var phoneNumber = reader.GetString(4);
-            var volunteer = volunteers.FirstOrDefault(v => v.PhoneNumber == phoneNumber);
-
-            if (volunteer == null)
+        await connection.QueryAsync<FullNameDto, VolunteerDto, PetDto?, AddressDto?, VolunteerDto>(
+            sqlQuery,
+            (fullNameDto, volunteerDto, petDto, addressDto) =>
             {
-                var fullNameDto = new FullNameDto
+                if (!volunteersDictionary.TryGetValue(volunteerDto.PhoneNumber, out var existingVolunteer))
                 {
-                    Name = reader.GetString(0),
-                    Surname = reader.GetString(1),
-                    Patronymic = reader.IsDBNull(2) ? null : reader.GetString(2)
-                };
+                    existingVolunteer = volunteerDto;
+                    volunteersDictionary[volunteerDto.PhoneNumber] = existingVolunteer;
+                }
 
-                volunteer = new VolunteerDto
-                {
-                    FullName = fullNameDto,
-                    GeneralDescription = reader.GetString(3),
-                    PhoneNumber = phoneNumber,
-                    AgeExperience = reader.GetInt32(5)
-                };
-                volunteers.Add(volunteer);
-            }
+                volunteerDto.FullName = fullNameDto;
 
-            var country = reader.IsDBNull(11) ? null : reader.GetString(11);
-            if (country is null) continue;
-            var addressDto = new AddressDto
-            {
-                Country = reader.GetString(11),
-                City = reader.GetString(12),
-                Street = reader.GetString(13),
-                House = reader.GetString(14),
-                Flat = reader.GetString(15)
-            };
+                if (addressDto is null) 
+                    return existingVolunteer;
+                
+                petDto!.Address = addressDto;
+                petDto.PhoneNumber = volunteerDto.PhoneNumber;
+
+                existingVolunteer.AddPet(petDto);
 
 
-            var pet = new PetDto
-            {
-                PetName = reader.GetString(6),
-                GeneralDescription = reader.GetString(7),
-                HealthInformation = reader.GetString(8),
-                SpeciesName = reader.GetString(9),
-                BreedName = reader.GetString(10),
-                Address = addressDto,
-                Weight = reader.GetDouble(16),
-                Height = reader.GetDouble(17),
-                PhoneNumber = phoneNumber,
-                BirthDate = reader.GetDateTime(18),
-                IsCastrated = reader.GetBoolean(19),
-                IsVaccinated = reader.GetBoolean(20),
-                HelpStatus = reader.GetString(21)
-            };
+                return existingVolunteer;
+            },
+            splitOn: "general_description, pet_name, country",
+            param: param
+        );
 
-            volunteer.AddPet(pet);
-        }
 
-        return volunteers.ToArray();
+        return volunteersDictionary.Values.ToArray();
     }
 
     public async Task<PetDto[]> QueryPets(PetQueryModel query, CancellationToken cancellationToken = default)
@@ -281,18 +245,18 @@ public class ReadRepository : IReadRepository
                             p.health_information,
                             p.species_name,
                             p.breed_name,
-                            p.country,
-                            p.city,
-                            p.street,
-                            p.house,
-                            p.flat,
                             p.weight,
                             p.height,
                             p.birth_date,
                             p.is_castrated,
                             p.is_vaccinated,
                             p.help_status,
-                            v.phone_number
+                            v.phone_number,
+                            p.country,
+                            p.city,
+                            p.street,
+                            p.house,
+                            p.flat
                        FROM 
                            volunteers.pets AS p
                        LEFT JOIN 
@@ -375,46 +339,30 @@ public class ReadRepository : IReadRepository
             sqlQuery += " offset @Offset ";
             parameters.Add("Offset", query.Offset);
         }
-
-        var command = new CommandDefinition(sqlQuery, parameters, cancellationToken: cancellationToken);
-
+        
         await using var connection = _connectionFactory.GetConnection();
 
-        await using var reader = await connection.ExecuteReaderAsync(command);
+        var petsDictionary = new Dictionary<string, PetDto>();
 
-        var pets = new List<PetDto>();
-        while (await reader.ReadAsync(cancellationToken))
-        {
-            var addressDto = new AddressDto
+        await connection.QueryAsync<PetDto, AddressDto, PetDto>(
+            sqlQuery,
+            (petDto, addressDto) =>
             {
-                Country = reader.GetString(5),
-                City = reader.GetString(6),
-                Street = reader.GetString(7),
-                House = reader.GetString(8),
-                Flat = reader.GetString(9)
-            };
+                if (!petsDictionary.TryGetValue(petDto.PhoneNumber!, out var existingPet))
+                {
+                    existingPet = petDto;
+                    petsDictionary[petDto.PhoneNumber!] = existingPet;
+                }
+                
+                petDto!.Address = addressDto;
+                
+                return existingPet;
+            },
+            splitOn: "country",
+            param: parameters
+        );
 
 
-            var pet = new PetDto
-            {
-                PetName = reader.GetString(0),
-                GeneralDescription = reader.GetString(1),
-                HealthInformation = reader.GetString(2),
-                SpeciesName = reader.GetString(3),
-                BreedName = reader.GetString(4),
-                Address = addressDto,
-                Weight = reader.GetDouble(10),
-                Height = reader.GetDouble(11),
-                BirthDate = reader.GetDateTime(12),
-                IsCastrated = reader.GetBoolean(13),
-                IsVaccinated = reader.GetBoolean(14),
-                HelpStatus = reader.GetString(15),
-                PhoneNumber = reader.GetString(16)
-            };
-
-            pets.Add(pet);
-        }
-
-        return pets.ToArray();
+        return petsDictionary.Values.ToArray();
     }
 }

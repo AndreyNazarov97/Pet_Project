@@ -11,8 +11,8 @@ public static class SpeciesExtensions
     public static Species ToEntity(this SpeciesDto dto)
     {
         var species = new Species(
-            SpeciesId.Create(dto.Id),
-            SpeciesName.Create(dto.Name).Value,
+            SpeciesId.Create(dto.SpeciesId),
+            SpeciesName.Create(dto.SpeciesName).Value,
             dto.Breeds.Select(b => b.ToEntity()).ToList());
         return species;
     }
@@ -20,8 +20,8 @@ public static class SpeciesExtensions
     public static Breed ToEntity(this BreedDto dto)
     {
         var breed = new Breed(
-            BreedId.Create(dto.Id),
-            BreedName.Create(dto.Name).Value
+            BreedId.Create(dto.BreedId),
+            BreedName.Create(dto.BreedName).Value
         );
         return breed;
     }

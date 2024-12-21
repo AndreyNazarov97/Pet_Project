@@ -89,25 +89,25 @@ public class TestData
 
     public static SpeciesDto SpeciesDto => new()
     {
-        Id = Guid.NewGuid(),
-        Name = "Dog",
+        SpeciesId = Guid.NewGuid(),
+        SpeciesName = "Dog",
         Breeds = new List<BreedDto>()
         {
             new()
             {
-                Id = Guid.NewGuid(),
-                Name = "Labrador"
+                BreedId = Guid.NewGuid(),
+                BreedName = "Labrador"
             },
             new()
             {
-                Id = Guid.NewGuid(),
-                Name = "Golden Retriever"
+                BreedId = Guid.NewGuid(),
+                BreedName = "Golden Retriever"
             },
             new()
             {
 
-                Id = Guid.NewGuid(),
-                Name = "Bulldog"
+                BreedId = Guid.NewGuid(),
+                BreedName = "Bulldog"
             },
         }
     };

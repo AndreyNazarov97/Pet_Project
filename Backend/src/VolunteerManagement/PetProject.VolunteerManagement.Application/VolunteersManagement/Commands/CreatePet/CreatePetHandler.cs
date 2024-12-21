@@ -104,7 +104,7 @@ public class CreatePetHandler : IRequestHandler<CreatePetCommand, Result<Guid, E
         if (species == null)
             return Errors.General.NotFound();
         
-        var breed = species.Breeds.FirstOrDefault(b => b.Name == command.BreedName);
+        var breed = species.Breeds.FirstOrDefault(b => b.BreedName == command.BreedName);
         if (breed is null)
             return Errors.General.NotFound();
         

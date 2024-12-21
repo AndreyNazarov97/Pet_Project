@@ -2,7 +2,7 @@
 
 public record VolunteerDto
 {
-    public required FullNameDto FullName { get; init; }
+    public required FullNameDto FullName { get; set; }
     public required string GeneralDescription { get; init; }
     public required int AgeExperience { get; init; }
     public required string PhoneNumber { get; init; } 

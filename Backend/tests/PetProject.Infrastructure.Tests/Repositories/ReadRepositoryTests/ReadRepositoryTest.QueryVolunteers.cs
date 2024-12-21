@@ -26,7 +26,23 @@ public partial class ReadRepositoryTest
 
         result.Should().HaveCount(1);
         result.First().Pets.Should().ContainSingle(p => p.PetName == pet.PetName.Value);
-    }
+        result.First().Pets.Should().ContainSingle(p => p.BreedName == pet.AnimalType.BreedName.Value);
+        result.First().Pets.Should().ContainSingle(p => p.SpeciesName == pet.AnimalType.SpeciesName.Value);
+        result.First().Pets.Should().ContainSingle(p => p.PhoneNumber == volunteer.PhoneNumber.Value);
+        result.First().Pets.Should().ContainSingle(p => p.GeneralDescription == pet.GeneralDescription.Value);
+        result.First().Pets.Should().ContainSingle(p => p.HealthInformation == pet.HealthInformation.Value);
+        result.First().Pets.Should().ContainSingle(p => p.Weight == pet.PhysicalAttributes.Weight);
+        result.First().Pets.Should().ContainSingle(p => p.Height == pet.PhysicalAttributes.Height);
+        result.First().Pets.Should().ContainSingle(p => p.BirthDate != null);
+        result.First().Pets.Should().ContainSingle(p => p.IsCastrated == pet.IsCastrated);
+        result.First().Pets.Should().ContainSingle(p => p.IsVaccinated == pet.IsVaccinated);
+        result.First().Pets.Should().ContainSingle(p => p.HelpStatus == pet.HelpStatus.ToString());
+        result.First().Pets.Should().ContainSingle(p => p.Address!.Country == pet.Address.Country);
+        result.First().Pets.Should().ContainSingle(p => p.Address!.City == pet.Address.City);
+        result.First().Pets.Should().ContainSingle(p => p.Address!.Street == pet.Address.Street);
+        result.First().Pets.Should().ContainSingle(p => p.Address!.House == pet.Address.House);
+        result.First().Pets.Should().ContainSingle(p => p.Address!.Flat == pet.Address.Flat);
+   }
     
     [Fact]
     public async Task ShouldReturnVolunteerWithGivenPhoneNumber()
@@ -45,6 +61,11 @@ public partial class ReadRepositoryTest
         
         result.Should().HaveCount(1);
         result.First().PhoneNumber.Should().Be(volunteer.PhoneNumber.Value);
+        result.First().FullName.Name.Should().Be(volunteer.FullName.Name);
+        result.First().FullName.Surname.Should().Be(volunteer.FullName.Surname);
+        result.First().FullName.Patronymic.Should().Be(volunteer.FullName.Patronymic);
+        result.First().GeneralDescription.Should().Be(volunteer.GeneralDescription.Value);
+        result.First().AgeExperience.Should().Be(volunteer.Experience.Years);
     }
     
     [Fact]
