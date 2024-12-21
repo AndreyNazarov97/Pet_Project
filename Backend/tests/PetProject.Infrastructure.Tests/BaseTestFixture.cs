@@ -27,6 +27,8 @@ public class BaseTestFixture : IAsyncLifetime
         {
             throw new InvalidOperationException("Host can't be null in the connection string.");
         }
+        
+        Dapper.DefaultTypeMap.MatchNamesWithUnderscores = true;
 
         _configuration = new ConfigurationBuilder()
             .AddInMemoryCollection(new Dictionary<string, string>

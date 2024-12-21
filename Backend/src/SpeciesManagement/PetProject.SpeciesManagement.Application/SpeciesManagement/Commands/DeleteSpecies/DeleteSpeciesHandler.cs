@@ -39,7 +39,7 @@ public class DeleteSpeciesHandler : IRequestHandler<DeleteSpeciesCommand, UnitRe
         if (volunteers.Length > 0)
             return Error.Conflict("species.is.used.by.volunteers", "Species is used by volunteers").ToErrorList();
 
-        await _speciesRepository.Delete(SpeciesId.Create(species.Id), cancellationToken);
+        await _speciesRepository.Delete(SpeciesId.Create(species.SpeciesId), cancellationToken);
         return UnitResult.Success<ErrorList>();
     }
 }

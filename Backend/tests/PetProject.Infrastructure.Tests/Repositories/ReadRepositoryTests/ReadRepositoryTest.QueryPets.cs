@@ -19,7 +19,7 @@ public partial class ReadRepositoryTest
         await using var dbContext = _fixture.GetVolunteerDbContext();
         await dbContext.AddAsync(volunteer);
         await dbContext.AddAsync(volunteer2);
-        await dbContext.SaveChangesAsync();
+        dbContext.SaveChanges();
 
         var query = new PetQueryModel();
 
@@ -54,6 +54,22 @@ public partial class ReadRepositoryTest
         // Assert
         result.Should().HaveCount(1);
         result.First().PetName.Should().Be(pet.PetName.Value);
+        result.First().BreedName.Should().Be(pet.AnimalType.BreedName.Value);
+        result.First().SpeciesName.Should().Be(pet.AnimalType.SpeciesName.Value);
+        result.First().PhoneNumber.Should().Be(volunteer.PhoneNumber.Value);
+        result.First().GeneralDescription.Should().Be(pet.GeneralDescription.Value);
+        result.First().HealthInformation.Should().Be(pet.HealthInformation.Value);
+        result.First().Weight.Should().Be(pet.PhysicalAttributes.Weight);
+        result.First().Height.Should().Be(pet.PhysicalAttributes.Height);
+        result.First().BirthDate.Should().NotBeNull();
+        result.First().IsCastrated.Should().Be(pet.IsCastrated);
+        result.First().IsVaccinated.Should().Be(pet.IsVaccinated);
+        result.First().HelpStatus.Should().Be(pet.HelpStatus.ToString());
+        result.First().Address!.Country.Should().Be(pet.Address.Country);
+        result.First().Address!.City.Should().Be(pet.Address.City);
+        result.First().Address!.Street.Should().Be(pet.Address.Street);
+        result.First().Address!.House.Should().Be(pet.Address.House);
+        result.First().Address!.Flat.Should().Be(pet.Address.Flat);
     }
 
     [Fact]

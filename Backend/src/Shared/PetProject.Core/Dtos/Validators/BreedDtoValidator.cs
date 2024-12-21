@@ -8,7 +8,7 @@ public class BreedDtoValidator : AbstractValidator<BreedDto>
 {
     public BreedDtoValidator()
     {
-        RuleFor(b => b.Name)
+        RuleFor(b => b.BreedName)
             .MustBeValueObject(BreedName.Create);
     }
 }
