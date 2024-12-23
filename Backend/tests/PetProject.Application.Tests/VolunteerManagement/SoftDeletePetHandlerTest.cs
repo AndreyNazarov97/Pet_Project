@@ -88,9 +88,6 @@ public class SoftDeletePetHandlerTest
             It.IsAny<CancellationToken>()),
             Times.Once);
         
-        var isDeletedField = typeof(Pet).GetField("_isDeleted",
-            BindingFlags.NonPublic | BindingFlags.Instance);
-        var isDeleted = (bool)isDeletedField.GetValue(pet);
-        isDeleted.Should().BeTrue();
+        pet.IsDeleted.Should().BeTrue();
     }
 }
