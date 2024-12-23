@@ -16,7 +16,9 @@ public class AccountsDbContext
     public DbSet<AdminAccount> AdminAccounts { get; set; }
     public DbSet<VolunteerAccount> VolunteerAccounts { get; set; }
     public DbSet<ParticipantAccount> ParticipantAccounts { get; set; }
-    public override DbSet<Role> Roles { get; set; } 
+    public override DbSet<Role> Roles { get; set; }
+
+    public override DbSet<User> Users { get; set; }
     public DbSet<Permission> Permissions { get; set; }
     public DbSet<RolePermission> RolePermissions { get; set; }
     

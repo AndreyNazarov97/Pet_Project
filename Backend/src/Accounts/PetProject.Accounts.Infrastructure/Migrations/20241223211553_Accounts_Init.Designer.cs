@@ -13,7 +13,7 @@ using PetProject.Accounts.Infrastructure;
 namespace PetProject.Accounts.Infrastructure.Migrations
 {
     [DbContext(typeof(AccountsDbContext))]
-    [Migration("20241221210234_Accounts_Init")]
+    [Migration("20241223211553_Accounts_Init")]
     partial class Accounts_Init
     {
         /// <inheritdoc />
@@ -464,7 +464,7 @@ namespace PetProject.Accounts.Infrastructure.Migrations
 
                     b.Property<string>("Certificates")
                         .IsRequired()
-                        .HasColumnType("text")
+                        .HasColumnType("jsonb")
                         .HasColumnName("certificates");
 
                     b.Property<string>("Requisites")

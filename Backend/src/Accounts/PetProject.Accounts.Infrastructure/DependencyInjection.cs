@@ -28,6 +28,7 @@ public static class DependencyInjection
         services.Configure<AdminOptions>(configuration.GetSection(AdminOptions.Admin));
 
         services.AddTransient<ITokenProvider, JwtTokenProvider>();
+        services.AddScoped<IPostgresConnectionFactory, PostgresConnectionFactory>();
 
         services.AddScoped<AccountsDbContext>();
         services.AddKeyedScoped<IUnitOfWork, UnitOfWork>(Constants.Context.Accounts);
