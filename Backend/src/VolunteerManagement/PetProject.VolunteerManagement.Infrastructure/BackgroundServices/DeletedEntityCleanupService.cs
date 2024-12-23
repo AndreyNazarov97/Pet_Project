@@ -22,15 +22,15 @@ public class DeletedEntityCleanupService : BackgroundService
     
     protected override async Task ExecuteAsync(CancellationToken stoppingToken)
     {
-        await using var scope =  _scopeFactory.CreateAsyncScope();
-        
-        var deleteExpiredPetsService = scope.ServiceProvider.GetRequiredService<DeleteExpiredPetsService>();
-        var deleteExpiredVolunteersService = scope.ServiceProvider.GetRequiredService<DeleteExpiredVolunteersService>();
-                
         _logger.LogInformation("DeletedEntityCleanupService is starting");
         
         while (!stoppingToken.IsCancellationRequested)
         {
+            await using var scope =  _scopeFactory.CreateAsyncScope();
+        
+            var deleteExpiredPetsService = scope.ServiceProvider.GetRequiredService<DeleteExpiredPetsService>();
+            var deleteExpiredVolunteersService = scope.ServiceProvider.GetRequiredService<DeleteExpiredVolunteersService>();
+            
             await deleteExpiredPetsService.DeleteExpiredPets();
             _logger.LogInformation("Deleted expired pets");
             
