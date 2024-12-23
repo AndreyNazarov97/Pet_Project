@@ -39,7 +39,7 @@ public class RefreshTokenHandler : IRequestHandler<RefreshTokenCommand, Result<L
         if (refreshSession is null)
             return Errors.General.NotFound(command.RefreshToken).ToErrorList();
 
-        if (refreshSession.ExpiresAt < _dateTimeProvider.Now)
+        if (refreshSession.ExpiresAt < _dateTimeProvider.UtcNow)
         {
             return Errors.Tokens.InvalidToken().ToErrorList();
         }

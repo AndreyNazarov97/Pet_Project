@@ -4,6 +4,7 @@ using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Logging;
 using PetProject.Core.Database;
 using PetProject.SharedKernel.Constants;
+using PetProject.SharedKernel.Interfaces;
 using PetProject.SharedKernel.Shared;
 using PetProject.SharedKernel.Shared.EntityIds;
 using PetProject.VolunteerManagement.Application.Repository;
@@ -13,15 +14,18 @@ namespace PetProject.VolunteerManagement.Application.VolunteersManagement.Comman
 public class SoftDeleteVolunteerHandler : IRequestHandler<SoftDeleteVolunteerCommand, UnitResult<ErrorList>>
 {
     private readonly IVolunteersRepository _repository;
+    private readonly IDateTimeProvider _dateTimeProvider;
     private readonly IUnitOfWork _unitOfWork;
     private readonly ILogger<SoftDeleteVolunteerHandler> _logger;
 
     public SoftDeleteVolunteerHandler(
         IVolunteersRepository repository, 
+        IDateTimeProvider dateTimeProvider,
         [FromKeyedServices(Constants.Context.VolunteerManagement)]IUnitOfWork unitOfWork,
         ILogger<SoftDeleteVolunteerHandler> logger)
     {
         _repository = repository;
+        _dateTimeProvider = dateTimeProvider;
         _unitOfWork = unitOfWork;
         _logger = logger;
     }
@@ -34,7 +38,7 @@ public class SoftDeleteVolunteerHandler : IRequestHandler<SoftDeleteVolunteerCom
         if (volunteerResult.IsFailure)
             return volunteerResult.Error.ToErrorList();
 
-        volunteerResult.Value.Deactivate();
+        volunteerResult.Value.Delete(_dateTimeProvider.UtcNow);
 
         await _unitOfWork.SaveChangesAsync(cancellationToken);
         

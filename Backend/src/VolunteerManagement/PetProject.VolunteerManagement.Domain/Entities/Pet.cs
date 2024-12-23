@@ -1,6 +1,7 @@
 ﻿using CSharpFunctionalExtensions;
 using PetProject.SharedKernel.Interfaces;
 using PetProject.SharedKernel.Shared;
+using PetProject.SharedKernel.Shared.Common;
 using PetProject.SharedKernel.Shared.EntityIds;
 using PetProject.SharedKernel.Shared.ValueObjects;
 using PetProject.VolunteerManagement.Domain.Enums;
@@ -8,7 +9,7 @@ using PetProject.VolunteerManagement.Domain.ValueObjects;
 
 namespace PetProject.VolunteerManagement.Domain.Entities;
 
-public class Pet : SharedKernel.Shared.Common.Entity<PetId>, ISoftDeletable
+public class Pet : SoftDeletableEntity<PetId>
 {
     private bool _isDeleted = false;
     private List<PetPhoto> _PetPhotoList = [];
@@ -128,15 +129,5 @@ public class Pet : SharedKernel.Shared.Common.Entity<PetId>, ISoftDeletable
         }
 
         return UnitResult.Success<Error>();
-    }
-
-    public void Activate()
-    {
-        _isDeleted = false;
-    }
-
-    public void Deactivate()
-    {
-        _isDeleted = true;
     }
 }

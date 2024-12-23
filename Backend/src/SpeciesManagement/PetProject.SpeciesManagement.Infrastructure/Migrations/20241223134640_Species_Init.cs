@@ -20,8 +20,9 @@ namespace PetProject.SpeciesManagement.Infrastructure.Migrations
                 columns: table => new
                 {
                     id = table.Column<Guid>(type: "uuid", nullable: false),
+                    species_name = table.Column<string>(type: "character varying(50)", maxLength: 50, nullable: false),
                     is_deleted = table.Column<bool>(type: "boolean", nullable: false),
-                    species_name = table.Column<string>(type: "character varying(50)", maxLength: 50, nullable: false)
+                    deletion_date = table.Column<DateTimeOffset>(type: "timestamp with time zone", nullable: true)
                 },
                 constraints: table =>
                 {
@@ -35,8 +36,9 @@ namespace PetProject.SpeciesManagement.Infrastructure.Migrations
                 {
                     id = table.Column<Guid>(type: "uuid", nullable: false),
                     species_id = table.Column<Guid>(type: "uuid", nullable: true),
+                    breed_name = table.Column<string>(type: "character varying(50)", maxLength: 50, nullable: false),
                     is_deleted = table.Column<bool>(type: "boolean", nullable: false),
-                    breed_name = table.Column<string>(type: "character varying(50)", maxLength: 50, nullable: false)
+                    deletion_date = table.Column<DateTimeOffset>(type: "timestamp with time zone", nullable: true)
                 },
                 constraints: table =>
                 {

@@ -143,4 +143,52 @@ public class VolunteerTests
         positions.Should().OnlyHaveUniqueItems("у всех животных должны быть уникальные позиции");
         positions.Should().BeEquivalentTo(new[] { 3, 1, 2, 4 }, "позиции должны корректно обновиться");
     }
+    
+    [Fact]
+    public void DeletePetSoft_ShouldAllowDuplicatePetPositions()
+    {
+        //Arrange
+        var secondPet = TestData.Pet;
+        var thirdPet = TestData.Pet;
+        var fourthPet = TestData.Pet;
+        _volunteer.AddPet(_firstPet);
+        _volunteer.AddPet(secondPet);
+        _volunteer.AddPet(thirdPet);
+        _volunteer.AddPet(fourthPet);
+
+        var deletionDate = DateTimeOffset.UtcNow;
+        //Act
+        var result = _volunteer.DeletePetSoft(secondPet.Id, deletionDate);
+
+        //Assert
+        result.IsSuccess.Should().BeTrue();
+        var positions = _volunteer.Pets!.Select(p => p.Position.Value).ToList();
+        positions.Count.Should().Be(4);
+        var secondPetFromVolunteer = _volunteer.Pets!.First(p => p.Id == secondPet.Id);
+        secondPetFromVolunteer.DeletionDate.Should().Be(deletionDate);
+        secondPetFromVolunteer.IsDeleted.Should().BeTrue();
+        positions.Should().BeEquivalentTo(new[] { 1, 2, 2, 3 }, "позиции должны корректно обновиться");
+    }
+    [Fact]
+    public void DeletePetHard_ShouldNotAllowDuplicatePetPositions()
+    {
+        //Arrange
+        var secondPet = TestData.Pet;
+        var thirdPet = TestData.Pet;
+        var fourthPet = TestData.Pet;
+        _volunteer.AddPet(_firstPet);
+        _volunteer.AddPet(secondPet);
+        _volunteer.AddPet(thirdPet);
+        _volunteer.AddPet(fourthPet);
+
+        var deletionDate = DateTimeOffset.UtcNow;
+        //Act
+        var result = _volunteer.DeletePetHard(secondPet.Id, deletionDate);
+
+        //Assert
+        result.IsSuccess.Should().BeTrue();
+        var positions = _volunteer.Pets!.Select(p => p.Position.Value).ToList();
+        positions.Count.Should().Be(3);
+        positions.Should().BeEquivalentTo(new[] { 1, 2, 3 }, "позиции должны корректно обновиться");
+    }
 }
