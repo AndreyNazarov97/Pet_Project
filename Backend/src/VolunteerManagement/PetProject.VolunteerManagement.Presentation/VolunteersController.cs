@@ -42,7 +42,7 @@ public class VolunteersController : ApplicationController
         return Ok(result.Value);
     }
 
-    [Permission(Permissions.Volunteer.Read)]
+    //[Permission(Permissions.Volunteer.Read)]
     [HttpGet("list")]
     public async Task<ActionResult<List<VolunteerDto>>> GetList(
         [FromQuery] GetVolunteersListRequest request,

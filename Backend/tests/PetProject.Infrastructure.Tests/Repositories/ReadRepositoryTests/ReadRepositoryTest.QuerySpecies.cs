@@ -27,7 +27,7 @@ public partial class ReadRepositoryTest
         var result = await _sut.QuerySpecies(query, CancellationToken.None);
         
         result.Should().NotBeEmpty();
-        result.FirstOrDefault(s => s.Name == speciesName)!.Name
+        result.FirstOrDefault(s => s.SpeciesName == speciesName)!.SpeciesName
             .Should().NotBeNull();
     }
     
@@ -49,8 +49,8 @@ public partial class ReadRepositoryTest
         var result = await _sut.QuerySpecies(query, CancellationToken.None);
         
         result.Should().NotBeEmpty();
-        result.First(s => s.Breeds.Any(b => b.Name == breedName)).Breeds
-            .Should().Contain(b => b.Name == breedName);
+        result.First(s => s.Breeds.Any(b => b.BreedName == breedName)).Breeds
+            .Should().Contain(b => b.BreedName == breedName);
     }
     
     [Fact]
@@ -71,8 +71,9 @@ public partial class ReadRepositoryTest
         var result = await _sut.QuerySpecies(query, CancellationToken.None);
         
         result.Should().NotBeEmpty();
-        result.FirstOrDefault(s => s.Id == speciesId)!.Name
+        result.FirstOrDefault(s => s.SpeciesId == speciesId)!.SpeciesName
             .Should().NotBeNull();
+        result.Length.Should().Be(1);
     }
     
     [Fact]
@@ -93,8 +94,8 @@ public partial class ReadRepositoryTest
         var result = await _sut.QuerySpecies(query, CancellationToken.None);
         
         result.Should().NotBeEmpty();
-        result.First(s => s.Breeds.Any(b => b.Id == breedId)).Breeds
-            .Should().Contain(b => b.Id == breedId);
+        result.First(s => s.Breeds.Any(b => b.BreedId == breedId)).Breeds
+            .Should().Contain(b => b.BreedId == breedId);
     }
     
     [Fact]
@@ -123,7 +124,7 @@ public partial class ReadRepositoryTest
         var result = await _sut.QuerySpecies(query, CancellationToken.None);
 
         result.Should().HaveCount(2);
-        result[0].Name.Should().Be(sortedSpeciesNames[1]);
-        result[1].Name.Should().Be(sortedSpeciesNames[2]);
+        result[0].SpeciesName.Should().Be(sortedSpeciesNames[1]);
+        result[1].SpeciesName.Should().Be(sortedSpeciesNames[2]);
     }
 }

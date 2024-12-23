@@ -43,7 +43,7 @@ public class CreateBreedHandler : IRequestHandler<CreateBreedCommand, Result<Gui
         if (species == null)
             return Errors.General.NotFound().ToErrorList();
 
-        if(species.Breeds.Any(x => x.Name == command.BreedName))
+        if(species.Breeds.Any(x => x.BreedName == command.BreedName))
             return Errors.General.AlreadyExist("Breed").ToErrorList();
         
         var breedId = BreedId.NewId();
