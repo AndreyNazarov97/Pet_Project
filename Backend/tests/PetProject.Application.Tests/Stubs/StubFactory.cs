@@ -30,6 +30,7 @@ public static class StubFactory
     public static SoftDeleteVolunteerHandlerStub CreateDeleteVolunteerHandlerStub()
         => new(
             new Mock<IVolunteersRepository>(),
+            new(),
             new Mock<IUnitOfWork>(),
             new Mock<ILogger<SoftDeleteVolunteerHandler>>());
     
@@ -76,6 +77,7 @@ public static class StubFactory
     
     public static SoftDeletePetHandlerStub CreateSoftDeletePetHandlerStub()
         => new(new Mock<IVolunteersRepository>(),
+            new(),
             new Mock<IUnitOfWork>());
 
 }

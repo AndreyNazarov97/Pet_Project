@@ -18,6 +18,7 @@ using PetProject.VolunteerManagement.Infrastructure.MessageQueues;
 using PetProject.VolunteerManagement.Infrastructure.Options;
 using PetProject.VolunteerManagement.Infrastructure.Providers;
 using PetProject.VolunteerManagement.Infrastructure.Repositories;
+using PetProject.VolunteerManagement.Infrastructure.Services;
 
 namespace PetProject.VolunteerManagement.Infrastructure;
 
@@ -71,8 +72,13 @@ public static class DependencyInjection
         services
             .AddSingleton<IMessageQueue<IEnumerable<FileMetaDataDto>>,
                 InMemoryMessageQueue<IEnumerable<FileMetaDataDto>>>();
+
+
+        services.AddScoped<DeleteExpiredPetsService>();
+        services.AddScoped<DeleteExpiredVolunteersService>();
         
         services.AddHostedService<FilesCleanerBackgroundService>();
+        services.AddHostedService<DeletedEntityCleanupService>();
 
         return services;
     }

@@ -185,8 +185,7 @@ public partial class ReadRepositoryTest
         volunteer2.AddPet(pet2);
         volunteer2.AddPet(pet3);
         await using var dbContext = _fixture.GetVolunteerDbContext();
-        await dbContext.AddAsync(volunteer);
-        await dbContext.AddAsync(volunteer2);
+        await dbContext.AddRangeAsync(volunteer, volunteer2);
         await dbContext.SaveChangesAsync();
 
         var query = new PetQueryModel
