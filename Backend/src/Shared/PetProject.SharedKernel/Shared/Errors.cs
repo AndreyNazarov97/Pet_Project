@@ -61,6 +61,14 @@ public static class Errors
             return Error.Validation("credentials.is.invalid", "Invalid credentials");
         }
     }
+    
+    public static class RequestStatus
+    {
+        public static Error InvalidStatus()
+        {
+            return Error.Failure("invalid.request.status", "Invalid request status");
+        }
+    }
 
     public static class Minio
     {
