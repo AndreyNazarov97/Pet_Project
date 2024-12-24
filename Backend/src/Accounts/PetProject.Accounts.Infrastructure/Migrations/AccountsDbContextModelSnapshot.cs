@@ -461,7 +461,7 @@ namespace PetProject.Accounts.Infrastructure.Migrations
 
                     b.Property<string>("Certificates")
                         .IsRequired()
-                        .HasColumnType("text")
+                        .HasColumnType("jsonb")
                         .HasColumnName("certificates");
 
                     b.Property<string>("Requisites")

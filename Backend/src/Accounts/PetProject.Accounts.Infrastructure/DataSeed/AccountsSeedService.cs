@@ -80,12 +80,12 @@ public class AccountsSeedService
             await _userManager.CreateAsync(adminUser, _adminOptions.Password);
 
             var adminAccount = new AdminAccount(adminUser);
-
             await _accountManager.CreateAdminAccount(adminAccount);
-
+            
             adminUser.AdminAccount = adminAccount;
             adminUser.AdminAccountId = adminAccount.Id;
 
+            await _userManager.UpdateAsync(adminUser);
             transaction.Commit();
         }
         catch (Exception e)

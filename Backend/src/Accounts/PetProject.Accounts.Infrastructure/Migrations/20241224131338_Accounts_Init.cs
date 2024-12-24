@@ -328,7 +328,7 @@ namespace PetProject.Accounts.Infrastructure.Migrations
                         .Annotation("Npgsql:ValueGenerationStrategy", NpgsqlValueGenerationStrategy.IdentityByDefaultColumn),
                     user_id = table.Column<long>(type: "bigint", nullable: false),
                     requisites = table.Column<string>(type: "jsonb", nullable: false),
-                    certificates = table.Column<string>(type: "text", nullable: false),
+                    certificates = table.Column<string>(type: "jsonb", nullable: false),
                     experience = table.Column<int>(type: "integer", nullable: false)
                 },
                 constraints: table =>

@@ -2,6 +2,7 @@
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
 using PetProject.Accounts.Application.AccountManagement.Commands.RefreshToken;
+using PetProject.Accounts.Application.AccountManagement.Queries.GetUserInfo;
 using PetProject.Accounts.Application.Mappers;
 using PetProject.Accounts.Contracts.Requests;
 using PetProject.Framework;
@@ -122,6 +123,20 @@ public class AccountController : ApplicationController
         if (result.IsFailure)
             return result.Error.ToResponse();
 
+        return Ok(result.Value);
+    }
+    
+    [HttpGet("{userId:long}/info")]
+    public async Task<ActionResult> GetInfo(
+        [FromRoute] long userId,
+        CancellationToken cancellationToken)
+    {
+        var query = new GetUserInfoQuery { UserId = userId };
+        
+        var result = await _mediator.Send(query, cancellationToken);        
+        if (result.IsFailure)
+            return result.Error.ToResponse();
+        
         return Ok(result.Value);
     }
 }
