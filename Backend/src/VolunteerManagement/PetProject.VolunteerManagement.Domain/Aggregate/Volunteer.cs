@@ -10,9 +10,8 @@ using PetProject.VolunteerManagement.Domain.ValueObjects;
 
 namespace PetProject.VolunteerManagement.Domain.Aggregate;
 
-public class Volunteer : AggregateRoot<VolunteerId>, ISoftDeletable
+public class Volunteer : AggregateRoot<VolunteerId>
 {
-    private bool _isDeleted;
     private readonly List<Pet> _pets = [];
 
     private Volunteer(VolunteerId id) : base(id)
@@ -203,21 +202,50 @@ public class Volunteer : AggregateRoot<VolunteerId>, ISoftDeletable
         return Result.Success<Error>();
     }
 
-    public void Activate()
+    public UnitResult<Error> DeletePetSoft(PetId petId, DateTimeOffset deletionDate)
     {
-        _isDeleted = false;
-        foreach (var pet in _pets)
-        {
-            pet.Activate();
-        }
+        var pet = GetById(petId);
+        if (pet == null)
+            return Errors.General.NotFound(petId.Id);
+        
+        RecalculatePetsPosition(pet.Position);
+        pet.Delete(deletionDate);
+        
+        return Result.Success<Error>();
+    }
+    public UnitResult<Error> DeletePetHard(PetId petId, DateTimeOffset deletionDate)
+    {
+        var pet = GetById(petId);
+        if (pet == null)
+            return Errors.General.NotFound(petId.Id);
+        
+        RecalculatePetsPosition(pet.Position);
+        _pets.Remove(pet);
+        pet.Delete(deletionDate);
+        
+        return Result.Success<Error>();
     }
 
-    public void Deactivate()
+    public override void Delete(DateTimeOffset deletionDate)
     {
-        _isDeleted = true;
         foreach (var pet in _pets)
         {
-            pet.Deactivate();
+            pet.Delete(deletionDate);
+        }
+        
+        base.Delete(deletionDate);
+    }
+
+    private void RecalculatePetsPosition(Position petPosition)
+    {
+        if(petPosition.Value == _pets.Count)
+            return;
+
+        var petsToMove = _pets.Where(p => p.Position.Value > petPosition.Value);
+
+        foreach (var pet in petsToMove)
+        {
+            pet.SetPosition(Position.Create(pet.Position.Value - 1).Value);
         }
     }
 }

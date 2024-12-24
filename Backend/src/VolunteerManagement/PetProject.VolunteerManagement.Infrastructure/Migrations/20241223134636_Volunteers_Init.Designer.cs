@@ -13,7 +13,7 @@ using PetProject.VolunteerManagement.Infrastructure.DbContexts;
 namespace PetProject.VolunteerManagement.Infrastructure.Migrations
 {
     [DbContext(typeof(VolunteerDbContext))]
-    [Migration("20241221210238_Volunteers_Init")]
+    [Migration("20241223134636_Volunteers_Init")]
     partial class Volunteers_Init
     {
         /// <inheritdoc />
@@ -33,7 +33,11 @@ namespace PetProject.VolunteerManagement.Infrastructure.Migrations
                         .HasColumnType("uuid")
                         .HasColumnName("id");
 
-                    b.Property<bool>("_isDeleted")
+                    b.Property<DateTimeOffset?>("DeletionDate")
+                        .HasColumnType("timestamp with time zone")
+                        .HasColumnName("deletion_date");
+
+                    b.Property<bool>("IsDeleted")
                         .HasColumnType("boolean")
                         .HasColumnName("is_deleted");
 
@@ -109,6 +113,10 @@ namespace PetProject.VolunteerManagement.Infrastructure.Migrations
                         .HasColumnType("timestamp with time zone")
                         .HasColumnName("date_created");
 
+                    b.Property<DateTimeOffset?>("DeletionDate")
+                        .HasColumnType("timestamp with time zone")
+                        .HasColumnName("deletion_date");
+
                     b.Property<string>("HelpStatus")
                         .IsRequired()
                         .HasColumnType("text")
@@ -118,6 +126,10 @@ namespace PetProject.VolunteerManagement.Infrastructure.Migrations
                         .HasColumnType("boolean")
                         .HasColumnName("is_castrated");
 
+                    b.Property<bool>("IsDeleted")
+                        .HasColumnType("boolean")
+                        .HasColumnName("is_deleted");
+
                     b.Property<bool>("IsVaccinated")
                         .HasColumnType("boolean")
                         .HasColumnName("is_vaccinated");
@@ -126,10 +138,6 @@ namespace PetProject.VolunteerManagement.Infrastructure.Migrations
                         .IsRequired()
                         .HasColumnType("jsonb")
                         .HasColumnName("pet_photos");
-
-                    b.Property<bool>("_isDeleted")
-                        .HasColumnType("boolean")
-                        .HasColumnName("is_deleted");
 
                     b.Property<Guid?>("volunteer_id")
                         .HasColumnType("uuid")

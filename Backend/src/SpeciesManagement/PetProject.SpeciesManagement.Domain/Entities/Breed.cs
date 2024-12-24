@@ -4,9 +4,8 @@ using PetProject.SharedKernel.Shared.ValueObjects;
 
 namespace PetProject.SpeciesManagement.Domain.Entities;
 
-public class Breed : Entity<BreedId>
+public class Breed : SoftDeletableEntity<BreedId>
 {
-    private bool _isDeleted;
     public BreedName BreedName { get; } = null!;
 
     protected Breed(BreedId id) : base(id) { }

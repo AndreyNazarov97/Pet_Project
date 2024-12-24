@@ -13,7 +13,7 @@ using PetProject.SpeciesManagement.Infrastructure.DbContexts;
 namespace PetProject.SpeciesManagement.Infrastructure.Migrations
 {
     [DbContext(typeof(SpeciesDbContext))]
-    [Migration("20241221210242_Species_Init")]
+    [Migration("20241223134640_Species_Init")]
     partial class Species_Init
     {
         /// <inheritdoc />
@@ -33,7 +33,11 @@ namespace PetProject.SpeciesManagement.Infrastructure.Migrations
                         .HasColumnType("uuid")
                         .HasColumnName("id");
 
-                    b.Property<bool>("_isDeleted")
+                    b.Property<DateTimeOffset?>("DeletionDate")
+                        .HasColumnType("timestamp with time zone")
+                        .HasColumnName("deletion_date");
+
+                    b.Property<bool>("IsDeleted")
                         .HasColumnType("boolean")
                         .HasColumnName("is_deleted");
 
@@ -60,13 +64,17 @@ namespace PetProject.SpeciesManagement.Infrastructure.Migrations
                         .HasColumnType("uuid")
                         .HasColumnName("id");
 
+                    b.Property<DateTimeOffset?>("DeletionDate")
+                        .HasColumnType("timestamp with time zone")
+                        .HasColumnName("deletion_date");
+
+                    b.Property<bool>("IsDeleted")
+                        .HasColumnType("boolean")
+                        .HasColumnName("is_deleted");
+
                     b.Property<Guid?>("SpeciesId")
                         .HasColumnType("uuid")
                         .HasColumnName("species_id");
-
-                    b.Property<bool>("_isDeleted")
-                        .HasColumnType("boolean")
-                        .HasColumnName("is_deleted");
 
                     b.ComplexProperty<Dictionary<string, object>>("BreedName", "PetProject.SpeciesManagement.Domain.Entities.Breed.BreedName#BreedName", b1 =>
                         {

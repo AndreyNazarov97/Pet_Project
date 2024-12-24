@@ -7,7 +7,6 @@ namespace PetProject.SpeciesManagement.Domain.Aggregate;
 
 public class Species : AggregateRoot<SpeciesId>
 {
-    private bool _isDeleted;
     private readonly List<Breed> _breeds = [];
     
     protected Species(SpeciesId id) : base(id) { }
