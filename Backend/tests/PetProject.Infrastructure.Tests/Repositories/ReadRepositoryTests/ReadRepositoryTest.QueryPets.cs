@@ -178,12 +178,14 @@ public partial class ReadRepositoryTest
         // Arrange
         var volunteer = TestData.Volunteer;
         var pet1 = TestData.Pet;
-        volunteer.AddPet(pet1);
-        var volunteer2 = TestData.Volunteer;
         var pet2 = TestData.Pet;
+        volunteer.AddPet(pet1);
+        volunteer.AddPet(pet2);
+        var volunteer2 = TestData.Volunteer;
         var pet3 = TestData.Pet;
-        volunteer2.AddPet(pet2);
+        var pet4 = TestData.Pet;
         volunteer2.AddPet(pet3);
+        volunteer2.AddPet(pet4);
         await using var dbContext = _fixture.GetVolunteerDbContext();
         await dbContext.AddRangeAsync(volunteer, volunteer2);
         await dbContext.SaveChangesAsync();

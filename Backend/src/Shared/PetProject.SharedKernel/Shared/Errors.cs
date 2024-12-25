@@ -1,4 +1,6 @@
-﻿namespace PetProject.SharedKernel.Shared;
+﻿using CSharpFunctionalExtensions;
+
+namespace PetProject.SharedKernel.Shared;
 
 public static class Errors
 {
@@ -67,6 +69,24 @@ public static class Errors
         public static Error InvalidStatus()
         {
             return Error.Failure("invalid.request.status", "Invalid request status");
+        }
+    }
+    
+    public static class Discussion
+    {
+        public static Error UserNotInDiscussion(long userId)
+        {
+            return Error.Failure("user.not.in.discussion", $"User with id {userId} not in discussion");
+        }
+        
+        public static Error NotYourMessage()
+        {
+            return Error.Failure("not.your.message", "Not your message");
+        }
+
+        public static UnitResult<Error> DiscussionAlreadyClosed()
+        {
+            return Error.Failure("discussion.already.closed", "Discussion already closed");
         }
     }
 

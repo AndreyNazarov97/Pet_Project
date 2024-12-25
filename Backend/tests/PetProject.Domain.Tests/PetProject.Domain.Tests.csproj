@@ -22,6 +22,8 @@
     </ItemGroup>
 
     <ItemGroup>
+      <ProjectReference Include="..\..\src\Discussions\PetProject.Discussions.Domain\PetProject.Discussions.Domain.csproj" />
+      <ProjectReference Include="..\..\src\Discussion\PetProject.Discussions.Domain\PetProject.Discussions.Domain.csproj" />
       <ProjectReference Include="..\PetProject.SharedTestData\PetProject.SharedTestData.csproj" />
     </ItemGroup>
 
