@@ -16,7 +16,6 @@ public class ValueObjectList<T> : IReadOnlyList<T>
     private ValueObjectList(){}
     
     [JsonConstructor]
-
     public ValueObjectList(IEnumerable<T> values)
     {
         Values = new List<T>(values).AsReadOnly();

@@ -105,7 +105,6 @@ public class TestData
             },
             new()
             {
-
                 BreedId = Guid.NewGuid(),
                 BreedName = "Bulldog"
             },
@@ -118,4 +117,12 @@ public class TestData
         ContentType = "image/jpeg",
         Content = new MemoryStream()
     };
+
+    public static VolunteerInfo VolunteerInfo => new(
+        FullName.Create(Faker.Name.FirstName(), Faker.Name.LastName()).Value,
+        PhoneNumber.Create(Random.PhoneNumber).Value,
+        Experience.Create(Random.Experience).Value,
+        Description.Create(Random.Words).Value,
+        [SocialNetwork.Create("VK", "https://vk.com").Value]
+    );
 }
