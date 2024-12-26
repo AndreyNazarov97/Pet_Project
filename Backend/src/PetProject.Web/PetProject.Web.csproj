@@ -32,6 +32,8 @@
       <ProjectReference Include="..\SpeciesManagement\PetProject.SpeciesManagement.Presentation\PetProject.SpeciesManagement.Presentation.csproj" />
       <ProjectReference Include="..\VolunteerManagement\PetProject.VolunteerManagement.Infrastructure\PetProject.VolunteerManagement.Infrastructure.csproj" />
       <ProjectReference Include="..\VolunteerManagement\PetProject.VolunteerManagement.Presentation\PetProject.VolunteerManagement.Presentation.csproj" />
+      <ProjectReference Include="..\VolunteerRequests\VolunteerRequests.Infrastructure\VolunteerRequests.Infrastructure.csproj" />
+      <ProjectReference Include="..\VolunteerRequests\VolunteerRequests.Presentation\VolunteerRequests.Presentation.csproj" />
     </ItemGroup>
 
     <ItemGroup>

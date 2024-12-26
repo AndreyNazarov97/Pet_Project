@@ -3,7 +3,7 @@ using PetProject.Core.Dtos;
 
 namespace PetProject.SharedTestData.Creators;
 
-public class VolunteerCreator
+public class DtoCreator
 {
     private static readonly Faker<FullNameDto> FullNameFaker = new Faker<FullNameDto>()
         .RuleFor(v => v.Name, faker => faker.Name.FirstName())
@@ -17,7 +17,13 @@ public class VolunteerCreator
         .RuleFor(v => v.House, faker => faker.Address.BuildingNumber())
         .RuleFor(v => v.Flat, faker => faker.Random.Number(1, 100).ToString());
     
+    private static readonly Faker<SocialNetworkDto> SocialNetworkFaker = new Faker<SocialNetworkDto>()
+        .RuleFor(v => v.Title, faker => faker.Internet.DomainWord())
+        .RuleFor(v => v.Url, faker => faker.Internet.Url());
+    
     public static FullNameDto CreateFullNameDto() => FullNameFaker.Generate();
     
     public static AddressDto CreateAddressDto() => AddressFaker.Generate();
+
+    public static SocialNetworkDto CreateSocialNetworkDto() => SocialNetworkFaker.Generate();
 }

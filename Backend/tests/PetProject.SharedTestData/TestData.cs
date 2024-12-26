@@ -9,6 +9,8 @@ using PetProject.VolunteerManagement.Domain.Aggregate;
 using PetProject.VolunteerManagement.Domain.Entities;
 using PetProject.VolunteerManagement.Domain.Enums;
 using PetProject.VolunteerManagement.Domain.ValueObjects;
+using VolunteerRequests.Domain.Aggregate;
+using VolunteerRequests.Domain.Enums;
 using Address = PetProject.SharedKernel.Shared.ValueObjects.Address;
 using Random = PetProject.SharedTestData.Creators.Random;
 
@@ -64,7 +66,7 @@ public class TestData
 
     public static VolunteerDto VolunteerDto => new()
     {
-        FullName = VolunteerCreator.CreateFullNameDto(),
+        FullName = DtoCreator.CreateFullNameDto(),
         GeneralDescription = Random.Words,
         AgeExperience = Random.Experience,
         PhoneNumber = Random.PhoneNumber
@@ -77,7 +79,7 @@ public class TestData
         HealthInformation = Random.Words,
         SpeciesName = "Dog",
         BreedName = "Bulldog",
-        Address = VolunteerCreator.CreateAddressDto(),
+        Address = DtoCreator.CreateAddressDto(),
         Weight = Random.Double,
         Height = Random.Double,
         PhoneNumber = Random.PhoneNumber,

@@ -20,7 +20,7 @@ public class VolunteerRequest : AggregateRoot<VolunteerRequestId>
     public long? AdminId { get; private set; }
     public long UserId { get; private set; }
     public Guid? DiscussionId { get; private set; }
-    public RejectionComment? RejectionComment { get; private set; }
+    public RejectionComment RejectionComment { get; private set; }
 
     private VolunteerRequest(
         VolunteerRequestId id,
@@ -29,8 +29,7 @@ public class VolunteerRequest : AggregateRoot<VolunteerRequestId>
         DateTimeOffset createdAt,
         long userId,
         long? adminId = null,
-        Guid? discussionId = null,
-        RejectionComment? rejectionComment = null) : base(id)
+        Guid? discussionId = null) : base(id)
     {
         VolunteerInfo = volunteerInfo;
         RequestStatus = requestStatus;
@@ -38,13 +37,16 @@ public class VolunteerRequest : AggregateRoot<VolunteerRequestId>
         AdminId = adminId;
         UserId = userId;
         DiscussionId = discussionId;
-        RejectionComment = rejectionComment;
+        RejectionComment = RejectionComment.Create(" ").Value;
     }
 
     public static Result<VolunteerRequest, Error> Create(
         VolunteerInfo volunteerInfo,
         long userId)
     {
+        if (userId <= 0)
+            return Errors.General.ValueIsInvalid(nameof(userId));
+        
         var requestId = VolunteerRequestId.NewId();
 
         var request = new VolunteerRequest(
@@ -56,11 +58,20 @@ public class VolunteerRequest : AggregateRoot<VolunteerRequestId>
 
         return request;
     }
+    
+    public UnitResult<Error> UpdateInfo(VolunteerInfo volunteerInfo)
+    {
+        if (RequestStatus != RequestStatus.RevisionRequired)
+            return Errors.VolunteerRequests.InvalidStatus();
+        
+        VolunteerInfo = volunteerInfo;
+        return Result.Success<Error>();
+    }
 
     public UnitResult<Error> TakeOnReview(long adminId, Guid discussionId)
     {
         if (RequestStatus != RequestStatus.New)
-            return Errors.RequestStatus.InvalidStatus();
+            return Errors.VolunteerRequests.InvalidStatus();
 
         RequestStatus = RequestStatus.OnReview;
         AdminId = adminId;
@@ -72,7 +83,7 @@ public class VolunteerRequest : AggregateRoot<VolunteerRequestId>
     public UnitResult<Error> SendForRevision(RejectionComment rejectionComment)
     {
         if (RequestStatus == RequestStatus.Approved || RequestStatus == RequestStatus.Rejected)
-            return Errors.RequestStatus.InvalidStatus();
+            return Errors.VolunteerRequests.InvalidStatus();
         
         RequestStatus = RequestStatus.RevisionRequired;
         RejectionComment = rejectionComment;
@@ -83,7 +94,7 @@ public class VolunteerRequest : AggregateRoot<VolunteerRequestId>
     public UnitResult<Error> Approve()
     {
         if (RequestStatus is RequestStatus.Approved or RequestStatus.Rejected or RequestStatus.New)
-            return Errors.RequestStatus.InvalidStatus();
+            return Errors.VolunteerRequests.InvalidStatus();
         
         RequestStatus = RequestStatus.Approved;
         
@@ -93,7 +104,7 @@ public class VolunteerRequest : AggregateRoot<VolunteerRequestId>
     public UnitResult<Error> Reject(RejectionComment rejectionComment)
     {
         if (RequestStatus is RequestStatus.Approved or RequestStatus.Rejected or RequestStatus.New)
-            return Errors.RequestStatus.InvalidStatus();
+            return Errors.VolunteerRequests.InvalidStatus();
         
         RequestStatus = RequestStatus.Rejected;
         RejectionComment = rejectionComment;

@@ -30,6 +30,38 @@ public class VolunteerRequestTests
     }
 
     [Fact]
+    public void Update_ShouldFailIfInvalidStatus()
+    {
+        // Arrange
+        var volunteerRequest = CreateNew();
+        var newInfo = TestData.VolunteerInfo;
+
+        // Act
+        var result = volunteerRequest.UpdateInfo(newInfo);
+        
+        // Assert
+        result.IsFailure.Should().BeTrue();
+        result.Error.Should().Be(Errors.VolunteerRequests.InvalidStatus());
+    }
+    
+    [Fact]
+    public void Update_ShouldUpdateVolunteerRequest()
+    {
+        // Arrange
+        var volunteerRequest = CreateNew();
+        var rejectionComment = RejectionComment.Create("Needs more details").Value;
+        volunteerRequest.SendForRevision(rejectionComment);
+        var newInfo = TestData.VolunteerInfo;
+
+        // Act
+        var result = volunteerRequest.UpdateInfo(newInfo);
+        
+        // Assert
+        result.IsSuccess.Should().BeTrue();
+        volunteerRequest.VolunteerInfo.Should().Be(newInfo);
+    }
+
+    [Fact]
     public void TakeOnReview_ShouldUpdateStatusAndAssignAdmin()
     {
         // Arrange
@@ -60,7 +92,7 @@ public class VolunteerRequestTests
 
         // Assert
         result.IsFailure.Should().BeTrue();
-        result.Error.Should().Be(Errors.RequestStatus.InvalidStatus());
+        result.Error.Should().Be(Errors.VolunteerRequests.InvalidStatus());
     }
 
     [Fact]
@@ -104,7 +136,7 @@ public class VolunteerRequestTests
 
         // Assert
         result.IsFailure.Should().BeTrue();
-        result.Error.Should().Be(Errors.RequestStatus.InvalidStatus());
+        result.Error.Should().Be(Errors.VolunteerRequests.InvalidStatus());
     }
 
     [Fact]
@@ -136,7 +168,7 @@ public class VolunteerRequestTests
 
         // Assert
         result.IsFailure.Should().BeTrue();
-        result.Error.Should().Be(Errors.RequestStatus.InvalidStatus());
+        result.Error.Should().Be(Errors.VolunteerRequests.InvalidStatus());
     }
 
     private VolunteerRequest CreateNew()

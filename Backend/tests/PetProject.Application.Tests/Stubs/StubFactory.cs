@@ -10,6 +10,7 @@ using PetProject.VolunteerManagement.Application.VolunteersManagement.Commands.A
 using PetProject.VolunteerManagement.Application.VolunteersManagement.Commands.CreateVolunteer;
 using PetProject.VolunteerManagement.Application.VolunteersManagement.Commands.SoftDeleteVolunteer;
 using PetProject.VolunteerManagement.Application.VolunteersManagement.Commands.UpdateVolunteer;
+using VolunteerRequests.Application.RequestsManagement.Commands.UpdateVolunteerRequest;
 
 namespace PetProject.Application.Tests.Stubs;
 
@@ -80,4 +81,38 @@ public static class StubFactory
             new(),
             new Mock<IUnitOfWork>());
 
+    public static CreateVolunteerRequestHandlerStub CreateCreateVolunteerRequestHandlerStub()
+        => new(
+            new(),
+            new());
+
+    public static TakeVolunteerRequestOnReviewHandlerStub CreateTakeVolunteerRequestOnReviewHandlerStub()
+        => new(
+            new(),
+            new(),
+            new());
+    
+    public static ApproveVolunteerRequestHandlerStub CreateApproveVolunteerRequestHandlerStub()
+        => new(
+            new(),
+            new(),
+            new());
+    
+    public static RejectVolunteerRequestHandlerStub CreateRejectVolunteerRequestHandlerStub()
+        => new(
+            new(),
+            new(),
+            new());
+    
+    public static SendForRevisionHandlerStub CreateSendForRevisionHandlerStub()
+        => new(
+            new(),
+            new(),
+            new());
+    
+    public static UpdateVolunteerRequestHandlerStub CreateUpdateVolunteerRequestHandlerStub()
+        => new(
+            new(),
+            new(),
+            new());
 }

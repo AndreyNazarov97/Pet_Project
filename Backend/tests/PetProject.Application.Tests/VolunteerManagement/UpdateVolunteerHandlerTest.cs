@@ -16,7 +16,7 @@ public class UpdateVolunteerHandlerTest
     private static UpdateVolunteerCommand UpdateVolunteerCommand => new()
     {
         VolunteerId = Guid.NewGuid(),
-        FullName = VolunteerCreator.CreateFullNameDto(),
+        FullName = DtoCreator.CreateFullNameDto(),
         Description = Random.Words,
         AgeExperience = Random.Experience,
         PhoneNumber = Random.PhoneNumber

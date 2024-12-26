@@ -16,7 +16,7 @@ public class CreateVolunteerHandlerTest
     private static CreateVolunteerCommand Command => new ()
     {
         PhoneNumber = Random.PhoneNumber,
-        FullName = VolunteerCreator.CreateFullNameDto(),
+        FullName = DtoCreator.CreateFullNameDto(),
         Description = Random.Words,
         AgeExperience = Random.Experience
     };

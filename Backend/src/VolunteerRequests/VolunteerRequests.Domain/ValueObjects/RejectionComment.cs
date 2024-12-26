@@ -15,7 +15,7 @@ public record RejectionComment
 
     public static Result<RejectionComment, Error> Create(string comment)
     {
-        if (string.IsNullOrWhiteSpace(comment) || comment.Length > Constants.EXTRA_TEXT_LENGTH)
+        if (string.IsNullOrEmpty(comment) || comment.Length > Constants.EXTRA_TEXT_LENGTH)
             return Errors.General.ValueIsInvalid(nameof(RejectionComment));
 
         return new RejectionComment(comment);
