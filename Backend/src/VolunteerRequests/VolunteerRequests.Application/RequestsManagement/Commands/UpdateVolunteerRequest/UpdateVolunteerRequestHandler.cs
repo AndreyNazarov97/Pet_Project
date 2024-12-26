@@ -15,17 +15,17 @@ namespace VolunteerRequests.Application.RequestsManagement.Commands.UpdateVolunt
 
 public class UpdateVolunteerRequestHandler : IRequestHandler<UpdateVolunteerRequestCommand, UnitResult<ErrorList>>
 {
-    private readonly IRequestsRepository _requestsRepository;
+    private readonly IVolunteerRequestsRepository _volunteerRequestsRepository;
     private readonly IUnitOfWork _unitOfWork;
     private readonly ILogger<UpdateVolunteerRequestHandler> _logger;
 
     public UpdateVolunteerRequestHandler(
-        IRequestsRepository requestsRepository,
+        IVolunteerRequestsRepository volunteerRequestsRepository,
         [FromKeyedServices(Constants.Context.VolunteerRequests)]
         IUnitOfWork unitOfWork,
         ILogger<UpdateVolunteerRequestHandler> logger)
     {
-        _requestsRepository = requestsRepository;
+        _volunteerRequestsRepository = volunteerRequestsRepository;
         _unitOfWork = unitOfWork;
         _logger = logger;
     }
@@ -34,7 +34,7 @@ public class UpdateVolunteerRequestHandler : IRequestHandler<UpdateVolunteerRequ
         CancellationToken cancellationToken)
     {
         var requestId = VolunteerRequestId.Create(command.VolunteerRequestId);
-        var requestResult = await _requestsRepository.GetById(requestId, cancellationToken);
+        var requestResult = await _volunteerRequestsRepository.GetById(requestId, cancellationToken);
 
         if (requestResult.IsFailure)
             return Errors.General.NotFound(command.VolunteerRequestId).ToErrorList();

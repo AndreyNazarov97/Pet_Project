@@ -49,7 +49,7 @@ public static class DependencyInjection
 
     private static IServiceCollection AddRepositories(this IServiceCollection services)
     {
-        services.AddScoped<IRequestsRepository, RequestsRepository>();
+        services.AddScoped<IVolunteerRequestsRepository, VolunteerVolunteerRequestsRepository>();
         services.AddScoped<IReadRepository, ReadRepository>();
 
         return services;

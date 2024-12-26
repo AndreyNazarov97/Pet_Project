@@ -2,6 +2,7 @@
 using Dapper;
 using PetProject.Core.Database.Models;
 using PetProject.Core.Dtos;
+using PetProject.Core.Dtos.VolunteerRequests;
 using Guid = System.Guid;
 
 namespace PetProject.Core.Database.Repository;
@@ -364,5 +365,114 @@ public class ReadRepository : IReadRepository
 
 
         return petsDictionary.Values.ToArray();
+    }
+
+    public async Task<VolunteerRequestDto[]> QueryVolunteerRequests(VolunteerRequestQueryModel query,
+        CancellationToken cancellationToken = default)
+    {
+        var sqlQuery = """
+                       SELECT 
+                            vr.id,
+                            vr.request_status,
+                            vr.created_at,
+                            vr.admin_id,
+                            vr.user_id,
+                            vr.discussion_id,
+                            vr.rejection_comment,
+                            vr.name,
+                            vr.surname,
+                            vr.patronymic,
+                            vr.phone_number,
+                            vr.age_experience as "work_experience",
+                            vr.general_description,
+                            vr.social_networks
+                       FROM 
+                           volunteers_requests.volunteer_requests AS vr
+                       """;
+
+        var conditions = new List<string>(["vr.is_deleted = false"]);
+        var param = new DynamicParameters();
+
+        if (query.VolunteerRequestIds is { Length: > 0 })
+        {
+            conditions.Add("vr.id = any(@VolunteerRequestIds)");
+            param.Add("VolunteerRequestIds", query.VolunteerRequestIds);
+        }
+
+        if (query.AdminIds is { Length: > 0 })
+        {
+            conditions.Add("vr.admin_id = any(@AdminIds)");
+            param.Add("AdminIds", query.AdminIds);
+        }
+
+        if (query.UserIds is { Length: > 0 })
+        {
+            conditions.Add("vr.user_id = any(@UserIds)");
+            param.Add("UserIds", query.UserIds);
+        }
+        
+        if (string.IsNullOrWhiteSpace(query.RequestStatus) == false)
+        {
+            conditions.Add("vr.request_status = @RequestStatus");
+            param.Add("RequestStatus", query.RequestStatus);
+        }
+
+        sqlQuery += " where " + string.Join(" and ", conditions);
+
+        // Сортировка
+        if (!string.IsNullOrEmpty(query.SortBy))
+        {
+            var sortField = query.SortBy switch
+            {
+                "RequestStatus" => "vr.request_status",
+                "UserId" => "vr.user_id",
+                "CreatedAt" => "vr.created_at",
+                "PhoneNumber" => "vr.phone_number",
+                _ => "vr.request_status"
+            };
+            sqlQuery += $" ORDER BY {sortField} {(query.SortDescending ? "DESC" : "ASC")}";
+        }
+
+        if (query.Limit > 0)
+        {
+            sqlQuery += " limit @Limit ";
+            param.Add("Limit", query.Limit);
+        }
+
+        if (query.Offset > 0)
+        {
+            sqlQuery += " offset @Offset ";
+            param.Add("Offset", query.Offset);
+        }
+        
+        await using var connection = _connectionFactory.GetConnection();
+
+        var requestsDictionary = new Dictionary<Guid, VolunteerRequestDto>();
+
+        await connection.QueryAsync<VolunteerRequestDto, FullNameDto, VolunteerInfoDto , string, VolunteerRequestDto>(
+            sqlQuery,
+            (volunteerRequestDto, fullNameDto, volunteerInfoDto, jsonSocialNetworks) =>
+            {
+                if (!requestsDictionary.TryGetValue(volunteerRequestDto.Id, out var existingRequest))
+                {
+                    existingRequest = volunteerRequestDto;
+                    requestsDictionary[volunteerRequestDto.Id] = existingRequest;
+                }
+                
+                var socialNetworks = JsonSerializer
+                    .Deserialize<SocialNetworkDto[]>(jsonSocialNetworks) ?? [];
+                volunteerInfoDto.SocialNetworks = socialNetworks;
+                volunteerInfoDto.FullName = fullNameDto;
+                
+                volunteerRequestDto.VolunteerInfo = volunteerInfoDto;
+                
+                return existingRequest;
+            },
+            splitOn: "name, phone_number, social_networks",
+            param: param
+        );
+
+
+        return requestsDictionary.Values.ToArray();
     }
 }

@@ -12,14 +12,14 @@ namespace VolunteerRequests.Application.RequestsManagement.Commands.CreateVolunt
 public class CreateVolunteerRequestHandler 
     : IRequestHandler<CreateVolunteerRequestCommand, Result<Guid, ErrorList>>
 {
-    private readonly IRequestsRepository _requestsRepository;
+    private readonly IVolunteerRequestsRepository _volunteerRequestsRepository;
     private readonly ILogger<CreateVolunteerRequestHandler> _logger;
 
     public CreateVolunteerRequestHandler(
-        IRequestsRepository requestsRepository,
+        IVolunteerRequestsRepository volunteerRequestsRepository,
         ILogger<CreateVolunteerRequestHandler> logger)
     {
-        _requestsRepository = requestsRepository;
+        _volunteerRequestsRepository = volunteerRequestsRepository;
         _logger = logger;
     }
     
@@ -33,7 +33,7 @@ public class CreateVolunteerRequestHandler
             return requestResult.Error.ToErrorList();
         }
         
-        var requestId = await _requestsRepository.Add(requestResult.Value, cancellationToken);
+        var requestId = await _volunteerRequestsRepository.Add(requestResult.Value, cancellationToken);
 
         return requestId;
     }

@@ -14,16 +14,16 @@ namespace VolunteerRequests.Application.RequestsManagement.Commands.SendForRevis
 
 public class SendForRevisionHandler : IRequestHandler<SendForRevisionCommand, UnitResult<ErrorList>>
 {
-    private readonly IRequestsRepository _requestsRepository;
+    private readonly IVolunteerRequestsRepository _volunteerRequestsRepository;
     private readonly IUnitOfWork _unitOfWork;
     private readonly ILogger<SendForRevisionHandler> _logger;
 
     public SendForRevisionHandler(
-        IRequestsRepository requestsRepository, 
+        IVolunteerRequestsRepository volunteerRequestsRepository, 
         [FromKeyedServices(Constants.Context.VolunteerRequests)]IUnitOfWork unitOfWork,
         ILogger<SendForRevisionHandler> logger)
     {
-        _requestsRepository = requestsRepository;
+        _volunteerRequestsRepository = volunteerRequestsRepository;
         _unitOfWork = unitOfWork;
         _logger = logger;
     }
@@ -31,7 +31,7 @@ public class SendForRevisionHandler : IRequestHandler<SendForRevisionCommand, Un
     public async Task<UnitResult<ErrorList>> Handle(SendForRevisionCommand command, CancellationToken cancellationToken)
     {
         var requestId = VolunteerRequestId.Create(command.VolunteerRequestId);
-        var requestResult = await _requestsRepository.GetById(requestId, cancellationToken);
+        var requestResult = await _volunteerRequestsRepository.GetById(requestId, cancellationToken);
 
         if (requestResult.IsFailure)
             return Errors.General.NotFound(command.VolunteerRequestId).ToErrorList();

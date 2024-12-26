@@ -27,7 +27,7 @@ public class TakeVolunteerRequestOnReviewHandlerTest
         var handler = StubFactory.CreateTakeVolunteerRequestOnReviewHandlerStub();
         
         // Act
-        handler.VolunteerRequestsRepositoryMock.SetupGetById(request);
+        handler.VolunteerRequestsRepositoryMock.SetupGetById( request);
         var result = await handler.Handle(command, CancellationToken.None);
         
         // Assert

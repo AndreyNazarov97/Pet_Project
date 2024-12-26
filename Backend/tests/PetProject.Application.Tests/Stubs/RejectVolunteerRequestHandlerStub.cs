@@ -8,14 +8,14 @@ namespace PetProject.Application.Tests.Stubs;
 
 public class RejectVolunteerRequestHandlerStub: RejectVolunteerRequestHandler
 {
-    internal Mock<IRequestsRepository> VolunteerRequestsRepositoryMock { get; }
+    internal Mock<IVolunteerRequestsRepository> VolunteerRequestsRepositoryMock { get; }
     
     internal Mock<IUnitOfWork> UnitOfWorkMock { get; }
     
     internal Mock<ILogger<RejectVolunteerRequestHandler>> LoggerMock { get; }
     
     public RejectVolunteerRequestHandlerStub(
-        Mock<IRequestsRepository> volunteerRequestsRepositoryMock,
+        Mock<IVolunteerRequestsRepository> volunteerRequestsRepositoryMock,
         Mock<IUnitOfWork> unitOfWorkMock,
         Mock<ILogger<RejectVolunteerRequestHandler>> loggerMock) 
         : base(

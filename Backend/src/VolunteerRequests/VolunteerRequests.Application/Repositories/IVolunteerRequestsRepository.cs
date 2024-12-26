@@ -5,7 +5,7 @@ using VolunteerRequests.Domain.Aggregate;
 
 namespace VolunteerRequests.Application.Repositories;
 
-public interface IRequestsRepository
+public interface IVolunteerRequestsRepository
 {
     public Task<Guid> Add(VolunteerRequest request,
         CancellationToken cancellationToken = default);

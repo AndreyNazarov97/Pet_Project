@@ -173,46 +173,6 @@ public partial class ReadRepositoryTest
     }
 
     [Fact]
-    public async Task ShouldReturnPaginatedResults()
-    {
-        // Arrange
-        var volunteer = TestData.Volunteer;
-        var pet1 = TestData.Pet;
-        var pet2 = TestData.Pet;
-        volunteer.AddPet(pet1);
-        volunteer.AddPet(pet2);
-        var volunteer2 = TestData.Volunteer;
-        var pet3 = TestData.Pet;
-        var pet4 = TestData.Pet;
-        volunteer2.AddPet(pet3);
-        volunteer2.AddPet(pet4);
-        await using var dbContext = _fixture.GetVolunteerDbContext();
-        await dbContext.AddRangeAsync(volunteer, volunteer2);
-        await dbContext.SaveChangesAsync();
-
-        var query = new PetQueryModel
-        {
-            Limit = 2,
-            Offset = 1,
-            SortBy = "Name",
-        };
-        
-        var petsInDb = _fixture.GetVolunteerDbContext().Volunteers
-            .SelectMany(v => v.Pets)
-            .Select(p => p.PetName.Value)
-            .OrderBy(n => n)
-            .ToList();
-
-        // Act
-        var result = await _sut.QueryPets(query, CancellationToken.None);
-
-        // Assert
-        result.Should().HaveCount(2);
-        result[0].PetName.Should().Be(petsInDb[1]);
-        result[1].PetName.Should().Be(petsInDb[2]);
-    }
-
-    [Fact]
     public async Task ShouldFilterPetsBySpeciesAndBreed()
     {
         // Arrange

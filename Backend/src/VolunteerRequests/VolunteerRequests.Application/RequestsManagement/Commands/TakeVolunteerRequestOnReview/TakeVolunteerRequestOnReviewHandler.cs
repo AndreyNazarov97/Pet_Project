@@ -12,16 +12,16 @@ namespace VolunteerRequests.Application.RequestsManagement.Commands.TakeVoluntee
 
 public class TakeVolunteerRequestOnReviewHandler : IRequestHandler< TakeVolunteerRequestOnReviewCommand, UnitResult<ErrorList>>
 {
-    private readonly IRequestsRepository _requestsRepository;
+    private readonly IVolunteerRequestsRepository _volunteerRequestsRepository;
     private readonly IUnitOfWork _unitOfWork;
     private readonly ILogger<TakeVolunteerRequestOnReviewHandler> _logger;
 
     public TakeVolunteerRequestOnReviewHandler(
-        IRequestsRepository requestsRepository, 
+        IVolunteerRequestsRepository volunteerRequestsRepository, 
         [FromKeyedServices(Constants.Context.VolunteerRequests)]IUnitOfWork unitOfWork,
         ILogger<TakeVolunteerRequestOnReviewHandler> logger)
     {
-        _requestsRepository = requestsRepository;
+        _volunteerRequestsRepository = volunteerRequestsRepository;
         _unitOfWork = unitOfWork;
         _logger = logger;
     }
@@ -29,7 +29,7 @@ public class TakeVolunteerRequestOnReviewHandler : IRequestHandler< TakeVoluntee
     public async Task<UnitResult<ErrorList>> Handle(TakeVolunteerRequestOnReviewCommand command, CancellationToken cancellationToken)
     {
         var requestId = VolunteerRequestId.Create(command.VolunteerRequestId);
-        var requestResult = await _requestsRepository.GetById(requestId, cancellationToken);
+        var requestResult = await _volunteerRequestsRepository.GetById(requestId, cancellationToken);
 
         if (requestResult.IsFailure)
             return Errors.General.NotFound(command.VolunteerRequestId).ToErrorList();

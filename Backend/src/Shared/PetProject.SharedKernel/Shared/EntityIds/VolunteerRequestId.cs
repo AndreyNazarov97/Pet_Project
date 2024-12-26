@@ -1,6 +1,6 @@
 namespace PetProject.SharedKernel.Shared.EntityIds;
 
-public class VolunteerRequestId
+public record VolunteerRequestId
 {
     public Guid Id { get; }
 

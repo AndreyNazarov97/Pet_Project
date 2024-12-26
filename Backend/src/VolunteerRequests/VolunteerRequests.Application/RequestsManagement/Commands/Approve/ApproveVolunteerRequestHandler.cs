@@ -13,16 +13,16 @@ namespace VolunteerRequests.Application.RequestsManagement.Commands.Approve;
 
 public class ApproveVolunteerRequestHandler : IRequestHandler<ApproveVolunteerRequestCommand, UnitResult<ErrorList>>
 {
-    private readonly IRequestsRepository _requestsRepository;
+    private readonly IVolunteerRequestsRepository _volunteerRequestsRepository;
     private readonly IUnitOfWork _unitOfWork;
     private readonly ILogger<ApproveVolunteerRequestHandler> _logger;
 
     public ApproveVolunteerRequestHandler(
-        IRequestsRepository requestsRepository, 
+        IVolunteerRequestsRepository volunteerRequestsRepository, 
         [FromKeyedServices(Constants.Context.VolunteerRequests)]IUnitOfWork unitOfWork,
         ILogger<ApproveVolunteerRequestHandler> logger)
     {
-        _requestsRepository = requestsRepository;
+        _volunteerRequestsRepository = volunteerRequestsRepository;
         _unitOfWork = unitOfWork;
         _logger = logger;
     }
@@ -30,7 +30,7 @@ public class ApproveVolunteerRequestHandler : IRequestHandler<ApproveVolunteerRe
     public async Task<UnitResult<ErrorList>> Handle(ApproveVolunteerRequestCommand command, CancellationToken cancellationToken)
     {
         var requestId = VolunteerRequestId.Create(command.VolunteerRequestId);
-        var requestResult = await _requestsRepository.GetById(requestId, cancellationToken);
+        var requestResult = await _volunteerRequestsRepository.GetById(requestId, cancellationToken);
 
         if (requestResult.IsFailure)
             return Errors.General.NotFound(command.VolunteerRequestId).ToErrorList();

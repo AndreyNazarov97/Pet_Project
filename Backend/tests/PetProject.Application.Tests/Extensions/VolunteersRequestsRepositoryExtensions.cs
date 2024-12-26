@@ -10,7 +10,7 @@ namespace PetProject.Application.Tests.Extensions;
 public static class VolunteersRequestsRepositoryExtensions
 {
     public static void SetupGetById(
-        this Mock<IRequestsRepository> mock,
+        this Mock<IVolunteerRequestsRepository> mock,
         Result<VolunteerRequest, Error> result)
     {
         mock.Setup(vr => vr.GetById(

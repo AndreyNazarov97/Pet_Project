@@ -8,11 +8,11 @@ using VolunteerRequests.Infrastructure.DbContexts;
 
 namespace VolunteerRequests.Infrastructure.Repositories;
 
-public class RequestsRepository : IRequestsRepository
+public class VolunteerVolunteerRequestsRepository : IVolunteerRequestsRepository
 {
     private readonly VolunteerRequestsDbContext _context;
 
-    public RequestsRepository(VolunteerRequestsDbContext context)
+    public VolunteerVolunteerRequestsRepository(VolunteerRequestsDbContext context)
     {
         _context = context;
     }
