@@ -97,6 +97,7 @@ public class VolunteerRequest : AggregateRoot<VolunteerRequestId>
             return Errors.VolunteerRequests.InvalidStatus();
         
         RequestStatus = RequestStatus.Approved;
+        RejectionComment = RejectionComment.Create(" ").Value;
         
         return Result.Success<Error>();
     }

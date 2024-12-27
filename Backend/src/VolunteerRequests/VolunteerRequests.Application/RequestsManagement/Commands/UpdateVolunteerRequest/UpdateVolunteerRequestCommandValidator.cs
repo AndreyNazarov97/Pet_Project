@@ -24,7 +24,7 @@ public class UpdateVolunteerRequestCommandValidator : AbstractValidator<UpdateVo
         RuleFor(c => c.Description)
             .MustBeValueObject(Description.Create);
 
-        RuleFor(c => c.AgeExperience)
+        RuleFor(c => c.WorkExperience)
             .MustBeValueObject(Experience.Create);
 
         RuleFor(c => c.PhoneNumber)

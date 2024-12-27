@@ -60,7 +60,7 @@ public class UpdateVolunteerRequestHandler : IRequestHandler<UpdateVolunteerRequ
     {
         var fullName = command.FullName.ToEntity();
         var description = Description.Create(command.Description).Value;
-        var workExperience = Experience.Create(command.AgeExperience).Value;
+        var workExperience = Experience.Create(command.WorkExperience).Value;
         var phoneNumber = PhoneNumber.Create(command.PhoneNumber).Value;
         var socialNetworks = command.SocialNetworksDto
             .Select(s => s.ToEntity());

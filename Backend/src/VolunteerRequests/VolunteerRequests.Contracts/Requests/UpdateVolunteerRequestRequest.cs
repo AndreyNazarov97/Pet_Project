@@ -1,12 +1,11 @@
-﻿using PetProject.Core.Dtos;
+using PetProject.Core.Dtos;
 
 namespace VolunteerRequests.Contracts.Requests;
 
-public record UpdateRequest(
-    Guid VolunteerRequestId,
+public record UpdateVolunteerRequestRequest(
+    long UserId,
     FullNameDto FullNameDto,
-    string Email,
     string PhoneNumber,
     int WorkExperience,
     string VolunteerDescription,
-    IEnumerable<SocialNetworkDto> SocialNetworkDtos);
+    IEnumerable<SocialNetworkDto> SocialNetworksDto);

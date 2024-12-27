@@ -5,6 +5,7 @@ using PetProject.SpeciesManagement.Application;
 using PetProject.SpeciesManagement.Infrastructure;
 using PetProject.VolunteerManagement.Application;
 using PetProject.VolunteerManagement.Infrastructure;
+using VolunteerRequests.Application;
 using VolunteerRequests.Infrastructure;
 
 namespace PetProject.Web;
@@ -16,6 +17,7 @@ public static class DependencyInjection
         services
             .AddAccountsModule(configuration)
             .AddVolunteersModule(configuration)
+            .AddVolunteerRequestsModule(configuration)
             .AddSpeciesModule();
 
         return services;
@@ -55,7 +57,8 @@ public static class DependencyInjection
         IConfiguration configuration)
     {
         services
-            .AddVolunteerRequestsPostgresInfrastructure(configuration);
+            .AddVolunteerRequestsPostgresInfrastructure(configuration)
+            .AddVolunteerRequestsApplication();
 
         return services;
     }

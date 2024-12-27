@@ -12,8 +12,4 @@
       <ProjectReference Include="..\VolunteerRequests.Domain\VolunteerRequests.Domain.csproj" />
     </ItemGroup>
 
-    <ItemGroup>
-      <Folder Include="RequestsManagement\Queries\" />
-    </ItemGroup>
-
 </Project>

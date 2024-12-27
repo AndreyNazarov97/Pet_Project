@@ -8,7 +8,7 @@ namespace VolunteerRequests.Application;
 
 public static class DependencyInjection
 {
-    public static IServiceCollection AddVolunteerManagementApplication(this IServiceCollection services)
+    public static IServiceCollection AddVolunteerRequestsApplication(this IServiceCollection services)
     {
         services.AddMediatR(c => c
                 .RegisterServicesFromAssembly(typeof(DependencyInjection).Assembly)
