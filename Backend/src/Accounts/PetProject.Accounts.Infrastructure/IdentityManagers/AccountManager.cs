@@ -2,6 +2,7 @@
 using Microsoft.EntityFrameworkCore;
 using PetProject.Accounts.Application.Managers;
 using PetProject.Accounts.Domain;
+using PetProject.Accounts.Infrastructure.DbContexts;
 using PetProject.SharedKernel.Shared;
 
 namespace PetProject.Accounts.Infrastructure.IdentityManagers;

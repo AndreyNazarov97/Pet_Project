@@ -1,6 +1,7 @@
 ﻿using CSharpFunctionalExtensions;
 using MediatR;
 using Microsoft.Extensions.DependencyInjection;
+using PetProject.Accounts.Application.Interfaces;
 using PetProject.Accounts.Application.Managers;
 using PetProject.Accounts.Contracts.Responses;
 using PetProject.Core.Database;

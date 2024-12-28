@@ -1,5 +1,6 @@
 using Microsoft.EntityFrameworkCore;
 using PetProject.Accounts.Domain;
+using PetProject.Accounts.Infrastructure.DbContexts;
 
 namespace PetProject.Accounts.Infrastructure.IdentityManagers;
 

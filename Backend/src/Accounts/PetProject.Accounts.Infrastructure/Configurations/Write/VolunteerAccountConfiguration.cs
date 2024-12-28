@@ -7,7 +7,7 @@ using PetProject.Core.Dtos;
 using PetProject.Core.Extensions;
 using PetProject.SharedKernel.Shared.ValueObjects;
 
-namespace PetProject.Accounts.Infrastructure.Configurations;
+namespace PetProject.Accounts.Infrastructure.Configurations.Write;
 
 public class VolunteerAccountConfiguration : IEntityTypeConfiguration<VolunteerAccount>
 {

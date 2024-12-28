@@ -10,11 +10,13 @@ public record UserDto
     
     public required FullNameDto FullName { get; set; }
 
-    public RoleDto[] Roles { get; set; } = [];
+    public List<RoleDto> Roles { get; set; } = [];
     
     public VolunteerAccountDto? VolunteerAccount { get; set; }
     
     public ParticipantAccountDto? ParticipantAccount { get; set; }
+    
+    public AdminAccountDto? AdminAccount { get; set; }
     
     public SocialNetworkDto[] SocialNetworks { get; set; } = [];
     

@@ -5,7 +5,7 @@ using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.Logging;
 using PetProject.Accounts.Domain;
 
-namespace PetProject.Accounts.Infrastructure;
+namespace PetProject.Accounts.Infrastructure.DbContexts;
 
 public class AccountsDbContext
     : IdentityDbContext<User, Role, long>
@@ -66,7 +66,8 @@ public class AccountsDbContext
             .ToTable("user_roles");
         
         modelBuilder.HasDefaultSchema("accounts");
-        modelBuilder.ApplyConfigurationsFromAssembly(typeof(AccountsDbContext).Assembly);
+        modelBuilder.ApplyConfigurationsFromAssembly(typeof(AccountsDbContext).Assembly,
+            type => type.FullName?.Contains("Configurations.Write") ?? false);
     }
 
     private static ILoggerFactory CreateLoggerFactory()
