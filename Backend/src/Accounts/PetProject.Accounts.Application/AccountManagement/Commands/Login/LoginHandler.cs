@@ -2,6 +2,7 @@
 using MediatR;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.Extensions.Logging;
+using PetProject.Accounts.Application.Interfaces;
 using PetProject.Accounts.Contracts.Responses;
 using PetProject.Accounts.Domain;
 using PetProject.SharedKernel.Shared;

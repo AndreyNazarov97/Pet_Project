@@ -4,7 +4,7 @@ using PetProject.Accounts.Application.Models;
 using PetProject.Accounts.Domain;
 using PetProject.SharedKernel.Shared;
 
-namespace PetProject.Accounts.Application;
+namespace PetProject.Accounts.Application.Interfaces;
 
 public interface ITokenProvider
 {

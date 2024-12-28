@@ -4,6 +4,8 @@ public record VolunteerAccountDto
 {
     public required long VolunteerAccountId { get; init; }
     
+    public required long UserId { get; init; }
+    
     public RequisiteDto[] Requisites { get; set; } = [];
     
     public int Experience { get; init; }

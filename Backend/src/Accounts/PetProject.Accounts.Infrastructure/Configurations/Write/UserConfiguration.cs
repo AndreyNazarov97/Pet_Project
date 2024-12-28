@@ -1,6 +1,4 @@
-﻿using System.Text.Json;
-using Microsoft.EntityFrameworkCore;
-using Microsoft.EntityFrameworkCore.ChangeTracking;
+﻿using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Metadata.Builders;
 using PetProject.Accounts.Domain;
 using PetProject.Core.Dtos;
@@ -8,7 +6,7 @@ using PetProject.Core.Extensions;
 using PetProject.SharedKernel.Constants;
 using PetProject.SharedKernel.Shared.ValueObjects;
 
-namespace PetProject.Accounts.Infrastructure.Configurations;
+namespace PetProject.Accounts.Infrastructure.Configurations.Write;
 
 public class UserConfiguration : IEntityTypeConfiguration<User>
 {

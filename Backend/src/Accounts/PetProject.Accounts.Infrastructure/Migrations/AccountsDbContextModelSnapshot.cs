@@ -6,6 +6,7 @@ using Microsoft.EntityFrameworkCore.Infrastructure;
 using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 using Npgsql.EntityFrameworkCore.PostgreSQL.Metadata;
 using PetProject.Accounts.Infrastructure;
+using PetProject.Accounts.Infrastructure.DbContexts;
 
 #nullable disable
 

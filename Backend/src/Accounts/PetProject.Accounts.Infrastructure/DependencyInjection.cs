@@ -6,10 +6,12 @@ using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.IdentityModel.Tokens;
 using PetProject.Accounts.Application;
+using PetProject.Accounts.Application.Interfaces;
 using PetProject.Accounts.Application.Managers;
 using PetProject.Accounts.Domain;
 using PetProject.Accounts.Infrastructure.Common;
 using PetProject.Accounts.Infrastructure.DataSeed;
+using PetProject.Accounts.Infrastructure.DbContexts;
 using PetProject.Accounts.Infrastructure.IdentityManagers;
 using PetProject.Accounts.Infrastructure.Options;
 using PetProject.Accounts.Infrastructure.Providers;
@@ -30,6 +32,7 @@ public static class DependencyInjection
         services.AddTransient<ITokenProvider, JwtTokenProvider>();
         services.AddScoped<IPostgresConnectionFactory, PostgresConnectionFactory>();
 
+        services.AddScoped<IReadDbContext, ReadDbContext>();
         services.AddScoped<AccountsDbContext>();
         services.AddKeyedScoped<IUnitOfWork, UnitOfWork>(Constants.Context.Accounts);
 

@@ -2,7 +2,7 @@
 using Microsoft.EntityFrameworkCore.Metadata.Builders;
 using PetProject.Accounts.Domain;
 
-namespace PetProject.Accounts.Infrastructure.Configurations;
+namespace PetProject.Accounts.Infrastructure.Configurations.Write;
 
 public class RolePermissionConfiguration : IEntityTypeConfiguration<RolePermission>
 {
