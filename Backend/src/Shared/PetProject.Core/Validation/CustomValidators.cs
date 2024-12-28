@@ -6,7 +6,7 @@ namespace PetProject.Core.Validation;
 
 public static class CustomValidators
 {
-    public static IRuleBuilderOptionsConditions<T, TElement> MustBeValueObject<T, TElement, TValueObject>(
+    public static IRuleBuilderOptionsConditions<T, TElement>  MustBeValueObject<T, TElement, TValueObject>(
         this IRuleBuilder<T, TElement> ruleBuilder,
         Func<TElement, Result<TValueObject, Error>> factoryMethod)
     {

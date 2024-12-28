@@ -1,18 +1,21 @@
 ﻿using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.Logging;
-using PetProject.Core.Dtos;
+using VolunteerRequests.Domain.Aggregate;
 
-namespace PetProject.Core.Database;
+namespace VolunteerRequests.Infrastructure.DbContexts;
 
-public class ReadDbContext : DbContext, IReadDbContext
+public class VolunteerRequestsDbContext : DbContext
 {
     private readonly IConfiguration _configuration;
 
-    public ReadDbContext(IConfiguration configuration)
+
+    public VolunteerRequestsDbContext(IConfiguration configuration)
     {
         _configuration = configuration;
     }
+    
+    public DbSet<VolunteerRequest> VolunteerRequests { get; set; }
 
     protected override void OnConfiguring(DbContextOptionsBuilder optionsBuilder)
     {
@@ -22,24 +25,16 @@ public class ReadDbContext : DbContext, IReadDbContext
             .UseSnakeCaseNamingConvention()
             .UseLoggerFactory(CreateLoggerFactory())
             .EnableSensitiveDataLogging();
-
-        optionsBuilder.UseQueryTrackingBehavior(QueryTrackingBehavior.NoTracking);
     }
 
     protected override void OnModelCreating(ModelBuilder modelBuilder)
     {
-        modelBuilder.ApplyConfigurationsFromAssembly(
-            typeof(ReadDbContext).Assembly,
-            type => type.FullName?.Contains("Configurations.Read") ?? false);
+        modelBuilder.HasDefaultSchema("volunteers_requests");
+        modelBuilder.ApplyConfigurationsFromAssembly(typeof(VolunteerRequestsDbContext).Assembly);
     }
-
     private static ILoggerFactory CreateLoggerFactory()
     {
         return LoggerFactory.Create(builder => builder.AddConsole());
     }
-
-    public IQueryable<VolunteerDto> Volunteers => Set<VolunteerDto>();
-    public IQueryable<BreedDto> Breeds => Set<BreedDto>();
-    public IQueryable<SpeciesDto> Species => Set<SpeciesDto>();
-    public IQueryable<PetDto> Pets => Set<PetDto>();
+    
 }

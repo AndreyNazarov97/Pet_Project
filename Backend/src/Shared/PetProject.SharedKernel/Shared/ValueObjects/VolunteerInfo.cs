@@ -8,17 +8,19 @@ public record VolunteerInfo
     public Description GeneralDescription { get; }
     public IReadOnlyList<SocialNetwork> SocialNetworks { get; }
     
+    private VolunteerInfo(){}
+    
     public VolunteerInfo(
         FullName fullName,
         PhoneNumber phoneNumber, 
         Experience workExperience, 
         Description generalDescription,
-        IReadOnlyList<SocialNetwork> socialNetworks)
+        IEnumerable<SocialNetwork> socialNetworks)
     {
         FullName = fullName;
         PhoneNumber = phoneNumber;
         WorkExperience = workExperience;
         GeneralDescription = generalDescription;
-        SocialNetworks = socialNetworks;
+        SocialNetworks = socialNetworks.ToList();
     }
 }

@@ -14,7 +14,7 @@ public class UpdateSocialNetworksCommandValidator : AbstractValidator<UpdateSoci
             .WithError(Errors.General.LengthIsInvalid("Id"));
         
         RuleForEach(x => x.SocialLinks)
-            .SetValidator(new SocialLinkDtoValidator());
+            .SetValidator(new SocialNetworkDtoValidator());
     }
     
 }

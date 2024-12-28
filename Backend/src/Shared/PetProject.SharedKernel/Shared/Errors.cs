@@ -64,11 +64,16 @@ public static class Errors
         }
     }
     
-    public static class RequestStatus
+    public static class VolunteerRequests
     {
         public static Error InvalidStatus()
         {
             return Error.Failure("invalid.request.status", "Invalid request status");
+        }
+        
+        public static Error AccessDenied()
+        {
+            return Error.Failure("access.denied", "Access denied");
         }
     }
     

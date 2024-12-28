@@ -14,5 +14,7 @@ public class Constants
         VolunteerManagement,
         SpeciesManagement,
         Accounts,
+        VolunteerRequests,
+        Discussions
     }
 }

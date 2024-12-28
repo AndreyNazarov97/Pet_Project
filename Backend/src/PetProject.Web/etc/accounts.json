@@ -5,6 +5,10 @@
       "volunteers.read",
       "volunteers.update",
       "volunteers.delete",
+      "volunteer_requests.create",
+      "volunteer_requests.read",
+      "volunteer_requests.update",
+      "volunteer_requests.delete",
       "species.create",
       "species.read",
       "species.update",
@@ -18,6 +22,10 @@
     ],
     "Participant": [
       "volunteers.read",
+      "volunteer_requests.create",
+      "volunteer_requests.read",
+      "volunteer_requests.update",
+      "volunteer_requests.delete",
       "species.read"
     ]
   },
@@ -33,6 +41,12 @@
       "species.read",
       "species.update",
       "species.delete"
+    ],
+    "VolunteerRequests" : [
+      "volunteer_requests.create",
+      "volunteer_requests.read",
+      "volunteer_requests.update",
+      "volunteer_requests.delete"
     ]
   }
 }

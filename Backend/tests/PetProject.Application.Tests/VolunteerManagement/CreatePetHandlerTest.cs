@@ -22,7 +22,7 @@ public class CreatePetHandlerTest
         HealthInformation = Random.Words,
         SpeciesName = "Dog",
         BreedName = "Bulldog",
-        Address = VolunteerCreator.CreateAddressDto(),
+        Address = DtoCreator.CreateAddressDto(),
         Weight = Random.Double,
         Height = Random.Double,
         BirthDate = Random.DateTimeOffset,
