@@ -37,7 +37,7 @@ public class VolunteerRequest : AggregateRoot<VolunteerRequestId>
         AdminId = adminId;
         UserId = userId;
         DiscussionId = discussionId;
-        RejectionComment = RejectionComment.Create(" ").Value;
+        RejectionComment = RejectionComment.Empty;
     }
 
     public static Result<VolunteerRequest, Error> Create(
@@ -97,7 +97,7 @@ public class VolunteerRequest : AggregateRoot<VolunteerRequestId>
             return Errors.VolunteerRequests.InvalidStatus();
         
         RequestStatus = RequestStatus.Approved;
-        RejectionComment = RejectionComment.Create(" ").Value;
+        RejectionComment = RejectionComment.Empty;
         
         return Result.Success<Error>();
     }

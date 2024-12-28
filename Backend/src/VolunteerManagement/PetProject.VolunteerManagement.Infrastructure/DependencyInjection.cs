@@ -43,8 +43,7 @@ public static class DependencyInjection
         DefaultTypeMap.MatchNamesWithUnderscores = true;
 
         services
-            .AddScoped<VolunteerDbContext>()
-            .AddScoped<IReadDbContext, ReadDbContext>();
+            .AddScoped<VolunteerDbContext>();
 
         return services;
     }

@@ -13,6 +13,8 @@ public record RejectionComment
         Value = value;
     }
 
+    public static RejectionComment Empty => new("");
+
     public static Result<RejectionComment, Error> Create(string comment)
     {
         if (string.IsNullOrEmpty(comment) || comment.Length > Constants.EXTRA_TEXT_LENGTH)

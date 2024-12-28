@@ -29,8 +29,7 @@ public static class DependencyInjection
         Dapper.DefaultTypeMap.MatchNamesWithUnderscores = true;
         
         services
-            .AddScoped<SpeciesDbContext>()
-            .AddScoped<IReadDbContext, ReadDbContext>();
+            .AddScoped<SpeciesDbContext>();
 
         return services;
     }
