@@ -14,7 +14,6 @@ public class Discussion : AggregateRoot<DiscussionId>
 
     private Discussion(DiscussionId id) : base(id){}
     
-    
     public Guid RelationId { get; private set; }
     public Users Users { get; private set; }
     public DiscussionStatus Status { get; private set; }
