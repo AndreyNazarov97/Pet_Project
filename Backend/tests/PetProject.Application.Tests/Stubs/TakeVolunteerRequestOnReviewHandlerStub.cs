@@ -12,6 +12,8 @@ public class TakeVolunteerRequestOnReviewHandlerStub : TakeVolunteerRequestOnRev
 {
     internal Mock<IVolunteerRequestsRepository> VolunteerRequestsRepositoryMock { get; }
     
+    internal Mock<IDiscussionContract> DiscussionContractMock { get; }
+    
     internal Mock<IUnitOfWork> UnitOfWorkMock { get; }
     
     internal Mock<ILogger<TakeVolunteerRequestOnReviewHandler>> LoggerMock { get; }
@@ -29,5 +31,7 @@ public class TakeVolunteerRequestOnReviewHandlerStub : TakeVolunteerRequestOnRev
     {
         VolunteerRequestsRepositoryMock = volunteerRequestsRepositoryMock;
         LoggerMock = loggerMock;
+        DiscussionContractMock = discussionContractMock;
+        UnitOfWorkMock = unitOfWorkMock;
     }
 }
