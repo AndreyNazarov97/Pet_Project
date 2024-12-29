@@ -1,4 +1,5 @@
 ﻿using Microsoft.Extensions.DependencyInjection;
+using PetProject.Discussions.Application.DiscussionsManagement.Commands;
 using PetProject.Discussions.Contracts;
 
 namespace PetProject.Discussions.Presentation;
@@ -7,6 +8,7 @@ public static class DependencyInjection
 {
     public static IServiceCollection AddDiscussionsPresentation(this IServiceCollection services)
     {
+        services.AddScoped<CreateDiscussionHandler>();
         
         services.AddContracts();
 

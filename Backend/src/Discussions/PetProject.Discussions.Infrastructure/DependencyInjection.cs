@@ -30,6 +30,7 @@ public static class DependencyInjection
         DefaultTypeMap.MatchNamesWithUnderscores = true;
 
         services
+            .AddScoped<IReadDbContext,ReadDbContext>()
             .AddScoped<DiscussionsDbContext>();
 
         return services;

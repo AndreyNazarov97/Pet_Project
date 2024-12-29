@@ -15,5 +15,14 @@ public class DiscussionDtoConfiguration : IEntityTypeConfiguration<DiscussionDto
         builder.HasKey(v => v.Id)
             .HasName("id");
         
+        builder
+            .HasOne(x => x.Members)
+            .WithOne()
+            .HasForeignKey<MembersDto>("discussion_id");
+        
+        builder
+            .HasMany(x => x.Messages)
+            .WithOne()
+            .HasForeignKey("discussion_id");
     }
 }

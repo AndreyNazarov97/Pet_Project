@@ -6,5 +6,5 @@ public record DiscussionDto
     public required Guid RelationId { get; set; }
     public required MembersDto Members { get; set; }
     public required string Status { get; set; }
-    public MessageDto[] Messages { get; set; } = [];
+    public List<MessageDto> Messages { get; set; } = [];
 }

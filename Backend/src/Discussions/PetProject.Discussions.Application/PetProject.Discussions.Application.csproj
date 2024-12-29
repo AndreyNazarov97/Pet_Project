@@ -12,8 +12,4 @@
       <ProjectReference Include="..\PetProject.Discussions.Domain\PetProject.Discussions.Domain.csproj" />
     </ItemGroup>
 
-    <ItemGroup>
-      <Folder Include="DiscussionsManagement\Queries\" />
-    </ItemGroup>
-
 </Project>
