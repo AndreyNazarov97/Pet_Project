@@ -15,7 +15,7 @@ public class Discussion : AggregateRoot<DiscussionId>
     private Discussion(DiscussionId id) : base(id){}
     
     public Guid RelationId { get; private set; }
-    public Users Users { get; private set; }
+    public Members Members { get; private set; }
     public DiscussionStatus Status { get; private set; }
     public IReadOnlyList<Message> Messages => _messages;
 
@@ -23,14 +23,14 @@ public class Discussion : AggregateRoot<DiscussionId>
         DiscussionId id,
         DiscussionStatus status,
         Guid relationId,
-        Users users) : base(id)
+        Members members) : base(id)
     {
         Status = status;
         RelationId = relationId;
-        Users = users;
+        Members = members;
     }
 
-    public static Result<Discussion, Error> Create(Guid relationId, Users users)
+    public static Result<Discussion, Error> Create(Guid relationId, Members members)
     {
         if (relationId == Guid.Empty)
             return Errors.General.ValueIsInvalid(nameof(relationId));
@@ -38,12 +38,12 @@ public class Discussion : AggregateRoot<DiscussionId>
         var id = DiscussionId.NewId();
         var status = DiscussionStatus.Opened;
 
-        return new Discussion(id, status, relationId, users);
+        return new Discussion(id, status, relationId, members);
     }
 
     public UnitResult<Error> AddMessage(Message message)
     {
-        if (message.UserId != Users.FirstMemberId && message.UserId != Users.SecondMemberId)
+        if (message.UserId != Members.FirstMemberId && message.UserId != Members.SecondMemberId)
             return Errors.Discussion.UserNotInDiscussion(message.UserId);
 
         _messages.Add(message);
@@ -81,7 +81,7 @@ public class Discussion : AggregateRoot<DiscussionId>
         if(Status == DiscussionStatus.Closed)
             return Errors.Discussion.DiscussionAlreadyClosed();
         
-        if (userId != Users.FirstMemberId && userId != Users.SecondMemberId)
+        if (userId != Members.FirstMemberId && userId != Members.SecondMemberId)
             return Errors.Discussion.UserNotInDiscussion(userId);
         
         Status = DiscussionStatus.Closed;

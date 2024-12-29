@@ -7,8 +7,13 @@
     </PropertyGroup>
 
     <ItemGroup>
+      <ProjectReference Include="..\..\Accounts\PetProject.Accounts.Contracts\PetProject.Accounts.Contracts.csproj" />
       <ProjectReference Include="..\..\Shared\PetProject.Core\PetProject.Core.csproj" />
       <ProjectReference Include="..\PetProject.Discussions.Domain\PetProject.Discussions.Domain.csproj" />
+    </ItemGroup>
+
+    <ItemGroup>
+      <Folder Include="DiscussionsManagement\Queries\" />
     </ItemGroup>
 
 </Project>

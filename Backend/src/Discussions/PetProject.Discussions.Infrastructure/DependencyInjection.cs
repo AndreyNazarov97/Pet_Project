@@ -4,7 +4,7 @@ using Microsoft.Extensions.DependencyInjection;
 using PetProject.Core.Common;
 using PetProject.Core.Database;
 using PetProject.Core.Database.Repository;
-using PetProject.Discussions.Application.Repositories;
+using PetProject.Discussions.Application.Interfaces;
 using PetProject.Discussions.Infrastructure.Common;
 using PetProject.Discussions.Infrastructure.DbContexts;
 using PetProject.Discussions.Infrastructure.Repositories;

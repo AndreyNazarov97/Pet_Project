@@ -1,7 +1,9 @@
 ﻿using PetProject.Accounts.Application;
 using PetProject.Accounts.Infrastructure;
 using PetProject.Accounts.Presentation;
+using PetProject.Discussions.Application;
 using PetProject.Discussions.Infrastructure;
+using PetProject.Discussions.Presentation;
 using PetProject.SpeciesManagement.Application;
 using PetProject.SpeciesManagement.Infrastructure;
 using PetProject.VolunteerManagement.Application;
@@ -67,6 +69,8 @@ public static class DependencyInjection
     public static IServiceCollection AddDiscussionsModule(this IServiceCollection services)
     {
         services
+            .AddDiscussionsPresentation()
+            .AddDiscussionsManagementApplication()
             .AddDiscussionsInfrastructure();
         
         return services;

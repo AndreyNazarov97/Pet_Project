@@ -2,10 +2,12 @@
 using PetProject.Accounts.Infrastructure;
 using PetProject.Accounts.Infrastructure.DataSeed;
 using PetProject.Accounts.Infrastructure.DbContexts;
+using PetProject.Discussions.Infrastructure.DbContexts;
 using PetProject.SpeciesManagement.Infrastructure.DataSeed;
 using PetProject.SpeciesManagement.Infrastructure.DbContexts;
 using PetProject.VolunteerManagement.Infrastructure.DataSeed;
 using PetProject.VolunteerManagement.Infrastructure.DbContexts;
+using VolunteerRequests.Infrastructure.DbContexts;
 
 namespace PetProject.Web.Extensions;
 
@@ -20,10 +22,15 @@ public static class AppExtensions
 
         var speciesDbContext = scope.ServiceProvider.GetRequiredService<SpeciesDbContext>();
         await speciesDbContext.Database.MigrateAsync();
-
-
+        
         var accountsDbContext = scope.ServiceProvider.GetRequiredService<AccountsDbContext>();
         await accountsDbContext.Database.MigrateAsync();
+        
+        var volunteerRequestsDbContext = scope.ServiceProvider.GetRequiredService<VolunteerRequestsDbContext>();
+        await volunteerRequestsDbContext.Database.MigrateAsync();
+        
+        var discussionsDbContext = scope.ServiceProvider.GetRequiredService<DiscussionsDbContext>();
+        await discussionsDbContext.Database.MigrateAsync();
     }
 
     public static async Task SeedDatabases(this WebApplication app)

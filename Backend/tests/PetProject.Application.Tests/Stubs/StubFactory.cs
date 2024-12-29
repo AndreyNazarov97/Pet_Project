@@ -90,6 +90,7 @@ public static class StubFactory
         => new(
             new(),
             new(),
+            new(),
             new());
     
     public static ApproveVolunteerRequestHandlerStub CreateApproveVolunteerRequestHandlerStub()

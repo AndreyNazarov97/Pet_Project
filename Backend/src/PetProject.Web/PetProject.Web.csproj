@@ -29,6 +29,7 @@
       <ProjectReference Include="..\Accounts\PetProject.Accounts.Infrastructure\PetProject.Accounts.Infrastructure.csproj" />
       <ProjectReference Include="..\Accounts\PetProject.Accounts.Presentation\PetProject.Accounts.Presentation.csproj" />
       <ProjectReference Include="..\Discussions\PetProject.Discussions.Infrastructure\PetProject.Discussions.Infrastructure.csproj" />
+      <ProjectReference Include="..\Discussions\PetProject.Discussions.Presentation\PetProject.Discussions.Presentation.csproj" />
       <ProjectReference Include="..\SpeciesManagement\PetProject.SpeciesManagement.Infrastructure\PetProject.SpeciesManagement.Infrastructure.csproj" />
       <ProjectReference Include="..\SpeciesManagement\PetProject.SpeciesManagement.Presentation\PetProject.SpeciesManagement.Presentation.csproj" />
       <ProjectReference Include="..\VolunteerManagement\PetProject.VolunteerManagement.Infrastructure\PetProject.VolunteerManagement.Infrastructure.csproj" />

@@ -2,6 +2,7 @@
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.Logging;
 using PetProject.Discussions.Domain.Aggregate;
+using PetProject.Discussions.Domain.Entity;
 
 namespace PetProject.Discussions.Infrastructure.DbContexts;
 
@@ -16,6 +17,8 @@ public class DiscussionsDbContext : DbContext
     }
     
     public DbSet<Discussion> Discussions { get; set; }
+    public DbSet<Message> Messages { get; set; }
+    public DbSet<Members> Members { get; set; }
 
     protected override void OnConfiguring(DbContextOptionsBuilder optionsBuilder)
     {
@@ -30,7 +33,8 @@ public class DiscussionsDbContext : DbContext
     protected override void OnModelCreating(ModelBuilder modelBuilder)
     {
         modelBuilder.HasDefaultSchema("discussions");
-        modelBuilder.ApplyConfigurationsFromAssembly(typeof(DiscussionsDbContext).Assembly);
+        modelBuilder.ApplyConfigurationsFromAssembly(typeof(DiscussionsDbContext).Assembly,
+            type => type.FullName?.Contains("Configurations.Write") ?? false);
     }
     private static ILoggerFactory CreateLoggerFactory()
     {
