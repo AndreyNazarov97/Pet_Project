@@ -1,6 +1,7 @@
 ﻿using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.Configuration;
 using PetProject.Core.Database;
+using PetProject.Discussions.Infrastructure.DbContexts;
 using PetProject.SpeciesManagement.Infrastructure.DbContexts;
 using PetProject.VolunteerManagement.Infrastructure.DbContexts;
 using Testcontainers.PostgreSql;
@@ -17,6 +18,7 @@ public class BaseTestFixture : IAsyncLifetime
     public SpeciesDbContext GetSpeciesDbContext() => new(_configuration);
     
     public VolunteerRequestsDbContext GetVolunteerRequestsDbContext() => new(_configuration);
+    public DiscussionsDbContext GetDiscussionsDbContext() => new(_configuration);
 
     public IPostgresConnectionFactory GetConnectionFactory() =>
         new TestPostgresConnectionFactory(_postgresSqlContainer);
@@ -48,6 +50,9 @@ public class BaseTestFixture : IAsyncLifetime
         
         var volunteerRequestsDbContext = GetVolunteerRequestsDbContext();
         await volunteerRequestsDbContext.Database.MigrateAsync();
+        
+        var discussionsDbContext = GetDiscussionsDbContext();
+        await discussionsDbContext.Database.MigrateAsync();
     }
 
     public virtual async Task DisposeAsync()

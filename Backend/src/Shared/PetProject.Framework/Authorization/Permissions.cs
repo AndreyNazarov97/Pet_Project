@@ -17,4 +17,12 @@ public static class Permissions
         public const string Update = "volunteer_requests.update";
         public const string Delete = "volunteer_requests.delete";
     }
+    
+    public static class Discussion
+    {
+        public const string Create = "discussions.create";
+        public const string Read = "discussions.read";
+        public const string Update = "discussions.update";
+        public const string Delete = "discussions.delete";
+    }
 }

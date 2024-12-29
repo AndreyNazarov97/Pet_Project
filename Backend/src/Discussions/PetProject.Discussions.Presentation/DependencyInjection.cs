@@ -1,5 +1,6 @@
 ﻿using Microsoft.Extensions.DependencyInjection;
 using PetProject.Discussions.Application.DiscussionsManagement.Commands;
+using PetProject.Discussions.Application.DiscussionsManagement.Commands.CreateDiscussion;
 using PetProject.Discussions.Contracts;
 
 namespace PetProject.Discussions.Presentation;

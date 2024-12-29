@@ -2,7 +2,7 @@ using FluentValidation;
 using PetProject.Core.Validation;
 using PetProject.SharedKernel.Shared;
 
-namespace PetProject.Discussions.Application.DiscussionsManagement.Commands;
+namespace PetProject.Discussions.Application.DiscussionsManagement.Commands.CreateDiscussion;
 
 public class CreateDiscussionCommandValidator : AbstractValidator<CreateDiscussionCommand>
 {

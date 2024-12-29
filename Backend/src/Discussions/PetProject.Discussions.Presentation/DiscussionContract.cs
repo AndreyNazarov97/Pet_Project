@@ -1,5 +1,6 @@
 using CSharpFunctionalExtensions;
 using PetProject.Discussions.Application.DiscussionsManagement.Commands;
+using PetProject.Discussions.Application.DiscussionsManagement.Commands.CreateDiscussion;
 using PetProject.Discussions.Contracts;
 using PetProject.Discussions.Contracts.Requests;
 using PetProject.Discussions.Domain.Aggregate;

@@ -16,7 +16,7 @@ public class DiscussionsRepository : IDiscussionsRepository
     {
         _context = context;
     }
-    
+
     public async Task<Discussion> Add(Discussion discussion, CancellationToken cancellationToken = default)
     {
         await _context.Discussions.AddAsync(discussion, cancellationToken);
@@ -32,11 +32,23 @@ public class DiscussionsRepository : IDiscussionsRepository
         return discussion.Id.Id;
     }
 
-    public async Task<Result<Discussion, Error>> GetByRelationId(Guid relationId, CancellationToken cancellationToken = default)
+    public async Task<Result<Discussion, Error>> GetByRelationId(Guid relationId,
+        CancellationToken cancellationToken = default)
     {
-        var discussion = _context.Discussions.FirstOrDefault(d => d.RelationId == relationId);
+        var discussion = await _context.Discussions
+            .FirstOrDefaultAsync(d => d.RelationId == relationId, cancellationToken);
         if (discussion == null)
             return Errors.General.NotFound(relationId);
+
+        return discussion;
+    }
+
+    public async Task<Result<Discussion, Error>> GetById(DiscussionId discussionId, CancellationToken cancellationToken = default)
+    {
+        var discussion = await _context.Discussions
+            .FirstOrDefaultAsync(d => d.Id == discussionId, cancellationToken);
+        if (discussion == null)
+            return Errors.General.NotFound(discussionId);
 
         return discussion;
     }

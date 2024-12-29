@@ -1,5 +1,9 @@
 ﻿using Bogus;
 using PetProject.Core.Dtos;
+using PetProject.Core.Dtos.Accounts;
+using PetProject.Discussions.Domain.Aggregate;
+using PetProject.Discussions.Domain.Entity;
+using PetProject.Discussions.Domain.ValueObjects;
 using PetProject.SharedKernel.Shared.EntityIds;
 using PetProject.SharedKernel.Shared.ValueObjects;
 using PetProject.SharedTestData.Creators;
@@ -127,4 +131,25 @@ public class TestData
         Description.Create(Random.Words).Value,
         [SocialNetwork.Create("VK", "https://vk.com").Value]
     );
+    
+    public static UserDto UserDto => new()
+    {
+        Id = Random.Long,
+        UserName = Random.UserName,
+        Email = Random.Email,
+        FullName = DtoCreator.CreateFullNameDto(),
+    };
+    
+    public static Discussion CreateDiscussion()
+    {
+        var discussion = Discussion.Create(Guid.NewGuid(),
+            Members.Create(Random.Long, Random.Long).Value).Value;
+
+        var message = Message.Create(
+            Text.Create(Random.Words).Value, discussion.Members.FirstMemberId).Value;
+        
+        discussion.AddMessage(message);
+
+        return discussion;
+    }
 }

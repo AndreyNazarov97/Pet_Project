@@ -3,7 +3,7 @@ using MediatR;
 using PetProject.Discussions.Domain.Aggregate;
 using PetProject.SharedKernel.Shared;
 
-namespace PetProject.Discussions.Application.DiscussionsManagement.Commands;
+namespace PetProject.Discussions.Application.DiscussionsManagement.Commands.CreateDiscussion;
 
 public record CreateDiscussionCommand : IRequest<Result<Discussion, ErrorList>>
 {

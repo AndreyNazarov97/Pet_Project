@@ -12,13 +12,19 @@
       "species.create",
       "species.read",
       "species.update",
-      "species.delete"
+      "species.delete",
+      "discussions.create",
+      "discussions.read",
+      "discussions.update",
+      "discussions.delete"
     ],
     "Volunteer": [
       "volunteers.create",
       "volunteers.read",
       "volunteers.update",
-      "volunteers.delete"
+      "volunteers.delete",
+      "species.read",
+      "discussions.read"
     ],
     "Participant": [
       "volunteers.read",
@@ -26,7 +32,10 @@
       "volunteer_requests.read",
       "volunteer_requests.update",
       "volunteer_requests.delete",
-      "species.read"
+      "species.read",
+      "discussions.create",
+      "discussions.read",
+      "discussions.update"
     ]
   },
   "Permissions": {
@@ -47,6 +56,12 @@
       "volunteer_requests.read",
       "volunteer_requests.update",
       "volunteer_requests.delete"
+    ],
+    "Discussions": [
+      "discussions.create",
+      "discussions.read",
+      "discussions.update",
+      "discussions.delete"
     ]
   }
 }
