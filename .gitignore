@@ -400,10 +400,11 @@ FodyWeavers.xsd
 *.msm
 *.msp
 
+
 # JetBrains Rider
 *.sln.iml
 .idea
-
+vcs.xml
 ##
 ## Visual studio for Mac
 ##
