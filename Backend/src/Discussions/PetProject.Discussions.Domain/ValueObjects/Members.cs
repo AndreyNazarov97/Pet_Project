@@ -1,21 +1,17 @@
 using CSharpFunctionalExtensions;
 using PetProject.SharedKernel.Shared;
-using PetProject.SharedKernel.Shared.EntityIds;
 
-namespace PetProject.Discussions.Domain.Entity;
+namespace PetProject.Discussions.Domain.ValueObjects;
 
-public class Members : SharedKernel.Shared.Common.Entity<MemberId>
+public record Members
 {
-    private Members(MemberId id) : base(id){}
-    
     public long FirstMemberId { get; init; }
     public long SecondMemberId { get; init; }
-    
+
 
     private Members(
-        MemberId id,
-        long firstMemberId, 
-        long secondMemberId) : base(id)
+        long firstMemberId,
+        long secondMemberId)
     {
         FirstMemberId = firstMemberId;
         SecondMemberId = secondMemberId;
@@ -25,9 +21,8 @@ public class Members : SharedKernel.Shared.Common.Entity<MemberId>
     {
         if (firstMemberId <= 0 || secondMemberId <= 0)
             return Errors.General.ValueIsInvalid("UserId");
-        
-        var id = MemberId.NewId();
-        
-        return new Members(id, firstMemberId, secondMemberId);
+
+
+        return new Members(firstMemberId, secondMemberId);
     }
 }

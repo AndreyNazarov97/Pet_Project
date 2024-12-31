@@ -4,6 +4,7 @@ using PetProject.Accounts.Contracts;
 using PetProject.Discussions.Application.Interfaces;
 using PetProject.Discussions.Domain.Aggregate;
 using PetProject.Discussions.Domain.Entity;
+using PetProject.Discussions.Domain.ValueObjects;
 using PetProject.SharedKernel.Shared;
 
 namespace PetProject.Discussions.Application.DiscussionsManagement.Commands.CreateDiscussion;

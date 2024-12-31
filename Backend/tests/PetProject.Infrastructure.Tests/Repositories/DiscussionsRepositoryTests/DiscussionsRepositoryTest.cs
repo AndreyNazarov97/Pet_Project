@@ -14,6 +14,6 @@ public partial class DiscussionsRepositoryTest : IClassFixture<BaseTestFixture>
     {
         _fixture = fixture;
         _sut = new DiscussionsRepository(fixture.GetDiscussionsDbContext());
-        _fixture.ClearDatabaseAsync("discussions", "discussions", "members", "messages").Wait();
+        _fixture.ClearDatabaseAsync("discussions", "discussions", "messages").Wait();
     }
 }

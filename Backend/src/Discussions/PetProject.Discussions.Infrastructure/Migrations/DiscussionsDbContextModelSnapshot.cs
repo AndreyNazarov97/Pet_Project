@@ -47,38 +47,23 @@ namespace PetProject.Discussions.Infrastructure.Migrations
                         .HasColumnType("text")
                         .HasColumnName("status");
 
+                    b.ComplexProperty<Dictionary<string, object>>("Members", "PetProject.Discussions.Domain.Aggregate.Discussion.Members#Members", b1 =>
+                        {
+                            b1.IsRequired();
+
+                            b1.Property<long>("FirstMemberId")
+                                .HasColumnType("bigint")
+                                .HasColumnName("first_member_id");
+
+                            b1.Property<long>("SecondMemberId")
+                                .HasColumnType("bigint")
+                                .HasColumnName("second_member_id");
+                        });
+
                     b.HasKey("Id")
                         .HasName("pk_discussions");
 
                     b.ToTable("discussions", "discussions");
-                });
-
-            modelBuilder.Entity("PetProject.Discussions.Domain.Entity.Members", b =>
-                {
-                    b.Property<Guid>("Id")
-                        .HasColumnType("uuid")
-                        .HasColumnName("id");
-
-                    b.Property<long>("FirstMemberId")
-                        .HasColumnType("bigint")
-                        .HasColumnName("first_member_id");
-
-                    b.Property<long>("SecondMemberId")
-                        .HasColumnType("bigint")
-                        .HasColumnName("second_member_id");
-
-                    b.Property<Guid?>("discussion_id")
-                        .HasColumnType("uuid")
-                        .HasColumnName("discussion_id");
-
-                    b.HasKey("Id")
-                        .HasName("pk_members");
-
-                    b.HasIndex("discussion_id")
-                        .IsUnique()
-                        .HasDatabaseName("ix_members_discussion_id");
-
-                    b.ToTable("members", "discussions");
                 });
 
             modelBuilder.Entity("PetProject.Discussions.Domain.Entity.Message", b =>
@@ -123,15 +108,6 @@ namespace PetProject.Discussions.Infrastructure.Migrations
                     b.ToTable("messages", "discussions");
                 });
 
-            modelBuilder.Entity("PetProject.Discussions.Domain.Entity.Members", b =>
-                {
-                    b.HasOne("PetProject.Discussions.Domain.Aggregate.Discussion", null)
-                        .WithOne("Members")
-                        .HasForeignKey("PetProject.Discussions.Domain.Entity.Members", "discussion_id")
-                        .OnDelete(DeleteBehavior.Cascade)
-                        .HasConstraintName("fk_members_discussions_discussion_id");
-                });
-
             modelBuilder.Entity("PetProject.Discussions.Domain.Entity.Message", b =>
                 {
                     b.HasOne("PetProject.Discussions.Domain.Aggregate.Discussion", null)
@@ -143,9 +119,6 @@ namespace PetProject.Discussions.Infrastructure.Migrations
 
             modelBuilder.Entity("PetProject.Discussions.Domain.Aggregate.Discussion", b =>
                 {
-                    b.Navigation("Members")
-                        .IsRequired();
-
                     b.Navigation("Messages");
                 });
 #pragma warning restore 612, 618

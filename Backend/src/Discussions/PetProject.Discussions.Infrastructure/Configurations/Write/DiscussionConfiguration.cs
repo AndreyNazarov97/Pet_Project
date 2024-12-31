@@ -2,6 +2,7 @@ using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Metadata.Builders;
 using PetProject.Discussions.Domain.Aggregate;
 using PetProject.Discussions.Domain.Entity;
+using PetProject.Discussions.Domain.ValueObjects;
 using PetProject.SharedKernel.Shared.EntityIds;
 
 namespace PetProject.Discussions.Infrastructure.Configurations.Write;
@@ -18,11 +19,17 @@ public class DiscussionConfiguration : IEntityTypeConfiguration<Discussion>
                 id => id.Id,
                 value => DiscussionId.Create(value));
         
-        builder.HasOne(x => x.Members)
-            .WithOne()
-            .HasForeignKey<Members>("discussion_id") 
-            .OnDelete(DeleteBehavior.Cascade);
-        
+        builder.ComplexProperty(x => x.Members, b =>
+            {
+                b.Property(m => m.FirstMemberId)
+                    .HasColumnName("first_member_id")
+                    .IsRequired();
+                
+                b.Property(m => m.SecondMemberId)
+                    .HasColumnName("second_member_id")
+                    .IsRequired();
+            }
+        );
         
         builder.Property(p => p.Status)
             .HasConversion<string>()
@@ -34,7 +41,5 @@ public class DiscussionConfiguration : IEntityTypeConfiguration<Discussion>
             .OnDelete(DeleteBehavior.Cascade);
         
         builder.Navigation(v => v.Messages).AutoInclude();
-        
-        builder.Navigation(v => v.Members).AutoInclude();
     }
 }

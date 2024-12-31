@@ -3,6 +3,7 @@ using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.Logging;
 using PetProject.Discussions.Domain.Aggregate;
 using PetProject.Discussions.Domain.Entity;
+using PetProject.Discussions.Domain.ValueObjects;
 
 namespace PetProject.Discussions.Infrastructure.DbContexts;
 
@@ -18,7 +19,6 @@ public class DiscussionsDbContext : DbContext
     
     public DbSet<Discussion> Discussions { get; set; }
     public DbSet<Message> Messages { get; set; }
-    public DbSet<Members> Members { get; set; }
 
     protected override void OnConfiguring(DbContextOptionsBuilder optionsBuilder)
     {
