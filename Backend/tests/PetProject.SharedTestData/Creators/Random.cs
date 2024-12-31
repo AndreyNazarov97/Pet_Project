@@ -17,6 +17,8 @@ public static class Random
     public static double Double => Faker.Random.Double(1d, 100d);
     public static long Long => Faker.Random.Long(1, 10_000);
     public static bool Bool => Faker.Random.Bool();
+    public static string Email => Faker.Internet.Email();
+    public static string UserName => Faker.Internet.UserName();
     public static HelpStatus HelpStatus => Faker.Random.Enum<HelpStatus>();
 
     public static T Element<T>(IReadOnlyList<T> list) => Faker.PickRandom(list.ToArray());

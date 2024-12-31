@@ -15,8 +15,7 @@ namespace VolunteerRequests.Infrastructure;
 
 public static class DependencyInjection
 {
-    public static IServiceCollection AddVolunteerRequestsPostgresInfrastructure(this IServiceCollection services,
-        IConfiguration configuration)
+    public static IServiceCollection AddVolunteerRequestsPostgresInfrastructure(this IServiceCollection services)
     {
         services
             .AddDatabase()

@@ -23,6 +23,7 @@
     </ItemGroup>
 
     <ItemGroup>
+      <ProjectReference Include="..\..\src\Discussions\PetProject.Discussions.Infrastructure\PetProject.Discussions.Infrastructure.csproj" />
       <ProjectReference Include="..\..\src\SpeciesManagement\PetProject.SpeciesManagement.Infrastructure\PetProject.SpeciesManagement.Infrastructure.csproj" />
       <ProjectReference Include="..\..\src\VolunteerManagement\PetProject.VolunteerManagement.Infrastructure\PetProject.VolunteerManagement.Infrastructure.csproj" />
       <ProjectReference Include="..\..\src\VolunteerRequests\VolunteerRequests.Infrastructure\VolunteerRequests.Infrastructure.csproj" />

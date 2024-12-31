@@ -43,7 +43,7 @@ if (app.Environment.IsDevelopment())
         await next();
     });
     
-    //await app.ApplyMigrations();
+    await app.ApplyMigrations();
     await app.SeedDatabases();
 }
 

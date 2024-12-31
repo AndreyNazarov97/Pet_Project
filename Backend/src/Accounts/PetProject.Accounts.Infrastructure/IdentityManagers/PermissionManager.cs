@@ -22,7 +22,7 @@ public class PermissionManager : IPermissionManager
                 p.Code == permissionCode, cancellationToken);
 
             if (isPermissionExist)
-                return;
+                continue;
 
             _context.Permissions.Add(new Permission() { Code = permissionCode });
         }

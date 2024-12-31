@@ -1,11 +1,7 @@
-using System.Text.Json;
 using CSharpFunctionalExtensions;
-using Dapper;
 using MediatR;
 using Microsoft.EntityFrameworkCore;
 using PetProject.Accounts.Application.Interfaces;
-using PetProject.Core.Database;
-using PetProject.Core.Dtos;
 using PetProject.Core.Dtos.Accounts;
 using PetProject.SharedKernel.Shared;
 

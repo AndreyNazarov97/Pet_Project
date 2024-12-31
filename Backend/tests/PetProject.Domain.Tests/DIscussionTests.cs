@@ -14,7 +14,7 @@ public class DiscussionTests
     {
         // Arrange
         var relationId = Guid.NewGuid();
-        var users = Users.Create(1, 2).Value;
+        var users = Members.Create(1, 2).Value;
 
         // Act
         var result = Discussion.Create(relationId, users);
@@ -23,7 +23,7 @@ public class DiscussionTests
         result.IsSuccess.Should().BeTrue();
         result.Value.Should().NotBeNull();
         result.Value.RelationId.Should().Be(relationId);
-        result.Value.Users.Should().Be(users);
+        result.Value.Members.Should().Be(users);
         result.Value.Status.Should().Be(DiscussionStatus.Opened);
     }
 
@@ -32,7 +32,7 @@ public class DiscussionTests
     {
         // Arrange
         var relationId = Guid.Empty;
-        var users = Users.Create(1, 2).Value;
+        var users = Members.Create(1, 2).Value;
 
         // Act
         var result = Discussion.Create(relationId, users);
@@ -46,7 +46,7 @@ public class DiscussionTests
     {
         // Arrange
         var discussion = CreateDiscussion();
-        var message = CreateMessage(discussion.Users.FirstMemberId);
+        var message = CreateMessage(discussion.Members.FirstMemberId);
 
         // Act
         var result = discussion.AddMessage(message);
@@ -61,7 +61,7 @@ public class DiscussionTests
     {
         // Arrange
         var discussion = CreateDiscussion();
-        var invalidUserId = discussion.Users.FirstMemberId + discussion.Users.SecondMemberId;
+        var invalidUserId = discussion.Members.FirstMemberId + discussion.Members.SecondMemberId;
         var message = CreateMessage(invalidUserId);
 
         // Act
@@ -77,11 +77,11 @@ public class DiscussionTests
     {
         // Arrange
         var discussion = CreateDiscussion();
-        var message = CreateMessage(discussion.Users.FirstMemberId);
+        var message = CreateMessage(discussion.Members.FirstMemberId);
         discussion.AddMessage(message);
 
         // Act
-        var result = discussion.DeleteMessage(discussion.Users.FirstMemberId, message.Id);
+        var result = discussion.DeleteMessage(discussion.Members.FirstMemberId, message.Id);
 
         // Assert
         result.IsSuccess.Should().BeTrue();
@@ -93,11 +93,11 @@ public class DiscussionTests
     {
         // Arrange
         var discussion = CreateDiscussion();
-        var message = CreateMessage(discussion.Users.FirstMemberId);
+        var message = CreateMessage(discussion.Members.FirstMemberId);
         discussion.AddMessage(message);
 
         // Act
-        var result = discussion.DeleteMessage(discussion.Users.SecondMemberId, message.Id);
+        var result = discussion.DeleteMessage(discussion.Members.SecondMemberId, message.Id);
 
         // Assert
         result.IsFailure.Should().BeTrue();
@@ -109,12 +109,12 @@ public class DiscussionTests
     {
         // Arrange
         var discussion = CreateDiscussion();
-        var message = CreateMessage(discussion.Users.FirstMemberId);
+        var message = CreateMessage(discussion.Members.FirstMemberId);
         discussion.AddMessage(message);
         var newText = Text.Create("Updated").Value;
 
         // Act
-        var result = discussion.EditMessage(discussion.Users.FirstMemberId, message.Id, newText);
+        var result = discussion.EditMessage(discussion.Members.FirstMemberId, message.Id, newText);
 
         // Assert
         result.IsSuccess.Should().BeTrue();
@@ -127,12 +127,12 @@ public class DiscussionTests
     {
         // Arrange
         var discussion = CreateDiscussion();
-        var message = CreateMessage(discussion.Users.FirstMemberId);
+        var message = CreateMessage(discussion.Members.FirstMemberId);
         discussion.AddMessage(message);
         var newText = Text.Create("Updated").Value;
 
         // Act
-        var result = discussion.EditMessage(discussion.Users.SecondMemberId, message.Id, newText);
+        var result = discussion.EditMessage(discussion.Members.SecondMemberId, message.Id, newText);
 
         // Assert
         result.IsFailure.Should().BeTrue();
@@ -146,7 +146,7 @@ public class DiscussionTests
         var discussion = CreateDiscussion();
 
         // Act
-        var result = discussion.CloseDiscussion(discussion.Users.FirstMemberId);
+        var result = discussion.CloseDiscussion(discussion.Members.FirstMemberId);
 
         // Assert
         result.IsSuccess.Should().BeTrue();
@@ -158,7 +158,7 @@ public class DiscussionTests
     {
         // Arrange
         var discussion = CreateDiscussion();
-        var invalidUserId = discussion.Users.FirstMemberId + discussion.Users.SecondMemberId;
+        var invalidUserId = discussion.Members.FirstMemberId + discussion.Members.SecondMemberId;
 
         // Act
         var result = discussion.CloseDiscussion(invalidUserId);
@@ -173,10 +173,10 @@ public class DiscussionTests
     {
         // Arrange
         var discussion = CreateDiscussion();
-        discussion.CloseDiscussion(discussion.Users.FirstMemberId);
+        discussion.CloseDiscussion(discussion.Members.FirstMemberId);
 
         // Act
-        var result = discussion.CloseDiscussion(discussion.Users.FirstMemberId);
+        var result = discussion.CloseDiscussion(discussion.Members.FirstMemberId);
 
         // Assert
         result.IsFailure.Should().BeTrue();
@@ -185,7 +185,7 @@ public class DiscussionTests
     private Discussion CreateDiscussion()
     {
         return Discussion
-            .Create(Guid.NewGuid(), Users.Create(Random.Long, Random.Long).Value).Value;
+            .Create(Guid.NewGuid(), Members.Create(Random.Long, Random.Long).Value).Value;
     }
     
     private Message CreateMessage(long userId)

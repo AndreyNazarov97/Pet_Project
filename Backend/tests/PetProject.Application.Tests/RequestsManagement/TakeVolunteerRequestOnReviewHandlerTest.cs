@@ -23,11 +23,15 @@ public class TakeVolunteerRequestOnReviewHandlerTest
     {
         // Arrange
         var command = Command;
+        var discussion = TestData.CreateDiscussion();
         var request = VolunteerRequest.Create(TestData.VolunteerInfo, Random.Long).Value;
         var handler = StubFactory.CreateTakeVolunteerRequestOnReviewHandlerStub();
         
         // Act
+        handler.UnitOfWorkMock.SetupTransaction();
+        handler.DiscussionContractMock.SetupCreate(discussion);
         handler.VolunteerRequestsRepositoryMock.SetupGetById( request);
+        
         var result = await handler.Handle(command, CancellationToken.None);
         
         // Assert

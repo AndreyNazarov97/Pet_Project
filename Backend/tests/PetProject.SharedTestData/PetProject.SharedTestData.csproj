@@ -12,6 +12,7 @@
 
     <ItemGroup>
       <ProjectReference Include="..\..\src\Accounts\PetProject.Accounts.Application\PetProject.Accounts.Application.csproj" />
+      <ProjectReference Include="..\..\src\Discussions\PetProject.Discussions.Application\PetProject.Discussions.Application.csproj" />
       <ProjectReference Include="..\..\src\SpeciesManagement\PetProject.SpeciesManagement.Application\PetProject.SpeciesManagement.Application.csproj" />
       <ProjectReference Include="..\..\src\VolunteerManagement\PetProject.VolunteerManagement.Application\PetProject.VolunteerManagement.Application.csproj" />
       <ProjectReference Include="..\..\src\VolunteerRequests\VolunteerRequests.Application\VolunteerRequests.Application.csproj" />
