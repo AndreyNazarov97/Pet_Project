@@ -18,7 +18,7 @@ public class VolunteerRequestsController : ApplicationController
     }
 
     [Permission(Permissions.VolunteerRequest.Read)]
-    [HttpGet]
+    [HttpGet("new")]
     public async Task<ActionResult<List<VolunteerRequestDto>>> GetNewRequests(
         [FromQuery] GetNewVolunteerRequestsRequest request,
         CancellationToken cancellationToken)
@@ -137,7 +137,7 @@ public class VolunteerRequestsController : ApplicationController
         if (result.IsFailure)
             return result.Error.ToResponse();
         
-        return Ok();
+        return Ok(result.Value);
     }
     
     [Permission(Permissions.VolunteerRequest.Update)]

@@ -1,4 +1,3 @@
-using PetProject.VolunteerManagement.Infrastructure.Repositories;
 using VolunteerRequests.Infrastructure.Repositories;
 
 namespace PetProject.Infrastructure.Tests.Repositories.VolunteerRequestsRepositoryTests;

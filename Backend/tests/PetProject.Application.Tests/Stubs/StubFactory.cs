@@ -90,6 +90,7 @@ public static class StubFactory
         => new(
             new(),
             new(),
+            new(),
             new());
     
     public static ApproveVolunteerRequestHandlerStub CreateApproveVolunteerRequestHandlerStub()
@@ -113,6 +114,31 @@ public static class StubFactory
     public static UpdateVolunteerRequestHandlerStub CreateUpdateVolunteerRequestHandlerStub()
         => new(
             new(),
+            new(),
+            new());
+    
+    public static CreateDiscussionHandlerStub CreateCreateDiscussionHandlerStub()
+        => new(
+            new(),
+            new());
+    
+    public static CloseDiscussionHandlerStub CreateCloseDiscussionHandlerStub()
+        => new(
+            new(),
+            new());
+    
+    public static SendMessageHandlerStub CreateSendMessageHandlerStub()
+        => new(
+            new(),
+            new());
+    
+    public static UpdateMessageHandlerStub CreateUpdateMessageHandlerStub()
+        => new(
+            new(),
+            new());
+    
+    public static DeleteMessageHandlerStub CreateDeleteMessageHandlerStub()
+        => new(
             new(),
             new());
 }
