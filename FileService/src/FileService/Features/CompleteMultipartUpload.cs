@@ -1,6 +1,10 @@
 ﻿using Amazon.S3;
 using Amazon.S3.Model;
+using FileService.Core;
 using FileService.Endpoints;
+using FileService.Jobs;
+using FileService.MongoDataAccess;
+using Hangfire;
 
 namespace FileService.Features;
 
@@ -14,34 +18,58 @@ public static class CompleteMultipartUpload
     {
         public void MapEndpoint(IEndpointRouteBuilder app)
         {
-            app.MapPost("files/{key:guid}/complete-multipart", Handler);
+            app.MapPost("files/{key}/complete-multipart", Handler);
         }
     }  
 
     private static async Task<IResult> Handler(
         CompleteMultipartRequest request,
-        Guid key,
+        string key,
         IAmazonS3 s3Client,
+        IFileRepository fileRepository,
         CancellationToken cancellationToken)
     {
         try
         {
+            var fileId = Guid.NewGuid();
+
+           var jobId = BackgroundJob.Schedule<ConsistencyConfirmJob>(j => j.Execute(fileId, key), TimeSpan.FromSeconds(5));
+            
             var completeRequest = new CompleteMultipartUploadRequest()
             {
                 BucketName = "files",
-                Key = $"files/{key}",
+                Key = key,
                 UploadId = request.UploadId,
                 PartETags = request.Parts.Select(x => new PartETag(x.PartNumber, x.ETag)).ToList()
             };
  
             var response = await s3Client.CompleteMultipartUploadAsync(
                 completeRequest, cancellationToken);
-            
-            // TODO: Insert into mongo db info about file
-            
-            return Results.Ok(new
+
+            var metadataRequest = new GetObjectMetadataRequest()
             {
-                key,
+                BucketName = "files",
+                Key = key
+            };
+
+            var metadata = await s3Client.GetObjectMetadataAsync(metadataRequest, cancellationToken);
+
+            var fileData = new FileData
+            {
+                Id = fileId,
+                StoragePath = key,
+                UploadDate = DateTime.UtcNow,
+                Size = metadata.Headers.ContentLength,
+                ContentType = metadata.Headers.ContentType
+            };
+            
+            await fileRepository.AddFileAsync(fileData, cancellationToken);
+
+            BackgroundJob.Delete(jobId);
+
+           return Results.Ok(new
+            {
+                Id = key,
                location = response.Location
             });
         }
