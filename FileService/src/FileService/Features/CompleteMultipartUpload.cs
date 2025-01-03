@@ -61,7 +61,7 @@ public static class CompleteMultipartUpload
             BackgroundJob.Schedule<ConsistencyConfirmJob>(
                 j => j.Execute(
                     metadata.Id,metadata.BucketName, metadata.Key),
-                TimeSpan.FromMinutes(1));
+                TimeSpan.FromHours(24));
 
            return Results.Ok(new
             {

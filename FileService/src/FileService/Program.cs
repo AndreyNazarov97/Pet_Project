@@ -1,23 +1,26 @@
 using Amazon.S3;
 using FileService.Endpoints;
 using FileService.Extensions;
-using FileService.Infrastructure;
-using FileService.Infrastructure.Repositories;
+using FileService.Middlewares;
 using Hangfire;
-using MongoDB.Driver;
+using Serilog;
 
 var builder = WebApplication.CreateBuilder(args);
+
+builder.Services.AddLogger(builder.Configuration);
+builder.Services.AddHttpLogging(options => { options.CombineLogs = true; });
+builder.Services.AddSerilog();
 
 builder.Services.AddEndpointsApiExplorer();
 builder.Services.AddSwaggerGen();
 
 builder.Services.AddEndpoints();
-
 builder.Services.AddCors();
 
 builder.Services.AddMongoDb(builder.Configuration);
 builder.Services.AddHangfirePostgres(builder.Configuration);
 builder.Services.AddMinio(builder.Configuration);
+builder.Services.AddRepositories();
 
 builder.Services.AddSingleton<IAmazonS3>(_ =>
 {
@@ -32,6 +35,9 @@ builder.Services.AddSingleton<IAmazonS3>(_ =>
 });
 
 var app = builder.Build();
+
+app.UseSerilogRequestLogging();
+app.UseExceptionHandling();
 
 // Configure the HTTP request pipeline.
 if (app.Environment.IsDevelopment())
