@@ -1,51 +1,53 @@
 ﻿using Amazon.S3;
 using Amazon.S3.Model;
+using FileService.Core;
 using FileService.Endpoints;
+using FileService.Infrastructure.Providers;
 
 namespace FileService.Features;
 
 public static class UploadPresignedPartUrl
 {
-    private record UploadPresignedPartUrlRequest(string UploadId, int PartNumber);
-    
+    private record UploadPresignedPartUrlRequest(
+        string UploadId,
+        int PartNumber,
+        string BucketName,
+        string ContentType,
+        string Prefix,
+        string FileName);
+
     public sealed class Endpoint : IEndpoint
     {
         public void MapEndpoint(IEndpointRouteBuilder app)
         {
-                app.MapPost("files/{key}/presigned-part", Handler);
+            app.MapPost("files/{key:guid}/presigned-part", Handler);
         }
     }
 
     private static async Task<IResult> Handler(
         UploadPresignedPartUrlRequest request,
-        string key,
-        IAmazonS3 s3Client,
+        Guid key,
+        IFileProvider fileProvider,
         CancellationToken cancellationToken)
     {
-        try
+        var fileMetadata = new FileMetadata
         {
-            var presignedRequest = new GetPreSignedUrlRequest
-            {
-                BucketName = "files",
-                Key = key,
-                Verb = HttpVerb.PUT,
-                Expires = DateTime.UtcNow.AddHours(24),
-                Protocol = Protocol.HTTP,
-                UploadId = request.UploadId,
-                PartNumber = request.PartNumber
-            };
- 
-            var url = await s3Client.GetPreSignedURLAsync(presignedRequest);
-            
-            return Results.Ok(new
-            {
-                key,
-                url
-            });
-        }
-        catch (AmazonS3Exception ex)
-        {
-            return Results.BadRequest($"S3 error generating presigned URL: {ex.Message}");
-        }
+            BucketName = request.BucketName,
+            ContentType = request.ContentType,
+            Name = request.FileName,
+            Prefix = request.Prefix,
+            Key = $"{request.Prefix}/{key}",
+            UploadId = request.UploadId,
+            PartNumber = request.PartNumber
+        };
+        
+        
+        var response = await fileProvider
+            .GetPresignedUrlPart(fileMetadata, cancellationToken);
+        
+        return Results.Ok(new
+        { 
+            response
+        });
     }
 }

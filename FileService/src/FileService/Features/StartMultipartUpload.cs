@@ -1,52 +1,49 @@
 ﻿using Amazon.S3;
 using Amazon.S3.Model;
+using FileService.Core;
 using FileService.Endpoints;
+using FileService.Infrastructure.Providers;
 
 namespace FileService.Features;
 
 public static class StartMultipartUpload
 {
-    private record StartMultipartUploadRequest(string FileName, string ContentType, long Size);
+    private record StartMultipartUploadRequest(
+        string BucketName,
+        string FileName, 
+        string ContentType,
+        string Prefix);
 
     public sealed class Endpoint : IEndpoint
     {
         public void MapEndpoint(IEndpointRouteBuilder app)
         {
-            app.MapPost("files/multipart", Handler);
+            app.MapPost("files/multipart-upload", Handler);
         }
     }
 
     private static async Task<IResult> Handler(
         StartMultipartUploadRequest request,
-        IAmazonS3 s3Client,
+        IFileProvider fileProvider,
         CancellationToken cancellationToken)
     {
-        try
+        var key = Guid.NewGuid();
+        
+        var fileMetadata = new FileMetadata
         {
-            var key =$"{request.ContentType}/{Guid.NewGuid()}";
-            var startMultipartRequest = new InitiateMultipartUploadRequest()
-            {
-                BucketName = "files",
-                Key = key,
-                ContentType = request.ContentType,
-                Metadata =
-                {
-                    ["file-name"] = request.FileName
-                }
-            };
+            BucketName = request.BucketName,
+            ContentType = request.ContentType,
+            Name = request.FileName,
+            Prefix = request.Prefix,
+            Key = $"{request.Prefix}/{key}"
+        };
 
-            var response = await s3Client.InitiateMultipartUploadAsync(
-                startMultipartRequest, cancellationToken);
-
-            return Results.Ok(new
-            {
-                key,
-                uploadId = response.UploadId
-            });
-        }
-        catch (AmazonS3Exception ex)
+        var response = await fileProvider.StartMultipartUpload(fileMetadata, cancellationToken);
+        
+        return Results.Ok(new
         {
-            return Results.BadRequest($"S3 error starting multipart upload: {ex.Message}");
-        }
+            key,
+            uploadId = response.UploadId
+        });
     }
 }
