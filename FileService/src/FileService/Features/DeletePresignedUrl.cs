@@ -24,7 +24,7 @@ public static class DeletePresignedUrl
     private static async Task<IResult> Handler( 
         DeletePresignedUrlRequest request,
         Guid key,
-        IFileRepository fileRepository,
+        IFilesRepository filesRepository,
         IFileProvider provider,
         CancellationToken cancellationToken = default)
     {

@@ -6,15 +6,18 @@ namespace FileService.Features;
 
 public static class GetPresignedUrl
 {
+    private record GetPresignedUrlRequest(string BucketName, string Prefix);
+    
    public sealed class Endpoint : IEndpoint
     {
         public void MapEndpoint(IEndpointRouteBuilder app)
         {
-            app.MapGet("files/{key}/presigned", Handler);
+            app.MapGet("files/{prefix}/{key}/presigned", Handler);
         }
     }
 
     private static async Task<IResult> Handler(
+        string prefix,
         string key,
         IAmazonS3 s3Client,
         CancellationToken cancellationToken)
@@ -24,7 +27,7 @@ public static class GetPresignedUrl
             var presignedRequest = new GetPreSignedUrlRequest
             {
                 BucketName = "files",
-                Key = key,
+                Key = $"{prefix}/{key}",
                 Verb = HttpVerb.GET,
                 Expires = DateTime.UtcNow.AddHours(24),
                 Protocol = Protocol.HTTP

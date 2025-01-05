@@ -43,7 +43,9 @@ public static class StartMultipartUpload
         return Results.Ok(new
         {
             key,
-            uploadId = response.UploadId
+            uploadId = response.UploadId,
+            bucketName = response.BucketName,
+            prefix = fileMetadata.Prefix,
         });
     }
 }

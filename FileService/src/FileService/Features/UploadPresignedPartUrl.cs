@@ -45,9 +45,12 @@ public static class UploadPresignedPartUrl
         var response = await fileProvider
             .GetPresignedUrlPart(fileMetadata, cancellationToken);
         
+        if(response.IsFailure)
+            return Results.BadRequest(response.Error.Errors);
+        
         return Results.Ok(new
         { 
-            response
+            url = response.Value
         });
     }
 }

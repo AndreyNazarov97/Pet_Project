@@ -12,61 +12,71 @@ namespace FileService.Features;
 public static class CompleteMultipartUpload
 {
     private record PartETagInfo(int PartNumber, string ETag);
-    
-    private record CompleteMultipartUploadRequest(string UploadId,string BucketName, string Key, List<PartETagInfo> Parts);
 
-    
+    private record CompleteMultipartUploadRequest(
+        string UploadId, 
+        string BucketName,
+        string ContentType,
+        string Prefix,
+        string FileName,
+        List<PartETagInfo> Parts);
+
+
     public sealed class Endpoint : IEndpoint
     {
         public void MapEndpoint(IEndpointRouteBuilder app)
         {
             app.MapPost("files/{key}/complete-multipart", Handler);
         }
-    }  
+    }
 
     private static async Task<IResult> Handler(
         CompleteMultipartUploadRequest request,
         string key,
         IFileProvider fileProvider,
-        IFileRepository fileRepository,
+        IFilesRepository filesRepository,
         CancellationToken cancellationToken)
     {
         try
         {
             var fileId = Guid.NewGuid();
-            
-           var fileMetadata = new FileMetadata
-           {
-               BucketName = request.BucketName,
-               Key = request.Key,
-               UploadId = request.UploadId,
-               ETags =  request.Parts.Select(e => new ETagInfo{PartNumber = e.PartNumber,ETag = e.ETag})
-           };
- 
+
+            var fileMetadata = new FileMetadata
+            {
+                BucketName = request.BucketName,
+                ContentType = request.ContentType,
+                Name = request.FileName,
+                Prefix = request.Prefix,
+                Key = $"{request.Prefix}/{key}",
+                UploadId = request.UploadId,
+                ETags = request.Parts.Select(e => new ETagInfo { PartNumber = e.PartNumber, ETag = e.ETag })
+            };
+
             var response = await fileProvider.CompleteMultipartUpload(
                 fileMetadata, cancellationToken);
 
             var metaDataResponse =
                 await fileProvider.GetObjectMetadata(fileMetadata.BucketName, fileMetadata.Key, cancellationToken);
-            
-            if(metaDataResponse.IsFailure)
+
+            if (metaDataResponse.IsFailure)
                 return Results.BadRequest(metaDataResponse.Error.Errors);
-            
+
             var metadata = metaDataResponse.Value;
-            
+
             metadata.Id = fileId;
-        
-            await fileRepository.AddRangeAsync([metadata], cancellationToken);
+            metadata.Prefix = request.Prefix;
+
+            await filesRepository.AddRangeAsync([metadata], cancellationToken);
 
             BackgroundJob.Schedule<ConsistencyConfirmJob>(
                 j => j.Execute(
-                    metadata.Id,metadata.BucketName, metadata.Key),
+                    metadata.Id, metadata.BucketName, metadata.Key),
                 TimeSpan.FromHours(24));
 
-           return Results.Ok(new
+            return Results.Ok(new
             {
-                Id = key,
-               location = response.Location
+                key = key,
+                location = response.Location
             });
         }
         catch (AmazonS3Exception ex)

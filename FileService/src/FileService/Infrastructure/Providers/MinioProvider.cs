@@ -166,7 +166,8 @@ public class MinioProvider : IFileProvider
                 Id = Guid.NewGuid(),
                 Key = key,
                 Size = metaDataResponse.Headers.ContentLength,
-                ContentType = metaDataResponse.Headers.ContentType
+                ContentType = metaDataResponse.Headers.ContentType,
+                BucketName = bucketName
             };
 
             return metaData;

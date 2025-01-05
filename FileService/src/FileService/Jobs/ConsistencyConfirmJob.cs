@@ -5,7 +5,7 @@ using Hangfire;
 namespace FileService.Jobs;
 
 public class ConsistencyConfirmJob(
-    IFileRepository fileRepository,
+    IFilesRepository filesRepository,
     IFileProvider fileProvider,
     ILogger<ConsistencyConfirmJob> logger)
 {
@@ -22,7 +22,7 @@ public class ConsistencyConfirmJob(
                 logger.LogWarning("Metadata not found for fileId: {fileId}.", fileId);
             }
 
-            var mongoData = await fileRepository.GetById(fileId);
+            var mongoData = await filesRepository.GetById(fileId);
 
             if (mongoData is null)
             {
@@ -38,7 +38,7 @@ public class ConsistencyConfirmJob(
                                   " Deleting file from cloud storage and MongoDB record.");
 
                 await fileProvider.DeleteFile(metadataResult.Value);
-                await fileRepository.DeleteRangeAsync([fileId]);
+                await filesRepository.DeleteRangeAsync([fileId]);
             }
 
             logger.LogInformation("End ConfirmConsistencyJob");

@@ -20,10 +20,10 @@ public static class GetFilesByIds
     private static async Task<IResult> Handler( 
         GetFilesByIdsRequest request,
         IFileProvider fileProvider,
-        IFileRepository fileRepository,
+        IFilesRepository filesRepository,
         CancellationToken cancellationToken = default)
     {
-        var files = await fileRepository.Get(request.FileIds, cancellationToken);
+        var files = await filesRepository.Get(request.FileIds, cancellationToken);
 
         var result = await fileProvider.DownloadFiles(files, cancellationToken);
         if (result.IsFailure)
