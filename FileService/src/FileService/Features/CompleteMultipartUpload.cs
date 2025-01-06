@@ -14,7 +14,7 @@ public static class CompleteMultipartUpload
     private record PartETagInfo(int PartNumber, string ETag);
 
     private record CompleteMultipartUploadRequest(
-        string UploadId, 
+        string UploadId,
         string BucketName,
         string ContentType,
         string Prefix,
@@ -55,22 +55,20 @@ public static class CompleteMultipartUpload
             var response = await fileProvider.CompleteMultipartUpload(
                 fileMetadata, cancellationToken);
 
-            var metaDataResponse =
-                await fileProvider.GetObjectMetadata(fileMetadata.BucketName, fileMetadata.Key, cancellationToken);
+            var downloadUrl = await fileProvider.GetPresignedUrlForDownload(
+                fileMetadata, cancellationToken);
+            if(downloadUrl.IsFailure)
+                return Results.BadRequest(downloadUrl.Error.Errors);
 
-            if (metaDataResponse.IsFailure)
-                return Results.BadRequest(metaDataResponse.Error.Errors);
+            fileMetadata.Id = fileId;
+            fileMetadata.DownloadUrl = downloadUrl.Value;
+            fileMetadata.Size = response.ContentLength;
 
-            var metadata = metaDataResponse.Value;
-
-            metadata.Id = fileId;
-            metadata.Prefix = request.Prefix;
-
-            await filesRepository.AddRangeAsync([metadata], cancellationToken);
+            await filesRepository.AddRangeAsync([fileMetadata], cancellationToken);
 
             BackgroundJob.Schedule<ConsistencyConfirmJob>(
                 j => j.Execute(
-                    metadata.Id, metadata.BucketName, metadata.Key),
+                    fileMetadata.Id, fileMetadata.BucketName, fileMetadata.Key),
                 TimeSpan.FromHours(24));
 
             return Results.Ok(new

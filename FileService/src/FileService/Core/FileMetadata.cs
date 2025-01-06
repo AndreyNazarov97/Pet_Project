@@ -10,14 +10,11 @@ public class FileMetadata
     public Guid Id { get; set; }
     [BsonElement("name")]
     public string Name { get; set; } = string.Empty;
-    [BsonElement("extension")]
-    public string Extension { get; set; } = string.Empty;
     [BsonElement("content_type")]
     public string ContentType { get; set; } = string.Empty;
-    public string FullPath { get; set; } = string.Empty;
+    public string FullPath => $"{BucketName}/{Key}";
     [BsonElement("size")]
     public long Size { get; set; }
-    public string StorageInfo { get; set; } = string.Empty;
     [BsonElement("bucket_name")]
     public string BucketName { get; set; } = string.Empty;
     [BsonElement("prefix")]

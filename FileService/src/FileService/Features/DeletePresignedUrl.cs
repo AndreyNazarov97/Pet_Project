@@ -10,7 +10,7 @@ public static class DeletePresignedUrl
     private record DeletePresignedUrlRequest(
         string BucketName,
         string FileName, 
-        string Extension,
+        string Prefix,
         string ContentType);
     
     public sealed class Endpoint: IEndpoint
@@ -32,8 +32,7 @@ public static class DeletePresignedUrl
         {
             BucketName = request.BucketName,
             Name = request.FileName,
-            Key = $"{key}.{request.Extension}",
-            Extension = request.Extension,
+            Key = $"{request.Prefix}/{key}",
             ContentType = request.ContentType
         };
         

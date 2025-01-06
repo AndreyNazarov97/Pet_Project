@@ -8,10 +8,7 @@ public static class DownloadPresignedUrl
 {
     private record DownloadPresignedUrlRequest(
         string BucketName,
-        string FileName, 
-        string ContentType,
-        string Prefix,
-        string Extension);
+        string Prefix);
     
     public sealed class Endpoint: IEndpoint
     {
@@ -30,11 +27,8 @@ public static class DownloadPresignedUrl
         var fileMetadata = new FileMetadata
         {
             BucketName = request.BucketName,
-            ContentType = request.ContentType,
-            Name = request.FileName,
             Prefix = request.Prefix,
-            Key = $"{key}.{request.Extension}",
-            Extension = request.Extension
+            Key = $"{request.Prefix}/{key}",
         };
         
         var result = await provider.GetPresignedUrlForDownload(fileMetadata, cancellationToken); 
