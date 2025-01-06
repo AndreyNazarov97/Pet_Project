@@ -1,4 +1,5 @@
-﻿using FileService.Endpoints;
+﻿using FileService.Communication.Contracts;
+using FileService.Endpoints;
 using FileService.Infrastructure.Providers;
 using FileService.Infrastructure.Repositories;
 
@@ -6,9 +7,6 @@ namespace FileService.Features;
 
 public static class GetFilesByIds
 {
-    private record GetFilesByIdsRequest(
-        IEnumerable<Guid> FileIds);
-    
     public sealed class Endpoint: IEndpoint
     {
         public void MapEndpoint(IEndpointRouteBuilder app)
