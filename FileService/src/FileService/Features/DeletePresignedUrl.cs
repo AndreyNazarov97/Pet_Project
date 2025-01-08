@@ -1,4 +1,5 @@
-﻿using FileService.Core;
+﻿using FileService.Communication.Contracts;
+using FileService.Core;
 using FileService.Endpoints;
 using FileService.Infrastructure.Providers;
 using FileService.Infrastructure.Repositories;
@@ -7,12 +8,6 @@ namespace FileService.Features;
 
 public static class DeletePresignedUrl
 {
-    private record DeletePresignedUrlRequest(
-        string BucketName,
-        string FileName, 
-        string Prefix,
-        string ContentType);
-    
     public sealed class Endpoint: IEndpoint
     {
         public void MapEndpoint(IEndpointRouteBuilder app)
@@ -38,10 +33,8 @@ public static class DeletePresignedUrl
         
         var result = await provider.GetPresignedUrlForDelete(fileMetadata, cancellationToken); 
         
-        return Results.Ok(new
-        {
-            key,
-            url = result.Value
-        });
+        return result.IsFailure 
+            ? Results.BadRequest(result.Error.Errors) 
+            : Results.Ok(result.Value);
     }
 }

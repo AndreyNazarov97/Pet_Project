@@ -1,5 +1,6 @@
 ﻿using Amazon.S3;
 using Amazon.S3.Model;
+using FileService.Communication.Contracts;
 using FileService.Core;
 using FileService.Endpoints;
 using FileService.Infrastructure.Providers;
@@ -8,14 +9,6 @@ namespace FileService.Features;
 
 public static class UploadPresignedPartUrl
 {
-    private record UploadPresignedPartUrlRequest(
-        string UploadId,
-        int PartNumber,
-        string BucketName,
-        string ContentType,
-        string Prefix,
-        string FileName);
-
     public sealed class Endpoint : IEndpoint
     {
         public void MapEndpoint(IEndpointRouteBuilder app)

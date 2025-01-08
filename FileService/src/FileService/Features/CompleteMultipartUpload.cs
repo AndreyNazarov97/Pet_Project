@@ -1,5 +1,5 @@
 ﻿using Amazon.S3;
-using Amazon.S3.Model;
+using FileService.Communication.Contracts;
 using FileService.Core;
 using FileService.Endpoints;
 using FileService.Infrastructure.Providers;
@@ -11,17 +11,6 @@ namespace FileService.Features;
 
 public static class CompleteMultipartUpload
 {
-    private record PartETagInfo(int PartNumber, string ETag);
-
-    private record CompleteMultipartUploadRequest(
-        string UploadId,
-        string BucketName,
-        string ContentType,
-        string Prefix,
-        string FileName,
-        List<PartETagInfo> Parts);
-
-
     public sealed class Endpoint : IEndpoint
     {
         public void MapEndpoint(IEndpointRouteBuilder app)
@@ -71,10 +60,9 @@ public static class CompleteMultipartUpload
                     fileMetadata.Id, fileMetadata.BucketName, fileMetadata.Key),
                 TimeSpan.FromHours(24));
 
-            return Results.Ok(new
+            return Results.Ok(new CompleteMultipartUploadResponse
             {
-                key = key,
-                location = response.Location
+                Location = response.Location
             });
         }
         catch (AmazonS3Exception ex)

@@ -1,5 +1,4 @@
-﻿using Amazon.S3;
-using Amazon.S3.Model;
+﻿using FileService.Communication.Contracts;
 using FileService.Core;
 using FileService.Endpoints;
 using FileService.Infrastructure.Providers;
@@ -8,12 +7,6 @@ namespace FileService.Features;
 
 public static class StartMultipartUpload
 {
-    private record StartMultipartUploadRequest(
-        string BucketName,
-        string FileName, 
-        string ContentType,
-        string Prefix);
-
     public sealed class Endpoint : IEndpoint
     {
         public void MapEndpoint(IEndpointRouteBuilder app)
@@ -28,7 +21,7 @@ public static class StartMultipartUpload
         CancellationToken cancellationToken)
     {
         var key = Guid.NewGuid();
-        
+
         var fileMetadata = new FileMetadata
         {
             BucketName = request.BucketName,
@@ -39,13 +32,13 @@ public static class StartMultipartUpload
         };
 
         var response = await fileProvider.StartMultipartUpload(fileMetadata, cancellationToken);
-        
-        return Results.Ok(new
+
+        return Results.Ok(new StartMultipartUploadResponse
         {
-            key,
-            uploadId = response.UploadId,
-            bucketName = response.BucketName,
-            prefix = fileMetadata.Prefix,
+            Key = key.ToString(),
+            UploadId = response.UploadId,
+            BucketName = response.BucketName,
+            Prefix = request.Prefix
         });
     }
 }

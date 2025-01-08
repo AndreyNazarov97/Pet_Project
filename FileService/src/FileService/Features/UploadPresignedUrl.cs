@@ -1,5 +1,4 @@
-﻿using Amazon.S3;
-using Amazon.S3.Model;
+﻿using FileService.Communication.Contracts;
 using FileService.Core;
 using FileService.Endpoints;
 using FileService.Infrastructure.Providers;
@@ -8,13 +7,6 @@ namespace FileService.Features;
 
 public static class UploadPresignedUrl
 {
-    private record UploadPresignedUrlRequest(
-        string BucketName,
-        string FileName, 
-        string ContentType,
-        string Prefix,
-        string Extension);
-    
     public sealed class Endpoint : IEndpoint
     {
         public void MapEndpoint(IEndpointRouteBuilder app)
@@ -36,14 +28,14 @@ public static class UploadPresignedUrl
             ContentType = request.ContentType,
             Name = request.FileName,
             Prefix = request.Prefix,
-            Key = $"{key}.{request.Extension}"
+            Key = $"{request.Prefix}/{key}",
         };
         
         var result = await provider.GetPresignedUrlForUpload(fileMetadata, cancellationToken); 
-        return Results.Ok(new
+        return Results.Ok(new UploadPresignedUrlResponse
         {
-            key,
-            url = result.Value
+            Key = key.ToString(),
+            Url = result.Value
         });
     }
 }

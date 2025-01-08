@@ -1,16 +1,13 @@
-﻿using FileService.Core;
+﻿using FileService.Communication.Contracts;
+using FileService.Core;
 using FileService.Endpoints;
 using FileService.Infrastructure.Providers;
 
 namespace FileService.Features;
 
-public static class DownloadPresignedUrl
+public static class GetDownloadPresignedUrl
 {
-    private record DownloadPresignedUrlRequest(
-        string BucketName,
-        string Prefix);
-    
-    public sealed class Endpoint: IEndpoint
+    public sealed class Endpoint : IEndpoint
     {
         public void MapEndpoint(IEndpointRouteBuilder app)
         {
@@ -18,8 +15,8 @@ public static class DownloadPresignedUrl
         }
     }
 
-    private static async Task<IResult> Handler( 
-        DownloadPresignedUrlRequest request,
+    private static async Task<IResult> Handler(
+        GetDownloadPresignedUrlRequest request,
         Guid key,
         IFileProvider provider,
         CancellationToken cancellationToken = default)
@@ -30,12 +27,11 @@ public static class DownloadPresignedUrl
             Prefix = request.Prefix,
             Key = $"{request.Prefix}/{key}",
         };
-        
-        var result = await provider.GetPresignedUrlForDownload(fileMetadata, cancellationToken); 
-        return Results.Ok(new
-        {
-            key,
-            url = result.Value
-        });
+
+        var result = await provider.GetPresignedUrlForDownload(fileMetadata, cancellationToken);
+
+        return result.IsFailure 
+            ? Results.BadRequest(result.Error.Errors) 
+            : Results.Ok(result.Value);
     }
 }
