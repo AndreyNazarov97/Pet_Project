@@ -3,6 +3,7 @@ using FileService.Endpoints;
 using FileService.Extensions;
 using FileService.Middlewares;
 using Hangfire;
+using Microsoft.AspNetCore.Server.Kestrel.Core;
 using Serilog;
 
 var builder = WebApplication.CreateBuilder(args);
@@ -11,8 +12,14 @@ builder.Services.AddLogger(builder.Configuration);
 builder.Services.AddHttpLogging(options => { options.CombineLogs = true; });
 builder.Services.AddSerilog();
 
+builder.Services.Configure<KestrelServerOptions>(options =>
+{
+    options.Limits.MaxRequestBodySize = 2000 * 1024 * 1024; // 2000 MB
+});
+
 builder.Services.AddEndpointsApiExplorer();
 builder.Services.AddSwaggerGen();
+
 
 builder.Services.AddEndpoints();
 builder.Services.AddCors();

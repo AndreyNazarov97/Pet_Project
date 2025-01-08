@@ -1,8 +1,10 @@
 ﻿using Amazon.S3;
-using FileService.Communication.Contracts;
+using FileService.Communication.Contracts.Requests;
+using FileService.Communication.Contracts.Responses;
 using FileService.Core;
 using FileService.Endpoints;
 using FileService.Infrastructure.Providers;
+using FileService.Infrastructure.Providers.Data;
 using FileService.Infrastructure.Repositories;
 using FileService.Jobs;
 using Hangfire;
@@ -28,30 +30,25 @@ public static class CompleteMultipartUpload
     {
         try
         {
+            var data = new CompleteMultipartUploadData(request.BucketName, request.UploadId, key, request.Parts);
+            
+            var result = await fileProvider.CompleteMultipartUpload(
+                data, cancellationToken);
+            
             var fileId = Guid.NewGuid();
+
+            var metaData = await fileProvider
+                .GetObjectMetadata(request.BucketName, key, cancellationToken);
 
             var fileMetadata = new FileMetadata
             {
-                BucketName = request.BucketName,
-                ContentType = request.ContentType,
+                Id = fileId,
+                Key = key,
                 Name = request.FileName,
-                Prefix = request.Prefix,
-                Key = $"{request.Prefix}/{key}",
-                UploadId = request.UploadId,
-                ETags = request.Parts.Select(e => new ETagInfo { PartNumber = e.PartNumber, ETag = e.ETag })
+                BucketName = request.BucketName,
+                ContentType = metaData.Headers.ContentType,
+                UploadDate = DateTime.UtcNow
             };
-
-            var response = await fileProvider.CompleteMultipartUpload(
-                fileMetadata, cancellationToken);
-
-            var downloadUrl = await fileProvider.GetPresignedUrlForDownload(
-                fileMetadata, cancellationToken);
-            if(downloadUrl.IsFailure)
-                return Results.BadRequest(downloadUrl.Error.Errors);
-
-            fileMetadata.Id = fileId;
-            fileMetadata.DownloadUrl = downloadUrl.Value;
-            fileMetadata.Size = response.ContentLength;
 
             await filesRepository.AddRangeAsync([fileMetadata], cancellationToken);
 
@@ -60,10 +57,13 @@ public static class CompleteMultipartUpload
                     fileMetadata.Id, fileMetadata.BucketName, fileMetadata.Key),
                 TimeSpan.FromHours(24));
 
-            return Results.Ok(new CompleteMultipartUploadResponse
+            var response = new CompleteMultipartUploadResponse
             {
-                Location = response.Location
-            });
+                FileId = fileId,
+                Location = result.Location
+            };
+        
+            return Results.Ok(response);
         }
         catch (AmazonS3Exception ex)
         {

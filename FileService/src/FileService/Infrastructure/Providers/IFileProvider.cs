@@ -2,37 +2,37 @@
 using CSharpFunctionalExtensions;
 using FileService.Core;
 using FileService.Core.Models;
+using FileService.Infrastructure.Providers.Data;
 
 namespace FileService.Infrastructure.Providers;
 
 public interface IFileProvider
 {
-    Task<InitiateMultipartUploadResponse> StartMultipartUpload(FileMetadata fileMetadata,
-        CancellationToken cancellationToken = default);
+    Task<InitiateMultipartUploadResponse> StartMultipartUpload(
+        StartMultipartUploadData data, CancellationToken cancellationToken = default);
 
     Task<Result<string, ErrorList>> GetPresignedUrlPart(
-        FileMetadata fileMetadata, CancellationToken cancellationToken);
+        GetPresignedUrlForUploadPartData data, CancellationToken cancellationToken);
 
-    Task<CompleteMultipartUploadResponse> CompleteMultipartUpload(FileMetadata fileMetadata,
-        CancellationToken cancellationToken = default);
+    Task<CompleteMultipartUploadResponse> CompleteMultipartUpload(
+        CompleteMultipartUploadData data, CancellationToken cancellationToken = default);
 
     Task<Result<string, ErrorList>> GetPresignedUrlForUpload(
-        FileMetadata fileMetadata,
-        CancellationToken cancellationToken);
+        GetPresignedUrlForUploadData data,
+        CancellationToken cancellationToken = default);
 
     Task<Result<string, ErrorList>> GetPresignedUrlForDownload(FileMetadata fileMetadata,
-        CancellationToken cancellationToken);
+        CancellationToken cancellationToken = default);
 
-    Task<Result<FileMetadata, ErrorList>> GetObjectMetadata(string bucketName, string key,
+    Task<GetObjectMetadataResponse>  GetObjectMetadata(string bucketName, string key,
         CancellationToken cancellationToken = default);
 
     public Task<Result<IReadOnlyCollection<string>, ErrorList>> DownloadFiles(
         IEnumerable<FileMetadata> filesData, CancellationToken cancellationToken = default);
+    
+    Task<UnitResult<ErrorList>> DeleteFile(
+        string bucketName, string key, CancellationToken cancellationToken = default);
 
-    public Task<UnitResult<ErrorList>> DeleteFile(
-        FileMetadata fileMetadata, CancellationToken cancellationToken = default);
-
-    Task<Result<string, ErrorList>> GetPresignedUrlForDelete(
-        FileMetadata fileMetadata,
-        CancellationToken cancellationToken = default);
+    Task<UnitResult<ErrorList>> DeleteFiles(
+        IEnumerable<FileMetadata> files, CancellationToken cancellationToken = default);
 }

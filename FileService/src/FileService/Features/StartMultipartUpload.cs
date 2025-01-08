@@ -1,7 +1,9 @@
 ﻿using FileService.Communication.Contracts;
-using FileService.Core;
+using FileService.Communication.Contracts.Requests;
+using FileService.Communication.Contracts.Responses;
 using FileService.Endpoints;
 using FileService.Infrastructure.Providers;
+using FileService.Infrastructure.Providers.Data;
 
 namespace FileService.Features;
 
@@ -20,25 +22,20 @@ public static class StartMultipartUpload
         IFileProvider fileProvider,
         CancellationToken cancellationToken)
     {
-        var key = Guid.NewGuid();
+        var fileExtension = Path.GetExtension(request.FileName);
 
-        var fileMetadata = new FileMetadata
+        var key = $"{Guid.NewGuid()}{fileExtension}";
+
+        var data = new StartMultipartUploadData(request.BucketName, request.FileName, key, request.ContentType);
+
+        var result = await fileProvider.StartMultipartUpload(data, cancellationToken);
+
+        var response = new StartMultipartUploadResponse
         {
-            BucketName = request.BucketName,
-            ContentType = request.ContentType,
-            Name = request.FileName,
-            Prefix = request.Prefix,
-            Key = $"{request.Prefix}/{key}"
+            Key = result.Key,
+            UploadId = result.UploadId
         };
 
-        var response = await fileProvider.StartMultipartUpload(fileMetadata, cancellationToken);
-
-        return Results.Ok(new StartMultipartUploadResponse
-        {
-            Key = key.ToString(),
-            UploadId = response.UploadId,
-            BucketName = response.BucketName,
-            Prefix = request.Prefix
-        });
+        return Results.Ok(response);
     }
 }

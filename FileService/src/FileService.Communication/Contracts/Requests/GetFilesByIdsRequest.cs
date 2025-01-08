@@ -1,3 +1,3 @@
-﻿namespace FileService.Communication.Contracts;
+﻿namespace FileService.Communication.Contracts.Requests;
 
 public record GetFilesByIdsRequest(IEnumerable<Guid> FileIds);

@@ -1,7 +1,10 @@
 ﻿using System.Net;
+using System.Net.Http.Headers;
 using System.Net.Http.Json;
 using CSharpFunctionalExtensions;
 using FileService.Communication.Contracts;
+using FileService.Communication.Contracts.Requests;
+using FileService.Communication.Contracts.Responses;
 
 namespace FileService.Communication;
 
@@ -89,7 +92,7 @@ public class FileHttpClient(HttpClient httpClient)
     }
 
     public async Task<Result<string>> DeletePresignedUrlAsync(
-        DeletePresignedUrlRequest request, Guid key, CancellationToken cancellationToken = default)
+        DeleteFilesRequest request, Guid key, CancellationToken cancellationToken = default)
     {
         using var response = await httpClient.PostAsJsonAsync(
             $"files/{key}/presigned-for-deletion", request, cancellationToken);
@@ -99,5 +102,29 @@ public class FileHttpClient(HttpClient httpClient)
 
         return await response.Content
             .ReadFromJsonAsync<string>(cancellationToken: cancellationToken)!;
+    }
+
+    public async Task<Result> UploadFileToPresignedUrlAsync(
+        UploadFileRequest request, CancellationToken cancellationToken = default)
+    {
+        try
+        {
+            using var stream = request.File.OpenReadStream();
+            using var content = new StreamContent(stream);
+            content.Headers.ContentType = new MediaTypeHeaderValue(request.File.ContentType);
+
+            using var response = await httpClient.PutAsync(request.PresignedUrl, content, cancellationToken);
+
+            if (!response.IsSuccessStatusCode)
+            {
+                return Result.Failure($"Ошибка при загрузке файла: {response.ReasonPhrase}");
+            }
+
+            return Result.Success();
+        }
+        catch (Exception ex)
+        {
+            return Result.Failure($"Исключение при загрузке файла: {ex.Message}");
+        }
     }
 }

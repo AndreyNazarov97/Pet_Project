@@ -1,11 +1,9 @@
-﻿namespace FileService.Communication.Contracts;
+﻿namespace FileService.Communication.Contracts.Requests;
 
 public record CompleteMultipartUploadRequest(
     string UploadId,
     string BucketName,
-    string ContentType,
-    string Prefix,
     string FileName,
-    List<PartETagInfo> Parts);
+    IEnumerable<PartETagInfo> Parts);
     
 public record PartETagInfo(int PartNumber, string ETag);
