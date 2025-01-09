@@ -2,9 +2,9 @@
 using System.Net.Http.Headers;
 using System.Net.Http.Json;
 using CSharpFunctionalExtensions;
-using FileService.Communication.Contracts;
 using FileService.Communication.Contracts.Requests;
 using FileService.Communication.Contracts.Responses;
+using Microsoft.AspNetCore.Http;
 
 namespace FileService.Communication;
 
@@ -104,27 +104,32 @@ public class FileHttpClient(HttpClient httpClient)
             .ReadFromJsonAsync<string>(cancellationToken: cancellationToken)!;
     }
 
-    public async Task<Result> UploadFileToPresignedUrlAsync(
-        UploadFileRequest request, CancellationToken cancellationToken = default)
+    public async Task<Result<UploadFileResponse[]>> UploadFilesAsync(
+        UploadFileRequest request, IFormFileCollection files, CancellationToken cancellationToken = default)
     {
-        try
+        // Создаём multipart/form-data контент
+        using var content = new MultipartFormDataContent();
+
+        // Добавляем метаинформацию из запроса
+        var bucketNameContent = new StringContent(request.BucketName);
+        content.Add(bucketNameContent, nameof(request.BucketName));
+
+        // Добавляем файлы в form-data
+        foreach (var file in files)
         {
-            using var stream = request.File.OpenReadStream();
-            using var content = new StreamContent(stream);
-            content.Headers.ContentType = new MediaTypeHeaderValue(request.File.ContentType);
+            var fileStream = file.OpenReadStream();
+            var fileContent = new StreamContent(fileStream);
+            fileContent.Headers.ContentType = new MediaTypeHeaderValue(file.ContentType);
 
-            using var response = await httpClient.PutAsync(request.PresignedUrl, content, cancellationToken);
-
-            if (!response.IsSuccessStatusCode)
-            {
-                return Result.Failure($"Ошибка при загрузке файла: {response.ReasonPhrase}");
-            }
-
-            return Result.Success();
+            content.Add(fileContent, nameof(files), file.FileName);
         }
-        catch (Exception ex)
-        {
-            return Result.Failure($"Исключение при загрузке файла: {ex.Message}");
-        }
+        
+        using var response = await httpClient.PostAsync("files/upload", content, cancellationToken);
+        
+        if (response.StatusCode != HttpStatusCode.OK)
+            return Result.Failure<UploadFileResponse[]>(response.ReasonPhrase!);
+        
+        return await response.Content
+            .ReadFromJsonAsync<UploadFileResponse[]>(cancellationToken: cancellationToken)!;
     }
 }

@@ -23,6 +23,28 @@ public class MinioProvider : IFileProvider
         _logger = logger;
     }
 
+    public async Task<UnitResult<ErrorList>> UploadFiles(
+        IEnumerable<UploadFileData> files, CancellationToken cancellationToken = default)
+    {
+        var fileList = files.ToList();
+        var semaphoreSlim = new SemaphoreSlim(MaxDegreeOfParallelism);
+        
+        await EnsureBucketExistsAsync(fileList.Select(f => f.BucketName), cancellationToken);
+
+        var tasks = fileList.Select(async uploadFileData =>
+            await UploadFile(uploadFileData, semaphoreSlim, cancellationToken));
+        var results = await Task.WhenAll(tasks);
+
+        var errors = results
+            .Where(r => r.IsFailure)
+            .Select(r => r.Error).ToList();
+
+        if (errors.Count > 0)
+            return new ErrorList(errors);
+
+        return Result.Success<ErrorList>();
+    }
+
     public async Task<InitiateMultipartUploadResponse> StartMultipartUpload(
         StartMultipartUploadData data, CancellationToken cancellationToken = default)
     {
@@ -270,6 +292,38 @@ public class MinioProvider : IFileProvider
 
                 await _client.PutBucketAsync(request, cancellationToken);
             }
+        }
+    }
+
+    private async Task<UnitResult<Error>> UploadFile(
+        UploadFileData fileData,
+        SemaphoreSlim semaphoreSlim,
+        CancellationToken cancellationToken)
+    {
+        await semaphoreSlim.WaitAsync(cancellationToken);
+
+        try
+        {
+            var request = new PutObjectRequest
+            {
+                BucketName = fileData.BucketName,
+                Key = fileData.Key,
+                InputStream = fileData.Stream,
+                ContentType = fileData.ContentType
+            };        
+
+            await _client.PutObjectAsync(request, cancellationToken);
+
+            return Result.Success<Error>();
+        }
+        catch (Exception ex)
+        {
+            _logger.LogError(ex, "Fail to upload file to Minio");
+            return Errors.Files.FailUpload();
+        }
+        finally
+        {
+            semaphoreSlim.Release();
         }
     }
 

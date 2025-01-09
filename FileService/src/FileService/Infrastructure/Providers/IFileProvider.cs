@@ -8,6 +8,9 @@ namespace FileService.Infrastructure.Providers;
 
 public interface IFileProvider
 {
+    Task<UnitResult<ErrorList>> UploadFiles(
+        IEnumerable<UploadFileData> files, CancellationToken cancellationToken = default);
+    
     Task<InitiateMultipartUploadResponse> StartMultipartUpload(
         StartMultipartUploadData data, CancellationToken cancellationToken = default);
 
