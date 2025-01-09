@@ -18,14 +18,14 @@ public static class UploadFiles
     }
 
     private static async Task<IResult> Handler(
-        [AsParameters]UploadFileRequest request,
+        string bucketName,
         IFormFileCollection files,
         IFileProvider provider,
         IFilesRepository filesRepository,
         CancellationToken cancellationToken)
     {
         await using var processor = new FormFileProcessor();
-        processor.Process(files, request.BucketName);
+        processor.Process(files, bucketName);
         
         var uploadResult = await provider.UploadFiles(processor.FilesData, cancellationToken);
         

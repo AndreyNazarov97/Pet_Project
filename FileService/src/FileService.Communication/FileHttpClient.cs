@@ -105,16 +105,10 @@ public class FileHttpClient(HttpClient httpClient)
     }
 
     public async Task<Result<UploadFileResponse[]>> UploadFilesAsync(
-        UploadFileRequest request, IFormFileCollection files, CancellationToken cancellationToken = default)
+        string bucketName, IFormFileCollection files, CancellationToken cancellationToken = default)
     {
-        // Создаём multipart/form-data контент
         using var content = new MultipartFormDataContent();
-
-        // Добавляем метаинформацию из запроса
-        var bucketNameContent = new StringContent(request.BucketName);
-        content.Add(bucketNameContent, nameof(request.BucketName));
-
-        // Добавляем файлы в form-data
+        
         foreach (var file in files)
         {
             var fileStream = file.OpenReadStream();
@@ -124,7 +118,7 @@ public class FileHttpClient(HttpClient httpClient)
             content.Add(fileContent, nameof(files), file.FileName);
         }
         
-        using var response = await httpClient.PostAsync("files/upload", content, cancellationToken);
+        using var response = await httpClient.PostAsync($"files/upload?bucketName={bucketName}", content, cancellationToken);
         
         if (response.StatusCode != HttpStatusCode.OK)
             return Result.Failure<UploadFileResponse[]>(response.ReasonPhrase!);
