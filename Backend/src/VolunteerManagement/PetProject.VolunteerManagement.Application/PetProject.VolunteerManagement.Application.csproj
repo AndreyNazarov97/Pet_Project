@@ -17,7 +17,7 @@
     </ItemGroup>
 
     <ItemGroup>
-      <PackageReference Include="fileservice" Version="1.0.1" />
+      <PackageReference Include="FileService" Version="1.0.5" />
     </ItemGroup>
 
 </Project>

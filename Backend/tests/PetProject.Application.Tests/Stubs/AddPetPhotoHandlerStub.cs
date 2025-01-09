@@ -12,11 +12,7 @@ namespace PetProject.Application.Tests.Stubs;
 public class AddPetPhotoHandlerStub : AddPetPhotoHandler
 {
     internal Mock<IVolunteersRepository> VolunteersRepositoryMock { get; }
-
-    internal Mock<IFileProvider> FileProviderMock { get; }
     
-    internal Mock<IMessageQueue<IEnumerable<FileMetaDataDto>>> MessageQueueMock { get; }
-
     internal Mock<IUnitOfWork> UnitOfWorkMock { get; }
 
     internal Mock<ILogger<AddPetPhotoHandler>> LoggerMock { get; }
@@ -29,13 +25,10 @@ public class AddPetPhotoHandlerStub : AddPetPhotoHandler
         Mock<ILogger<AddPetPhotoHandler>> loggerMock)
         : base(
             volunteersRepositoryMock.Object,
-            fileProviderMock.Object,
-            messageQueueMock.Object,
             unitOfWorkMock.Object,
             loggerMock.Object)
     {
         VolunteersRepositoryMock = volunteersRepositoryMock;
-        FileProviderMock = fileProviderMock;
         UnitOfWorkMock = unitOfWorkMock;
         LoggerMock = loggerMock;
     }

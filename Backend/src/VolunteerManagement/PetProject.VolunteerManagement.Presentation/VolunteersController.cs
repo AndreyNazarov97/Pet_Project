@@ -1,10 +1,11 @@
-﻿using MediatR;
+﻿using FileService.Communication;
+using MediatR;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
 using PetProject.Core.Dtos;
 using PetProject.Framework;
 using PetProject.Framework.Authorization;
-using PetProject.Framework.Processors;
+using PetProject.SharedKernel.Shared;
 using PetProject.SharedKernel.Shared.EntityIds;
 using PetProject.SharedKernel.Shared.ValueObjects;
 using PetProject.VolunteerManagement.Application.VolunteersManagement.Commands.AddPetPhoto;
@@ -125,7 +126,7 @@ public class VolunteersController : ApplicationController
 
         return Ok(result.Value);
     }
-    
+
     [Permission(Permissions.Volunteer.Read)]
     [HttpGet("pets/{petId:guid}")]
     public async Task<ActionResult<PetDto>> GetPet(
@@ -140,7 +141,7 @@ public class VolunteersController : ApplicationController
         var result = await _mediator.Send(query, cancellationToken);
 
         if (result.IsFailure)
-            return result.Error.ToResponse();    
+            return result.Error.ToResponse();
 
         return Ok(result.Value);
     }
@@ -186,16 +187,20 @@ public class VolunteersController : ApplicationController
         [FromRoute] Guid volunteerId,
         [FromRoute] Guid petId,
         [FromForm] IFormFileCollection photos,
+        [FromServices] FileHttpClient fileHttpClient,
         CancellationToken cancellationToken)
     {
-        await using var fileProcessor = new FormFileProcessor();
-        var filesDto = fileProcessor.Process(photos);
+        var uploadFilesResponse = await fileHttpClient
+            .UploadFilesAsync("pet-project", photos, cancellationToken);
 
+        if (uploadFilesResponse.IsFailure)
+            return Error.Failure("file.service.error", uploadFilesResponse.Error).ToResponse();
+        
         var command = new AddPetPhotoCommand
         {
             VolunteerId = volunteerId,
             PetId = petId,
-            Photos = filesDto
+            Keys = uploadFilesResponse.Value.Select(r => r.Key).ToList()
         };
 
         var result = await _mediator.Send(command, cancellationToken);
@@ -273,11 +278,11 @@ public class VolunteersController : ApplicationController
         CancellationToken cancellationToken)
     {
         var command = request.ToCommand(volunteerId, petId);
-        
+
         var result = await _mediator.Send(command, cancellationToken);
 
         if (result.IsFailure)
-            return result.Error.ToResponse();    
+            return result.Error.ToResponse();
 
         return Ok();
     }

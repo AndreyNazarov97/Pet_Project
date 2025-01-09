@@ -10,5 +10,5 @@ public record AddPetPhotoCommand: IRequest<Result<FilePath[], ErrorList>>
 {
     public required Guid VolunteerId { get; init; }
     public required Guid PetId { get; init; }
-    public required List<FileDto> Photos { get; init; }
+    public required List<string> Keys { get; init; }
 }
