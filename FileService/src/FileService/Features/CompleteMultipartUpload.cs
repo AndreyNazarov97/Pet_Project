@@ -1,8 +1,10 @@
 ﻿using Amazon.S3;
-using Amazon.S3.Model;
+using FileService.Communication.Contracts.Requests;
+using FileService.Communication.Contracts.Responses;
 using FileService.Core;
 using FileService.Endpoints;
 using FileService.Infrastructure.Providers;
+using FileService.Infrastructure.Providers.Data;
 using FileService.Infrastructure.Repositories;
 using FileService.Jobs;
 using Hangfire;
@@ -11,63 +13,57 @@ namespace FileService.Features;
 
 public static class CompleteMultipartUpload
 {
-    private record PartETagInfo(int PartNumber, string ETag);
-    
-    private record CompleteMultipartUploadRequest(string UploadId,string BucketName, string Key, List<PartETagInfo> Parts);
-
-    
     public sealed class Endpoint : IEndpoint
     {
         public void MapEndpoint(IEndpointRouteBuilder app)
         {
             app.MapPost("files/{key}/complete-multipart", Handler);
         }
-    }  
+    }
 
     private static async Task<IResult> Handler(
         CompleteMultipartUploadRequest request,
         string key,
         IFileProvider fileProvider,
-        IFileRepository fileRepository,
+        IFilesRepository filesRepository,
         CancellationToken cancellationToken)
     {
         try
         {
+            var data = new CompleteMultipartUploadData(request.BucketName, request.UploadId, key, request.Parts);
+            
+            var result = await fileProvider.CompleteMultipartUpload(
+                data, cancellationToken);
+            
             var fileId = Guid.NewGuid();
-            
-           var fileMetadata = new FileMetadata
-           {
-               BucketName = request.BucketName,
-               Key = request.Key,
-               UploadId = request.UploadId,
-               ETags =  request.Parts.Select(e => new ETagInfo{PartNumber = e.PartNumber,ETag = e.ETag})
-           };
- 
-            var response = await fileProvider.CompleteMultipartUpload(
-                fileMetadata, cancellationToken);
 
-            var metaDataResponse =
-                await fileProvider.GetObjectMetadata(fileMetadata.BucketName, fileMetadata.Key, cancellationToken);
-            
-            if(metaDataResponse.IsFailure)
-                return Results.BadRequest(metaDataResponse.Error.Errors);
-            
-            var metadata = metaDataResponse.Value;
-            
-            metadata.Id = fileId;
-        
-            await fileRepository.AddRangeAsync([metadata], cancellationToken);
+            var metaData = await fileProvider
+                .GetObjectMetadata(request.BucketName, key, cancellationToken);
+
+            var fileMetadata = new FileMetadata
+            {
+                Id = fileId,
+                Key = key,
+                Name = request.FileName,
+                BucketName = request.BucketName,
+                ContentType = metaData.Headers.ContentType,
+                UploadDate = DateTime.UtcNow
+            };
+
+            await filesRepository.AddRangeAsync([fileMetadata], cancellationToken);
 
             BackgroundJob.Schedule<ConsistencyConfirmJob>(
                 j => j.Execute(
-                    metadata.Id,metadata.BucketName, metadata.Key),
+                    fileMetadata.Id, fileMetadata.BucketName, fileMetadata.Key),
                 TimeSpan.FromHours(24));
 
-           return Results.Ok(new
+            var response = new CompleteMultipartUploadResponse
             {
-                Id = key,
-               location = response.Location
-            });
+                FileId = fileId,
+                Location = result.Location
+            };
+        
+            return Results.Ok(response);
         }
         catch (AmazonS3Exception ex)
         {

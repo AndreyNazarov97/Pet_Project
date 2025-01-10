@@ -16,4 +16,8 @@
       <Folder Include="VolunteersManagement\Queries\" />
     </ItemGroup>
 
+    <ItemGroup>
+      <PackageReference Include="FileService" Version="1.0.5" />
+    </ItemGroup>
+
 </Project>

@@ -1,14 +1,14 @@
-﻿using FileService.Endpoints;
+﻿using FileService.Communication.Contracts.Requests;
+using FileService.Communication.Contracts.Responses;
+using FileService.Endpoints;
 using FileService.Infrastructure.Providers;
 using FileService.Infrastructure.Repositories;
+using FileInfo = FileService.Communication.Contracts.Responses.FileInfo;
 
 namespace FileService.Features;
 
 public static class GetFilesByIds
 {
-    private record GetFilesByIdsRequest(
-        IEnumerable<Guid> FileIds);
-    
     public sealed class Endpoint: IEndpoint
     {
         public void MapEndpoint(IEndpointRouteBuilder app)
@@ -20,21 +20,21 @@ public static class GetFilesByIds
     private static async Task<IResult> Handler( 
         GetFilesByIdsRequest request,
         IFileProvider fileProvider,
-        IFileRepository fileRepository,
+        IFilesRepository filesRepository,
         CancellationToken cancellationToken = default)
     {
-        var files = await fileRepository.Get(request.FileIds, cancellationToken);
+        var files = await filesRepository.Get(request.FileIds, cancellationToken);
 
         var result = await fileProvider.DownloadFiles(files, cancellationToken);
         if (result.IsFailure)
             return Results.Conflict(error: result.Error.Errors);
         
-        files = files.Zip(result.Value,(file,url) => 
-        { 
-            file.DownloadUrl = url;
-            return file;
-        }).ToList();
+        var fileInfos = files.Zip(result.Value, (file, url) => 
+                new FileInfo(file.Id, url, file.Key, file.UploadDate))
+            .ToList();
+
+        var response = new GetFilesByIdsResponse(fileInfos);
         
-        return Results.Ok(files);
+        return Results.Ok(response);
     }
 }

@@ -1,53 +1,40 @@
-﻿using Amazon.S3;
-using Amazon.S3.Model;
-using FileService.Core;
+﻿using FileService.Communication.Contracts.Requests;
+using FileService.Communication.Contracts.Responses;
 using FileService.Endpoints;
 using FileService.Infrastructure.Providers;
+using FileService.Infrastructure.Providers.Data;
 
 namespace FileService.Features;
 
 public static class UploadPresignedPartUrl
 {
-    private record UploadPresignedPartUrlRequest(
-        string UploadId,
-        int PartNumber,
-        string BucketName,
-        string ContentType,
-        string Prefix,
-        string FileName);
-
     public sealed class Endpoint : IEndpoint
     {
         public void MapEndpoint(IEndpointRouteBuilder app)
         {
-            app.MapPost("files/{key:guid}/presigned-part", Handler);
+            app.MapPost("files/{key}/presigned-part", Handler);
         }
     }
 
     private static async Task<IResult> Handler(
         UploadPresignedPartUrlRequest request,
-        Guid key,
+        string key,
         IFileProvider fileProvider,
         CancellationToken cancellationToken)
     {
-        var fileMetadata = new FileMetadata
+        var data = new GetPresignedUrlForUploadPartData(request.BucketName, key, request.UploadId, request.PartNumber);
+        
+        var presignedUrlResult = await fileProvider.GetPresignedUrlPart(data, cancellationToken);
+        
+        if(presignedUrlResult.IsFailure)
+            return Results.BadRequest(presignedUrlResult.Error.Errors);
+
+        var response = new UploadPresignedPartUrlResponse
         {
-            BucketName = request.BucketName,
-            ContentType = request.ContentType,
-            Name = request.FileName,
-            Prefix = request.Prefix,
-            Key = $"{request.Prefix}/{key}",
-            UploadId = request.UploadId,
-            PartNumber = request.PartNumber
+            Key = key,
+            Url = presignedUrlResult.Value
         };
-        
-        
-        var response = await fileProvider
-            .GetPresignedUrlPart(fileMetadata, cancellationToken);
-        
-        return Results.Ok(new
-        { 
-            response
-        });
+
+        return Results.Ok(response);
     }
 }

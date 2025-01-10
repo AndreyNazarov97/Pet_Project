@@ -4,7 +4,7 @@ using FileService.Core.Models;
 
 namespace FileService.Infrastructure.Repositories;
 
-public interface IFileRepository
+public interface IFilesRepository
 {
     Task<List<FileMetadata>> Get(IEnumerable<Guid> fileDataIds,CancellationToken cancellationToken = default);
     Task<FileMetadata?> GetById(Guid id, CancellationToken cancellationToken = default);

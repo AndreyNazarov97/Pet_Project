@@ -5,11 +5,11 @@ using MongoDB.Driver;
 
 namespace FileService.Infrastructure.Repositories;
 
-public class FileRepository : IFileRepository
+public class FilesRepository : IFilesRepository
 {
     private readonly FileMongoDbContext _mongoDbContext;
 
-    public FileRepository(
+    public FilesRepository(
         FileMongoDbContext mongoDbContext)
     {
         _mongoDbContext = mongoDbContext;

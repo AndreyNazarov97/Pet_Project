@@ -52,7 +52,7 @@ public static class ServiceCollectionExtension
     
     public static IServiceCollection AddRepositories(this IServiceCollection services)
     {
-        services.AddScoped<IFileRepository, FileRepository>();
+        services.AddScoped<IFilesRepository, FilesRepository>();
         
         return services;
     }

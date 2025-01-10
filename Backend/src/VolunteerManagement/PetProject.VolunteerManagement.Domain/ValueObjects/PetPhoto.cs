@@ -4,6 +4,7 @@ namespace PetProject.VolunteerManagement.Domain.ValueObjects;
 
 public record PetPhoto
 {
+    //TODO: здесь должно быть FileId, а не Path
     public FilePath Path { get; }
     public bool IsMain { get; init; }
 

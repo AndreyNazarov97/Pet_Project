@@ -42,7 +42,7 @@ public static class DependencyInjection
         IConfiguration configuration)
     {
         services
-            .AddVolunteerManagementApplication()
+            .AddVolunteerManagementApplication(configuration)
             .AddVolunteerPostgresInfrastructure(configuration);
 
         return services;
