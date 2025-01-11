@@ -1,5 +1,4 @@
 ﻿using Microsoft.EntityFrameworkCore;
-using PetProject.Accounts.Infrastructure;
 using PetProject.Accounts.Infrastructure.DataSeed;
 using PetProject.Accounts.Infrastructure.DbContexts;
 using PetProject.Discussions.Infrastructure.DbContexts;
@@ -37,13 +36,23 @@ public static class AppExtensions
     {
         await using var scope = app.Services.CreateAsyncScope();
 
-        var volunteerDbContext = scope.ServiceProvider.GetRequiredService<VolunteerDbContext>();
-        await VolunteerDbContextSeeder.SeedAsync(volunteerDbContext);
+        var volunteersSeeder = scope.ServiceProvider.GetService<VolunteersSeeder>();
+        if (volunteersSeeder is not null)
+        {
+            await volunteersSeeder.SeedAsync();
+        }
 
-        var speciesDbContext = scope.ServiceProvider.GetRequiredService<SpeciesDbContext>();
-        await SpeciesDbContextSeeder.SeedAsync(speciesDbContext);
+        var speciesSeeder = scope.ServiceProvider.GetService<SpeciesSeeder>();
+        if (speciesSeeder is not null)
+        {
+            await speciesSeeder.SeedAsync();
+        }
         
-        var accountSeeder = scope.ServiceProvider.GetRequiredService<AccountsSeeder>();
-        await accountSeeder.SeedAsync();
+        var accountSeeder = scope.ServiceProvider.GetService<AccountsSeeder>();
+        if (accountSeeder is not null)
+        {
+            await accountSeeder.SeedAsync();
+        }
+            
     }
 }

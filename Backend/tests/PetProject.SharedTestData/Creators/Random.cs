@@ -18,6 +18,7 @@ public static class Random
     public static long Long => Faker.Random.Long(1, 10_000);
     public static bool Bool => Faker.Random.Bool();
     public static string Email => Faker.Internet.Email();
+    public static string Password => Faker.Internet.Password(regexPattern: "(?=.*[0-9])(?=.*[a-z])(?=.*[A-Z])[0-9a-zA-Z]{8,}");
     public static string UserName => Faker.Internet.UserName();
     public static HelpStatus HelpStatus => Faker.Random.Enum<HelpStatus>();
 

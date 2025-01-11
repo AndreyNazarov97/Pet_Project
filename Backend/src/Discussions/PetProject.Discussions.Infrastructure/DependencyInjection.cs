@@ -15,23 +15,25 @@ namespace PetProject.Discussions.Infrastructure;
 
 public static class DependencyInjection
 {
-    public static IServiceCollection AddDiscussionsInfrastructure(this IServiceCollection services)
+    public static IServiceCollection AddDiscussionsInfrastructure(this IServiceCollection services, IConfiguration configuration)
     {
         services
             .AddDatabase()
-            .AddDbContext()
+            .AddDbContext(configuration)
             .AddRepositories();
         
         return services;
     }
 
-    private static IServiceCollection AddDbContext(this IServiceCollection services)
+    private static IServiceCollection AddDbContext(this IServiceCollection services, IConfiguration configuration)
     {
         DefaultTypeMap.MatchNamesWithUnderscores = true;
 
         services
-            .AddScoped<IReadDbContext,ReadDbContext>()
-            .AddScoped<DiscussionsDbContext>();
+            .AddScoped<IReadDbContext,ReadDbContext>(_ =>
+                new ReadDbContext(configuration.GetConnectionString("Postgres")!))
+            .AddScoped<DiscussionsDbContext>(_ =>
+                new DiscussionsDbContext(configuration.GetConnectionString("Postgres")!));
 
         return services;
     }

@@ -13,8 +13,8 @@ using VolunteerRequests.Application.Repositories;
 namespace VolunteerRequests.Application.RequestsManagement.Commands.TakeVolunteerRequestOnReview;
 
 public class
-    TakeVolunteerRequestOnReviewHandler : IRequestHandler<TakeVolunteerRequestOnReviewCommand,
-    Result<DiscussionId, ErrorList>>
+    TakeVolunteerRequestOnReviewHandler 
+        : IRequestHandler<TakeVolunteerRequestOnReviewCommand, Result<DiscussionId, ErrorList>>
 {
     private readonly IDiscussionContract _discussionContract;
     private readonly IVolunteerRequestsRepository _volunteerRequestsRepository;
