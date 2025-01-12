@@ -9,6 +9,9 @@ using VolunteerRequests.Infrastructure.DbContexts;
 
 namespace PetProject.Infrastructure.Tests;
 
+/// <summary>
+/// Тесты базы данных
+/// </summary>
 public class BaseTestFixture : IAsyncLifetime
 {
     private readonly PostgreSqlContainer _postgresSqlContainer = new PostgreSqlBuilder().Build();
