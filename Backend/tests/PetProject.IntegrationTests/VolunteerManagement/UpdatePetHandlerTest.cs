@@ -13,7 +13,7 @@ public class UpdatePetHandlerTest : VolunteerManagementTestsBase
 {
     private readonly IRequestHandler<UpdatePetCommand, Result<Guid, ErrorList>> _sut;
 
-    public UpdatePetHandlerTest(BaseTestsWebFactory factory) : base(factory)
+    public UpdatePetHandlerTest(VolunteerManagementTestsWebFactory factory) : base(factory)
     {
         _sut = _scope.ServiceProvider
             .GetRequiredService<IRequestHandler<UpdatePetCommand, Result<Guid, ErrorList>>>();

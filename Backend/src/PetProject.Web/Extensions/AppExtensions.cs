@@ -16,20 +16,20 @@ public static class AppExtensions
     {
         await using var scope = app.Services.CreateAsyncScope();
 
-        var volunteerDbContext = scope.ServiceProvider.GetRequiredService<VolunteerDbContext>();
-        await volunteerDbContext.Database.MigrateAsync();
+        var volunteerDbContext = scope.ServiceProvider.GetService<VolunteerDbContext>();
+        if (volunteerDbContext is not null) await volunteerDbContext.Database.MigrateAsync();
 
-        var speciesDbContext = scope.ServiceProvider.GetRequiredService<SpeciesDbContext>();
-        await speciesDbContext.Database.MigrateAsync();
+        var speciesDbContext = scope.ServiceProvider.GetService<SpeciesDbContext>();
+        if (speciesDbContext is not null) await speciesDbContext.Database.MigrateAsync();
         
-        var accountsDbContext = scope.ServiceProvider.GetRequiredService<AccountsDbContext>();
-        await accountsDbContext.Database.MigrateAsync();
+        var accountsDbContext = scope.ServiceProvider.GetService<AccountsDbContext>();
+        if (accountsDbContext is not null) await accountsDbContext.Database.MigrateAsync();
         
-        var volunteerRequestsDbContext = scope.ServiceProvider.GetRequiredService<VolunteerRequestsDbContext>();
-        await volunteerRequestsDbContext.Database.MigrateAsync();
+        var volunteerRequestsDbContext = scope.ServiceProvider.GetService<VolunteerRequestsDbContext>();
+        if (volunteerRequestsDbContext is not null) await volunteerRequestsDbContext.Database.MigrateAsync();
         
-        var discussionsDbContext = scope.ServiceProvider.GetRequiredService<DiscussionsDbContext>();
-        await discussionsDbContext.Database.MigrateAsync();
+        var discussionsDbContext = scope.ServiceProvider.GetService<DiscussionsDbContext>();
+        if (discussionsDbContext is not null) await discussionsDbContext.Database.MigrateAsync();
     }
 
     public static async Task SeedDatabases(this WebApplication app)

@@ -1,4 +1,3 @@
-using System.Data;
 using System.Data.Common;
 using Microsoft.AspNetCore.Hosting;
 using Microsoft.AspNetCore.Mvc.Testing;
@@ -21,9 +20,9 @@ using Respawn;
 using Testcontainers.PostgreSql;
 using VolunteerRequests.Infrastructure.DbContexts;
 
-namespace PetProject.IntegrationTests;
+namespace PetProject.IntegrationTests.VolunteerManagement;
 
-public class BaseTestsWebFactory : WebApplicationFactory<Program>, IAsyncLifetime
+public class VolunteerManagementTestsWebFactory : WebApplicationFactory<Program>, IAsyncLifetime
 {
     private readonly PostgreSqlContainer _dbContainer = new PostgreSqlBuilder()
         .WithImage("postgres:alpine")

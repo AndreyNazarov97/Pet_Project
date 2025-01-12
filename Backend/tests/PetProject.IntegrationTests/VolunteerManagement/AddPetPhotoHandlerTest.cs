@@ -20,7 +20,7 @@ public class AddPetPhotoHandlerTest : VolunteerManagementTestsBase
         Keys = [$"{Guid.NewGuid()}.jpg", $"{Guid.NewGuid()}.jpg"]
     };
 
-    public AddPetPhotoHandlerTest(BaseTestsWebFactory factory) : base(factory)
+    public AddPetPhotoHandlerTest(VolunteerManagementTestsWebFactory factory) : base(factory)
     {
         _sut = _scope.ServiceProvider.GetRequiredService<IRequestHandler<AddPetPhotoCommand, Result<FilePath[], ErrorList>>>();
     }

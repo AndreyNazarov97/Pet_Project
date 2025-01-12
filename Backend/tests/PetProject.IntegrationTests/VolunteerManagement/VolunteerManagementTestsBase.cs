@@ -6,14 +6,14 @@ using PetProject.VolunteerManagement.Infrastructure.DbContexts;
 
 namespace PetProject.IntegrationTests.VolunteerManagement;
 
-public class VolunteerManagementTestsBase : IClassFixture<BaseTestsWebFactory>, IAsyncLifetime
+public class VolunteerManagementTestsBase : IClassFixture<VolunteerManagementTestsWebFactory>, IAsyncLifetime
 {
-    protected readonly BaseTestsWebFactory _factory;
+    protected readonly VolunteerManagementTestsWebFactory _factory;
     protected readonly IServiceScope _scope;
     protected readonly VolunteerDbContext _volunteerDbContext;
     private readonly SpeciesDbContext _speciesDbContext;
 
-    public VolunteerManagementTestsBase(BaseTestsWebFactory factory)
+    public VolunteerManagementTestsBase(VolunteerManagementTestsWebFactory factory)
     {
         _factory = factory;
         _scope = factory.Services.CreateScope();

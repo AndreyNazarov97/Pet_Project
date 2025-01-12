@@ -12,7 +12,7 @@ public class GetVolunteerHandlerTest : VolunteerManagementTestsBase
 {
     private readonly IRequestHandler<GetVolunteerQuery, Result<VolunteerDto, ErrorList>> _sut;
 
-    public GetVolunteerHandlerTest(BaseTestsWebFactory factory) : base(factory)
+    public GetVolunteerHandlerTest(VolunteerManagementTestsWebFactory factory) : base(factory)
     {
         _sut = _scope.ServiceProvider
             .GetRequiredService<IRequestHandler<GetVolunteerQuery, Result<VolunteerDto, ErrorList>>>();

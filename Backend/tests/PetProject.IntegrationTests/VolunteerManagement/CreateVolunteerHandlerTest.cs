@@ -14,7 +14,7 @@ public class CreateVolunteerHandlerTest : VolunteerManagementTestsBase
 {
     private readonly IRequestHandler<CreateVolunteerCommand, Result<Guid, ErrorList>> _sut;
 
-    public CreateVolunteerHandlerTest(BaseTestsWebFactory factory) : base(factory)
+    public CreateVolunteerHandlerTest(VolunteerManagementTestsWebFactory factory) : base(factory)
     {
         _sut = _scope.ServiceProvider.GetRequiredService< IRequestHandler<CreateVolunteerCommand, Result<Guid, ErrorList>>>();
     }

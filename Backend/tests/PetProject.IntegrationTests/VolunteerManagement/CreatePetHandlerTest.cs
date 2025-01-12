@@ -14,7 +14,7 @@ public class CreatePetHandlerTest : VolunteerManagementTestsBase
 {
     private readonly IRequestHandler<CreatePetCommand, Result<Guid, ErrorList>> _sut;
 
-    public CreatePetHandlerTest(BaseTestsWebFactory factory) : base(factory)
+    public CreatePetHandlerTest(VolunteerManagementTestsWebFactory factory) : base(factory)
     {
         _sut = _scope.ServiceProvider
             .GetRequiredService<IRequestHandler<CreatePetCommand, Result<Guid, ErrorList>>>();

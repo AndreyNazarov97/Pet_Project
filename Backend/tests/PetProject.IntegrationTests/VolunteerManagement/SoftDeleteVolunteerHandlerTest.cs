@@ -13,7 +13,7 @@ public class SoftDeleteVolunteerHandlerTest : VolunteerManagementTestsBase
 {
     private readonly IRequestHandler<SoftDeleteVolunteerCommand, UnitResult<ErrorList>> _sut;
 
-    public SoftDeleteVolunteerHandlerTest(BaseTestsWebFactory factory) : base(factory)
+    public SoftDeleteVolunteerHandlerTest(VolunteerManagementTestsWebFactory factory) : base(factory)
     {
         _sut = _scope.ServiceProvider
             .GetRequiredService<IRequestHandler<SoftDeleteVolunteerCommand, UnitResult<ErrorList>>>();

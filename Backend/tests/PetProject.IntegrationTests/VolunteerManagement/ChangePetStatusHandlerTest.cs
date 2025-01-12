@@ -20,7 +20,7 @@ public class ChangePetStatusHandlerTest : VolunteerManagementTestsBase
         HelpStatus = Random.HelpStatus
     };
     
-    public ChangePetStatusHandlerTest(BaseTestsWebFactory factory) : base(factory)
+    public ChangePetStatusHandlerTest(VolunteerManagementTestsWebFactory factory) : base(factory)
     {
         _sut = _scope.ServiceProvider
             .GetRequiredService<IRequestHandler<ChangePetStatusCommand, UnitResult<ErrorList>>>();
