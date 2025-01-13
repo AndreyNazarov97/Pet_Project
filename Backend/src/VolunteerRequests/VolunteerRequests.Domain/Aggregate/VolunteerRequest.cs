@@ -78,14 +78,6 @@ public class VolunteerRequest : AggregateRoot<VolunteerRequestId>
         AdminId = adminId;
         DiscussionId = discussionId;
 
-        var domainEvent = new VolunteerRequestTakenOnReview
-        {
-            VolunteerRequestId = Id,
-            DiscussionId = discussionId
-        };
-
-        AddDomainEvent(domainEvent);
-
         return Result.Success<Error>();
     }
 

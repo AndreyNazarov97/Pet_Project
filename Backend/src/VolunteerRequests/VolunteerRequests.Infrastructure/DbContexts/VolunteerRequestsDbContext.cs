@@ -16,6 +16,8 @@ public class VolunteerRequestsDbContext : DbContext
     }
     
     public DbSet<VolunteerRequest> VolunteerRequests { get; set; }
+    
+    public DbSet<UserRestriction> UserRestrictions { get; set; }
 
     protected override void OnConfiguring(DbContextOptionsBuilder optionsBuilder)
     {
