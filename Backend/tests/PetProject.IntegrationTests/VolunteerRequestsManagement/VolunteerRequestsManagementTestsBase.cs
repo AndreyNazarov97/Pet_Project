@@ -11,14 +11,12 @@ public class VolunteerRequestsManagementTestsBase : IClassFixture<VolunteerReque
     protected readonly VolunteerRequestsTestsWebFactory _factory;
     protected readonly IServiceScope _scope;
     protected readonly VolunteerRequestsDbContext _volunteerRequestsDbContext;
-    protected readonly DiscussionsDbContext _discussionsDbContext;
 
     public VolunteerRequestsManagementTestsBase(VolunteerRequestsTestsWebFactory factory)
     {
         _factory = factory;
         _scope = factory.Services.CreateScope();
         _volunteerRequestsDbContext = _scope.ServiceProvider.GetRequiredService<VolunteerRequestsDbContext>();
-        _discussionsDbContext = _scope.ServiceProvider.GetRequiredService<DiscussionsDbContext>();
     }
     
     protected async Task SeedVolunteerRequest(VolunteerRequest volunteerRequest ,CancellationToken cancellationToken = default)

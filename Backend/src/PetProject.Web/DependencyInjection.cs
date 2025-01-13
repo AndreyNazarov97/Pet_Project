@@ -20,14 +20,14 @@ public static class DependencyInjection
         services
             .AddAccountsModule(configuration)
             .AddVolunteersModule(configuration)
-            .AddVolunteerRequestsModule(configuration)
-            .AddDiscussionsModule(configuration)
-            .AddSpeciesModule(configuration);
+            .AddVolunteerRequestsModule()
+            .AddDiscussionsModule()
+            .AddSpeciesModule();
 
         return services;
     }
 
-    private static IServiceCollection AddAccountsModule(this IServiceCollection services, 
+    private static IServiceCollection AddAccountsModule(this IServiceCollection services,
         IConfiguration configuration)
     {
         services
@@ -48,31 +48,31 @@ public static class DependencyInjection
         return services;
     }
 
-    private static IServiceCollection AddSpeciesModule(this IServiceCollection services, IConfiguration configuration)
+    private static IServiceCollection AddSpeciesModule(this IServiceCollection services)
     {
         services
             .AddSpeciesManagementApplication()
-            .AddSpeciesManagementInfrastructure(configuration);
+            .AddSpeciesManagementInfrastructure();
 
         return services;
     }
 
-    private static IServiceCollection AddVolunteerRequestsModule(this IServiceCollection services, IConfiguration configuration)
+    private static IServiceCollection AddVolunteerRequestsModule(this IServiceCollection services)
     {
         services
-            .AddVolunteerRequestsPostgresInfrastructure(configuration)
+            .AddVolunteerRequestsPostgresInfrastructure()
             .AddVolunteerRequestsApplication();
 
         return services;
     }
-    
-    public static IServiceCollection AddDiscussionsModule(this IServiceCollection services, IConfiguration configuration)
+
+    public static IServiceCollection AddDiscussionsModule(this IServiceCollection services)
     {
         services
             .AddDiscussionsPresentation()
             .AddDiscussionsManagementApplication()
-            .AddDiscussionsInfrastructure(configuration);
-        
+            .AddDiscussionsInfrastructure();
+
         return services;
     }
 }

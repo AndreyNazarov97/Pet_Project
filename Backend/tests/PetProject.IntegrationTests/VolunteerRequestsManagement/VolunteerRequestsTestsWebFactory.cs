@@ -54,11 +54,11 @@ public class VolunteerRequestsTestsWebFactory : WebApplicationFactory<Program>, 
             var builtConfig = config.Build();
             var newConnectionString = _dbContainer.GetConnectionString();
 
-            // Здесь мы модифицируем конфигурацию, если нужно
+            // Здесь мы модифицируем конфигурацию
             config.AddInMemoryCollection(new Dictionary<string, string>
             {
                 { "ConnectionStrings:Postgres", newConnectionString }
-            });
+            }!);
         });
 
         builder.ConfigureTestServices(ConfigureDefaultServices);
@@ -66,27 +66,11 @@ public class VolunteerRequestsTestsWebFactory : WebApplicationFactory<Program>, 
 
     private void ConfigureDefaultServices(IServiceCollection services)
     {
-        services.RemoveAll(typeof(VolunteerDbContext));
-        services.RemoveAll(typeof(AccountsDbContext));
-        services.RemoveAll(typeof(SpeciesDbContext));
-        //services.RemoveAll(typeof(VolunteerRequestsDbContext));
-        services.RemoveAll(typeof(DiscussionsDbContext));
         services.RemoveAll(typeof(IHostedService));
         services.RemoveAll(typeof(AccountsSeeder));
         services.RemoveAll(typeof(VolunteersSeeder));
         services.RemoveAll(typeof(SpeciesSeeder));
-        services.RemoveAll(typeof(IPostgresConnectionFactory));
-
-        services.AddScoped<VolunteerDbContext>(_ =>
-            new VolunteerDbContext(_dbContainer.GetConnectionString()));
-        services.AddScoped<AccountsDbContext>(_ =>
-            new AccountsDbContext(_dbContainer.GetConnectionString()));
-        services.AddScoped<SpeciesDbContext>(_ =>
-            new SpeciesDbContext(_dbContainer.GetConnectionString()));
-        services.AddScoped<DiscussionsDbContext>(_ =>
-            new DiscussionsDbContext(_dbContainer.GetConnectionString()));
-        services.AddSingleton<IPostgresConnectionFactory>(_ =>
-            new PostgresConnectionFactory(_dbContainer.GetConnectionString()));
+        
 
         services.RemoveAll(typeof(IDiscussionContract));
 

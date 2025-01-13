@@ -17,15 +17,15 @@ public class VolunteerRequestsDbContext : DbContext
     
     public DbSet<UserRestriction> UserRestrictions { get; set; }
 
-    // protected override void OnConfiguring(DbContextOptionsBuilder optionsBuilder)
-    // {
-    //     var connectionString = configuration.GetConnectionString("Postgres");
-    //     optionsBuilder  
-    //         .UseNpgsql(connectionString)
-    //         .UseSnakeCaseNamingConvention()
-    //         .UseLoggerFactory(CreateLoggerFactory())
-    //         .EnableSensitiveDataLogging();
-    // }
+    protected override void OnConfiguring(DbContextOptionsBuilder optionsBuilder)
+    {
+        var connectionString = _configuration.GetConnectionString("Postgres");
+        optionsBuilder  
+            .UseNpgsql(connectionString)
+            .UseSnakeCaseNamingConvention()
+            .UseLoggerFactory(CreateLoggerFactory())
+            .EnableSensitiveDataLogging();
+    }
 
     protected override void OnModelCreating(ModelBuilder modelBuilder)
     {

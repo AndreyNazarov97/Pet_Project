@@ -17,23 +17,20 @@ namespace VolunteerRequests.Infrastructure;
 
 public static class DependencyInjection
 {
-    public static IServiceCollection AddVolunteerRequestsPostgresInfrastructure(this IServiceCollection services,
-        IConfiguration configuration)
+    public static IServiceCollection AddVolunteerRequestsPostgresInfrastructure(this IServiceCollection services)
     {
-        services.AddSingleton(configuration);
-        
         services
             .AddDatabase()
-            .AddDbContext(configuration)
+            .AddDbContext()
             .AddRepositories();
 
         return services;
     }
 
-    private static IServiceCollection AddDbContext(this IServiceCollection services, IConfiguration configuration)
+    private static IServiceCollection AddDbContext(this IServiceCollection services)
     {
         DefaultTypeMap.MatchNamesWithUnderscores = true;
-
+        
         services.AddScoped<VolunteerRequestsDbContext>();
 
         return services;

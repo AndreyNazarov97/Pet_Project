@@ -1,6 +1,7 @@
 using CSharpFunctionalExtensions;
 using FluentAssertions;
 using MediatR;
+using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.DependencyInjection;
 using PetProject.SharedKernel.Shared;
 using PetProject.SharedTestData;
@@ -59,7 +60,7 @@ public class RejectVolunteerRequestHandlerTest : VolunteerRequestsManagementTest
     }
     
     [Fact]
-    public async Task Handle_ShouldApproveVolunteerRequest()
+    public async Task Handle_ShouldRejectVolunteerRequest()
     {
         // Arrange
         var request = TestData.VolunteerRequest;
@@ -73,5 +74,11 @@ public class RejectVolunteerRequestHandlerTest : VolunteerRequestsManagementTest
         
         // Assert
         result.IsSuccess.Should().BeTrue();
+        
+        var userRestriction = await _volunteerRequestsDbContext.UserRestrictions
+            .FirstOrDefaultAsync();
+        
+        userRestriction.Should().NotBeNull();
+        userRestriction!.UserId.Should().Be(request.UserId);
     }
 }
