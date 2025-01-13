@@ -1,7 +1,6 @@
 ﻿using Microsoft.AspNetCore.Identity;
 using Microsoft.AspNetCore.Identity.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore;
-using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.Logging;
 using PetProject.Accounts.Domain;
 
@@ -10,7 +9,7 @@ namespace PetProject.Accounts.Infrastructure.DbContexts;
 public class AccountsDbContext
     : IdentityDbContext<User, Role, long>
 {
-    private readonly IConfiguration _configuration;
+    private readonly string _connectionString;
     
     public DbSet<RefreshSession> RefreshSessions { get; set; }
     public DbSet<AdminAccount> AdminAccounts { get; set; }
@@ -22,15 +21,14 @@ public class AccountsDbContext
     public DbSet<Permission> Permissions { get; set; }
     public DbSet<RolePermission> RolePermissions { get; set; }
     
-    public AccountsDbContext(IConfiguration configuration)
+    public AccountsDbContext(string connectionString)
     {
-        _configuration = configuration;
+        _connectionString = connectionString;
     }
     protected override void OnConfiguring(DbContextOptionsBuilder optionsBuilder)
     {
-        var connectionString = _configuration.GetConnectionString("Postgres");
         optionsBuilder  
-            .UseNpgsql(connectionString)
+            .UseNpgsql(_connectionString)
             .UseSnakeCaseNamingConvention()
             .UseLoggerFactory(CreateLoggerFactory())
             .EnableSensitiveDataLogging();

@@ -25,7 +25,8 @@ public class RegisterHandler : IRequestHandler<RegisterCommand, UnitResult<Error
         IAccountManager accountManager,
         UserManager<User> userManager,
         RoleManager<Role> roleManager,
-        [FromKeyedServices(Constants.Context.Accounts)]IUnitOfWork unitOfWork,
+        [FromKeyedServices(Constants.Context.Accounts)]
+        IUnitOfWork unitOfWork,
         ILogger<RegisterHandler> logger)
     {
         _accountManager = accountManager;

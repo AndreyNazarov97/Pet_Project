@@ -1,0 +1,67 @@
+{
+  "Roles": {
+    "Admin": [
+      "volunteers.create",
+      "volunteers.read",
+      "volunteers.update",
+      "volunteers.delete",
+      "volunteer_requests.create",
+      "volunteer_requests.read",
+      "volunteer_requests.update",
+      "volunteer_requests.delete",
+      "species.create",
+      "species.read",
+      "species.update",
+      "species.delete",
+      "discussions.create",
+      "discussions.read",
+      "discussions.update",
+      "discussions.delete"
+    ],
+    "Volunteer": [
+      "volunteers.create",
+      "volunteers.read",
+      "volunteers.update",
+      "volunteers.delete",
+      "species.read",
+      "discussions.read"
+    ],
+    "Participant": [
+      "volunteers.read",
+      "volunteer_requests.create",
+      "volunteer_requests.read",
+      "volunteer_requests.update",
+      "volunteer_requests.delete",
+      "species.read",
+      "discussions.create",
+      "discussions.read",
+      "discussions.update"
+    ]
+  },
+  "Permissions": {
+    "VolunteerManagement": [
+      "volunteers.create",
+      "volunteers.read",
+      "volunteers.update",
+      "volunteers.delete"
+    ],
+    "SpeciesManagement": [
+      "species.create",
+      "species.read",
+      "species.update",
+      "species.delete"
+    ],
+    "VolunteerRequests" : [
+      "volunteer_requests.create",
+      "volunteer_requests.read",
+      "volunteer_requests.update",
+      "volunteer_requests.delete"
+    ],
+    "Discussions": [
+      "discussions.create",
+      "discussions.read",
+      "discussions.update",
+      "discussions.delete"
+    ]
+  }
+}

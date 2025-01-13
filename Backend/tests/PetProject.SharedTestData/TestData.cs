@@ -1,4 +1,5 @@
 ﻿using Bogus;
+using PetProject.Accounts.Domain;
 using PetProject.Core.Dtos;
 using PetProject.Core.Dtos.Accounts;
 using PetProject.Discussions.Domain.Aggregate;
@@ -131,7 +132,7 @@ public class TestData
         Description.Create(Random.Words).Value,
         [SocialNetwork.Create("VK", "https://vk.com").Value]
     );
-    
+
     public static UserDto UserDto => new()
     {
         Id = Random.Long,
@@ -139,7 +140,17 @@ public class TestData
         Email = Random.Email,
         FullName = DtoCreator.CreateFullNameDto(),
     };
-    
+
+    public static User User => new()
+    {
+        Id = Random.Long,
+        UserName = Random.UserName,
+        Email = Random.Email,
+        FullName = FullName.Create(Faker.Name.FirstName(), Faker.Name.LastName()).Value,
+    };
+
+    public static VolunteerAccount VolunteerAccount => new(Experience.Create(Random.Experience).Value, User);
+
     public static Discussion CreateDiscussion()
     {
         var discussion = Discussion.Create(Guid.NewGuid(),
@@ -147,9 +158,12 @@ public class TestData
 
         var message = Message.Create(
             Text.Create(Random.Words).Value, discussion.Members.FirstMemberId).Value;
-        
+
         discussion.AddMessage(message);
 
         return discussion;
     }
+
+    public static VolunteerRequest VolunteerRequest => VolunteerRequest.Create(
+        VolunteerInfo, Random.Long).Value;
 }

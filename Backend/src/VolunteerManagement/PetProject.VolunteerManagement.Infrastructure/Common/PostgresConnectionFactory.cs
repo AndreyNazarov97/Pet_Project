@@ -6,17 +6,16 @@ namespace PetProject.VolunteerManagement.Infrastructure.Common;
 
 public class PostgresConnectionFactory : IPostgresConnectionFactory
 {
-    private readonly IConfiguration _configuration;
+    private readonly string _connectionString;
 
     public PostgresConnectionFactory(
-        IConfiguration configuration)
+        string connectionString)
     {
-        _configuration = configuration;
+        _connectionString = connectionString;
     }
     
     public NpgsqlConnection GetConnection()
     {
-        var connectionString = _configuration.GetConnectionString("Postgres");
-        return new NpgsqlConnection(connectionString);
+        return new NpgsqlConnection(_connectionString);
     }
 }
