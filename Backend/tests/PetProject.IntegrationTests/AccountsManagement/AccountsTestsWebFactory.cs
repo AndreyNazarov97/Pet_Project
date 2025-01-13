@@ -60,8 +60,9 @@ public class AccountsTestsWebFactory : WebApplicationFactory<Program>, IAsyncLif
             new AccountsDbContext(_dbContainer.GetConnectionString()));
         services.AddScoped<SpeciesDbContext>(_ =>
             new SpeciesDbContext(_dbContainer.GetConnectionString()));
-        services.AddScoped<VolunteerRequestsDbContext>(_ =>
-            new VolunteerRequestsDbContext(_dbContainer.GetConnectionString()));
+        
+        services.AddDbContext<VolunteerRequestsDbContext>(options =>
+            options.UseNpgsql(_dbContainer.GetConnectionString()));
         services.AddScoped<DiscussionsDbContext>(_ =>
             new DiscussionsDbContext(_dbContainer.GetConnectionString()));
         services.AddSingleton<IPostgresConnectionFactory>(_ =>

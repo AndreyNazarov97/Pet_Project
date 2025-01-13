@@ -7,30 +7,29 @@ namespace VolunteerRequests.Infrastructure.DbContexts;
 
 public class VolunteerRequestsDbContext : DbContext
 {
-    private readonly string _connectionString;
+    private readonly IConfiguration _configuration;
 
-
-    public VolunteerRequestsDbContext(string connectionString)
+    public VolunteerRequestsDbContext(IConfiguration configuration)
     {
-        _connectionString = connectionString;
+        _configuration = configuration;
     }
-    
     public DbSet<VolunteerRequest> VolunteerRequests { get; set; }
     
     public DbSet<UserRestriction> UserRestrictions { get; set; }
 
-    protected override void OnConfiguring(DbContextOptionsBuilder optionsBuilder)
-    {
-        optionsBuilder  
-            .UseNpgsql(_connectionString)
-            .UseSnakeCaseNamingConvention()
-            .UseLoggerFactory(CreateLoggerFactory())
-            .EnableSensitiveDataLogging();
-    }
+    // protected override void OnConfiguring(DbContextOptionsBuilder optionsBuilder)
+    // {
+    //     var connectionString = configuration.GetConnectionString("Postgres");
+    //     optionsBuilder  
+    //         .UseNpgsql(connectionString)
+    //         .UseSnakeCaseNamingConvention()
+    //         .UseLoggerFactory(CreateLoggerFactory())
+    //         .EnableSensitiveDataLogging();
+    // }
 
     protected override void OnModelCreating(ModelBuilder modelBuilder)
     {
-        modelBuilder.HasDefaultSchema("volunteers_requests");
+        modelBuilder.HasDefaultSchema("volunteer_requests");
         modelBuilder.ApplyConfigurationsFromAssembly(typeof(VolunteerRequestsDbContext).Assembly);
     }
     private static ILoggerFactory CreateLoggerFactory()

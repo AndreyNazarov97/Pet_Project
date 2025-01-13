@@ -1,6 +1,8 @@
 ﻿using Dapper;
+using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
+using Microsoft.Extensions.Logging;
 using PetProject.Core.Common;
 using PetProject.Core.Database;
 using PetProject.Core.Database.Repository;
@@ -15,13 +17,16 @@ namespace VolunteerRequests.Infrastructure;
 
 public static class DependencyInjection
 {
-    public static IServiceCollection AddVolunteerRequestsPostgresInfrastructure(this IServiceCollection services, IConfiguration configuration)
+    public static IServiceCollection AddVolunteerRequestsPostgresInfrastructure(this IServiceCollection services,
+        IConfiguration configuration)
     {
+        services.AddSingleton(configuration);
+        
         services
             .AddDatabase()
             .AddDbContext(configuration)
             .AddRepositories();
-        
+
         return services;
     }
 
@@ -29,9 +34,7 @@ public static class DependencyInjection
     {
         DefaultTypeMap.MatchNamesWithUnderscores = true;
 
-        services
-            .AddScoped<VolunteerRequestsDbContext>(_ =>
-                new VolunteerRequestsDbContext(configuration.GetConnectionString("Postgres")!));
+        services.AddScoped<VolunteerRequestsDbContext>();
 
         return services;
     }

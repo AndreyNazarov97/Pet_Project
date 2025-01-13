@@ -25,6 +25,8 @@ public class UserRestriction : AggregateRoot<UserRestrictionId>
         long userId,
         int banDays = 1)
     {
+        if (userId <= 0)
+            return Errors.General.ValueIsInvalid(nameof(userId));
         if (banDays <= 0)
             return Errors.General.ValueIsInvalid("ban days");
         

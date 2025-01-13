@@ -80,5 +80,7 @@ public class VolunteerRequestConfiguration : IEntityTypeConfiguration<VolunteerR
             .IsRequired();
 
         builder.Ignore(x => x.DomainEvents);
+        builder.Ignore(x => x.IsDeleted);
+        builder.Ignore(x => x.DeletionDate);
     }
 }

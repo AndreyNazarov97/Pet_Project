@@ -4,6 +4,7 @@ using Microsoft.AspNetCore.Hosting;
 using Microsoft.AspNetCore.Mvc.Testing;
 using Microsoft.AspNetCore.TestHost;
 using Microsoft.EntityFrameworkCore;
+using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.DependencyInjection.Extensions;
 using Microsoft.Extensions.Hosting;
@@ -32,7 +33,7 @@ public class VolunteerRequestsTestsWebFactory : WebApplicationFactory<Program>, 
 {
     private readonly IDiscussionContract _discussionContract =
         Substitute.For<IDiscussionContract>();
-    
+
     private readonly PostgreSqlContainer _dbContainer = new PostgreSqlBuilder()
         .WithImage("postgres:alpine")
         .WithDatabase("pet_project")
@@ -47,6 +48,19 @@ public class VolunteerRequestsTestsWebFactory : WebApplicationFactory<Program>, 
     {
         base.ConfigureWebHost(builder);
 
+        builder.ConfigureAppConfiguration((context, config) =>
+        {
+            // Изменяем строку подключения
+            var builtConfig = config.Build();
+            var newConnectionString = _dbContainer.GetConnectionString();
+
+            // Здесь мы модифицируем конфигурацию, если нужно
+            config.AddInMemoryCollection(new Dictionary<string, string>
+            {
+                { "ConnectionStrings:Postgres", newConnectionString }
+            });
+        });
+
         builder.ConfigureTestServices(ConfigureDefaultServices);
     }
 
@@ -55,48 +69,46 @@ public class VolunteerRequestsTestsWebFactory : WebApplicationFactory<Program>, 
         services.RemoveAll(typeof(VolunteerDbContext));
         services.RemoveAll(typeof(AccountsDbContext));
         services.RemoveAll(typeof(SpeciesDbContext));
-        services.RemoveAll(typeof(VolunteerRequestsDbContext));
+        //services.RemoveAll(typeof(VolunteerRequestsDbContext));
         services.RemoveAll(typeof(DiscussionsDbContext));
         services.RemoveAll(typeof(IHostedService));
         services.RemoveAll(typeof(AccountsSeeder));
         services.RemoveAll(typeof(VolunteersSeeder));
         services.RemoveAll(typeof(SpeciesSeeder));
         services.RemoveAll(typeof(IPostgresConnectionFactory));
-        
+
         services.AddScoped<VolunteerDbContext>(_ =>
             new VolunteerDbContext(_dbContainer.GetConnectionString()));
         services.AddScoped<AccountsDbContext>(_ =>
             new AccountsDbContext(_dbContainer.GetConnectionString()));
         services.AddScoped<SpeciesDbContext>(_ =>
             new SpeciesDbContext(_dbContainer.GetConnectionString()));
-        services.AddScoped<VolunteerRequestsDbContext>(_ =>
-            new VolunteerRequestsDbContext(_dbContainer.GetConnectionString()));
         services.AddScoped<DiscussionsDbContext>(_ =>
             new DiscussionsDbContext(_dbContainer.GetConnectionString()));
         services.AddSingleton<IPostgresConnectionFactory>(_ =>
             new PostgresConnectionFactory(_dbContainer.GetConnectionString()));
-        
+
         services.RemoveAll(typeof(IDiscussionContract));
-        
+
         services.AddScoped<IDiscussionContract>(_ => _discussionContract);
     }
 
-    public void SetupCreate( Result<Discussion, ErrorList> result)
+    public void SetupCreate(Result<Discussion, ErrorList> result)
     {
         _discussionContract
             .Create(Arg.Any<CreateDiscussionRequest>(), Arg.Any<CancellationToken>())
             .Returns(result);
     }
-    
+
     public async Task InitializeAsync()
     {
         await _dbContainer.StartAsync();
-        
+
         using var scope = Services.CreateScope();
-        
+
         var volunteerRequestsDbContext = scope.ServiceProvider.GetRequiredService<VolunteerRequestsDbContext>();
         await volunteerRequestsDbContext.Database.MigrateAsync();
-        
+
         _dbConnection = new NpgsqlConnection(_dbContainer.GetConnectionString());
         await InitializeRespawner();
     }
@@ -111,10 +123,10 @@ public class VolunteerRequestsTestsWebFactory : WebApplicationFactory<Program>, 
             }
         );
     }
-    
+
     public async Task ResetDatabaseAsync()
     {
-        await _respawner.ResetAsync(_dbConnection); 
+        await _respawner.ResetAsync(_dbConnection);
     }
 
     public new async Task DisposeAsync()

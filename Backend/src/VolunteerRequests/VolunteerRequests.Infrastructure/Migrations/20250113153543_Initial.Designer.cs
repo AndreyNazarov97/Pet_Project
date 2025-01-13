@@ -13,19 +13,39 @@ using VolunteerRequests.Infrastructure.DbContexts;
 namespace VolunteerRequests.Infrastructure.Migrations
 {
     [DbContext(typeof(VolunteerRequestsDbContext))]
-    [Migration("20241227094527_VolunteerRequests_Init")]
-    partial class VolunteerRequests_Init
+    [Migration("20250113153543_Initial")]
+    partial class Initial
     {
         /// <inheritdoc />
         protected override void BuildTargetModel(ModelBuilder modelBuilder)
         {
 #pragma warning disable 612, 618
             modelBuilder
-                .HasDefaultSchema("volunteers_requests")
+                .HasDefaultSchema("volunteer_requests")
                 .HasAnnotation("ProductVersion", "8.0.10")
                 .HasAnnotation("Relational:MaxIdentifierLength", 63);
 
             NpgsqlModelBuilderExtensions.UseIdentityByDefaultColumns(modelBuilder);
+
+            modelBuilder.Entity("VolunteerRequests.Domain.Aggregate.UserRestriction", b =>
+                {
+                    b.Property<Guid>("Id")
+                        .HasColumnType("uuid")
+                        .HasColumnName("id");
+
+                    b.Property<DateTime>("BannedUntil")
+                        .HasColumnType("timestamp with time zone")
+                        .HasColumnName("banned_until");
+
+                    b.Property<long>("UserId")
+                        .HasColumnType("bigint")
+                        .HasColumnName("user_id");
+
+                    b.HasKey("Id")
+                        .HasName("pk_user_restrictions");
+
+                    b.ToTable("user_restrictions", "volunteer_requests");
+                });
 
             modelBuilder.Entity("VolunteerRequests.Domain.Aggregate.VolunteerRequest", b =>
                 {
@@ -41,17 +61,9 @@ namespace VolunteerRequests.Infrastructure.Migrations
                         .HasColumnType("timestamp with time zone")
                         .HasColumnName("created_at");
 
-                    b.Property<DateTimeOffset?>("DeletionDate")
-                        .HasColumnType("timestamp with time zone")
-                        .HasColumnName("deletion_date");
-
                     b.Property<Guid?>("DiscussionId")
                         .HasColumnType("uuid")
                         .HasColumnName("discussion_id");
-
-                    b.Property<bool>("IsDeleted")
-                        .HasColumnType("boolean")
-                        .HasColumnName("is_deleted");
 
                     b.Property<string>("RequestStatus")
                         .IsRequired()
@@ -74,7 +86,7 @@ namespace VolunteerRequests.Infrastructure.Migrations
                     b.HasKey("Id")
                         .HasName("pk_volunteer_requests");
 
-                    b.ToTable("volunteer_requests", "volunteers_requests");
+                    b.ToTable("volunteer_requests", "volunteer_requests");
                 });
 
             modelBuilder.Entity("VolunteerRequests.Domain.Aggregate.VolunteerRequest", b =>
@@ -92,7 +104,7 @@ namespace VolunteerRequests.Infrastructure.Migrations
 
                             b1.HasKey("VolunteerRequestId");
 
-                            b1.ToTable("volunteer_requests", "volunteers_requests");
+                            b1.ToTable("volunteer_requests", "volunteer_requests");
 
                             b1.WithOwner()
                                 .HasForeignKey("VolunteerRequestId")
@@ -112,7 +124,7 @@ namespace VolunteerRequests.Infrastructure.Migrations
 
                                     b2.HasKey("VolunteerInfoVolunteerRequestId");
 
-                                    b2.ToTable("volunteer_requests", "volunteers_requests");
+                                    b2.ToTable("volunteer_requests", "volunteer_requests");
 
                                     b2.WithOwner()
                                         .HasForeignKey("VolunteerInfoVolunteerRequestId")
@@ -131,7 +143,7 @@ namespace VolunteerRequests.Infrastructure.Migrations
 
                                     b2.HasKey("VolunteerInfoVolunteerRequestId");
 
-                                    b2.ToTable("volunteer_requests", "volunteers_requests");
+                                    b2.ToTable("volunteer_requests", "volunteer_requests");
 
                                     b2.WithOwner()
                                         .HasForeignKey("VolunteerInfoVolunteerRequestId")
@@ -163,7 +175,7 @@ namespace VolunteerRequests.Infrastructure.Migrations
 
                                     b2.HasKey("VolunteerInfoVolunteerRequestId");
 
-                                    b2.ToTable("volunteer_requests", "volunteers_requests");
+                                    b2.ToTable("volunteer_requests", "volunteer_requests");
 
                                     b2.WithOwner()
                                         .HasForeignKey("VolunteerInfoVolunteerRequestId")
@@ -183,7 +195,7 @@ namespace VolunteerRequests.Infrastructure.Migrations
 
                                     b2.HasKey("VolunteerInfoVolunteerRequestId");
 
-                                    b2.ToTable("volunteer_requests", "volunteers_requests");
+                                    b2.ToTable("volunteer_requests", "volunteer_requests");
 
                                     b2.WithOwner()
                                         .HasForeignKey("VolunteerInfoVolunteerRequestId")

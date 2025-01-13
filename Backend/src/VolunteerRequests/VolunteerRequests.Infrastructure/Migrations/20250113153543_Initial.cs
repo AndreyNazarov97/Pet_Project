@@ -6,17 +6,31 @@ using Microsoft.EntityFrameworkCore.Migrations;
 namespace VolunteerRequests.Infrastructure.Migrations
 {
     /// <inheritdoc />
-    public partial class VolunteerRequests_Init : Migration
+    public partial class Initial : Migration
     {
         /// <inheritdoc />
         protected override void Up(MigrationBuilder migrationBuilder)
         {
             migrationBuilder.EnsureSchema(
-                name: "volunteers_requests");
+                name: "volunteer_requests");
+
+            migrationBuilder.CreateTable(
+                name: "user_restrictions",
+                schema: "volunteer_requests",
+                columns: table => new
+                {
+                    id = table.Column<Guid>(type: "uuid", nullable: false),
+                    user_id = table.Column<long>(type: "bigint", nullable: false),
+                    banned_until = table.Column<DateTime>(type: "timestamp with time zone", nullable: false)
+                },
+                constraints: table =>
+                {
+                    table.PrimaryKey("pk_user_restrictions", x => x.id);
+                });
 
             migrationBuilder.CreateTable(
                 name: "volunteer_requests",
-                schema: "volunteers_requests",
+                schema: "volunteer_requests",
                 columns: table => new
                 {
                     id = table.Column<Guid>(type: "uuid", nullable: false),
@@ -32,9 +46,7 @@ namespace VolunteerRequests.Infrastructure.Migrations
                     admin_id = table.Column<long>(type: "bigint", nullable: true),
                     user_id = table.Column<long>(type: "bigint", nullable: false),
                     discussion_id = table.Column<Guid>(type: "uuid", nullable: true),
-                    rejection_comment = table.Column<string>(type: "text", nullable: true),
-                    is_deleted = table.Column<bool>(type: "boolean", nullable: false),
-                    deletion_date = table.Column<DateTimeOffset>(type: "timestamp with time zone", nullable: true)
+                    rejection_comment = table.Column<string>(type: "text", nullable: true)
                 },
                 constraints: table =>
                 {
@@ -46,8 +58,12 @@ namespace VolunteerRequests.Infrastructure.Migrations
         protected override void Down(MigrationBuilder migrationBuilder)
         {
             migrationBuilder.DropTable(
+                name: "user_restrictions",
+                schema: "volunteer_requests");
+
+            migrationBuilder.DropTable(
                 name: "volunteer_requests",
-                schema: "volunteers_requests");
+                schema: "volunteer_requests");
         }
     }
 }

@@ -18,5 +18,7 @@ public class UserRestrictionConfiguration : IEntityTypeConfiguration<UserRestric
                 value => UserRestrictionId.Create(value));
 
         builder.Ignore(x => x.DomainEvents);
+        builder.Ignore(x => x.IsDeleted);
+        builder.Ignore(x => x.DeletionDate);
     }
 }
