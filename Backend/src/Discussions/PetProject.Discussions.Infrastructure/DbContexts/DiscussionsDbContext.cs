@@ -9,12 +9,12 @@ namespace PetProject.Discussions.Infrastructure.DbContexts;
 
 public class DiscussionsDbContext : DbContext
 {
-    private readonly IConfiguration _configuration;
+    private readonly string _connectionString;
 
 
-    public DiscussionsDbContext(IConfiguration configuration)
+    public DiscussionsDbContext(string connectionString)
     {
-        _configuration = configuration;
+        _connectionString = connectionString;
     }
     
     public DbSet<Discussion> Discussions { get; set; }
@@ -22,9 +22,8 @@ public class DiscussionsDbContext : DbContext
 
     protected override void OnConfiguring(DbContextOptionsBuilder optionsBuilder)
     {
-        var connectionString = _configuration.GetConnectionString("Postgres");
         optionsBuilder  
-            .UseNpgsql(connectionString)
+            .UseNpgsql(_connectionString)
             .UseSnakeCaseNamingConvention()
             .UseLoggerFactory(CreateLoggerFactory())
             .EnableSensitiveDataLogging();

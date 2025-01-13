@@ -8,11 +8,11 @@ namespace PetProject.Accounts.Infrastructure.DbContexts;
 
 public class ReadDbContext : DbContext, IReadDbContext
 {
-    private readonly IConfiguration _configuration;
+    private readonly string _connectionString;
 
-    public ReadDbContext(IConfiguration configuration)
+    public ReadDbContext(string connectionString)
     {
-        _configuration = configuration;
+        _connectionString = connectionString;
     }
 
     public IQueryable<UserDto> Users => Set<UserDto>();
@@ -31,9 +31,8 @@ public class ReadDbContext : DbContext, IReadDbContext
 
     protected override void OnConfiguring(DbContextOptionsBuilder optionsBuilder)
     {
-        var connectionString = _configuration.GetConnectionString("Postgres");
         optionsBuilder
-            .UseNpgsql(connectionString)
+            .UseNpgsql(_connectionString)
             .UseSnakeCaseNamingConvention()
             .UseLoggerFactory(CreateLoggerFactory())
             .EnableSensitiveDataLogging();

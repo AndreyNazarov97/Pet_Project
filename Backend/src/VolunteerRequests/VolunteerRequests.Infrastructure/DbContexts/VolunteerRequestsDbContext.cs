@@ -7,12 +7,12 @@ namespace VolunteerRequests.Infrastructure.DbContexts;
 
 public class VolunteerRequestsDbContext : DbContext
 {
-    private readonly IConfiguration _configuration;
+    private readonly string _connectionString;
 
 
-    public VolunteerRequestsDbContext(IConfiguration configuration)
+    public VolunteerRequestsDbContext(string connectionString)
     {
-        _configuration = configuration;
+        _connectionString = connectionString;
     }
     
     public DbSet<VolunteerRequest> VolunteerRequests { get; set; }
@@ -21,9 +21,8 @@ public class VolunteerRequestsDbContext : DbContext
 
     protected override void OnConfiguring(DbContextOptionsBuilder optionsBuilder)
     {
-        var connectionString = _configuration.GetConnectionString("Postgres");
         optionsBuilder  
-            .UseNpgsql(connectionString)
+            .UseNpgsql(_connectionString)
             .UseSnakeCaseNamingConvention()
             .UseLoggerFactory(CreateLoggerFactory())
             .EnableSensitiveDataLogging();

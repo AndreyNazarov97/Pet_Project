@@ -20,9 +20,9 @@ public static class DependencyInjection
         services
             .AddAccountsModule(configuration)
             .AddVolunteersModule(configuration)
-            .AddVolunteerRequestsModule()
-            .AddDiscussionsModule()
-            .AddSpeciesModule();
+            .AddVolunteerRequestsModule(configuration)
+            .AddDiscussionsModule(configuration)
+            .AddSpeciesModule(configuration);
 
         return services;
     }
@@ -48,30 +48,30 @@ public static class DependencyInjection
         return services;
     }
 
-    private static IServiceCollection AddSpeciesModule(this IServiceCollection services)
+    private static IServiceCollection AddSpeciesModule(this IServiceCollection services, IConfiguration configuration)
     {
         services
             .AddSpeciesManagementApplication()
-            .AddSpeciesManagementInfrastructure();
+            .AddSpeciesManagementInfrastructure(configuration);
 
         return services;
     }
 
-    private static IServiceCollection AddVolunteerRequestsModule(this IServiceCollection services)
+    private static IServiceCollection AddVolunteerRequestsModule(this IServiceCollection services, IConfiguration configuration)
     {
         services
-            .AddVolunteerRequestsPostgresInfrastructure()
+            .AddVolunteerRequestsPostgresInfrastructure(configuration)
             .AddVolunteerRequestsApplication();
 
         return services;
     }
     
-    public static IServiceCollection AddDiscussionsModule(this IServiceCollection services)
+    public static IServiceCollection AddDiscussionsModule(this IServiceCollection services, IConfiguration configuration)
     {
         services
             .AddDiscussionsPresentation()
             .AddDiscussionsManagementApplication()
-            .AddDiscussionsInfrastructure();
+            .AddDiscussionsInfrastructure(configuration);
         
         return services;
     }

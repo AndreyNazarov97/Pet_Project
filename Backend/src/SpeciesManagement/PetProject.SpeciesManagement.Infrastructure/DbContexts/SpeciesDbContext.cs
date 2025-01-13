@@ -7,21 +7,20 @@ namespace PetProject.SpeciesManagement.Infrastructure.DbContexts;
 
 public class SpeciesDbContext : DbContext
 {
-    private readonly IConfiguration _configuration;
+    private readonly string _connectionString;
 
 
-    public SpeciesDbContext(IConfiguration configuration)
+    public SpeciesDbContext(string connectionString)
     {
-        _configuration = configuration;
+        _connectionString = connectionString;
     }
     
     public DbSet<Species> Species { get; set; }
 
     protected override void OnConfiguring(DbContextOptionsBuilder optionsBuilder)
     {
-        var connectionString = _configuration.GetConnectionString("Postgres");
         optionsBuilder  
-            .UseNpgsql(connectionString)
+            .UseNpgsql(_connectionString)
             .UseSnakeCaseNamingConvention()
             .UseLoggerFactory(CreateLoggerFactory())
             .EnableSensitiveDataLogging();

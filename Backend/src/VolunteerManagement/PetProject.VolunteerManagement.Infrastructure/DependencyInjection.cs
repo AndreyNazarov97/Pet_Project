@@ -13,6 +13,7 @@ using PetProject.VolunteerManagement.Application.Providers;
 using PetProject.VolunteerManagement.Application.Repository;
 using PetProject.VolunteerManagement.Infrastructure.BackgroundServices;
 using PetProject.VolunteerManagement.Infrastructure.Common;
+using PetProject.VolunteerManagement.Infrastructure.DataSeed;
 using PetProject.VolunteerManagement.Infrastructure.DbContexts;
 using PetProject.VolunteerManagement.Infrastructure.MessageQueues;
 using PetProject.VolunteerManagement.Infrastructure.Options;
@@ -29,21 +30,24 @@ public static class DependencyInjection
     {
         services
             .AddDatabase()
-            .AddDbContext()
+            .AddDbContext(configuration)
             .AddRepositories()
             .AddHostedServices()
             .AddMinio(configuration);
 
+        services.AddSingleton<VolunteersSeeder>();
+        services.AddScoped<VolunteersSeedService>();
         
         return services;
     }
 
-    private static IServiceCollection AddDbContext(this IServiceCollection services)
+    private static IServiceCollection AddDbContext(this IServiceCollection services, IConfiguration configuration)
     {
         DefaultTypeMap.MatchNamesWithUnderscores = true;
 
         services
-            .AddScoped<VolunteerDbContext>();
+            .AddScoped<VolunteerDbContext>(_ =>
+                new VolunteerDbContext(configuration.GetConnectionString("Postgres")!));
 
         return services;
     }

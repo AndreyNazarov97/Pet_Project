@@ -1,4 +1,5 @@
 ﻿using Dapper;
+using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
 using PetProject.Core.Common;
 using PetProject.Core.Database;
@@ -7,6 +8,7 @@ using PetProject.SharedKernel.Constants;
 using PetProject.SharedKernel.Interfaces;
 using PetProject.SpeciesManagement.Application.Repository;
 using PetProject.SpeciesManagement.Infrastructure.Common;
+using PetProject.SpeciesManagement.Infrastructure.DataSeed;
 using PetProject.SpeciesManagement.Infrastructure.DbContexts;
 using PetProject.SpeciesManagement.Infrastructure.Repositories;
 
@@ -14,22 +16,26 @@ namespace PetProject.SpeciesManagement.Infrastructure;
 
 public static class DependencyInjection
 {
-    public static IServiceCollection AddSpeciesManagementInfrastructure(this IServiceCollection services)
+    public static IServiceCollection AddSpeciesManagementInfrastructure(this IServiceCollection services, IConfiguration configuration)
     {
         services
             .AddDatabase()
-            .AddDbContext()
+            .AddDbContext(configuration)
             .AddRepositories();
+        
+        services.AddSingleton<SpeciesSeeder>();
+        services.AddScoped<SpeciesSeedService>();
         
         return services;
     }
 
-    private static IServiceCollection AddDbContext(this IServiceCollection services)
+    private static IServiceCollection AddDbContext(this IServiceCollection services, IConfiguration configuration)
     {
-        Dapper.DefaultTypeMap.MatchNamesWithUnderscores = true;
+        DefaultTypeMap.MatchNamesWithUnderscores = true;
         
         services
-            .AddScoped<SpeciesDbContext>();
+            .AddScoped<SpeciesDbContext>(_ =>
+                new SpeciesDbContext(configuration.GetConnectionString("Postgres")!));
 
         return services;
     }
