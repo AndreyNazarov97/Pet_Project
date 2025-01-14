@@ -110,7 +110,16 @@ public class VolunteerRequestsTestsWebFactory : WebApplicationFactory<Program>, 
 
     public async Task ResetDatabaseAsync()
     {
-        await _respawner.ResetAsync(_dbConnection);
+        await using var command = _dbConnection.CreateCommand();
+        command.CommandText = @"
+        DO $$ DECLARE
+        r RECORD;
+        BEGIN
+            FOR r IN (SELECT tablename FROM pg_tables WHERE schemaname in ('public')) LOOP
+                EXECUTE 'TRUNCATE TABLE ' || quote_ident(r.tablename) || ' CASCADE';
+            END LOOP;
+        END $$;";
+        await command.ExecuteNonQueryAsync();
     }
 
     public new async Task DisposeAsync()
