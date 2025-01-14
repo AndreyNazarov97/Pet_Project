@@ -1,7 +1,4 @@
 using DotNetEnv;
-using PetProject.Accounts.Application;
-using PetProject.Accounts.Infrastructure;
-using PetProject.Accounts.Presentation;
 using PetProject.Web;
 using PetProject.Web.Extensions;
 using PetProject.Web.Middlewares;

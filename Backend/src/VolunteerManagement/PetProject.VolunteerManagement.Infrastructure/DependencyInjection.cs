@@ -1,4 +1,5 @@
 ﻿using Dapper;
+using MassTransit;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
 using Minio;
@@ -13,6 +14,7 @@ using PetProject.VolunteerManagement.Application.Providers;
 using PetProject.VolunteerManagement.Application.Repository;
 using PetProject.VolunteerManagement.Infrastructure.BackgroundServices;
 using PetProject.VolunteerManagement.Infrastructure.Common;
+using PetProject.VolunteerManagement.Infrastructure.Consumers;
 using PetProject.VolunteerManagement.Infrastructure.DataSeed;
 using PetProject.VolunteerManagement.Infrastructure.DbContexts;
 using PetProject.VolunteerManagement.Infrastructure.MessageQueues;
@@ -29,6 +31,7 @@ public static class DependencyInjection
         IConfiguration configuration)
     {
         services
+            .AddMessageBus(configuration)
             .AddDatabase()
             .AddDbContext()
             .AddRepositories()
@@ -41,6 +44,29 @@ public static class DependencyInjection
         return services;
     }
 
+    private static IServiceCollection AddMessageBus(this IServiceCollection services, IConfiguration configuration)
+    {
+        services.AddMassTransit(configure =>
+        {
+            configure.SetKebabCaseEndpointNameFormatter();
+
+            configure.AddConsumer<VolunteerRequestApprovedConsumer>();
+
+            configure.UsingRabbitMq((context, cfg) =>
+            {
+                cfg.Host(new Uri(configuration["RabbitMq:Host"]!), h =>
+                {
+                    h.Username(configuration["RabbitMq:Username"]!);
+                    h.Password(configuration["RabbitMq:Password"]!);
+                });
+
+                cfg.ConfigureEndpoints(context);
+            });
+        });
+        
+        return services;
+    }
+    
     private static IServiceCollection AddDbContext(this IServiceCollection services)
     {
         DefaultTypeMap.MatchNamesWithUnderscores = true;
