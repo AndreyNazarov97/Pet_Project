@@ -1,4 +1,5 @@
 ﻿using Microsoft.EntityFrameworkCore;
+using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.Logging;
 using PetProject.VolunteerManagement.Domain.Aggregate;
 
@@ -6,19 +7,20 @@ namespace PetProject.VolunteerManagement.Infrastructure.DbContexts;
 
 public class VolunteerDbContext : DbContext
 {
-    private readonly string _connectionString;
+    private readonly IConfiguration _configuration;
 
-    public VolunteerDbContext(string connectionString)
+    public VolunteerDbContext(IConfiguration configuration)
     {
-        _connectionString = connectionString;
+        _configuration = configuration;
     }
     
     public DbSet<Volunteer> Volunteers { get; set; }
 
     protected override void OnConfiguring(DbContextOptionsBuilder optionsBuilder)
     {
+        var connectionString = _configuration.GetConnectionString("Postgres");
         optionsBuilder  
-            .UseNpgsql(_connectionString)
+            .UseNpgsql(connectionString)
             .UseSnakeCaseNamingConvention()
             .UseLoggerFactory(CreateLoggerFactory())
             .EnableSensitiveDataLogging();

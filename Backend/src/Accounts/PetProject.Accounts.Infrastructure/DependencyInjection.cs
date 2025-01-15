@@ -32,10 +32,8 @@ public static class DependencyInjection
         services.AddTransient<ITokenProvider, JwtTokenProvider>();
         services.AddScoped<IPostgresConnectionFactory, PostgresConnectionFactory>();
 
-        services.AddScoped<IReadDbContext, ReadDbContext>(_ =>
-            new ReadDbContext(configuration.GetConnectionString("Postgres")!));
-        services.AddScoped<AccountsDbContext>(_ =>
-            new AccountsDbContext(configuration.GetConnectionString("Postgres")!));
+        services.AddScoped<IReadDbContext, ReadDbContext>();
+        services.AddScoped<AccountsDbContext>();
         services.AddKeyedScoped<IUnitOfWork, UnitOfWork>(Constants.Context.Accounts);
 
         services.RegisterIdentity();

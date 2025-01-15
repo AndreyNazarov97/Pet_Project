@@ -1,6 +1,8 @@
 ﻿using Dapper;
+using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
+using Microsoft.Extensions.Logging;
 using PetProject.Core.Common;
 using PetProject.Core.Database;
 using PetProject.Core.Database.Repository;
@@ -15,23 +17,21 @@ namespace VolunteerRequests.Infrastructure;
 
 public static class DependencyInjection
 {
-    public static IServiceCollection AddVolunteerRequestsPostgresInfrastructure(this IServiceCollection services, IConfiguration configuration)
+    public static IServiceCollection AddVolunteerRequestsPostgresInfrastructure(this IServiceCollection services)
     {
         services
             .AddDatabase()
-            .AddDbContext(configuration)
+            .AddDbContext()
             .AddRepositories();
-        
+
         return services;
     }
 
-    private static IServiceCollection AddDbContext(this IServiceCollection services, IConfiguration configuration)
+    private static IServiceCollection AddDbContext(this IServiceCollection services)
     {
         DefaultTypeMap.MatchNamesWithUnderscores = true;
-
-        services
-            .AddScoped<VolunteerRequestsDbContext>(_ =>
-                new VolunteerRequestsDbContext(configuration.GetConnectionString("Postgres")!));
+        
+        services.AddScoped<VolunteerRequestsDbContext>();
 
         return services;
     }
@@ -49,6 +49,7 @@ public static class DependencyInjection
     private static IServiceCollection AddRepositories(this IServiceCollection services)
     {
         services.AddScoped<IVolunteerRequestsRepository, VolunteerRequestsRepository>();
+        services.AddScoped<IUserRestrictionsRepository, UserRestrictionsRepository>();
         services.AddScoped<IReadRepository, ReadRepository>();
 
         return services;

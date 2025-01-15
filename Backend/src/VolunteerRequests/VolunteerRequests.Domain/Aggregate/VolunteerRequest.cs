@@ -4,6 +4,7 @@ using PetProject.SharedKernel.Shared.Common;
 using PetProject.SharedKernel.Shared.EntityIds;
 using PetProject.SharedKernel.Shared.ValueObjects;
 using VolunteerRequests.Domain.Enums;
+using VolunteerRequests.Domain.Events;
 using VolunteerRequests.Domain.ValueObjects;
 
 namespace VolunteerRequests.Domain.Aggregate;
@@ -109,6 +110,13 @@ public class VolunteerRequest : AggregateRoot<VolunteerRequestId>
         
         RequestStatus = RequestStatus.Rejected;
         RejectionComment = rejectionComment;
+        
+        var domainEvent = new VolunteerRequestRejectedEvent
+        {
+            UserId = UserId
+        };
+
+        AddDomainEvent(domainEvent);
         
         return Result.Success<Error>();
     }

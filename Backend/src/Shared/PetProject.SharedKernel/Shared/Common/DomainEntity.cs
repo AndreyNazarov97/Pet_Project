@@ -1,10 +1,10 @@
-﻿using PetProject.SharedKernel.Interfaces;
+using PetProject.SharedKernel.Interfaces;
 
 namespace PetProject.SharedKernel.Shared.Common;
 
-public class AggregateRoot<TId> : SoftDeletableEntity<TId> where TId : notnull
+public abstract class DomainEntity<TId> : Entity<TId> 
 {
-    public AggregateRoot(TId id) : base(id)
+    protected DomainEntity(TId id) : base(id)
     {
     }
     

@@ -78,5 +78,9 @@ public class VolunteerRequestConfiguration : IEntityTypeConfiguration<VolunteerR
         builder.Property(p => p.RequestStatus)
             .HasConversion<string>()
             .IsRequired();
+
+        builder.Ignore(x => x.DomainEvents);
+        builder.Ignore(x => x.IsDeleted);
+        builder.Ignore(x => x.DeletionDate);
     }
 }

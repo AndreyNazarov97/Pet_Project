@@ -30,7 +30,7 @@ public static class DependencyInjection
     {
         services
             .AddDatabase()
-            .AddDbContext(configuration)
+            .AddDbContext()
             .AddRepositories()
             .AddHostedServices()
             .AddMinio(configuration);
@@ -41,13 +41,11 @@ public static class DependencyInjection
         return services;
     }
 
-    private static IServiceCollection AddDbContext(this IServiceCollection services, IConfiguration configuration)
+    private static IServiceCollection AddDbContext(this IServiceCollection services)
     {
         DefaultTypeMap.MatchNamesWithUnderscores = true;
 
-        services
-            .AddScoped<VolunteerDbContext>(_ =>
-                new VolunteerDbContext(configuration.GetConnectionString("Postgres")!));
+        services.AddScoped<VolunteerDbContext>();
 
         return services;
     }
