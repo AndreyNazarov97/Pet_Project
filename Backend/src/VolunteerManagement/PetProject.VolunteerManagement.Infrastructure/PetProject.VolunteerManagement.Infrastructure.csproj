@@ -7,10 +7,12 @@
     </PropertyGroup>
 
     <ItemGroup>
+        <ProjectReference Include="..\..\VolunteerRequests\VolunteerRequests.Contracts\VolunteerRequests.Contracts.csproj" />
         <ProjectReference Include="..\PetProject.VolunteerManagement.Application\PetProject.VolunteerManagement.Application.csproj"/>
     </ItemGroup>
 
     <ItemGroup>
+        <PackageReference Include="MassTransit.RabbitMQ" Version="8.3.4" />
         <PackageReference Include="Microsoft.Extensions.Hosting" Version="8.0.0"/>
         <PackageReference Include="Minio" Version="6.0.3"/>
     </ItemGroup>

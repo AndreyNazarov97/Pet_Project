@@ -1,8 +1,7 @@
 ﻿using Dapper;
-using Microsoft.EntityFrameworkCore;
+using MassTransit;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
-using Microsoft.Extensions.Logging;
 using PetProject.Core.Common;
 using PetProject.Core.Database;
 using PetProject.Core.Database.Repository;

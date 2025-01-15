@@ -1,7 +1,4 @@
 using DotNetEnv;
-using PetProject.Accounts.Application;
-using PetProject.Accounts.Infrastructure;
-using PetProject.Accounts.Presentation;
 using PetProject.Web;
 using PetProject.Web.Extensions;
 using PetProject.Web.Middlewares;
@@ -19,6 +16,7 @@ builder.Services.AddEndpointsApiExplorer();
 builder.Services.AddSwagger();
 
 builder.Services.AddModules(builder.Configuration);
+builder.Services.AddMessageBus(builder.Configuration);
 
 var app = builder.Build();
 

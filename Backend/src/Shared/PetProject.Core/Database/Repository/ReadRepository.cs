@@ -387,10 +387,10 @@ public class ReadRepository : IReadRepository
                             vr.general_description,
                             vr.social_networks
                        FROM 
-                           volunteers_requests.volunteer_requests AS vr
+                           volunteer_requests.volunteer_requests AS vr
                        """;
 
-        var conditions = new List<string>(["vr.is_deleted = false"]);
+        var conditions = new List<string>(["1 = 1"]);
         var param = new DynamicParameters();
 
         if (query.VolunteerRequestIds is { Length: > 0 })

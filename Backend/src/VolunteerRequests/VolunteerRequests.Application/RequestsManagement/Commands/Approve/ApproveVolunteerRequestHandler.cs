@@ -7,22 +7,25 @@ using PetProject.SharedKernel.Constants;
 using PetProject.SharedKernel.Shared;
 using PetProject.SharedKernel.Shared.EntityIds;
 using VolunteerRequests.Application.Repositories;
-using VolunteerRequests.Application.RequestsManagement.Commands.TakeVolunteerRequestOnReview;
+using VolunteerRequests.Domain.Events;
 
 namespace VolunteerRequests.Application.RequestsManagement.Commands.Approve;
 
 public class ApproveVolunteerRequestHandler : IRequestHandler<ApproveVolunteerRequestCommand, UnitResult<ErrorList>>
 {
     private readonly IVolunteerRequestsRepository _volunteerRequestsRepository;
+    private readonly IPublisher _publisher;
     private readonly IUnitOfWork _unitOfWork;
     private readonly ILogger<ApproveVolunteerRequestHandler> _logger;
 
     public ApproveVolunteerRequestHandler(
         IVolunteerRequestsRepository volunteerRequestsRepository, 
+        IPublisher publisher,
         [FromKeyedServices(Constants.Context.VolunteerRequests)]IUnitOfWork unitOfWork,
         ILogger<ApproveVolunteerRequestHandler> logger)
     {
         _volunteerRequestsRepository = volunteerRequestsRepository;
+        _publisher = publisher;
         _unitOfWork = unitOfWork;
         _logger = logger;
     }
@@ -44,6 +47,13 @@ public class ApproveVolunteerRequestHandler : IRequestHandler<ApproveVolunteerRe
         
         if (approveResult.IsFailure)
             return approveResult.Error.ToErrorList();
+        
+        var domainEvent = new VolunteerRequestApprovedEvent
+        {
+            VolunteerRequestId = requestResult.Value.Id,
+            UserId = requestResult.Value.UserId
+        };
+        await _publisher.PublishDomainEvent(domainEvent, cancellationToken);
         
         await _unitOfWork.SaveChangesAsync(cancellationToken);
         

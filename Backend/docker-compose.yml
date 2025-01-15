@@ -1,5 +1,3 @@
-version: '3.9'
-
 networks:
   default :
     name: 'pet_project_network'
@@ -9,6 +7,7 @@ volumes :
   pgadmin:
   minio_data:
   mongo_data:
+  rabbitmq_data:
     
 services:
   nginx:
@@ -48,6 +47,16 @@ services:
       - MONGO_INITDB_ROOT_PASSWORD=mongopassword
     volumes:
       - mongo_data:/data/db
+        
+  rabbitmq:
+    container_name: 'pet_rabbitmq'
+    image: 'rabbitmq:management-alpine'
+    hostname: 'rabbitmq'
+    ports:
+      - '5672:5672'
+      - '15672:15672'
+    volumes:
+      - rabbitmq_data:/var/lib/rabbitmq
   
   postgres:
     container_name: 'pet_postgres' 
