@@ -1,7 +1,8 @@
 namespace VolunteerRequests.Contracts.Events;
 
-public record VolunteerRequestApprovedEvent
+public record VolunteerRequestApprovedMessage
 {
+    public required long UserId { get; init; }
     public required string FirstName { get; init; }
     public required string Surname { get; init; }
     public string? Patronymic { get; init; }

@@ -62,6 +62,11 @@ public static class Errors
         {
             return Error.Validation("credentials.is.invalid", "Invalid credentials");
         }
+
+        public static Error NotFound(long userId)
+        {
+            return Error.NotFound("user.not.found", $"user with id {userId} not found");
+        }
     }
     
     public static class VolunteerRequests

@@ -31,7 +31,6 @@ public static class DependencyInjection
         IConfiguration configuration)
     {
         services
-            .AddMessageBus(configuration)
             .AddDatabase()
             .AddDbContext()
             .AddRepositories()
@@ -40,29 +39,6 @@ public static class DependencyInjection
 
         services.AddSingleton<VolunteersSeeder>();
         services.AddScoped<VolunteersSeedService>();
-        
-        return services;
-    }
-
-    private static IServiceCollection AddMessageBus(this IServiceCollection services, IConfiguration configuration)
-    {
-        services.AddMassTransit(configure =>
-        {
-            configure.SetKebabCaseEndpointNameFormatter();
-
-            configure.AddConsumer<VolunteerRequestApprovedConsumer>();
-
-            configure.UsingRabbitMq((context, cfg) =>
-            {
-                cfg.Host(new Uri(configuration["RabbitMq:Host"]!), h =>
-                {
-                    h.Username(configuration["RabbitMq:Username"]!);
-                    h.Password(configuration["RabbitMq:Password"]!);
-                });
-
-                cfg.ConfigureEndpoints(context);
-            });
-        });
         
         return services;
     }

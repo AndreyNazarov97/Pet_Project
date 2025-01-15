@@ -16,17 +16,19 @@ public class SendIntegrationEvent : INotificationHandler<VolunteerRequestApprove
         _publishEndpoint = publishEndpoint;
         _volunteerRequestsRepository = volunteerRequestsRepository;
     }
-    
+
     public async Task Handle(VolunteerRequestApprovedEvent domainEvent, CancellationToken cancellationToken)
     {
-        var requestResult = await _volunteerRequestsRepository.GetById(domainEvent.VolunteerRequestId, cancellationToken);
+        var requestResult =
+            await _volunteerRequestsRepository.GetById(domainEvent.VolunteerRequestId, cancellationToken);
         if (requestResult.IsFailure)
             return;
-        
+
         var volunteerInfo = requestResult.Value.VolunteerInfo;
-        
-        var integrationEvent = new Contracts.Events.VolunteerRequestApprovedEvent
+
+        var integrationEvent = new Contracts.Events.VolunteerRequestApprovedMessage
         {
+            UserId = domainEvent.UserId,
             FirstName = volunteerInfo.FullName.Name,
             Surname = volunteerInfo.FullName.Surname,
             Patronymic = volunteerInfo.FullName.Patronymic,
@@ -34,7 +36,7 @@ public class SendIntegrationEvent : INotificationHandler<VolunteerRequestApprove
             PhoneNumber = volunteerInfo.PhoneNumber.Value,
             Experience = volunteerInfo.WorkExperience.Years
         };
-        
+
         await _publishEndpoint.Publish(integrationEvent, cancellationToken);
     }
 }

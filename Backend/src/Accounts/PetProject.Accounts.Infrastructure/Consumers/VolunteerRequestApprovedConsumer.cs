@@ -1,18 +1,18 @@
 using MassTransit;
 using MediatR;
 using Microsoft.Extensions.Logging;
-using PetProject.Core.Dtos;
-using PetProject.VolunteerManagement.Application.VolunteersManagement.Commands.CreateVolunteer;
+using PetProject.Accounts.Application.AccountManagement.Commands.CreateVolunteerAccount;
 using VolunteerRequests.Contracts.Events;
 
-namespace PetProject.VolunteerManagement.Infrastructure.Consumers;
+namespace PetProject.Accounts.Infrastructure.Consumers;
 
 public class VolunteerRequestApprovedConsumer : IConsumer<VolunteerRequestApprovedMessage>
 {
     private readonly IMediator _mediator;
     private readonly ILogger<VolunteerRequestApprovedConsumer> _logger;
 
-    public VolunteerRequestApprovedConsumer(IMediator mediator,
+    public VolunteerRequestApprovedConsumer(
+        IMediator mediator,
         ILogger<VolunteerRequestApprovedConsumer> logger)
     {
         _mediator = mediator;
@@ -22,23 +22,15 @@ public class VolunteerRequestApprovedConsumer : IConsumer<VolunteerRequestApprov
     public async Task Consume(ConsumeContext<VolunteerRequestApprovedMessage> context)
     {
         var eventData = context.Message;
-        var fullNameDto = new FullNameDto
-        {
-            Name = eventData.FirstName,
-            Surname = eventData.Surname,
-            Patronymic = eventData.Patronymic
-        };
 
-        var command = new CreateVolunteerCommand
+        var command = new CreateVolunteerAccountCommand
         {
-            FullName = fullNameDto,
-            Description = eventData.Description,
-            AgeExperience = eventData.Experience,
-            PhoneNumber = eventData.PhoneNumber
+            UserId = eventData.UserId,
+            Experience = eventData.Experience
         };
         
-       var result =  await _mediator.Send(command);
-       
+        var result = await _mediator.Send(command);
+        
         if (result.IsFailure)
         {
             _logger.LogError("{Message}", result.Error.Errors);
