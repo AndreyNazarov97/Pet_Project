@@ -26,6 +26,12 @@ public static class DependencyInjection
             configure.AddConsumer<VolunteerRequestApprovedConsumer>();
             configure.AddConsumer<VolunteerManagement.Infrastructure.Consumers.VolunteerRequestApprovedConsumer>();
 
+            configure.AddConfigureEndpointsCallback((context, cfg) =>
+            {
+                cfg.UseMessageRetry(r => 
+                    r.Incremental(3, TimeSpan.FromSeconds(1), TimeSpan.FromSeconds(5)));
+            });
+
             configure.UsingRabbitMq((context, cfg) =>
             {
                 cfg.Host(new Uri(configuration["RabbitMq:Host"]!), h =>
@@ -37,10 +43,10 @@ public static class DependencyInjection
                 cfg.ConfigureEndpoints(context);
             });
         });
-        
+
         return services;
     }
-    
+
     public static IServiceCollection AddModules(this IServiceCollection services, IConfiguration configuration)
     {
         services
