@@ -1,4 +1,5 @@
 ﻿using System.Text;
+using MassTransit;
 using Microsoft.AspNetCore.Authentication.JwtBearer;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Identity;
@@ -10,6 +11,7 @@ using PetProject.Accounts.Application.Interfaces;
 using PetProject.Accounts.Application.Managers;
 using PetProject.Accounts.Domain;
 using PetProject.Accounts.Infrastructure.Common;
+using PetProject.Accounts.Infrastructure.Consumers;
 using PetProject.Accounts.Infrastructure.DataSeed;
 using PetProject.Accounts.Infrastructure.DbContexts;
 using PetProject.Accounts.Infrastructure.IdentityManagers;

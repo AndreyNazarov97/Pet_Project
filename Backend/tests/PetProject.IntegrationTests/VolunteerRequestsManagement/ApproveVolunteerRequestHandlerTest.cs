@@ -5,6 +5,7 @@ using Microsoft.Extensions.DependencyInjection;
 using PetProject.SharedKernel.Shared;
 using PetProject.SharedTestData;
 using VolunteerRequests.Application.RequestsManagement.Commands.Approve;
+using VolunteerRequests.Domain.Events;
 using Random = PetProject.SharedTestData.Creators.Random;
 
 namespace PetProject.IntegrationTests.VolunteerRequestsManagement;

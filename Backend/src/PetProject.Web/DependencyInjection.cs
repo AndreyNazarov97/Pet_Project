@@ -1,5 +1,7 @@
-﻿using PetProject.Accounts.Application;
+﻿using MassTransit;
+using PetProject.Accounts.Application;
 using PetProject.Accounts.Infrastructure;
+using PetProject.Accounts.Infrastructure.Consumers;
 using PetProject.Accounts.Presentation;
 using PetProject.Discussions.Application;
 using PetProject.Discussions.Infrastructure;
@@ -15,6 +17,36 @@ namespace PetProject.Web;
 
 public static class DependencyInjection
 {
+    public static IServiceCollection AddMessageBus(this IServiceCollection services, IConfiguration configuration)
+    {
+        services.AddMassTransit(configure =>
+        {
+            configure.SetKebabCaseEndpointNameFormatter();
+
+            configure.AddConsumer<VolunteerRequestApprovedConsumer>();
+            configure.AddConsumer<VolunteerManagement.Infrastructure.Consumers.VolunteerRequestApprovedConsumer>();
+
+            configure.AddConfigureEndpointsCallback((context, cfg) =>
+            {
+                cfg.UseMessageRetry(r => 
+                    r.Incremental(3, TimeSpan.FromSeconds(1), TimeSpan.FromSeconds(5)));
+            });
+
+            configure.UsingRabbitMq((context, cfg) =>
+            {
+                cfg.Host(new Uri(configuration["RabbitMq:Host"]!), h =>
+                {
+                    h.Username(configuration["RabbitMq:Username"]!);
+                    h.Password(configuration["RabbitMq:Password"]!);
+                });
+
+                cfg.ConfigureEndpoints(context);
+            });
+        });
+
+        return services;
+    }
+
     public static IServiceCollection AddModules(this IServiceCollection services, IConfiguration configuration)
     {
         services

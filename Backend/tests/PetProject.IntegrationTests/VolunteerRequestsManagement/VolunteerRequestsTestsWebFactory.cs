@@ -11,20 +11,15 @@ using Microsoft.Extensions.Hosting;
 using Npgsql;
 using NSubstitute;
 using PetProject.Accounts.Infrastructure.DataSeed;
-using PetProject.Accounts.Infrastructure.DbContexts;
-using PetProject.Core.Database;
 using PetProject.Discussions.Contracts;
 using PetProject.Discussions.Contracts.Requests;
 using PetProject.Discussions.Domain.Aggregate;
-using PetProject.Discussions.Infrastructure.DbContexts;
 using PetProject.SharedKernel.Shared;
 using PetProject.SpeciesManagement.Infrastructure.DataSeed;
-using PetProject.SpeciesManagement.Infrastructure.DbContexts;
-using PetProject.VolunteerManagement.Infrastructure.Common;
 using PetProject.VolunteerManagement.Infrastructure.DataSeed;
-using PetProject.VolunteerManagement.Infrastructure.DbContexts;
 using Respawn;
 using Testcontainers.PostgreSql;
+using Testcontainers.RabbitMq;
 using VolunteerRequests.Infrastructure.DbContexts;
 
 namespace PetProject.IntegrationTests.VolunteerRequestsManagement;
@@ -40,6 +35,11 @@ public class VolunteerRequestsTestsWebFactory : WebApplicationFactory<Program>, 
         .WithUsername("postgres")
         .WithPassword("postgres")
         .Build();
+    
+    private readonly RabbitMqContainer _rabbitMqContainer = new RabbitMqBuilder()
+        .WithUsername("guest")
+        .WithPassword("guest")
+        .Build();
 
     private Respawner _respawner;
     private DbConnection _dbConnection;
@@ -53,11 +53,15 @@ public class VolunteerRequestsTestsWebFactory : WebApplicationFactory<Program>, 
             // Изменяем строку подключения
             var builtConfig = config.Build();
             var newConnectionString = _dbContainer.GetConnectionString();
+            var rabbitHost = _rabbitMqContainer.GetConnectionString();
 
             // Здесь мы модифицируем конфигурацию
             config.AddInMemoryCollection(new Dictionary<string, string>
             {
-                { "ConnectionStrings:Postgres", newConnectionString }
+                { "ConnectionStrings:Postgres", newConnectionString },
+                {"RabbitMq:Host", rabbitHost},
+                {"RabbitMq:Username", "guest"},
+                {"RabbitMq:Password", "guest"}
             }!);
         });
 
@@ -87,6 +91,7 @@ public class VolunteerRequestsTestsWebFactory : WebApplicationFactory<Program>, 
     public async Task InitializeAsync()
     {
         await _dbContainer.StartAsync();
+        await _rabbitMqContainer.StartAsync();
 
         using var scope = Services.CreateScope();
 
@@ -126,5 +131,8 @@ public class VolunteerRequestsTestsWebFactory : WebApplicationFactory<Program>, 
     {
         await _dbContainer.StopAsync();
         await _dbContainer.DisposeAsync();
+        
+        await _rabbitMqContainer.StopAsync();
+        await _rabbitMqContainer.DisposeAsync();
     }
 }
