@@ -6,7 +6,6 @@ using Microsoft.EntityFrameworkCore.Infrastructure;
 using Microsoft.EntityFrameworkCore.Migrations;
 using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 using Npgsql.EntityFrameworkCore.PostgreSQL.Metadata;
-using PetProject.Accounts.Infrastructure;
 using PetProject.Accounts.Infrastructure.DbContexts;
 
 #nullable disable
@@ -14,7 +13,7 @@ using PetProject.Accounts.Infrastructure.DbContexts;
 namespace PetProject.Accounts.Infrastructure.Migrations
 {
     [DbContext(typeof(AccountsDbContext))]
-    [Migration("20241227094515_Accounts_Init")]
+    [Migration("20250217144326_Accounts_Init")]
     partial class Accounts_Init
     {
         /// <inheritdoc />

@@ -15,8 +15,8 @@ public class AddPetPhotoCommandValidator : AbstractValidator<AddPetPhotoCommand>
         RuleFor(p => p.VolunteerId)
             .NotEmpty().WithError(Errors.General.ValueIsInvalid("VolunteerId"));
 
-        RuleForEach(p => p.Keys)
-            .NotEmpty().WithError(Errors.General.ValueIsInvalid("Keys"));
+        RuleForEach(p => p.FilesId)
+            .NotEmpty().WithError(Errors.General.ValueIsInvalid("FilesId"));
 
     }
 }

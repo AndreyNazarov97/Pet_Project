@@ -2,12 +2,12 @@
 
 namespace PetProject.VolunteerManagement.Presentation.Requests;
 
-public record DeletePetPhotoRequest(string FilePath)
+public record DeletePetPhotoRequest(Guid FileId)
 {
     public DeletePetPhotoCommand ToCommand(Guid volunteerId, Guid petId) => new()
     {
         VolunteerId = volunteerId,
         PetId = petId,
-        FilePath = FilePath
+        FileId = FileId
     };
 }

@@ -2,12 +2,12 @@
 
 namespace PetProject.VolunteerManagement.Presentation.Requests;
 
-public record SetMainPetPhotoRequest(string Path)
+public record SetMainPetPhotoRequest(Guid FileId)
 {
     public SetMainPetPhotoCommand ToCommand(Guid volunteerId, Guid petId) => new()
     {
         VolunteerId = volunteerId,
         PetId = petId,
-        Path = Path
+        FileId = FileId
     };
 }

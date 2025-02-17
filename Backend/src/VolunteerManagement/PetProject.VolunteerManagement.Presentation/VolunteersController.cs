@@ -5,6 +5,7 @@ using Microsoft.AspNetCore.Mvc;
 using PetProject.Core.Dtos;
 using PetProject.Framework;
 using PetProject.Framework.Authorization;
+using PetProject.SharedKernel.Constants;
 using PetProject.SharedKernel.Shared;
 using PetProject.SharedKernel.Shared.EntityIds;
 using PetProject.SharedKernel.Shared.ValueObjects;
@@ -183,7 +184,7 @@ public class VolunteersController : ApplicationController
 
     [Permission(Permissions.Volunteer.Update)]
     [HttpPost("{volunteerId:guid}/pets/{petId:guid}/photo")]
-    public async Task<ActionResult<List<FilePath>>> AddPetPhoto(
+    public async Task<ActionResult<List<PhotoDto>>> AddPetPhoto(
         [FromRoute] Guid volunteerId,
         [FromRoute] Guid petId,
         [FromForm] IFormFileCollection photos,
@@ -200,7 +201,9 @@ public class VolunteersController : ApplicationController
         {
             VolunteerId = volunteerId,
             PetId = petId,
-            Keys = uploadFilesResponse.Value.Select(r => r.Key).ToList()
+            FilesId = uploadFilesResponse.Value
+                .Where(x => Constants.PhotoExtensions.Contains(Path.GetExtension(x.Key)))
+                .Select(r => r.FileId).ToList()
         };
 
         var result = await _mediator.Send(command, cancellationToken);

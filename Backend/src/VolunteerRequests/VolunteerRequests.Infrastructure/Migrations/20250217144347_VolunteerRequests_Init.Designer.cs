@@ -13,8 +13,8 @@ using VolunteerRequests.Infrastructure.DbContexts;
 namespace VolunteerRequests.Infrastructure.Migrations
 {
     [DbContext(typeof(VolunteerRequestsDbContext))]
-    [Migration("20250113153543_Initial")]
-    partial class Initial
+    [Migration("20250217144347_VolunteerRequests_Init")]
+    partial class VolunteerRequests_Init
     {
         /// <inheritdoc />
         protected override void BuildTargetModel(ModelBuilder modelBuilder)

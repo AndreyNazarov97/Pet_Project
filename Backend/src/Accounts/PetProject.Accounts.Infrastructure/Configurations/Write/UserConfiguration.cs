@@ -45,8 +45,8 @@ public class UserConfiguration : IEntityTypeConfiguration<User>
         builder
             .Property(u => u.Photos)
             .HasValueObjectsJsonConversion(
-                input => new PhotoDto() { Path = input.Path.Path , IsMain = input.IsMain},
-                output => new Photo(FilePath.Create(output.Path).Value){IsMain = output.IsMain})
+                input => new PhotoDto() { FileId = input.FileId, IsMain = input.IsMain},
+                output => new Photo(output.FileId){IsMain = output.IsMain})
             .HasColumnName("photos");
         
     }

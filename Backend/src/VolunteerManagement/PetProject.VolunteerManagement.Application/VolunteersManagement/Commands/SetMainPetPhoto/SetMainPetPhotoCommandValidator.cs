@@ -17,7 +17,8 @@ public class SetMainPetPhotoCommandValidator : AbstractValidator<SetMainPetPhoto
             .NotEmpty()
             .WithError(Errors.General.ValueIsInvalid("PetId"));
 
-        RuleFor(s => s.Path)
-            .MustBeValueObject(FilePath.Create);
+        RuleFor(s => s.FileId)
+            .NotEmpty()
+            .WithError(Errors.General.ValueIsInvalid("FileId"));
     }
 }

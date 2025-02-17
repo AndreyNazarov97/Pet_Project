@@ -1,15 +1,13 @@
 ﻿using CSharpFunctionalExtensions;
 using FileService.Communication;
+using FileService.Communication.Contracts.Requests;
 using MediatR;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Logging;
 using PetProject.Core.Database;
-using PetProject.Core.Dtos;
 using PetProject.SharedKernel.Constants;
 using PetProject.SharedKernel.Shared;
 using PetProject.SharedKernel.Shared.EntityIds;
-using PetProject.SharedKernel.Shared.ValueObjects;
-using PetProject.VolunteerManagement.Application.Providers;
 using PetProject.VolunteerManagement.Application.Repository;
 
 namespace PetProject.VolunteerManagement.Application.VolunteersManagement.Commands.DeletePetPhoto;
@@ -48,19 +46,14 @@ public class DeletePetPhotoHandler : IRequestHandler<DeletePetPhotoCommand, Unit
         using var transaction = await _unitOfWork.BeginTransactionAsync(cancellationToken);
         try
         {
-            var filePath = FilePath.Create(command.FilePath).Value;
-            var result = volunteer.DeletePetPhoto(petId, filePath);
+            var result = volunteer.DeletePetPhoto(petId, command.FileId);
             if (result.IsFailure)
                 return result.Error.ToErrorList();
 
-            var fileMetaDataDto = new FileMetaDataDto
-            {
-                ObjectName = command.FilePath,
-                BucketName = BucketName
-            };
-            var deleteResult = await _fileHttpClient.DeletePresignedUrlAsync();
+            var deleteRequest = new DeleteFilesRequest([command.FileId]);
+            var deleteResult = await _fileHttpClient.DeletePresignedUrlAsync(deleteRequest, cancellationToken);
             if (deleteResult.IsFailure)
-                return deleteResult.Error;
+                return Errors.Minio.CouldNotDeleteFile().ToErrorList();
             
             await _unitOfWork.SaveChangesAsync(cancellationToken);
             transaction.Commit();
