@@ -3,19 +3,18 @@ using MediatR;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Logging;
 using PetProject.Core.Database;
+using PetProject.Core.Dtos;
 using PetProject.SharedKernel.Constants;
 using PetProject.SharedKernel.Shared;
 using PetProject.SharedKernel.Shared.EntityIds;
-using PetProject.SharedKernel.Shared.ValueObjects;
+using PetProject.VolunteerManagement.Application.Extensions;
 using PetProject.VolunteerManagement.Application.Repository;
 using PetProject.VolunteerManagement.Domain.ValueObjects;
 
 namespace PetProject.VolunteerManagement.Application.VolunteersManagement.Commands.AddPetPhoto;
 
-public class AddPetPhotoHandler : IRequestHandler<AddPetPhotoCommand, Result<FilePath[], ErrorList>>
+public class AddPetPhotoHandler : IRequestHandler<AddPetPhotoCommand, Result<PhotoDto[], ErrorList>>
 {
-    private const string BucketName = "pet-project";
-
     private readonly IVolunteersRepository _volunteersRepository;
     private readonly IUnitOfWork _unitOfWork;
     private readonly ILogger<AddPetPhotoHandler> _logger;
@@ -31,7 +30,7 @@ public class AddPetPhotoHandler : IRequestHandler<AddPetPhotoCommand, Result<Fil
         _logger = logger;
     }
 
-    public async Task<Result<FilePath[], ErrorList>> Handle(AddPetPhotoCommand command,
+    public async Task<Result<PhotoDto[], ErrorList>> Handle(AddPetPhotoCommand command,
         CancellationToken cancellationToken = default)
     {
         using var transaction = await _unitOfWork.BeginTransactionAsync(cancellationToken);
@@ -48,9 +47,8 @@ public class AddPetPhotoHandler : IRequestHandler<AddPetPhotoCommand, Result<Fil
             if (petResult is null)
                 return Errors.General.NotFound(command.PetId).ToErrorList();
             
-            var filePaths = command.Keys.Select(key => FilePath.Create(key).Value).ToArray();
-            var petPhotos = filePaths
-                .Select(path => new PetPhoto(path))
+            var petPhotos = command.FilesId
+                .Select(fileId => new PetPhoto(fileId))
                 .ToList();
 
             var petPhotosResult = volunteer.AddPetPhoto(petId, petPhotos);
@@ -60,7 +58,8 @@ public class AddPetPhotoHandler : IRequestHandler<AddPetPhotoCommand, Result<Fil
             await _unitOfWork.SaveChangesAsync(cancellationToken);
 
             transaction.Commit();
-            return filePaths;
+            
+            return petPhotos.ToDto();
         }
         catch (Exception e)
         {

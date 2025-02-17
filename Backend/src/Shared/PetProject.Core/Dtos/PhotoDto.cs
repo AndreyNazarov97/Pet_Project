@@ -2,6 +2,6 @@
 
 public record PhotoDto
 {
-    public required string Path { get; init; }
+    public required Guid FileId { get; init; }
     public bool IsMain { get; init; }
 }

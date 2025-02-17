@@ -2,15 +2,15 @@
 
 public record Photo
 {
-    public FilePath Path { get; }
+    public Guid FileId { get; }
     public bool IsMain { get; init; }
 
     private Photo()
     {
         
     }
-    public Photo(FilePath path)
+    public Photo(Guid fileId )
     {
-        Path = path;
+        FileId = fileId;
     }
 }

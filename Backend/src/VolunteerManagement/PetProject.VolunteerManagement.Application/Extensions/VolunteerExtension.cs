@@ -1,6 +1,7 @@
 ﻿using PetProject.Core.Dtos;
 using PetProject.SharedKernel.Shared.ValueObjects;
 using PetProject.VolunteerManagement.Domain.Aggregate;
+using PetProject.VolunteerManagement.Domain.ValueObjects;
 
 namespace PetProject.VolunteerManagement.Application.Extensions;
 
@@ -22,6 +23,17 @@ public static class VolunteerExtension
             Surname = fullName.Surname,
             Patronymic = fullName.Patronymic
         };
+    }
+
+    public static PhotoDto[] ToDto(this List<PetPhoto> petPhotos)
+    {
+        var photos = petPhotos
+            .Select(p => new PhotoDto
+            {
+                FileId = p.FileId,
+                IsMain = p.IsMain
+            });
+        return photos.ToArray();
     }
 
     public static RequisiteDto ToDto(this Requisite requisite)

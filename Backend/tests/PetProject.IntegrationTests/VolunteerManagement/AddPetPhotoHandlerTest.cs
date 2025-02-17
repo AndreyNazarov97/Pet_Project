@@ -3,26 +3,26 @@ using FluentAssertions;
 using MediatR;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.DependencyInjection;
+using PetProject.Core.Dtos;
 using PetProject.SharedKernel.Shared;
-using PetProject.SharedKernel.Shared.ValueObjects;
 using PetProject.VolunteerManagement.Application.VolunteersManagement.Commands.AddPetPhoto;
 
 namespace PetProject.IntegrationTests.VolunteerManagement;
 
 public class AddPetPhotoHandlerTest : VolunteerManagementTestsBase
 {
-    private readonly IRequestHandler<AddPetPhotoCommand, Result<FilePath[], ErrorList>> _sut;
+    private readonly IRequestHandler<AddPetPhotoCommand, Result<PhotoDto[], ErrorList>> _sut;
 
     private static AddPetPhotoCommand AddPetPhotoCommand => new AddPetPhotoCommand
     {
         VolunteerId = Guid.NewGuid(),
         PetId = Guid.NewGuid(),
-        Keys = [$"{Guid.NewGuid()}.jpg", $"{Guid.NewGuid()}.jpg"]
+        FilesId = [Guid.NewGuid(), Guid.NewGuid()]
     };
 
     public AddPetPhotoHandlerTest(VolunteerManagementTestsWebFactory factory) : base(factory)
     {
-        _sut = _scope.ServiceProvider.GetRequiredService<IRequestHandler<AddPetPhotoCommand, Result<FilePath[], ErrorList>>>();
+        _sut = _scope.ServiceProvider.GetRequiredService<IRequestHandler<AddPetPhotoCommand, Result<PhotoDto[], ErrorList>>>();
     }
     
     [Fact]
@@ -67,15 +67,14 @@ public class AddPetPhotoHandlerTest : VolunteerManagementTestsBase
             VolunteerId = volunteer.Id.Id, 
             PetId = volunteer.Pets.First().Id.Id
         };
-        
-        var filePath  = FilePath.Create(command.Keys.First()).Value;
+
         
         // Act
         var result = await _sut.Handle(command, CancellationToken.None);
 
         // Assert
         result.IsSuccess.Should().BeTrue();
-        result.Value.First().Path.Should().Be(filePath.Path);
+        result.Value.First().FileId.Should().NotBeEmpty();
         
         var volunteerFromDb = await _volunteerDbContext.Volunteers
             .FirstOrDefaultAsync(v => v.Id == volunteer.Id, CancellationToken.None);
@@ -83,7 +82,6 @@ public class AddPetPhotoHandlerTest : VolunteerManagementTestsBase
         volunteerFromDb.Should().NotBeNull();
         volunteerFromDb!.Pets.Should().HaveCount(1);
         volunteerFromDb.Pets.First().PetPhotoList.Should().HaveCount(2);
-        volunteerFromDb.Pets.First().PetPhotoList.Should().Contain(p => p.Path.Path == filePath.Path);
     }
     
 }

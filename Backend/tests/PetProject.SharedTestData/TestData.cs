@@ -15,7 +15,6 @@ using PetProject.VolunteerManagement.Domain.Entities;
 using PetProject.VolunteerManagement.Domain.Enums;
 using PetProject.VolunteerManagement.Domain.ValueObjects;
 using VolunteerRequests.Domain.Aggregate;
-using VolunteerRequests.Domain.Enums;
 using Address = PetProject.SharedKernel.Shared.ValueObjects.Address;
 using Random = PetProject.SharedTestData.Creators.Random;
 
@@ -116,13 +115,6 @@ public class TestData
                 BreedName = "Bulldog"
             },
         }
-    };
-
-    public static FileDto FileDto => new()
-    {
-        FileName = Random.Name + ".jpg",
-        ContentType = "image/jpeg",
-        Content = new MemoryStream()
     };
 
     public static VolunteerInfo VolunteerInfo => new(

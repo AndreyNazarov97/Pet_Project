@@ -93,13 +93,13 @@ public class Volunteer : AggregateRoot<VolunteerId>
         return Result.Success<Error>();
     }
 
-    public UnitResult<Error> DeletePetPhoto(PetId petId, FilePath filePath)
+    public UnitResult<Error> DeletePetPhoto(PetId petId, Guid fileId)
     {
         var pet = GetById(petId);
         if (pet == null)
             return Errors.General.NotFound(petId.Id);
 
-        var result = pet.DeletePhoto(filePath);
+        var result = pet.DeletePhoto(fileId);
         if (result.IsFailure)
             return result.Error;
 

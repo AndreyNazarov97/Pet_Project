@@ -5,7 +5,6 @@ using PetProject.Core.Database;
 using PetProject.SharedKernel.Constants;
 using PetProject.SharedKernel.Shared;
 using PetProject.SharedKernel.Shared.EntityIds;
-using PetProject.SharedKernel.Shared.ValueObjects;
 using PetProject.VolunteerManagement.Application.Repository;
 using PetProject.VolunteerManagement.Domain.ValueObjects;
 
@@ -33,12 +32,8 @@ public class SetMainPetPhotoHandler : IRequestHandler<SetMainPetPhotoCommand, Un
         
         var volunteer = volunteerResult.Value;
         var petId = PetId.Create(command.PetId);
-
-        var extension = Path.GetExtension(command.Path);
-        var path = Path.GetFileNameWithoutExtension(command.Path);
-        var filePath = FilePath.Create(path, extension).Value;
         
-        var result = volunteer.SetPetMainPhoto(petId, new PetPhoto(filePath));
+        var result = volunteer.SetPetMainPhoto(petId, new PetPhoto(command.FileId));
         if(result.IsFailure)
             return result.Error.ToErrorList();
         

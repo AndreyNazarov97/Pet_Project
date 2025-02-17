@@ -104,28 +104,28 @@ public class Pet : SoftDeletableEntity<PetId>
 
     internal UnitResult<Error> SetMainPhoto(PetPhoto petPhoto)
     {
-        var isPhotoExist = PetPhotoList.FirstOrDefault(p => p.Path == petPhoto.Path);
+        var isPhotoExist = PetPhotoList.FirstOrDefault(p => p.FileId == petPhoto.FileId);
         if (isPhotoExist is null)
             return Errors.General.NotFound();
 
         _PetPhotoList = PetPhotoList
-            .Select(photo => new PetPhoto(photo.Path) { IsMain = photo.Path == petPhoto.Path })
+            .Select(photo => new PetPhoto(photo.FileId) { IsMain = photo.FileId == petPhoto.FileId })
             .OrderByDescending(p => p.IsMain)
             .ToList();
 
         return UnitResult.Success<Error>();
     }
 
-    internal UnitResult<Error> DeletePhoto(FilePath filePath)
+    internal UnitResult<Error> DeletePhoto(Guid fileId)
     {
-        var isPhotoExist = PetPhotoList.FirstOrDefault(p => p.Path == filePath);
+        var isPhotoExist = PetPhotoList.FirstOrDefault(p => p.FileId == fileId);
         if (isPhotoExist is null)
             return Errors.General.NotFound();
 
         _PetPhotoList.Remove(isPhotoExist);
         if (isPhotoExist.IsMain && _PetPhotoList.Count > 0)
         {
-            _PetPhotoList[0] = new PetPhoto(_PetPhotoList[0].Path) { IsMain = true };
+            _PetPhotoList[0] = new PetPhoto(_PetPhotoList[0].FileId) { IsMain = true };
         }
 
         return UnitResult.Success<Error>();

@@ -7,7 +7,7 @@ public class Constants
     public const int MAX_TEXT_LENGTH = 500;
     public const int EXTRA_TEXT_LENGTH = 2000;
     
-    public static string[] Extensions = [".jpg", ".png", ".jpeg", ".gif"];
+    public static string[] PhotoExtensions = [".jpg", ".png", ".jpeg"];
     
     public enum Context
     {

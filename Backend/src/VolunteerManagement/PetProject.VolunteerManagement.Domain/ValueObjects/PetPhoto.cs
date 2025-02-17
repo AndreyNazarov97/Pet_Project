@@ -1,19 +1,16 @@
-﻿using PetProject.SharedKernel.Shared.ValueObjects;
-
-namespace PetProject.VolunteerManagement.Domain.ValueObjects;
+﻿namespace PetProject.VolunteerManagement.Domain.ValueObjects;
 
 public record PetPhoto
 {
-    //TODO: здесь должно быть FileId, а не Path
-    public FilePath Path { get; }
+    public Guid FileId { get; }
     public bool IsMain { get; init; }
 
     private PetPhoto()
     {
         
     }
-    public PetPhoto(FilePath path)
+    public PetPhoto(Guid fileId)
     {
-        Path = path;
+        FileId = fileId;
     }
 }
