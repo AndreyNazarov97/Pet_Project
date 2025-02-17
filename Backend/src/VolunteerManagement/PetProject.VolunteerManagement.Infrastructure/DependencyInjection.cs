@@ -1,8 +1,6 @@
 ﻿using Dapper;
-using MassTransit;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
-using Minio;
 using PetProject.Core.Common;
 using PetProject.Core.Database;
 using PetProject.Core.Database.Repository;
@@ -10,16 +8,12 @@ using PetProject.Core.Dtos;
 using PetProject.Core.Messaging;
 using PetProject.SharedKernel.Constants;
 using PetProject.SharedKernel.Interfaces;
-using PetProject.VolunteerManagement.Application.Providers;
 using PetProject.VolunteerManagement.Application.Repository;
 using PetProject.VolunteerManagement.Infrastructure.BackgroundServices;
 using PetProject.VolunteerManagement.Infrastructure.Common;
-using PetProject.VolunteerManagement.Infrastructure.Consumers;
 using PetProject.VolunteerManagement.Infrastructure.DataSeed;
 using PetProject.VolunteerManagement.Infrastructure.DbContexts;
 using PetProject.VolunteerManagement.Infrastructure.MessageQueues;
-using PetProject.VolunteerManagement.Infrastructure.Options;
-using PetProject.VolunteerManagement.Infrastructure.Providers;
 using PetProject.VolunteerManagement.Infrastructure.Repositories;
 using PetProject.VolunteerManagement.Infrastructure.Services;
 
@@ -34,8 +28,7 @@ public static class DependencyInjection
             .AddDatabase()
             .AddDbContext()
             .AddRepositories()
-            .AddHostedServices()
-            .AddMinio(configuration);
+            .AddHostedServices();
 
         services.AddSingleton<VolunteersSeeder>();
         services.AddScoped<VolunteersSeedService>();
@@ -80,28 +73,7 @@ public static class DependencyInjection
         services.AddScoped<DeleteExpiredPetsService>();
         services.AddScoped<DeleteExpiredVolunteersService>();
         
-        services.AddHostedService<FilesCleanerBackgroundService>();
         services.AddHostedService<DeletedEntityCleanupService>();
-
-        return services;
-    }
-
-    private static IServiceCollection AddMinio(this IServiceCollection services, IConfiguration configuration)
-    {
-        services.Configure<MinioOptions>(configuration.GetSection(MinioOptions.Minio));
-
-        services.AddMinio(options =>
-        {
-            var minioOptions = configuration.GetSection(MinioOptions.Minio).Get<MinioOptions>()
-                               ?? throw new AggregateException("Missing minio configuration");
-
-            options.WithEndpoint(minioOptions.Endpoint);
-
-            options.WithCredentials(minioOptions.AccessKey, minioOptions.SecretKey);
-            options.WithSSL(minioOptions.WithSsl);
-        });
-
-        services.AddScoped<IFileProvider, MinioProvider>();
 
         return services;
     }

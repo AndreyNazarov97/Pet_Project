@@ -92,10 +92,10 @@ public class FileHttpClient(HttpClient httpClient)
     }
 
     public async Task<Result<string>> DeletePresignedUrlAsync(
-        DeleteFilesRequest request, Guid key, CancellationToken cancellationToken = default)
+        DeleteFilesRequest request, CancellationToken cancellationToken = default)
     {
         using var response = await httpClient.PostAsJsonAsync(
-            $"files/{key}/presigned-for-deletion", request, cancellationToken);
+            "files/delete", request, cancellationToken);
 
         if (response.StatusCode != HttpStatusCode.OK)
             return Result.Failure<string>(response.ReasonPhrase!);
