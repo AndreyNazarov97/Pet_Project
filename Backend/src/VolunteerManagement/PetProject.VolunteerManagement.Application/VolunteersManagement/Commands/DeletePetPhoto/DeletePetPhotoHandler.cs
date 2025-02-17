@@ -1,4 +1,5 @@
 ﻿using CSharpFunctionalExtensions;
+using FileService.Communication;
 using MediatR;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Logging;
@@ -18,18 +19,18 @@ public class DeletePetPhotoHandler : IRequestHandler<DeletePetPhotoCommand, Unit
     private const string BucketName = "pet-project";
     
     private readonly IVolunteersRepository _volunteersRepository;
-    private readonly IFileProvider _fileProvider;
+    private readonly FileHttpClient _fileHttpClient;
     private readonly IUnitOfWork _unitOfWork;
     private readonly ILogger<DeletePetPhotoHandler> _logger;
 
     public DeletePetPhotoHandler(
         IVolunteersRepository volunteersRepository,
-        IFileProvider fileProvider,
+        FileHttpClient fileHttpClient,
         [FromKeyedServices(Constants.Context.VolunteerManagement)]IUnitOfWork unitOfWork,
         ILogger<DeletePetPhotoHandler> logger)
     {
         _volunteersRepository = volunteersRepository;
-        _fileProvider = fileProvider;
+        _fileHttpClient = fileHttpClient;
         _unitOfWork = unitOfWork;
         _logger = logger;
     }
@@ -57,7 +58,7 @@ public class DeletePetPhotoHandler : IRequestHandler<DeletePetPhotoCommand, Unit
                 ObjectName = command.FilePath,
                 BucketName = BucketName
             };
-            var deleteResult = await _fileProvider.DeleteFile(fileMetaDataDto, cancellationToken);
+            var deleteResult = await _fileHttpClient.DeletePresignedUrlAsync();
             if (deleteResult.IsFailure)
                 return deleteResult.Error;
             
